@@ -1,0 +1,61 @@
+.viewport {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-2);
+}
+
+.zoomable-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+    z-index: 20;
+}
+
+.polka-dots {
+    position: fixed;
+    top: -43%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: radial-gradient(circle, #00000066 2%, transparent 4%);
+    --dot-size: 40px;
+    background-size: var(--dot-size) var(--dot-size);
+    z-index: 1;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    text-align: center;
+    color: #333;
+    /* Adjust text color */
+    font-family: Arial, sans-serif;
+    z-index: 20;
+}
+
+.node {
+    position: absolute;
+    width: 10em;
+    padding: 1em;
+    background-color: var(--bg);
+    border: 1px solid var(--col-border);
+    border-radius: .6em;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    user-select: none;
+}
+
+.node:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 255, 0.2);
+}

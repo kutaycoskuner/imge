@@ -1,0 +1,19 @@
+{
+    "metadata": {},
+    "data": {
+        "nodes": [
+            {
+                "_id" : 0,
+                "type" : "basic",
+                "position" : {
+                    "x" : 0,
+                    "y" : 0
+                },
+                "data": {
+                    "title": "First Node"
+                } 
+            }
+        ],
+        "links": []
+    }
+}
