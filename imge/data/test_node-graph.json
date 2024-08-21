@@ -6,11 +6,22 @@
                 "_id" : 0,
                 "type" : "basic",
                 "position" : {
-                    "x" : 0,
-                    "y" : 0
+                    "x" : -400,
+                    "y" : 140
                 },
                 "data": {
                     "title": "First Node"
+                } 
+            },
+            {
+                "_id" : 1,
+                "type" : "basic",
+                "position" : {
+                    "x" : 200,
+                    "y" : 40
+                },
+                "data": {
+                    "title": "Second Node"
                 } 
             }
         ],

@@ -49,7 +49,8 @@
 
 :root {
     /* ---------- Not on other color modes ----------- */
-    --box-shadow-large: 0 12px 16px 8px rgba(0, 0, 0, 0.2);
+    --box-shadow-large: 0 12px 16px 8px var(--col-transparent-2);
+    --box-shadow-small: 0 4px 4px 0px var(--col-transparent-2);
     --color-link-hover-bg: rgba(0, 0, 0, 0.04);
     --color-separator: rgba(28, 28, 28, 1);
 
@@ -186,8 +187,8 @@
     --col-highlight-tr-1: #e8eced99;
     --col-highlight-tr-2: #e8eced33;
     --icon-glow: #aaaaaa;
-    --bg: #090909; /* 121212*/
-    --bg-1: #121212;
+    --bg: #121212; /* 121212*/
+    --bg-1: #161616;
     --bg-2: #202020;
     --bg-transparent: rgba(9, 9, 9, var(--level1-opacity)); /*22, 22, 22*/
     --bg-img: url("../../public/base/noisy-background_black_512.jpg");

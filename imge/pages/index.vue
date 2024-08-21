@@ -2,12 +2,11 @@
     <div class="viewport" ref="viewport">
         <div class="zoomable-background" ref="zoomableBackground">
             <div class="content">
-                <!-- Render nodes here -->
-                <h1> Imge </h1>
+                <!-- Render nodes  -->
                 <div v-for="node in nodes" :key="node._id" class="node" :style="{
                     left: node.position.x + base_offset_x + 'px',
-                    top: node.position.y + base_offset_y + 'px'
-                }">
+                    top: -(node.position.y - base_offset_y) + 'px'
+                }" @mousedown="handleNodeMouseDown($event, node)">
                     <h3>{{ node.data.title }}</h3>
                 </div>
             </div>
@@ -16,7 +15,8 @@
     </div>
 
     <CoordTracker />
-    <BlackboardShortcuts />
+    <AccessibilityUI />
+
 </template>
 
 <script setup>
@@ -24,15 +24,18 @@
 import { imgeState } from '~/stores/imge';
 const imState = imgeState();
 
-
-
+// imports
 import data_json from '@/data/test_node-graph.json';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-// import { print } from '@/utils/utils';
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 
+// color mode
+const colorMode = useColorMode()
+
+// computed
 const base_offset_x = computed(() => imState.get_coordsBaseXOffset);
 const base_offset_y = computed(() => imState.get_coordsBaseYOffset);
 
+// reactive data
 const nodes = ref(data_json.data.nodes);
 const viewport = ref(null);
 const zoomableBackground = ref(null);
@@ -44,13 +47,16 @@ const panStart = ref({ x: 0, y: 0 });
 const panOffset = ref({ x: 0, y: 0 });
 const bgOffset = ref({ x: 0, y: 0 });
 
+
+// ____functions
 const handleScroll = (event) => {
     const maxZoom = 1.2;    // Maximum zoom level (200%)
     const minZoom = 0.4;    // Minimum zoom level (50%)
     const zoomStep = 0.001; // Zoom step size
     event.preventDefault();
 
-    const zoomChange = event.deltaY * -zoomStep; // Determine zoom change based on scroll direction
+    // Determine zoom change based on scroll direction
+    const zoomChange = event.deltaY * -zoomStep;
     zoomLevel.value = Math.min(
         Math.max(zoomLevel.value + zoomChange, minZoom),
         maxZoom
@@ -59,11 +65,35 @@ const handleScroll = (event) => {
     updateTransform();  // <-- Call to updateTransform
 };
 
+const handleNodeMouseDown = (event, node) => {
+    event.preventDefault();
+    panStart.value = { x: event.clientX, y: event.clientY };
+
+    const onNodeMouseMove = (moveEvent) => {
+        const dx = moveEvent.clientX - panStart.value.x;
+        const dy = moveEvent.clientY - panStart.value.y;
+
+        // Update node position based on mouse movement
+        node.position.x += dx;
+        node.position.y -= dy;
+
+        // Update start position for next movement
+        panStart.value = { x: moveEvent.clientX, y: moveEvent.clientY };
+    };
+
+    const onNodeMouseUp = () => {
+        document.removeEventListener('mousemove', onNodeMouseMove);
+        document.removeEventListener('mouseup', onNodeMouseUp);
+    };
+
+    document.addEventListener('mousemove', onNodeMouseMove);
+    document.addEventListener('mouseup', onNodeMouseUp);
+};
+
 const handleMouseDown = (event) => {
     event.preventDefault();
     panStart.value = { x: event.clientX, y: event.clientY };
 
-    print('handleMouseDown')
     if (viewport.value && zoomableBackground.value) {
         zoomableBackground.value.style.cursor = 'grabbing';
     }
@@ -89,8 +119,8 @@ const handleMouseDown = (event) => {
         updateTransform();
 
         panStart.value = { x: moveEvent.clientX, y: moveEvent.clientY };
-        imState.set_coordsStateXOffset(panStart.value.x);
-        imState.set_coordsStateYOffset(panStart.value.y);
+        imState.set_coordsStateXOffset(panOffset.value.x);
+        imState.set_coordsStateYOffset(panOffset.value.y);
     };
 
     const onMouseUp = () => {
@@ -113,7 +143,7 @@ const updateTransform = () => {
 };
 
 onMounted(() => {
-
+    colorMode.value = imState.get_colorMode;
     if (viewport.value) {
         viewport.value.addEventListener('wheel', handleScroll);
         viewport.value.addEventListener('mousedown', handleMouseDown);
@@ -121,17 +151,19 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    // Clean up event listener
     if (zoomableBackground.value) {
-        // zoomableBackground.value.removeEventListener('wheel', handleScroll);
+        zoomableBackground.value.removeEventListener('wheel', handleScroll);
         zoomableBackground.value.removeEventListener('mousedown', handleMouseDown);
-
     }
 });
 
-function print(...args) {
-    console.log(...args);
-}
+watch(
+    () => imState.get_colorMode,
+    (newMode) => {
+        colorMode.value = newMode;
+    }
+);
+
 </script>
 
 <!-- ----------------------------------------------------------------------
@@ -139,5 +171,4 @@ function print(...args) {
 ----------------------------------------------------------------------- -->
 <style src="@/assets/stylesheets/imge.css" scoped></style>
 
-<style scoped>
-</style>
+<style scoped></style>

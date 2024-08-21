@@ -17,5 +17,8 @@
   },
   "overrides": {
     "vue": "latest"
+  },
+  "devDependencies": {
+    "@nuxtjs/color-mode": "^3.4.4"
   }
 }

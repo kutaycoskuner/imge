@@ -44,12 +44,21 @@
 
 # Log 
 - [todo]
-    - colormode
     - technical debt
-    - im: access    : for zoom / fit view / color mode / export / import
+    - im: access    : functionality
     - im: displays  : coords / active item
     - im: input     : command log
+    - add: export json
+    - add: connect nodes 
 
+- [0.21] add coordinates, color mode, first node
+    - 21-Aug-2024
+        - add: display first node
+        - add: basic node movement
+        - add: color mode
+        - fix: coordinates now world space instead of screen space
+        - add: buttons styling
+        - wip: accesbility buttons
 
 - [0.20] add separate repository
     - 21-Aug-2024

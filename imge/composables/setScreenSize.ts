@@ -1,8 +1,8 @@
 import { onMounted, onUnmounted } from "vue";
-import { blackboardState } from "~/stores/website";
+import { imgeState } from "~/stores/imge";
 
 export function setScreenSize() {
-    const websiteStore = blackboardState();
+    const websiteStore = imgeState();
 
     const updateScreenSize = () => {
         const width = window.innerWidth;

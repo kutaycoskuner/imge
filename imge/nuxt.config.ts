@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ["@pinia/nuxt"],
+  modules: ["@pinia/nuxt", '@nuxtjs/color-mode'],
   ssr: false, // disable server side rendering spa: single page application?
   css: [
     '@/assets/stylesheets/main.css',
@@ -23,10 +23,20 @@ export default defineNuxtConfig({
     baseURL: '',
     buildAssetsDir: 'assets'
   },
+  imports: {
+    dirs: ['utils'], // Automatically imports functions from this directory
+  },
   pinia: {
     storesDirs: ['./stores/**'],
   },
-  imports: {
-    dirs: ['utils'], // Automatically imports functions from this directory
+  colorMode: {
+    preference: 'system', // default value of $colorMode.preference
+    fallback: 'light', // fallback value if not system preference found
+    hid: 'nuxt-color-mode-script',
+    globalName: '__NUXT_COLOR_MODE__',
+    componentName: 'ColorScheme',
+    classPrefix: '',
+    classSuffix: '-mode',
+    storageKey: 'nuxt-color-mode'
   }
 })

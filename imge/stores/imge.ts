@@ -6,6 +6,8 @@ export const imgeState = defineStore("imgeStore", {
         screenSizeName          : "pc",  // "pc" "tablet" "mobile"
         screenSizeIndex         : 2,     // 2 pc 1 tablet 0 mobile
 
+        colorMode               : 'dark',
+
         coords_base_x_offset    : 0,
         coords_base_y_offset    : 0,
         coords_state_x_offset   : 0,
@@ -28,6 +30,9 @@ export const imgeState = defineStore("imgeStore", {
         },
         get_screenSizeIndex(state) {
             return state.screenSizeIndex;
+        },
+        get_colorMode(state) {
+            return state.colorMode;
         },
         get_coordsBaseXOffset(state) {
             return state.coords_base_x_offset;
@@ -53,6 +58,9 @@ export const imgeState = defineStore("imgeStore", {
         },
         set_screenSizeIndex(val: number) {
             this.screenSizeIndex = val;
+        },
+        set_colorMode(val: string) {
+            this.colorMode = val;
         },
         set_coordsBaseXOffset(val: number) {
             this.coords_base_x_offset = val;
