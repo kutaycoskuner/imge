@@ -53,6 +53,11 @@
 # Structure
 
 # Blackboard
+- <function descriptions>
+    - aadding links
+        - hovering on top of node will appear point on edges.
+        - if you click on edges you will add i/o link node on parent node
+        - io has directional reference, left = input, right = output or top = input, bottom = output
 
 # How to
 - <adding color mode>

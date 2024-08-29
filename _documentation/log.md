@@ -50,6 +50,24 @@
     - im: input     : command log
     - add: export json
     - add: connect nodes 
+    - add: data bpy struct blender
+    - add: guide message component
+    - add: readme installation
+
+- [0.22] added node-link display, colormode, styling
+    - 29-Aug-2024
+        - add: deployment test
+        - chg: readme
+        - chg: make buttons without function reduced opacity
+        - chg colormode icon slight right adjustment
+        - add: link display  (6-8h)
+    - 28-Aug-2024 
+        - wip: drawing links
+        - add: automated output to docs/
+    - 26-Aug-2024
+        - wip: generate io on nodes
+        - chg: main css to 1.8
+        - fix: colormode bug
 
 - [0.21] add coordinates, color mode, first node
     - 21-Aug-2024
@@ -62,7 +80,7 @@
 
 - [0.20] add separate repository
     - 21-Aug-2024
-        - first deploy test
+        - first deploy test (failed)
         - arch: split repository
         - fix: node on top of polka
         - add: component coord tracker

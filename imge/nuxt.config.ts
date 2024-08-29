@@ -20,7 +20,7 @@ export default defineNuxtConfig({
         // { rel: 'manifest', href: '/site.webmanifest' }, // Web app manifest
       ],
     },
-    baseURL: '',
+    baseURL: '/imge/',
     buildAssetsDir: 'assets'
   },
   imports: {
@@ -38,5 +38,10 @@ export default defineNuxtConfig({
     classPrefix: '',
     classSuffix: '-mode',
     storageKey: 'nuxt-color-mode'
-  }
+  },
+  nitro: {
+    output: {
+      publicDir: '../docs'
+    }
+  },
 })
