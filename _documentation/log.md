@@ -52,6 +52,9 @@
     - add: a4 paper tem
     - add: add left todo
 
+- [0.24] generate and deploy on github
+    - 29-Sep-2024 deployment
+
 - [0.23] accessibility buttons, bg bug fix
     - 29-Sep-2024 
         - add: readme installation

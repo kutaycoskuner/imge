@@ -11,7 +11,7 @@
 
 <p align="center">
     <img alt="Nuxt 3.12" src="https://img.shields.io/badge/Nuxt-3.12.0-blue?logo=nuxtdotjs&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.23-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.24-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
