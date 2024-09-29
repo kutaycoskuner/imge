@@ -20,7 +20,7 @@ function toggleColorMode(color) {
     }
     if (color in modes) {
         ibank.set_colorMode(modes[color]);
-        // this.$colorMode.preference = modes[color]
+        // $colorMode.preference = modes[color];
     }
     // this.$colorMode.preference = 'dark'
 }

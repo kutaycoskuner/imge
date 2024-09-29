@@ -3,7 +3,7 @@
 ----------------------------------------------------------------------- -->
 <template>
     <div class="viewport" ref="viewport">
-        <div class="zoomable-background" ref="zoomableBackground">
+        <div class="content-wrapper" ref="contentWrapper">
             <div class="content">
                 <!-- Render nodes  -->
                 <div v-for="node in nodes" :key="node._id" class="node hover-control" :style="{
@@ -45,7 +45,8 @@
     </div>
 
     <CoordTracker />
-    <AccessibilityUI />
+    <AccessibilityUI @fitToScreen="handleFitToScreen" @addNode="addNode"/>
+    <AssistanceMessage />
 
 </template>
 
@@ -69,15 +70,17 @@ const base_offset_x = computed(() => bank.get_coordsBaseXOffset);
 const base_offset_y = computed(() => bank.get_coordsBaseYOffset);
 const offset_x = computed(() => bank.get_coordsStateXOffset);
 const offset_y = computed(() => bank.get_coordsStateYOffset);
+const zoomLevel = computed(() => bank.get_zoomLevel);
+const bank_colorMode = computed(() => bank.get_colorMode);
+
 
 // reactive data
 const nodes = ref(data_json.data.nodes);
 const links = ref(data_json.data.links);
 const viewport = ref(null);
-const zoomableBackground = ref(null);
+const contentWrapper = ref(null);
 const background = ref(null);
 
-const zoomLevel = ref(1); // Initial zoom level (100%)
 
 const panStart = ref({ x: 0, y: 0 });
 const panOffset = ref({ x: 0, y: 0 });
@@ -92,7 +95,7 @@ const nodeRelativeYPos = ref(0);
 // ---------------------------------------------------------------------------------------
 
 // Function to get the position of a node output
-const getNodeIOPosition = (nodeId, ioId) => {
+function getNodeIOPosition(nodeId, ioId) {
     const node = nodes.value.find(n => n._id === nodeId);
 
     const offset_x = bank.get_coordsStateXOffset;
@@ -129,7 +132,7 @@ function getNodeRelativeMouseCoords(event) {
     // console.log(`xPos: ${nodeRelativeXPos.value}, yPos: ${nodeRelativeYPos.value}`);
 }
 
-const handleScroll = (event) => {
+function handleScroll(event) {
     const maxZoom = 4.0;    // Maximum zoom level (200%)
     const minZoom = 0.04;    // Minimum zoom level (50%)
     const zoomStep = 0.001; // Zoom step size
@@ -137,14 +140,14 @@ const handleScroll = (event) => {
 
     // Determine zoom change based on scroll direction
     const zoomChange = event.deltaY * -zoomStep;
-    zoomLevel.value = Math.min(
+    bank.set_zoomLevel(Math.min(
         Math.max(zoomLevel.value + zoomChange, minZoom),
         maxZoom
-    );
+    ));
     updateTransform();  // <-- Call to updateTransform
 };
 
-const handleNodeMouseDown = (event, node) => {
+function handleNodeMouseDown(event, node) {
     event.preventDefault();
     panStart.value = { x: event.clientX, y: event.clientY };
 
@@ -173,12 +176,12 @@ const handleNodeMouseDown = (event, node) => {
     document.addEventListener('mouseup', onNodeMouseUp);
 };
 
-const handleMouseDown = (event) => {
+function handleMouseDown(event) {
     event.preventDefault();
     panStart.value = { x: event.clientX, y: event.clientY };
 
-    if (viewport.value && zoomableBackground.value) {
-        zoomableBackground.value.style.cursor = 'grabbing';
+    if (viewport.value && contentWrapper.value) {
+        contentWrapper.value.style.cursor = 'grabbing';
     }
 
 
@@ -209,8 +212,8 @@ const handleMouseDown = (event) => {
     const onMouseUp = () => {
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
-        if (zoomableBackground.value) {
-            zoomableBackground.value.style.cursor = 'grab';
+        if (contentWrapper.value) {
+            contentWrapper.value.style.cursor = 'grab';
         }
     };
 
@@ -218,28 +221,45 @@ const handleMouseDown = (event) => {
     document.addEventListener('mouseup', onMouseUp);
 };
 
-const updateTransform = () => {
-    if (zoomableBackground.value && background.value) {
-        // Apply scaling to the zoomableBackground
-        zoomableBackground.value.style.transform = `scale(${zoomLevel.value})`;
-        background.value.style.transform = `scale(${zoomLevel.value})`;
+function handleFitToScreen() {
+    bank.set_zoomLevel(1);
+    panOffset.value.x = 0;
+    panOffset.value.y = 0;
+    updateTransform();
+}
+
+function updateBackground() {
+    print(zoomLevel.value, zoomLevel.value < 0.4    )
+    const bg = document.getElementsByClassName('polka-dots');
+    if (bg)
+    zoomLevel.value < 0.4 ? bg[0].style.visibility = 'hidden' : bg[0].style.visibility = 'visible';
+}
+
+function updateTransform() {
+    if (contentWrapper.value && background.value) {
+        // Apply scaling to the contentWrapper
+        contentWrapper.value.style.transform = `scale(${zoomLevel.value})`;
+        background.value.style.transform = `translate(${bgOffset.value.x}px, ${bgOffset.value.y}px) 
+            scale(${zoomLevel.value})`;
+        // background.value.style.zIndex = "1"; // Ensure it stays in a lower z-index
 
         // Apply translation to the content (nodes and links)
-        const content = zoomableBackground.value.querySelector('.content');
+        const content = contentWrapper.value.querySelector('.content');
         if (content) {
             content.style.transform = `translate(${panOffset.value.x}px, ${panOffset.value.y}px)`;
         }
 
         // Apply the inverse of the zoom to keep the SVG lines' stroke width consistent
-        const connections = zoomableBackground.value.querySelector('.connections');
+        const connections = contentWrapper.value.querySelector('.connections');
         if (connections) {
             connections.style.transform = `scale(${1 / zoomLevel.value})`;
         }
         updateAllLinks(); // <-- Make sure to update links after transform
+        updateBackground();
     }
 };
 
-const updateAllLinks = () => {
+function updateAllLinks() {
     links.value.forEach(link => {
         const sourcePosition = getNodeIOPosition(link.sourceNodeId, link.sourceOutputId);
         const targetPosition = getNodeIOPosition(link.targetNodeId, link.targetInputId);
@@ -260,10 +280,34 @@ const updateAllLinks = () => {
     });
 };
 
-const positionAdjustment = (e) => {
+function positionAdjustment(e) {
     e.position.x += base_offset_x;
     e.position.y += base_offset_y;
 }
+
+function addNode() {
+    const newNode = {
+        _id: nodes.value.length + 1,  // Generate a unique ID based on the number of nodes
+        position: {
+            x: 100,  // You can dynamically set these values based on where you want the node to appear
+            y: 100
+        },
+        data: {
+            title: `Node ${nodes.value.length + 1}`,
+            inputs: [],
+            outputs: []
+        }
+    };
+
+    // Add the new node to the nodes array
+    nodes.value.push(newNode);
+
+    // // Update the JSON data structure (optional, if you are syncing with external JSON)
+    // data_json.data.nodes.push(newNode);
+
+    // Optionally, update links or other properties here if needed
+};
+
 
 
 // ---------------------------------------------------------------------------------------
@@ -286,18 +330,21 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    if (zoomableBackground.value) {
-        zoomableBackground.value.removeEventListener('wheel', handleScroll);
-        zoomableBackground.value.removeEventListener('mousedown', handleMouseDown);
+    if (contentWrapper.value) {
+        contentWrapper.value.removeEventListener('wheel', handleScroll);
+        contentWrapper.value.removeEventListener('mousedown', handleMouseDown);
     }
 });
 
-watch(
-    () => bank.get_colorMode,
-    (newMode) => {
+watch(bank_colorMode, (newMode) => {
         colorMode.value = newMode;
     }
+    
 );
+
+watch(zoomLevel, (newZoomLevel, oldZoomLevel) => {
+    updateTransform();
+}); 
 
 </script>
 

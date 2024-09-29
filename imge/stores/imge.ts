@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import AssistanceMessage from '~/components/AssistanceMessage.vue';
 
 export const imgeState = defineStore("imgeStore", {
     state: () => ({
@@ -7,7 +8,9 @@ export const imgeState = defineStore("imgeStore", {
         screenSizeIndex         : 2,     // 2 pc 1 tablet 0 mobile
 
         colorMode               : 'dark',
+        assistanceMsg       : "",
 
+        zoomLevel               : 1,
         coords_base_x_offset    : 0,
         coords_base_y_offset    : 0,
         coords_state_x_offset   : 0,
@@ -33,6 +36,12 @@ export const imgeState = defineStore("imgeStore", {
         },
         get_colorMode(state) {
             return state.colorMode;
+        },
+        get_assistanceMsg(state) {
+            return state.assistanceMsg;
+        },
+        get_zoomLevel(state) {
+            return state.zoomLevel;
         },
         get_coordsBaseXOffset(state) {
             return state.coords_base_x_offset;
@@ -61,6 +70,15 @@ export const imgeState = defineStore("imgeStore", {
         },
         set_colorMode(val: string) {
             this.colorMode = val;
+        },
+        set_assistanceMsg(val: string) {
+            this.assistanceMsg = val;
+        },
+        set_zoomLevel(val: number) {
+            val < 0.16 ? val = 0.16 : val = val;
+            val > 2.00 ? val = 2.00 : val = val;
+            this.zoomLevel = val;
+
         },
         set_coordsBaseXOffset(val: number) {
             this.coords_base_x_offset = val;

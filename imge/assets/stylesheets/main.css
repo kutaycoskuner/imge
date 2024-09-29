@@ -3,8 +3,8 @@
 --------------------------------------------------------------------------------------- */
 /*
     Description : General css template 
-    Version     : 1.8
-    Last Update : 22.08.2024
+    Version     : 1.9
+    Last Update : 27.09.2024
     Author      : lichzelg
     Licence     : MIT
 */
@@ -78,7 +78,7 @@
     --highlight-border-radius: 2px;
 
     /* ---------- Background Image ----------- */
-    --bg-size: 512px;
+    --bg-size: 680px;
     
     /* ---------- Other ----------- */
     --main-blur: blur(2px);
@@ -107,7 +107,7 @@
     --bg-1: #f2f2f2;
     --bg-2: #e8eced;
     --bg-transparent : #f6f6f6cc;
-    --bg-img: url("../../public/base/noisy-background_white_512.jpg");
+    --bg-img: url("../../public/images/bg/noisy-background_white_512.jpg");
     /* ---------- Theme Independent Colors ----------- */
     /* --s-col-whit: #f6f6f6; */
     /* --s-col-blac: #090909; */
@@ -137,6 +137,13 @@
     --s-col-hl-yell: rgba(128, 128, 0, 0.15);
     --s-col-hl-turq: rgba(0, 128, 128, 0.15);
     --s-col-hl-purp: rgba(128, 0, 128, 0.15);
+
+    /* ---------- Fonts ----------- */
+    --main-font     : Gotham;
+    --title-font    : var(--main-font);
+    --desc-font     : var(--main-font);
+    --ui-font       : var(--main-font);
+    --caption-font  : var(--main-font);
 }
 /* ---------- Dimensions Setup ------------- */
 @media (max-width: 480px) {
@@ -193,7 +200,7 @@
     --bg-1: #161616;
     --bg-2: #202020;
     --bg-transparent: #121212cc;
-    --bg-img: url("../../public/base/noisy-background_black_512.jpg");
+    --bg-img: url("../../public/images/bg/noisy-background_black_512.jpg");
 }
 .sepia-mode {
     --col: #433422;
@@ -215,7 +222,7 @@
     --bg-1: #e3ceb9;  /* f1e760 */
     --bg-2: #eae0c9;
     --bg-transparent: #f1e7d0cc;
-    --bg-img: url("../../public/base/noisy-background_sepia_512.jpg");
+    --bg-img: url("../../public/images/bg/noisy-background_sepia_512.jpg");
 }
 
 .inverted-color {
@@ -225,7 +232,7 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
         Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    font-family: "Gotham", sans-serif;
+    font-family: var(--main-font), sans-serif;
     margin: 0;
     padding: 0;
     background-color: var(--bg);
@@ -318,7 +325,7 @@ a {
     }
     .not-mobile:after {
         content: "sorry, this page is not available on mobile device.";
-        font-family: Gotham;
+        font-family: var(--main-font);
         font-weight: bold;
         text-decoration: bold;
         text-transform: uppercase;
@@ -356,7 +363,7 @@ a {
     }
     .not-tablet:after {
         content: "sorry, this page is not available on tablet.";
-        font-family: Gotham;
+        font-family: var(--main-font);
         font-weight: bold;
         text-decoration: bold;
         text-transform: uppercase;

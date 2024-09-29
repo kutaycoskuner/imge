@@ -1,0 +1,62 @@
+/* --------------------------------------------------------------------------------------- 
+                information
+--------------------------------------------------------------------------------------- */
+/*
+    Description : Font implementation
+    Version     : 1.0
+    Last Update : 27.09.2024
+    Author      : lichzelg
+    Licence     : MIT
+*/
+
+
+/* --------------------------------------------------------------------------------------- 
+                install fonts
+--------------------------------------------------------------------------------------- */
+@font-face {
+    src: url(@/assets/fonts/out_standard_lora_free/static/Lora-Regular.ttf);
+    font-family: Lora;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+@font-face {
+    src: url(@/assets/fonts/out_script_aquiline-two_free/AquilineTwo.ttf);
+    font-family: AquilineTwo;
+    /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; */
+}
+
+@font-face {
+    src: url(@/assets/fonts/out_script_viner-hand-itc_licenced/VINERITC.TTF);
+    font-family: Viner;
+    /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; */
+}
+
+@font-face {
+    src: url(@/assets/fonts/out_script_bilbo-regular_free/Bilbo-Regular.ttf);
+    font-family: Bilbo;
+    /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; */
+}
+
+@font-face {
+    src: url(@/assets/fonts/out_script_bad-script_free/BadScript-Regular.ttf);
+    font-family: BadScript;
+    /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; */
+}
+
+
+
+/* --------------------------------------------------------------------------------------
+                fonts
+--------------------------------------------------------------------------------------- */
+:root {
+    --title-font: AquilineTwo;
+    --desc-font : test;
+    --ui-font   : Lora;
+    --main-font : AquilineTwo;
+    --caption-font : test;
+}

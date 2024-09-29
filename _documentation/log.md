@@ -45,14 +45,28 @@
 # Log 
 - [todo]
     - technical debt
-    - im: access    : functionality
     - im: displays  : coords / active item
-    - im: input     : command log
     - add: export json
     - add: connect nodes 
     - add: data bpy struct blender
-    - add: guide message component
-    - add: readme installation
+    - add: a4 paper tem
+    - add: add left todo
+
+- [0.23] accessibility buttons, bg bug fix
+    - 29-Sep-2024 
+        - add: readme installation
+        - add: add node function basic
+        - add: polka dots hide when zoom out
+    - 27-Sep-2024 
+        - add: left hover navigation
+        - add: fonts, icons
+        - wip: paperui
+    - 16-Sep-2024
+        - wip: a4 css
+        - add: fit to screen button
+        - add: zoom in/out buttons functiononality
+        - add: guide message component assistancemessage
+        - fix: background polka dots translate movement
 
 - [0.22] added node-link display, colormode, styling
     - 29-Aug-2024

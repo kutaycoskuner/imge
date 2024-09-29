@@ -69,6 +69,15 @@
         modules: ['@nuxtjs/color-mode']
         })
 
+- <call function of host app from a component>
+    - component
+        - import defineemits from vue
+        - const emit  = defineemits(['test'])
+        - in function emit('test')
+    - host
+        - with component add @test="handleTest"
+        - add function called handleTest
+
 
 
 # Problems

@@ -11,6 +11,10 @@ const ibank = imgeState();
 
 // Computed properties derived from store
 const screenSizeIndex = computed(() => ibank.get_screenSizeIndex);
+const colorMode = computed(() => ibank.get_colorMode);
+
+import { defineEmits } from 'vue'
+const emit = defineEmits(['fitToScreen', 'addNode']);
 
 // composable
 setScreenSize()
@@ -18,10 +22,6 @@ setScreenSize()
 // Lifecycle hooks
 onMounted(() => {
     // Add event listeners if required
-    if (screenSizeIndex.value < 2) {
-        bbState.set_displayMinefieldKey(false)
-        bbState.set_displayRandomKey(false)
-    }
     window.addEventListener('keydown', handleKeydown);
 });
 
@@ -33,6 +33,33 @@ onBeforeUnmount(() => {
 const handleKeydown = (event) => {
 
 };
+
+// functions
+// Mouseover event handlers
+function handleMouseOver(message) {
+    ibank.set_assistanceMsg(message);
+}
+
+function handleMouseLeave() {
+    ibank.set_assistanceMsg("");
+}
+
+function zoomIn() {
+    ibank.set_zoomLevel(ibank.get_zoomLevel + 0.1);
+}
+
+function zoomOut() {
+    ibank.set_zoomLevel(ibank.get_zoomLevel - 0.1);
+}
+
+function fitToScreen() {
+    emit('fitToScreen');
+}
+
+function addNode() {
+    emit('addNode');
+}
+
 </script>
 
 <!-- ----------------------------------------------------------------------
@@ -40,7 +67,8 @@ const handleKeydown = (event) => {
 ----------------------------------------------------------------------- -->
 <template>
     <div class="access-wrapper">
-        <div class="access-function not-selected">
+        <div class="access-function" @click="zoomIn()" @mouseenter="handleMouseOver(`Zoom In`)"
+            @mouseleave="handleMouseLeave()">
             <!-- <span v-if="screenSizeIndex > 1">A</span> -->
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -48,7 +76,8 @@ const handleKeydown = (event) => {
                     d="M5 12h14m-7 7V5" />
             </svg>
         </div>
-        <div class="access-function not-selected">
+        <div class="access-function" @click="zoomOut()" @mouseenter="handleMouseOver(`Zoom Out`)"
+            @mouseleave="handleMouseLeave()">
             <!-- <span v-if="screenSizeIndex > 1">A</span> -->
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -56,7 +85,8 @@ const handleKeydown = (event) => {
                     d="M5 12h14" />
             </svg>
         </div>
-        <div class="access-function not-selected">
+        <div class="access-function" @click="addNode()" @mouseenter="handleMouseOver(`add node`)"
+            @mouseleave="handleMouseLeave()">
             <!-- <span v-if="screenSizeIndex > 1">A</span> -->
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -64,7 +94,8 @@ const handleKeydown = (event) => {
                     d="M7.926 10.898 15 7.727m-7.074 5.39L15 16.29M8 12a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm12 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm0-11a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
             </svg>
         </div>
-        <div class="access-function not-selected">
+        <div class="access-function" @click="fitToScreen()" @mouseenter="handleMouseOver(`Fit to Screen`)"
+            @mouseleave="handleMouseLeave()">
             <!-- <span v-if="screenSizeIndex > 1">A</span> -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24   24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -72,14 +103,16 @@ const handleKeydown = (event) => {
                 </path>
             </svg>
         </div>
-        <div class="access-function not-selected">
+        <div class="access-function not-selected" @mouseenter="handleMouseOver(`Import graph`)"
+            @mouseleave="handleMouseLeave()">
             <!-- <span v-if="screenSizeIndex > 1">A</span> -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 15l-6-6-6 6" />
             </svg>
         </div>
-        <div class="access-function not-selected">
+        <div class="access-function not-selected" @mouseenter="handleMouseOver(`Export graph`)"
+            @mouseleave="handleMouseLeave()">
             <!-- <span v-if="screenSizeIndex > 1">A</span> -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,7 +120,8 @@ const handleKeydown = (event) => {
             </svg>
 
         </div>
-        <div class="access-function">
+        <div class="access-function" @mouseenter="handleMouseOver(`Color Mode: ${colorMode}`)"
+            @mouseleave="handleMouseLeave()">
             <!-- <span v-if="screenSizeIndex > 1">A</span> -->
             <ColorMode />
         </div>
