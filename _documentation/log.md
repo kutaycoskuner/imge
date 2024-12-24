@@ -53,6 +53,15 @@
     - add: add left todo
     - add: readme online at 
 
+- [0.25.1] add first content tree
+    - 24-Dec-2024 
+        - deployment
+        - add display visuals
+        - add data
+        - add content tree navigation page
+        - add content tree
+        - add utils > dateforamtter
+
 - [0.25] wip content tree and data
     - 22-Dec-2024
         - wip: content tree
