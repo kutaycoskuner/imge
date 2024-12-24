@@ -15,7 +15,7 @@ const bank_colorMode = computed(() => bank.get_colorMode);
 
 const prevScrollPos = ref(0);
 const toggleNavigation = ref(false);
-const invertedColor = ref(true);
+const invertedColor = ref(false);
 
 function toggleLeft() {
 
@@ -52,8 +52,11 @@ watch(bank_colorMode, (newMode) => {
                 src="@/public/icons/menu-grid_256.png" />
         </div>
         <nav :class="{ 'navigation': true, 'open': toggleNavigation }" class="hover-trans-visible touch-leftslide">
-            <div @click.stop="closeLeft()"><nuxt-link to="/"> architecture </nuxt-link></div>
-            <div @click.stop="closeLeft()"><nuxt-link to="/"> visualization </nuxt-link></div>
+            <div @click.stop="closeLeft()"><nuxt-link to="https://kutaycoskuner.github.io/"> architecture </nuxt-link></div>
+            <div @click.stop="closeLeft()"><nuxt-link to="https://kutaycoskuner.github.io/visualization"> visualization </nuxt-link></div>
+            <div @click.stop="closeLeft()"><nuxt-link to="https://kutaycoskuner.github.io/port/computer_science"> computer science </nuxt-link></div>
+            <div @click.stop="closeLeft()"><nuxt-link to="https://kutaycoskuner.github.io/port/game_design"> game design </nuxt-link></div>
+            <div @click.stop="closeLeft()"><nuxt-link to="https://kutaycoskuner.github.io/about"> about </nuxt-link></div>
             <div @click.stop="closeLeft()" :class="{ 'touch-only': true, 'open': toggleNavigation }"><img
                     :class="{ 'inverted-color': invertedColor }" src="@/public/icons/arrow_left_256.png"
                     alt="arrow" />
@@ -80,9 +83,9 @@ watch(bank_colorMode, (newMode) => {
     text-decoration: bold;
     text-transform: uppercase;
     font-size: 0.8em;
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
+    /* position: fixed; */
+    /* left: 50%; */
+    /* transform: translateX(-50%); */
     /* margin: 1em; */
     max-width: 1920px;
     width: 100%;
@@ -200,8 +203,6 @@ watch(bank_colorMode, (newMode) => {
     /* Internet Explorer/Edge */
     user-select: none;
 }
-
-@media (min-width: 481px) and (mix-width: 1025px) {}
 
 @media (min-width: 481px) and (max-width: 1024px) {
     .touch-menu-icon {

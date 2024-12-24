@@ -51,6 +51,20 @@
     - add: data bpy struct blender
     - add: a4 paper tem
     - add: add left todo
+    - add: readme online at 
+
+- [0.25.1] add first content tree
+    - 24-Dec-2024 
+        - deployment
+        - add display visuals
+        - add data
+        - add content tree navigation page
+        - add content tree
+        - add utils > dateforamtter
+
+- [0.25] wip content tree and data
+    - 22-Dec-2024
+        - wip: content tree
 
 - [0.24] generate and deploy on github
     - 29-Sep-2024 deployment
