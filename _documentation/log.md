@@ -53,6 +53,9 @@
     - add: add left todo
     - add: readme online at 
 
+- [0.25.2] added utils
+    - 01-Feb-2025 
+
 - [0.25.1] add first content tree
     - 24-Dec-2024 
         - deployment
