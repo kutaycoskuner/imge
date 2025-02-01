@@ -53,6 +53,10 @@
     - add: add left todo
     - add: readme online at 
 
+- [0.25.3] svelte migration init
+    - 01-Feb-2025 
+        - svelte migration init / copy from immersion
+
 - [0.25.2] added utils
     - 01-Feb-2025 
 

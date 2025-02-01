@@ -1,33 +1,52 @@
 # Notebook
 
 # Installation and Use
-- prerequisites
+- svelte
+    - prerequisites
+        - node.js
     - install
-    -   Prerequisites
-        - Node.js v18 or upper
-        - Text editor. Recommendation: Visual Studio Code
-        - Terminal to run nuxt commandss
-
-    -   Install
-        - npx nuxi@3.12 init imge | npx nuxi@latest init <project-name>
-            - npm y (will download dependencies)
-            - initialize git repository? no 
-        - packages > "overrides": {"vue": "latest"}
-            - npm install pinia @pinia/nuxt
-        - npx nuxi@latest module add pinia
-        - npm install --save-dev @nuxtjs/color-mode
-
-    -   Start development program
+        - npx sv create imge
+            - sv@0.6.18
+            - sveltekit minimal
+            - typescript syntax
+            - prettier, eslint, vitest, playwright, sveltekit-adapter, drizzle, mdsvex
+            - static
+            - postgresql, postgres.js
+            - drizzle local docker compose y
+            - pnpm
+    - start development 
         - cd imge
-        - npm run dev
+        - pnpm run dev --open
+    - build
 
-    - Build
-        - nuxt.config
-            - app > baseURL: '',
-            - ssr: false
-            - buildAssetsDir: 'assets'
-        - npm run generate
-            - should not contain file / dir with starting _
+- nuxt 3
+    - prerequisites
+        - install
+        -   Prerequisites
+            - Node.js v18 or upper
+            - Text editor. Recommendation: Visual Studio Code
+            - Terminal to run nuxt commandss
+
+        -   Install
+            - npx nuxi@3.12 init imge | npx nuxi@latest init <project-name>
+                - npm y (will download dependencies)
+                - initialize git repository? no 
+            - packages > "overrides": {"vue": "latest"}
+                - npm install pinia @pinia/nuxt
+            - npx nuxi@latest module add pinia
+            - npm install --save-dev @nuxtjs/color-mode
+
+        -   Start development program
+            - cd imge
+            - npm run dev
+
+        - Build
+            - nuxt.config
+                - app > baseURL: '',
+                - ssr: false
+                - buildAssetsDir: 'assets'
+            - npm run generate
+                - should not contain file / dir with starting _
 
 
 # Links
