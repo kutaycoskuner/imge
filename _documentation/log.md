@@ -53,6 +53,15 @@
     - add: add left todo
     - add: readme online at 
 
+- [0.2.4] migrated coordtracker, fix color and layout
+    - 06-Feb-2025
+        - added store
+        - fix layout warning with render
+        - add coord tracker
+        - add color theme upload on app
+    - 01-Feb-2025
+        - fix color scheme / theme
+
 - [0.25.3] svelte migration init
     - 01-Feb-2025 
         - svelte migration init / copy from immersion
