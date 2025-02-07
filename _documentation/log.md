@@ -53,6 +53,12 @@
     - add: add left todo
     - add: readme online at 
 
+- [0.2.5] migrated polka dots, graph ui
+    - 08-Feb-2025   
+        - update main store
+        - add polka dots
+        - added ui buttons
+
 - [0.2.4] migrated coordtracker, fix color and layout
     - 06-Feb-2025
         - added store

@@ -1,18 +1,22 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
-	import { imgeState } from '../../stores/imge_bank'; // Assuming you have a Svelte store
+	import {
+		coordsBaseXOffset,
+		coordsBaseYOffset,
+		coordsStateXOffset,
+		coordsStateYOffset
+	} from '../../stores/imge_main'; // Assuming you have a Svelte store
 
 	// State
-	const imState = imgeState();
 	let x = $state(0);
 	let y = $state(0);
 
 	// Computed values
-	const offsetX = $derived(imState.get_coordsBaseXOffset() || 0);
-	const offsetY = $derived(imState.get_coordsBaseYOffset() || 0);
-	const stateoffsetX = $derived(imState.get_coordsStateXOffset() || 0);
-	const stateoffsetY = $derived(imState.get_coordsStateYOffset() || 0);
+	const offsetX = $derived($coordsBaseXOffset || 0);
+	const offsetY = $derived($coordsBaseYOffset || 0);
+	const stateoffsetX = $derived($coordsStateXOffset || 0);
+	const stateoffsetY = $derived($coordsStateYOffset || 0);
 
 	// Function to update mouse position relative to the center of the screen
 	const updateMousePosition = (event: MouseEvent) => {
@@ -23,8 +27,8 @@
 	// Calculate the initial offset (center of the screen)
 	const calculateBaseOffset = () => {
 		if (browser) {
-			imState.set_coordsBaseXOffset(window.innerWidth / 2);
-			imState.set_coordsBaseYOffset(window.innerHeight / 2);
+			// coordsBaseXOffset.update(n => window.innerWidth / 2);
+			// coordsBaseYOffset.update(n => window.innerHeight / 2);
 		}
 	};
 

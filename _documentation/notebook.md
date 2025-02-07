@@ -97,6 +97,11 @@
         - with component add @test="handleTest"
         - add function called handleTest
 
+# migration
+- accessibility ui
+- assistance message
+- settingsoverlay full screen
+- polka dots
 
 
 # Problems
