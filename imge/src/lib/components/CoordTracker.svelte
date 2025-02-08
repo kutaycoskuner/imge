@@ -20,15 +20,15 @@
 
 	// Function to update mouse position relative to the center of the screen
 	const updateMousePosition = (event: MouseEvent) => {
-		x = event.clientX - offsetX - stateoffsetX;
+		x = (event.clientX - offsetX + stateoffsetX);
 		y = -(event.clientY - offsetY - stateoffsetY);
 	};
 
 	// Calculate the initial offset (center of the screen)
 	const calculateBaseOffset = () => {
 		if (browser) {
-			// coordsBaseXOffset.update(n => window.innerWidth / 2);
-			// coordsBaseYOffset.update(n => window.innerHeight / 2);
+			coordsBaseXOffset.update(n => window.innerWidth / 2);
+			coordsBaseYOffset.update(n => window.innerHeight / 2);
 		}
 	};
 

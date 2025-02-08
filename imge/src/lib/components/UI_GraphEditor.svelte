@@ -1,7 +1,14 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
-	import { screenSizeIndex, zoomLevel, assistanceMsg, colorMode } from '../../stores/imge_main'; 
+	import {
+		screenSizeIndex,
+		zoomLevel,
+		assistanceMsg,
+		colorMode,
+		coordsStateXOffset,
+		coordsStateYOffset
+	} from '../../stores/imge_main';
 
 	// Access store variables
 	$: _screenSizeIndex = $screenSizeIndex;
@@ -25,8 +32,7 @@
 	});
 
 	// Event handlers
-	const handleKeydown = (event: KeyboardEvent) => {
-	};
+	const handleKeydown = (event: KeyboardEvent) => {};
 
 	// Mouseover event handlers
 	const handleMouseOver = (message: string) => {
@@ -52,10 +58,16 @@
 		});
 	};
 
+	const test = () => {
+		coordsStateXOffset.update((n: number) => n - 10);
+	};
+
 	// Emit events (fitToScreen and addNode)
 
 	const fitToScreen = () => {
-		//   dispatch('fitToScreen');
+		coordsStateXOffset.update((n: number) => 0);
+		coordsStateYOffset.update((n: number) => 0);
+		zoomLevel.update((n: number) => 1);
 	};
 
 	const addNode = () => {
@@ -225,6 +237,19 @@
 			<path d="M6 9l6 6 6-6" />
 		</svg>
 	</div>
+
+	<!-- Test -->
+	<div
+		class="access-function"
+		role="button"
+		tabindex="0"
+		on:click={test}
+		on:keydown={(event) => event.key === 'Enter' && fitToScreen()}
+		on:mouseenter={() => handleMouseOver('Fit to Screen')}
+		on:mouseleave={handleMouseLeave}
+	>
+		<div>T</div>
+	</div>
 </div>
 
 <!-- Styles -->
@@ -250,6 +275,8 @@
 		text-align: center;
 		background: var(--bg);
 		border-radius: 4px;
+		user-select: none;
+		cursor: pointer;
 	}
 
 	.access-function svg {

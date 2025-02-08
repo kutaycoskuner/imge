@@ -11,7 +11,7 @@
 </script>
 
 <Toggle />
-<BasicNavigation />
+<!-- <BasicNavigation /> -->
 <!-- <UIAccessibility /> -->
 <!-- <SettingsOverlay /> -->
 <CoordTracker />

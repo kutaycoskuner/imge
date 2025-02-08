@@ -79,6 +79,14 @@
         - io has directional reference, left = input, right = output or top = input, bottom = output
 
 # How to
+- <centering css div>
+	.centered {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
 - <adding color mode>
     - https://color-mode.nuxtjs.org/
     - install color mode

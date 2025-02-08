@@ -53,6 +53,13 @@
     - add: add left todo
     - add: readme online at 
 
+- [0.2.6] migrate content translation
+    - 09-Feb-2025
+        - add fit to screen as reset translate and scale
+        - add full content movement
+        - ui reflect on grab
+        - add infinite space movement
+
 - [0.2.5] migrated polka dots, graph ui
     - 08-Feb-2025   
         - update main store
