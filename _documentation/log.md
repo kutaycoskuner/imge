@@ -46,12 +46,16 @@
 - [todo]
     - technical debt
     - im: displays  : coords / active item
-    - add: export json
     - add: connect nodes 
     - add: data bpy struct blender
     - add: a4 paper tem
     - add: add left todo
     - add: readme online at 
+
+- [0.3.0] add json export, migrate node movement
+    - 09-Feb-2025
+        - add json export
+        - migrate node movement
 
 - [0.2.7] migrate assistance message, json node rendering
     - 09-Feb-2025

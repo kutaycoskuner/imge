@@ -28,6 +28,7 @@
 ### Prerequisites
 1. Install [node.js](https://nodejs.org/en/download/package-manager)
 
+
 ### Install
 1. Clone project
     ```
@@ -52,12 +53,23 @@
     ```
 
 # Features
-- [x] Import JSON Data
-- [x] Display Nodes and Links
-- [x] Color Mode
-- [x] Infinite Canvas | Scale and Translation
-- [x] Info panel 
-- [x] Accessibility buttons: zoom, fit view
+
+### Features
+- [x] basic ui buttons
+- [x] assistance message
+- [x] settings interface
+- [x] color mode
+- [x] polka dots background to perceive translations
+- [x] 2d infinite canvas space movement / space translations
+- [x] coordinates tracker
+- [x] node rendering
+- [x] rendering from json content
+- [x] node movement
+- [x] export data as json
+- [ ] link rendering
+- [ ] node linking
+- [ ] vertical / horizontal frameworks
+- [ ] node content / color editing
 
 # Roadmap
 - [ ] Accessibility buttons: Import / Export

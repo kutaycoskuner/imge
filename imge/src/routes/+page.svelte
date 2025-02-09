@@ -26,25 +26,55 @@
 	coordsStateYOffset.subscribe((value) => (_coordsStateYOffset = value));
 	zoomLevel.subscribe((value) => (_zoomLevel = value));
 
-	let isDragging: boolean = false;
+	let isPanningSpace: boolean = false;
+	let isDraggingNode: boolean = false;
+	let selectedNode: any = null;
+
 	let startX: number = 0,
 		startY: number = 0;
+
 	let _dragOffsetX: number = 0,
 		_dragOffsetY: number = 0;
+
 	let _startStateXOffset: number = 0,
 		_startStateYOffset: number = 0;
 
+	// Mouse event functions
+	// -----------------------------------------------------------------------------------
 	function handleMouseDown(event: MouseEvent): void {
-		isDragging = true;
+		const target = event.target as HTMLElement;
+		const nodeElement = target.closest('.node') as HTMLElement | null;
+
 		startX = event.clientX - _coordsBaseXOffset;
 		startY = -(event.clientY - _coordsBaseYOffset);
 
+		if (!nodeElement) {
+			panSpaceStart(event);
+		} else {
+			moveNodeStart(event, nodeElement);
+		}
+	}
+
+	function handleMouseMove(event: MouseEvent): void {
+		if (isPanningSpace) panSpaceMove(event);
+		else if (isDraggingNode) moveNode(event);
+	}
+
+	function handleMouseUp(): void {
+		isPanningSpace = false;
+		isDraggingNode = false;
+	}
+
+	// Space panning functions
+	// -----------------------------------------------------------------------------------
+	function panSpaceStart(event: MouseEvent): void {
+		isPanningSpace = true;
 		_startStateXOffset = _coordsStateXOffset;
 		_startStateYOffset = _coordsStateYOffset;
 	}
 
-	function handleMouseMove(event: MouseEvent): void {
-		if (!isDragging) return;
+	function panSpaceMove(event: MouseEvent): void {
+		if (!isPanningSpace) return;
 
 		let mouseX = event.clientX - _coordsBaseXOffset;
 		let mouseY = -(event.clientY - _coordsBaseYOffset);
@@ -56,14 +86,53 @@
 		coordsStateYOffset.set(_startStateYOffset - _dragOffsetY);
 	}
 
-	function handleMouseUp(): void {
-		if (!isDragging) return;
-		isDragging = false;
-
-		coordsStateXOffset.set(_startStateXOffset - _dragOffsetX);
-		coordsStateYOffset.set(_startStateYOffset - _dragOffsetY);
+	// Move node
+	// -----------------------------------------------------------------------------------
+	function moveNodeStart(event: MouseEvent, nodeElement: HTMLElement): void {
+		isDraggingNode = true;
+		selectedNode = jsonData.data.nodes.find((n: any) => n._id == nodeElement.dataset.id);
 	}
 
+	function moveNode(event: MouseEvent): void {
+		if (!selectedNode) return;
+
+		// calculate the current mouse position relative to the base offsets
+		let mouseX = event.clientX - _coordsBaseXOffset;
+		let mouseY = -(event.clientY - _coordsBaseYOffset);
+
+		// calculate the drag offset based on the current mouse position and the initial start position
+		_dragOffsetX = mouseX - startX;
+		_dragOffsetY = mouseY - startY;
+
+		// update the node's position by adding the drag offset
+		selectedNode.position.x += _dragOffsetX;
+		selectedNode.position.y += -_dragOffsetY;
+
+		// update the start position to the current mouse position for the next move event
+		startX = mouseX;
+		startY = mouseY;
+
+		// reactivity
+		jsonData = { ...jsonData, data: { ...jsonData.data, nodes: [...jsonData.data.nodes] } };
+	}
+
+	// import export functions
+	// -----------------------------------------------------------------------------------
+	function exportJSON(): void {
+		const jsonString = JSON.stringify(jsonData, null, 2);
+		const blob = new Blob([jsonString], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'graph_data.json'; // File name
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
+	// Lifecycle functions
+	// -----------------------------------------------------------------------------------
 	onMount(async () => {
 		try {
 			const response = await fetch('data/test-node-graph.json');
@@ -73,7 +142,7 @@
 		}
 	});
 
-	$: contentTranslateX = _coordsBaseXOffset / 1.5 + -_coordsStateXOffset;
+	$: contentTranslateX = _coordsBaseXOffset / 1.5 - _coordsStateXOffset;
 	$: contentTranslateY = _coordsBaseYOffset / 1.5 + _coordsStateYOffset;
 </script>
 
@@ -90,25 +159,28 @@
 			style="transform: translate({contentTranslateX}px, {contentTranslateY}px); scale: {_zoomLevel};"
 		>
 			{#each jsonData?.data?.nodes ?? [] as node}
-				<div class="node" style="transform: translate({node.position.x}px, {node.position.y}px);">
+				<div
+					class="node"
+					data-id={node._id}
+					style="transform: translate({node.position.x}px, {node.position.y}px);"
+				>
 					<div class="node-title">{node.data.title}</div>
 				</div>
 			{/each}
 		</div>
-
 	</div>
 </div>
 
-<UI_GraphEditor />
+<UI_GraphEditor on:requestExport={exportJSON} />
 <CoordTracker />
 <AssistanceMsg />
 <PolkaDots />
 
 <style>
 	/* .centered {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	} */
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		} */
 </style>

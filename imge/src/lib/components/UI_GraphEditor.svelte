@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
+
+	
 	import {
 		screenSizeIndex,
 		zoomLevel,
@@ -10,6 +13,7 @@
 		coordsStateYOffset
 	} from '../../stores/imge_main';
 
+	const dispatch = createEventDispatcher();
 	// Access store variables
 	$: _screenSizeIndex = $screenSizeIndex;
 	$: _zoomLevel = $zoomLevel;
@@ -58,6 +62,10 @@
 		});
 	};
 
+	const exportGraph = () => {
+		dispatch('requestExport');
+	};
+
 	const test = () => {
 		coordsStateXOffset.update((n: number) => n - 10);
 	};
@@ -84,7 +92,7 @@
 		tabindex="0"
 		on:click={zoomIn}
 		on:keydown={(event) => event.key === 'Enter' && zoomIn()}
-		on:mouseenter={() => handleMouseOver('Zoom In' )}
+		on:mouseenter={() => handleMouseOver('Zoom In')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg
@@ -216,10 +224,11 @@
 
 	<!-- Export Graph -->
 	<div
-		class="access-function not-selected"
+		class="access-function"
 		role="button"
 		tabindex="0"
-		on:keydown={(event) => event.key === 'Enter' && handleMouseOver('Export Graph')}
+		on:click={exportGraph}
+		on:keydown={(event) => event.key === 'Enter' && exportGraph()}
 		on:mouseenter={() => handleMouseOver('Export Graph')}
 		on:mouseleave={handleMouseLeave}
 	>
