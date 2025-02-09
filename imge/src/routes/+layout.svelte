@@ -5,16 +5,13 @@
 	import SettingsOverlay from '$lib/components/SettingsOverlay.svelte';
 	// import LeftHoverNavigation from '$lib/components/LeftHoverNavigation.svelte';
 	import Toggle from '$lib/components/ThemeChanger.svelte';
-	import CoordTracker from '$lib/components/CoordTracker.svelte';
+
 	// import UIAccessibility from '$lib/components/UIAccessibility.svelte';
 	let { children } = $props();
 </script>
 
 <Toggle />
-<!-- <BasicNavigation /> -->
-<!-- <UIAccessibility /> -->
-<!-- <SettingsOverlay /> -->
-<CoordTracker />
+<SettingsOverlay />
 
 
 {@render children()}

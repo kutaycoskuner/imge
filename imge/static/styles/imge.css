@@ -55,7 +55,7 @@
     position: absolute;
     width: 10em;
     padding: 1em;
-    background-color: var(--bg-1);
+    background-color: var(--bg-transparent);
     color: var(--col);
     border: 1px solid var(--col-border);
     box-shadow: var(--box-shadow-small);
@@ -63,7 +63,6 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     text-align: center;
     user-select: none;
-    /* Position for relative elements inside node */
     position: relative;
 }
 

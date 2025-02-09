@@ -53,6 +53,11 @@
     - add: add left todo
     - add: readme online at 
 
+- [0.2.7] migrate assistance message, json node rendering
+    - 09-Feb-2025
+        - migrate json node render
+        - migrate assistancemsg component
+
 - [0.2.6] migrate content translation
     - 09-Feb-2025
         - add fit to screen as reset translate and scale

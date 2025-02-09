@@ -84,7 +84,7 @@
 		tabindex="0"
 		on:click={zoomIn}
 		on:keydown={(event) => event.key === 'Enter' && zoomIn()}
-		on:mouseenter={() => handleMouseOver('Zoom In')}
+		on:mouseenter={() => handleMouseOver('Zoom In' )}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg
@@ -170,7 +170,7 @@
 		tabindex="0"
 		on:click={fitToScreen}
 		on:keydown={(event) => event.key === 'Enter' && fitToScreen()}
-		on:mouseenter={() => handleMouseOver('Fit to Screen')}
+		on:mouseenter={() => handleMouseOver('Reset View')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg
@@ -245,7 +245,7 @@
 		tabindex="0"
 		on:click={test}
 		on:keydown={(event) => event.key === 'Enter' && fitToScreen()}
-		on:mouseenter={() => handleMouseOver('Fit to Screen')}
+		on:mouseenter={() => handleMouseOver('test button')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<div>T</div>

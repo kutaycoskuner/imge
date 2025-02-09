@@ -55,6 +55,7 @@
 
 <style>
 	.mouse-tracker {
+		user-select: none;
 		position: fixed;
 		bottom: 1em;
 		right: 1em;

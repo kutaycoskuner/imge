@@ -1,6 +1,9 @@
 <script lang="ts">
 	import PolkaDots from '$lib/components/PolkaDots.svelte';
 	import UI_GraphEditor from '$lib/components/UI_GraphEditor.svelte';
+	import CoordTracker from '$lib/components/CoordTracker.svelte';
+	import AssistanceMsg from '$lib/components/AssistanceMsg.svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import {
 		zoomLevel,
 		coordsStateXOffset,
@@ -8,16 +11,20 @@
 		coordsBaseXOffset,
 		coordsBaseYOffset
 	} from '../stores/imge_main';
+	import { json } from '@sveltejs/kit';
 
 	let _coordsBaseXOffset: number;
 	let _coordsBaseYOffset: number;
 	let _coordsStateXOffset: number;
 	let _coordsStateYOffset: number;
+	let _zoomLevel: number;
+	let jsonData: Record<string, any> = {};
 
 	coordsBaseXOffset.subscribe((value) => (_coordsBaseXOffset = value));
 	coordsBaseYOffset.subscribe((value) => (_coordsBaseYOffset = value));
 	coordsStateXOffset.subscribe((value) => (_coordsStateXOffset = value));
 	coordsStateYOffset.subscribe((value) => (_coordsStateYOffset = value));
+	zoomLevel.subscribe((value) => (_zoomLevel = value));
 
 	let isDragging: boolean = false;
 	let startX: number = 0,
@@ -57,8 +64,17 @@
 		coordsStateYOffset.set(_startStateYOffset - _dragOffsetY);
 	}
 
-	$: contentTranslateX = (_coordsBaseXOffset / 1.5) + -_coordsStateXOffset;
-	$: contentTranslateY = (_coordsBaseYOffset / 1.5) + _coordsStateYOffset;
+	onMount(async () => {
+		try {
+			const response = await fetch('data/test-node-graph.json');
+			jsonData = await response.json();
+		} catch (error) {
+			console.error('Error fetching JSON:', error);
+		}
+	});
+
+	$: contentTranslateX = _coordsBaseXOffset / 1.5 + -_coordsStateXOffset;
+	$: contentTranslateY = _coordsBaseYOffset / 1.5 + _coordsStateYOffset;
 </script>
 
 <div
@@ -71,14 +87,21 @@
 	<div class="content-wrapper">
 		<div
 			class="content"
-			style="transform: translate({contentTranslateX}px, {contentTranslateY}px);"
+			style="transform: translate({contentTranslateX}px, {contentTranslateY}px); scale: {_zoomLevel};"
 		>
-			<div class="node">a</div>
+			{#each jsonData?.data?.nodes ?? [] as node}
+				<div class="node" style="transform: translate({node.position.x}px, {node.position.y}px);">
+					<div class="node-title">{node.data.title}</div>
+				</div>
+			{/each}
 		</div>
+
 	</div>
 </div>
 
 <UI_GraphEditor />
+<CoordTracker />
+<AssistanceMsg />
 <PolkaDots />
 
 <style>
