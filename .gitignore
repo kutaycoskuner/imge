@@ -6,7 +6,8 @@ _documentation/prompts/
 _documentation/
 _documentation
 imge_/
-
+docs/
+build/
 
 # ----------------------------------------------------------------------------------------
                 main

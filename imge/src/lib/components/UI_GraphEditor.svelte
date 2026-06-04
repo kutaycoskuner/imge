@@ -269,7 +269,7 @@
 		grid-template-rows: repeat(auto, 1fr);
 		grid-gap: 2px;
 		position: fixed;
-		bottom: 2em;
+		bottom: 4em;
 		left: 1em;
 		z-index: 30;
 	}
