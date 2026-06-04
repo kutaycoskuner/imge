@@ -165,6 +165,26 @@
 					style="transform: translate({node.position.x}px, {node.position.y}px);"
 				>
 					<div class="node-title">{node.data.title}</div>
+					<!-- Render Inputs -->
+					<div class="inputs">
+						{#each node.data.inputs ?? [] as input}
+							<div id={'node' + node._id + '_' + input.id} class="node-input"></div>
+						{/each}
+						<div class="indicator-io add-input hover-visible"></div>
+					</div>
+
+					<!-- Render Outputs -->
+					<div class="outputs">
+						{#each node.data.outputs ?? [] as output}
+							<div id={'node' + node._id + '_' + output.id} class="node-output"></div>
+						{/each}
+						<div class="indicator-io add-output hover-visible"></div>
+					</div>
+
+					<!-- Content Section -->
+					<div class="content">
+						<div class="add-content hover-visible"></div>
+					</div>
 				</div>
 			{/each}
 		</div>
