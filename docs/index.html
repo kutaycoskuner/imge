@@ -1,18 +1,66 @@
-<!DOCTYPE html><html  data-capo=""><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Imge</title>
-<link rel="stylesheet" href="/imge/assets/entry.Cg1jPIIE.css">
-<link rel="modulepreload" as="script" crossorigin href="/imge/assets/BQqM9GRF.js">
-<link rel="prefetch" as="image" type="image/jpeg" href="/imge/assets/noisy-background_white_512.BYWFLXSa.jpg">
-<link rel="prefetch" as="image" type="image/jpeg" href="/imge/assets/noisy-background_black_512.prbJbLeS.jpg">
-<link rel="prefetch" as="image" type="image/jpeg" href="/imge/assets/noisy-background_sepia_512.TZEJEspb.jpg">
-<link rel="prefetch" as="style" href="/imge/assets/error-404.CjGVuf6H.css">
-<link rel="prefetch" as="script" crossorigin href="/imge/assets/DJPBmjPs.js">
-<link rel="prefetch" as="script" crossorigin href="/imge/assets/CciaNfGC.js">
-<link rel="prefetch" as="script" crossorigin href="/imge/assets/CloVhTkM.js">
-<link rel="prefetch" as="style" href="/imge/assets/error-500.DFBAsgKS.css">
-<link rel="prefetch" as="script" crossorigin href="/imge/assets/BtKeX-ju.js">
-<link rel="icon" type="image/x-icon" href="/favicons/favicon_default_32.ico">
-<script type="module" src="/imge/assets/BQqM9GRF.js" crossorigin></script>
-<script id="unhead:payload" type="application/json">{"title":"Imge"}</script><script>"use strict";(()=>{const a=window,e=document.documentElement,c=window.localStorage,d=["dark","light"],n=c&&c.getItem&&c.getItem("nuxt-color-mode")||"system";let l=n==="system"?f():n;const i=e.getAttribute("data-color-mode-forced");i&&(l=i),r(l),a["__NUXT_COLOR_MODE__"]={preference:n,value:l,getColorScheme:f,addColorScheme:r,removeColorScheme:u};function r(o){const t=""+o+"-mode",s="";e.classList?e.classList.add(t):e.className+=" "+t,s&&e.setAttribute("data-"+s,o)}function u(o){const t=""+o+"-mode",s="";e.classList?e.classList.remove(t):e.className=e.className.replace(new RegExp(t,"g"),""),s&&e.removeAttribute("data-"+s)}function m(o){return a.matchMedia("(prefers-color-scheme"+o+")")}function f(){if(a.matchMedia&&m("").media!=="not all"){for(const o of d)if(m(":"+o).matches)return o}return"light"}})();</script></head><body><div id="__nuxt"></div><div id="teleports"></div><script type="application/json" id="__NUXT_DATA__" data-ssr="false">[{"serverRendered":1},false]</script>
-<script>window.__NUXT__={};window.__NUXT__.config={public:{},app:{baseURL:"/imge/",buildId:"894e72a9-922e-46d6-aacc-e69b9d63a948",buildAssetsDir:"assets",cdnURL:""}}</script></body></html>
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="./favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- Set theme before loading CSS -->
+		<script>
+			const theme = localStorage.getItem('color-scheme');
+			if (theme) {
+				document.documentElement.setAttribute('color-scheme', theme);
+			} else {
+				localStorage.setItem('color-scheme', 'dark');
+				document.documentElement.setAttribute('color-scheme', 'dark');
+			}
+		</script>
+
+		<link rel="stylesheet" href="./styles/main.css" />
+		<link rel="stylesheet" href="./styles/settings_overlay.css" />
+		<link rel="stylesheet" href="./styles/imge.css" />
+
+		
+		<link href="./_app/immutable/assets/0.Cd17h3DR.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/2.C8lfENVw.css" rel="stylesheet">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.Dy2OxdKQ.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/NV2hjCtJ.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/_CDQOeVe.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/DvYiuOlD.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/g6EUm654.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.Bg7o2B5w.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/xx2BGKsu.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/-hocQ814.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/CuBpMFFY.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.cBhzCRUY.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/BpP3HHFj.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/2.CJRRdVKQ.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/Ca2rJUCJ.js"><!--[--><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js"></script><!----><!--]--><!--[--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><!--]-->
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents"><!--[--><!--[--><!----><button class="ncolor-mode svelte-1f0zrj8" aria-label="Toggle theme"><!--[--><div class="dark-mode"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"></path></svg></div><!--]--></button><!----> <nav class="svelte-sr0dcz"><div class="icon-container svelte-sr0dcz"><div class="icon-group svelte-sr0dcz"><a href="https://github.com/kutaycoskuner/imge" target="_blank" rel="noopener noreferrer" class="icon-button svelte-sr0dcz"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385c.6.105.825-.255.825-.57c0-.285-.015-1.23-.015-2.235c-3.015.555-3.795-.735-4.035-1.41c-.135-.345-.72-1.41-1.23-1.695c-.42-.225-1.02-.78-.015-.795c.945-.015 1.62.87 1.845 1.23c1.08 1.815 2.805 1.305 3.495.99c.105-.78.42-1.305.765-1.605c-2.67-.3-5.46-1.335-5.46-5.925c0-1.305.465-2.385 1.23-3.225c-.12-.3-.54-1.53.12-3.18c0 0 1.005-.315 3.3 1.23c.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23c.66 1.65.24 2.88.12 3.18c.765.84 1.23 1.905 1.23 3.225c0 4.605-2.805 5.625-5.475 5.925c.435.375.81 1.095.81 2.22c0 1.605-.015 2.895-.015 3.3c0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"></path></svg><!----></a> <a href="https://threejs.org/" target="_blank" rel="noopener noreferrer" class="icon-button svelte-sr0dcz"><svg viewBox="0 0 226.77 226.77" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g transform="translate(8.964 4.2527)" fill-rule="evenodd" stroke="#000" stroke-linecap="butt" stroke-linejoin="round" stroke-width="4"><path d="m63.02 200.61-43.213-174.94 173.23 49.874z"></path><path d="m106.39 50.612 21.591 87.496-86.567-24.945z"></path><path d="m84.91 125.03-10.724-43.465 43.008 12.346z"></path><path d="m63.458 38.153 10.724 43.465-43.008-12.346z"></path><path d="m149.47 62.93 10.724 43.465-43.008-12.346z"></path><path d="m84.915 125.06 10.724 43.465-43.008-12.346z"></path></g></svg><!----></a> <!--[!--><!--]--></div></div></nav><!----> <nav class="svelte-1bw0n60"></nav><!----> <!--[!--><!--]--><!----> <!--[!--><!--]--><!----> <!----><div class="app-container svelte-mfcewj"><div class="math-box svelte-mfcewj"><div class="row row-2 svelte-mfcewj"><!----><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>A</mi><mrow><mi>i</mi><mo>×</mo><mi>j</mi></mrow></msub><mo>+</mo><msub><mi>B</mi><mrow><mi>m</mi><mo>×</mo><mi>n</mi></mrow></msub><mo>=</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">A_{i\times j} + B_{m\times n} = C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">×</span><span class="mord mathnormal mtight" style="margin-right:0.0572em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8917em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0502em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2583em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">m</span><span class="mbin mtight">×</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.0715em;">C</span></span></span></span></span><!----></div> <div class="row row-15 svelte-mfcewj"><!----><!----></div> <div class="row row-1 inputs svelte-mfcewj"><div class="group group-a svelte-mfcewj"><label class="svelte-mfcewj">i (A rows)</label> <input type="number" value="2" min="1" class="svelte-mfcewj"></div> <div class="group group-a svelte-mfcewj"><label class="svelte-mfcewj">j (A cols)</label> <input type="number" value="3" min="1" class="svelte-mfcewj"></div> <div class="group group-b svelte-mfcewj"><label class="svelte-mfcewj">m (B rows)</label> <input type="number" value="2" min="1" class="svelte-mfcewj"></div> <div class="group group-b svelte-mfcewj"><label class="svelte-mfcewj">n (B cols)</label> <input type="number" value="3" min="1" class="svelte-mfcewj"></div></div> <!--[!--><!--]--></div> <!--[--><div class="matrix-box svelte-mfcewj"><div class="equation-row svelte-mfcewj"><div class="matrix-container color-system-a svelte-mfcewj"><div class="matrix-title svelte-mfcewj">Matrix A (2×3)</div> <div class="matrix svelte-mfcewj"><div class="matrix-inner svelte-mfcewj"><!--[--><!--]--></div></div></div> <div class="operator svelte-mfcewj">+</div> <div class="matrix-container color-system-b svelte-mfcewj"><div class="matrix-title svelte-mfcewj">Matrix B (2×3)</div> <div class="matrix svelte-mfcewj"><div class="matrix-inner svelte-mfcewj"><!--[--><!--]--></div></div></div> <div class="operator svelte-mfcewj">=</div> <div class="matrix-container color-system-c svelte-mfcewj"><div class="matrix-title svelte-mfcewj">Result Matrix C (2×3)</div> <div class="matrix svelte-mfcewj"><div class="matrix-inner svelte-mfcewj"><!--[--><!--]--></div></div></div></div></div><!--]--></div><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
+			
+			<script>
+				{
+					__sveltekit_1xdq5so = {
+						base: new URL(".", location).pathname.slice(0, -1)
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("./_app/immutable/entry/start.Dy2OxdKQ.js"),
+						import("./_app/immutable/entry/app.Bg7o2B5w.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element, {
+							node_ids: [0, 2],
+							data: [{"type":"data","data":null,"uses":{}},null],
+							form: null,
+							error: null
+						});
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>
