@@ -27,6 +27,7 @@
 		"@sveltejs/adapter-static": "^3.0.8",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
+		"@types/katex": "^0.16.8",
 		"drizzle-kit": "^0.30.2",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
@@ -44,6 +45,7 @@
 	},
 	"dependencies": {
 		"drizzle-orm": "^0.38.4",
+		"katex": "^0.17.0",
 		"postgres": "^3.4.5"
 	},
 	"packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"

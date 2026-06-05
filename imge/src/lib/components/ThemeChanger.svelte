@@ -56,10 +56,10 @@
 
 	.ncolor-mode {
 		position: fixed;
-		top: 0.2rem;
-		right: 0.2rem;
-		width: 1.2em;
-		height: 1.2em;
+		top: 0.5rem;
+		right: 0.5rem;
+		width: 1.4rem;
+		height: 1.4rem;
 		z-index: 20;
 		cursor: pointer;
 		-webkit-touch-callout: none;
