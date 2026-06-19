@@ -2,7 +2,7 @@
     Project Imge
 </h1>
 <h3 align="center">
-    Study project: Web based node editor / process visualization tool
+    Study project: Web based node editor / matrix calculators
 </h3>
 <!-- <p align="center">
     <a href="#">Docs</a> |
@@ -18,7 +18,7 @@
 
 <p align="center">
 
-![first frame](_display/0.22_link-display.png)
+![first frame](_display/0.4.1-matrix_sum.png)
 <figcaption>v0.22 Node and link display</figcaption>
 
 </p>
@@ -27,6 +27,7 @@
 
 ### Prerequisites
 1. Install [node.js](https://nodejs.org/en/download/package-manager)
+
 
 ### Install
 1. Clone project
@@ -52,12 +53,23 @@
     ```
 
 # Features
-- [x] Import JSON Data
-- [x] Display Nodes and Links
-- [x] Color Mode
-- [x] Infinite Canvas | Scale and Translation
-- [x] Info panel 
-- [x] Accessibility buttons: zoom, fit view
+
+### Features
+- [x] basic ui buttons
+- [x] assistance message
+- [x] settings interface
+- [x] color mode
+- [x] polka dots background to perceive translations
+- [x] 2d infinite canvas space movement / space translations
+- [x] coordinates tracker
+- [x] node rendering
+- [x] rendering from json content
+- [x] node movement
+- [x] export data as json
+- [ ] link rendering
+- [ ] node linking
+- [ ] vertical / horizontal frameworks
+- [ ] node content / color editing
 
 # Roadmap
 - [ ] Accessibility buttons: Import / Export
