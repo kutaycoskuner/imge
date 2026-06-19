@@ -2,7 +2,7 @@
     Project Imge
 </h1>
 <h3 align="center">
-    Study project: Web based node editor / process visualization tool
+    Study project: Web based node editor / matrix calculators
 </h3>
 <!-- <p align="center">
     <a href="#">Docs</a> |
@@ -18,7 +18,7 @@
 
 <p align="center">
 
-![first frame](_display/0.22_link-display.png)
+![first frame](_display/0.4.1-matrix_sum.png)
 <figcaption>v0.22 Node and link display</figcaption>
 
 </p>
