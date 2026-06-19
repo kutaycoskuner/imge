@@ -50,10 +50,13 @@
 </svelte:head>
 
 <div class="mobile-notice">
-    <div class="notice-card">
-        <h2>Screen Size Not Supported</h2>
-        <p>We're sorry, but this matrix calculator is not optimized for mobile devices. Please view this page on a desktop or a larger screen.</p>
-    </div>
+	<div class="notice-card">
+		<h2>Screen Size Not Supported</h2>
+		<p>
+			We're sorry, but this matrix calculator is not optimized for mobile devices. Please view this
+			page on a desktop or a larger screen.
+		</p>
+	</div>
 </div>
 
 <div class="app-container main-content">
@@ -161,6 +164,25 @@
 
 				<div class="operator">=</div>
 
+				<div class="matrix-container color-system-template">
+					<div class="matrix-title">Sum Template ({i}×{j})</div>
+					<div class="matrix">
+						<div class="matrix-inner">
+							{#each A as row, r}
+								<div class="matrix-row">
+									{#each row as valA, c}
+										<span class="cell template-cell">
+											{valA} + {B?.[r]?.[c] ?? 0}
+										</span>
+									{/each}
+								</div>
+							{/each}
+						</div>
+					</div>
+				</div>
+
+				<div class="operator">=</div>
+
 				<div class="matrix-container color-system-c">
 					<div class="matrix-title">Result Matrix C ({i}×{j})</div>
 					<div class="matrix">
@@ -195,7 +217,7 @@
 		width: 100%;
 		box-sizing: border-box;
 		padding: 2rem;
-		gap: 2rem; /* Creates structured space between Box 1 and Box 2 */
+		gap: 2rem;
 	}
 
 	/* =========================================================================
@@ -306,7 +328,6 @@
 		font-family: var(--main-font, sans-serif);
 	}
 
-	/* CUSTOM HIGH-FIDELITY SCALABLE CSS SQUARE BRACKETS */
 	.matrix {
 		display: inline-flex;
 		position: relative;
@@ -320,7 +341,7 @@
 		top: 0;
 		bottom: 0;
 		width: 6px;
-		border: 2px solid currentColor; /* Automatically references the scoped system color */
+		border: 2px solid currentColor;
 		opacity: 0.85;
 	}
 
@@ -352,7 +373,7 @@
 		font-weight: 300;
 		opacity: 0.6;
 		user-select: none;
-		padding-top: 1.5rem; /* Offsets bracket position to align perfectly with content row */
+		padding-top: 1.5rem;
 	}
 
 	/* SYSTEM CELLS */
@@ -392,6 +413,13 @@
 	.cell-input::-webkit-inner-spin-button {
 		-webkit-appearance: none;
 		margin: 0;
+	}
+
+	.template-cell {
+		cursor: default;
+		min-width: 4.5rem; /* Expanded to fit expressions cleanly like "X + Y" */
+		font-size: 0.95rem;
+		opacity: 0.85;
 	}
 
 	.result-cell {
@@ -435,16 +463,21 @@
 		outline: none;
 	}
 
+	/* Channel Template: Intermediate Step (Warm Amber/Orange) */
+	.color-system-template {
+		color: #f5a623;
+	}
+
 	/* Channel C: Result Matrix C (Vibrant Emerald Green) */
 	.color-system-c {
 		color: #00a36c;
 	}
 
 	/* =========================================================================
-    MOBILE NOTICE VIEWPORT RULES (🟢 ALL NEW)
-    ========================================================================= */
+   MOBILE NOTICE VIEWPORT RULES
+========================================================================= */
 	.mobile-notice {
-		display: none; /* Hidden by default on desktop screens */
+		display: none;
 		box-sizing: border-box;
 		padding: 2rem;
 		width: 100%;
@@ -464,7 +497,6 @@
 		margin: auto;
 	}
 
-
 	.notice-card h2 {
 		color: var(--col);
 		margin: 0 0 0.75rem 0;
@@ -479,15 +511,14 @@
 		margin: 0;
 	}
 
-	/* ⚡ The Breakpoint: Triggers when the screen is 768px wide or smaller */
 	@media (max-width: 768px) {
 		.mobile-notice {
-			display: flex; /* Shows the notice block */
+			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 		.main-content {
-			display: none !important; /* Completely hides the calculator grid */
+			display: none !important;
 		}
 	}
 </style>
