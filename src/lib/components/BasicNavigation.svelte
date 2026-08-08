@@ -5,10 +5,10 @@
 
 <!-- src/lib/components/Nav.svelte -->
 <nav>
-	<!-- <a href="{base}/">vectors</a> -->
-	<!-- <a href="{base}/unfolding">unfolding cube</a>
-	<a href="{base}/import_gltf">display model</a>
-	<a href="{base}/keyframe">motion animation</a>
+	<a href="{base}/">matrix addition</a>
+	<a href="{base}/graph_editor">graph editor</a>
+	<a href="{base}/csv_editor">csv editor</a>
+	<!-- <a href="{base}/keyframe">motion animation</a>
 	<a href="{base}/pixel">pixel shader</a> -->
 
 	<!-- <a href="{base}/about">about</a> -->
