@@ -1,49 +1,41 @@
 <script lang="ts">
+	// -----------------------------------------------------------------------------------------
+	//   author          : Kutay Coskuner
+	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
+	//   last update     : 2026-10-14
+	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+	//                     Check outputs before relying on them.
+	// -----------------------------------------------------------------------------------------
+	// Shows the world coordinates under the mouse (x right, y down, whole units). Derived
+	// from the camera, so a spot on the canvas shows the same numbers at every zoom and
+	// the display also updates when the view moves under a still mouse.
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
-	import {
-		coordsBaseXOffset,
-		coordsBaseYOffset,
-		coordsStateXOffset,
-		coordsStateYOffset
-	} from '../../stores/imge_main'; // Assuming you have a Svelte store
+	import { camera, viewport, screenToWorld } from '$lib/camera';
 
-	// State
-	let x = $state(0);
-	let y = $state(0);
+	// mouse position in screen px
+	let mouseX = $state(0);
+	let mouseY = $state(0);
 
-	// Computed values
-	const offsetX = $derived($coordsBaseXOffset || 0);
-	const offsetY = $derived($coordsBaseYOffset || 0);
-	const stateoffsetX = $derived($coordsStateXOffset || 0);
-	const stateoffsetY = $derived($coordsStateYOffset || 0);
+	const world = $derived(screenToWorld({ x: mouseX, y: mouseY }, $camera, $viewport));
+	// `|| 0` turns -0 into 0
+	const x = $derived(Math.round(world.x) || 0);
+	const y = $derived(Math.round(world.y) || 0);
 
-	// Function to update mouse position relative to the center of the screen
 	const updateMousePosition = (event: MouseEvent) => {
-		x = (event.clientX - offsetX + stateoffsetX);
-		y = -(event.clientY - offsetY - stateoffsetY);
-	};
-
-	// Calculate the initial offset (center of the screen)
-	const calculateBaseOffset = () => {
-		if (browser) {
-			coordsBaseXOffset.update(n => window.innerWidth / 2);
-			coordsBaseYOffset.update(n => window.innerHeight / 2);
-		}
+		mouseX = event.clientX;
+		mouseY = event.clientY;
 	};
 
 	// Lifecycle hooks
 	onMount(() => {
 		if (!browser) return;
-		calculateBaseOffset();
 		window.addEventListener('mousemove', updateMousePosition);
-		window.addEventListener('resize', calculateBaseOffset);
 	});
 
 	onDestroy(() => {
 		if (!browser) return;
 		window.removeEventListener('mousemove', updateMousePosition);
-		window.removeEventListener('resize', calculateBaseOffset);
 	});
 </script>
 

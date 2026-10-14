@@ -1,3 +1,12 @@
+// -----------------------------------------------------------------------------------------
+//   author          : Kutay Coskuner
+//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
+//   last update     : 2026-10-14
+//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+//                     Check outputs before relying on them.
+// -----------------------------------------------------------------------------------------
+// imge_main.ts -- app-wide UI state (screen size, color mode, assistance message).
+// The graph editor's camera (pan + zoom) lives in $lib/camera.ts.
 import { writable } from 'svelte/store';
 
 // State (Writable Stores)
@@ -7,15 +16,3 @@ export const screenSizeIndex    = writable<number>(2);     // 2 = pc, 1 = tablet
 
 export const colorMode          = writable<string>("dark");
 export const assistanceMsg      = writable<string>("");
-
-export const zoomLevel          = writable<number>(1);
-export const coordsBaseXOffset  = writable<number>(0);      // base offset based on screen size
-export const coordsBaseYOffset  = writable<number>(0);      // set once and dont change
-export const coordsStateXOffset = writable<number>(0);      // offset from origin on current state
-export const coordsStateYOffset = writable<number>(0);      // ! mouse position calculated directly in page
-export const tempDragStartX     = writable<number>(0);
-export const tempDragStartY     = writable<number>(0);
-
-// Single store for both x and y offsets
-// export const coordBaseOffset  = writable<{ x: number; y: number }>({ x: 0, y: 0 });
-// export const coordsStateOffset = writable<{ x: number; y: number }>({ x: 0, y: 0 });

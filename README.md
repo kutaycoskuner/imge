@@ -10,8 +10,9 @@
 </p> -->
 
 <p align="center">
-    <img alt="Nuxt 3.12" src="https://img.shields.io/badge/Nuxt-3.12.0-blue?logo=nuxtdotjs&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.25-blue" />
+    <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
+    <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.6.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
@@ -59,9 +60,12 @@
 - [x] assistance message
 - [x] settings interface
 - [x] color mode
-- [x] polka dots background to perceive translations
-- [x] 2d infinite canvas space movement / space translations
-- [x] coordinates tracker
+- [x] endless 2d canvas: one camera for pan and zoom, nodes / dots / coordinates always in sync
+- [x] pan by dragging empty space, follows the mouse at any zoom
+- [x] zoom toward cursor (mouse wheel) and screen center (buttons)
+- [x] faint dot grid that follows the canvas (spacing doubles when zoomed out)
+- [x] origin marker: red / green L at (0, 0) toward +x / +y (Blender axis colors)
+- [x] coordinates tracker (world coordinates, x right, y up)
 - [x] node rendering
 - [x] rendering from json content
 - [x] node movement
@@ -71,7 +75,10 @@
 - [ ] vertical / horizontal frameworks
 - [ ] node content / color editing
 
+# Docs
+- [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
+
 # Roadmap
 - [ ] Accessibility buttons: Import / Export
-- [ ] Export data
+- [x] Export data
 - [ ] Adding links on ui

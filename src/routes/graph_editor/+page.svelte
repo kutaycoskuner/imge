@@ -1,63 +1,62 @@
 <script lang="ts">
+	// -----------------------------------------------------------------------------------------
+	//   author          : Kutay Coskuner
+	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
+	//   last update     : 2026-10-14
+	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+	//                     Check outputs before relying on them.
+	// -----------------------------------------------------------------------------------------
+	// Graph editor page: loads the test graph, renders its nodes on an endless canvas and
+	// handles panning (drag empty space), node dragging and wheel zoom toward the cursor.
+	// All world <-> screen math lives in $lib/camera.ts; see docs/graph-editor-canvas.md.
 	import PolkaDots from '$lib/components/PolkaDots.svelte';
+	import OriginAxes from '$lib/components/OriginAxes.svelte';
 	import UI_GraphEditor from '$lib/components/UI_GraphEditor.svelte';
 	import CoordTracker from '$lib/components/CoordTracker.svelte';
 	import AssistanceMsg from '$lib/components/AssistanceMsg.svelte';
-	import { onMount, onDestroy } from 'svelte';
-	import {
-		zoomLevel,
-		coordsStateXOffset,
-		coordsStateYOffset,
-		coordsBaseXOffset,
-		coordsBaseYOffset
-	} from '../../stores/imge_main';
-	import { json } from '@sveltejs/kit';
+	import { onMount } from 'svelte';
+	import { camera, viewport, panBy, zoomAt, trackViewport } from '$lib/camera';
 
-	let _coordsBaseXOffset: number;
-	let _coordsBaseYOffset: number;
-	let _coordsStateXOffset: number;
-	let _coordsStateYOffset: number;
-	let _zoomLevel: number;
+	// exp() turns wheel delta into a smooth factor for both mouse wheels and trackpads
+	const WHEEL_ZOOM_SPEED = 0.0015;
+
 	let jsonData: Record<string, any> = {};
-
-	coordsBaseXOffset.subscribe((value) => (_coordsBaseXOffset = value));
-	coordsBaseYOffset.subscribe((value) => (_coordsBaseYOffset = value));
-	coordsStateXOffset.subscribe((value) => (_coordsStateXOffset = value));
-	coordsStateYOffset.subscribe((value) => (_coordsStateYOffset = value));
-	zoomLevel.subscribe((value) => (_zoomLevel = value));
 
 	let isPanningSpace: boolean = false;
 	let isDraggingNode: boolean = false;
 	let selectedNode: any = null;
 
-	let startX: number = 0,
-		startY: number = 0;
-
-	let _dragOffsetX: number = 0,
-		_dragOffsetY: number = 0;
-
-	let _startStateXOffset: number = 0,
-		_startStateYOffset: number = 0;
+	// last mouse position in screen px; moves are applied as deltas from it
+	let lastX: number = 0,
+		lastY: number = 0;
 
 	// Mouse event functions
 	// -----------------------------------------------------------------------------------
 	function handleMouseDown(event: MouseEvent): void {
+		if (event.button !== 0) return;
 		const target = event.target as HTMLElement;
 		const nodeElement = target.closest('.node') as HTMLElement | null;
 
-		startX = event.clientX - _coordsBaseXOffset;
-		startY = -(event.clientY - _coordsBaseYOffset);
+		lastX = event.clientX;
+		lastY = event.clientY;
 
 		if (!nodeElement) {
-			panSpaceStart(event);
+			isPanningSpace = true;
 		} else {
-			moveNodeStart(event, nodeElement);
+			moveNodeStart(nodeElement);
 		}
 	}
 
 	function handleMouseMove(event: MouseEvent): void {
-		if (isPanningSpace) panSpaceMove(event);
-		else if (isDraggingNode) moveNode(event);
+		if (!isPanningSpace && !isDraggingNode) return;
+
+		const dx = event.clientX - lastX;
+		const dy = event.clientY - lastY;
+		lastX = event.clientX;
+		lastY = event.clientY;
+
+		if (isPanningSpace) panBy(dx, dy);
+		else moveNode(dx, dy);
 	}
 
 	function handleMouseUp(): void {
@@ -65,52 +64,24 @@
 		isDraggingNode = false;
 	}
 
-	// Space panning functions
-	// -----------------------------------------------------------------------------------
-	function panSpaceStart(event: MouseEvent): void {
-		isPanningSpace = true;
-		_startStateXOffset = _coordsStateXOffset;
-		_startStateYOffset = _coordsStateYOffset;
-	}
-
-	function panSpaceMove(event: MouseEvent): void {
-		if (!isPanningSpace) return;
-
-		let mouseX = event.clientX - _coordsBaseXOffset;
-		let mouseY = -(event.clientY - _coordsBaseYOffset);
-
-		_dragOffsetX = mouseX - startX;
-		_dragOffsetY = mouseY - startY;
-
-		coordsStateXOffset.set(_startStateXOffset - _dragOffsetX);
-		coordsStateYOffset.set(_startStateYOffset - _dragOffsetY);
+	function handleWheel(event: WheelEvent): void {
+		zoomAt(Math.exp(-event.deltaY * WHEEL_ZOOM_SPEED), { x: event.clientX, y: event.clientY });
 	}
 
 	// Move node
 	// -----------------------------------------------------------------------------------
-	function moveNodeStart(event: MouseEvent, nodeElement: HTMLElement): void {
+	function moveNodeStart(nodeElement: HTMLElement): void {
 		isDraggingNode = true;
 		selectedNode = jsonData.data.nodes.find((n: any) => n._id == nodeElement.dataset.id);
 	}
 
-	function moveNode(event: MouseEvent): void {
+	function moveNode(dxScreen: number, dyScreen: number): void {
 		if (!selectedNode) return;
 
-		// calculate the current mouse position relative to the base offsets
-		let mouseX = event.clientX - _coordsBaseXOffset;
-		let mouseY = -(event.clientY - _coordsBaseYOffset);
-
-		// calculate the drag offset based on the current mouse position and the initial start position
-		_dragOffsetX = mouseX - startX;
-		_dragOffsetY = mouseY - startY;
-
-		// update the node's position by adding the drag offset
-		selectedNode.position.x += _dragOffsetX;
-		selectedNode.position.y += -_dragOffsetY;
-
-		// update the start position to the current mouse position for the next move event
-		startX = mouseX;
-		startY = mouseY;
+		// screen px -> world units, so the node stays under the mouse at any zoom;
+		// y is subtracted because screen y grows down and world y grows up
+		selectedNode.position.x += dxScreen / $camera.zoom;
+		selectedNode.position.y -= dyScreen / $camera.zoom;
 
 		// reactivity
 		jsonData = { ...jsonData, data: { ...jsonData.data, nodes: [...jsonData.data.nodes] } };
@@ -133,36 +104,44 @@
 	}
 	// Lifecycle functions
 	// -----------------------------------------------------------------------------------
-	onMount(async () => {
-		try {
-			const response = await fetch('data/test-node-graph.json');
-			jsonData = await response.json();
-		} catch (error) {
-			console.error('Error fetching JSON:', error);
-		}
+	onMount(() => {
+		const stopTracking = trackViewport();
+		(async () => {
+			try {
+				const response = await fetch('data/test-node-graph.json');
+				jsonData = await response.json();
+			} catch (error) {
+				console.error('Error fetching JSON:', error);
+			}
+		})();
+		return stopTracking;
 	});
 
-	$: contentTranslateX = _coordsBaseXOffset / 1.5 - _coordsStateXOffset;
-	$: contentTranslateY = _coordsBaseYOffset / 1.5 + _coordsStateYOffset;
+	// world origin on screen; the world layer is scaled around its top-left corner (0, 0).
+	// Inside it CSS y grows down, so nodes are placed at (x, -y) to make world y grow up.
+	$: worldTranslateX = $viewport.width / 2 - $camera.x * $camera.zoom;
+	$: worldTranslateY = $viewport.height / 2 + $camera.y * $camera.zoom;
 </script>
+
+<!-- window-level move/up so a drag keeps working when the mouse leaves the viewport -->
+<svelte:window on:mousemove={handleMouseMove} on:mouseup={handleMouseUp} />
 
 <div
 	class="viewport no-scroll"
 	role="presentation"
 	on:mousedown={handleMouseDown}
-	on:mousemove={handleMouseMove}
-	on:mouseup={handleMouseUp}
+	on:wheel|nonpassive|preventDefault={handleWheel}
 >
 	<div class="content-wrapper">
 		<div
-			class="content"
-			style="transform: translate({contentTranslateX}px, {contentTranslateY}px); scale: {_zoomLevel};"
+			class="world"
+			style="transform: translate({worldTranslateX}px, {worldTranslateY}px) scale({$camera.zoom});"
 		>
 			{#each jsonData?.data?.nodes ?? [] as node}
 				<div
 					class="node"
 					data-id={node._id}
-					style="transform: translate({node.position.x}px, {node.position.y}px);"
+					style="transform: translate({node.position.x}px, {-node.position.y}px);"
 				>
 					<div class="node-title">{node.data.title}</div>
 					<!-- Render Inputs -->
@@ -195,6 +174,7 @@
 <CoordTracker />
 <AssistanceMsg />
 <PolkaDots />
+<OriginAxes />
 
 <style>
 	/* .centered {

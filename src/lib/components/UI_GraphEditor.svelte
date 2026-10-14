@@ -1,28 +1,26 @@
 <script lang="ts">
+	// -----------------------------------------------------------------------------------------
+	//   author          : Kutay Coskuner
+	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
+	//   last update     : 2026-10-14
+	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+	//                     Check outputs before relying on them.
+	// -----------------------------------------------------------------------------------------
+	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, reset view,
+	// add node (not wired yet), import (placeholder), export and a test pan button.
+	// Camera changes go through $lib/camera.ts; export is dispatched to the page.
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 
-	
-	import {
-		screenSizeIndex,
-		zoomLevel,
-		assistanceMsg,
-		colorMode,
-		coordsStateXOffset,
-		coordsStateYOffset
-	} from '../../stores/imge_main';
+	import { screenSizeIndex, assistanceMsg, colorMode } from '../../stores/imge_main';
+	import { ZOOM_STEP, panBy, zoomAt, resetCamera } from '$lib/camera';
 
 	const dispatch = createEventDispatcher();
 	// Access store variables
 	$: _screenSizeIndex = $screenSizeIndex;
-	$: _zoomLevel = $zoomLevel;
 	$: _assistanceMsg = $assistanceMsg;
 	$: _colorMode = $colorMode;
-
-	// Define min and max zoom levels
-	const MIN_ZOOM_LEVEL = 0.04;
-	const MAX_ZOOM_LEVEL = 4;
 
 	// Lifecycle hooks
 	onMount(() => {
@@ -48,35 +46,20 @@
 	};
 
 	// Zoom functions
-	const zoomIn = () => {
-		zoomLevel.update((level) => {
-			const newLevel = level + 0.1;
-			return newLevel > MAX_ZOOM_LEVEL ? MAX_ZOOM_LEVEL : newLevel;
-		});
-	};
+	const zoomIn = () => zoomAt(ZOOM_STEP);
 
-	const zoomOut = () => {
-		zoomLevel.update((level) => {
-			const newLevel = level - 0.1;
-			return newLevel < MIN_ZOOM_LEVEL ? MIN_ZOOM_LEVEL : newLevel;
-		});
-	};
+	const zoomOut = () => zoomAt(1 / ZOOM_STEP);
 
 	const exportGraph = () => {
 		dispatch('requestExport');
 	};
 
-	const test = () => {
-		coordsStateXOffset.update((n: number) => n - 10);
-	};
+	// moves the canvas 10 px to the right
+	const test = () => panBy(10, 0);
 
 	// Emit events (fitToScreen and addNode)
 
-	const fitToScreen = () => {
-		coordsStateXOffset.update((n: number) => 0);
-		coordsStateYOffset.update((n: number) => 0);
-		zoomLevel.update((n: number) => 1);
-	};
+	const fitToScreen = () => resetCamera();
 
 	const addNode = () => {
 		//   dispatch('addNode');
@@ -253,7 +236,7 @@
 		role="button"
 		tabindex="0"
 		on:click={test}
-		on:keydown={(event) => event.key === 'Enter' && fitToScreen()}
+		on:keydown={(event) => event.key === 'Enter' && test()}
 		on:mouseenter={() => handleMouseOver('test button')}
 		on:mouseleave={handleMouseLeave}
 	>
