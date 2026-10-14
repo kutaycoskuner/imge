@@ -34,7 +34,7 @@ State as of 2026-10-14.
 | `src/lib/components/CoordTracker.svelte` | Shows the world coordinates under the mouse. |
 | `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, reset view, export. |
 | `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node` styles. |
-| `static/data/test-node-graph.json` | Test graph; node `position` values are world coordinates. |
+| `static/data/test-node-graph.json` | Test graph; node `position` values are world coordinates. File structure and versions: [graph-format.md](graph-format.md). |
 
 ## Two coordinate spaces
 
@@ -126,6 +126,12 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Known limits
 
-- The test graph is loaded from `static/data/test-node-graph.json`; Import isn't wired up yet.
+- The test graph is loaded from `static/data/test-node-graph.json` (upgraded to the current format version on load, see [graph-format.md](graph-format.md)); Import isn't wired up yet.
 - Links between nodes aren't rendered yet.
 - Every node is a DOM element; very large graphs may need culling (skip nodes outside the screen) later.
+
+## Changes
+
+- 2026-10-14 — test graph is now loaded through the format-version upgrade; link to graph-format.md
+- 2026-10-14 — origin marker added (red/green L, Blender axis colors); world y axis now points up; dots made fainter (opacity 0.32, 24 px minimum spacing)
+- 2026-10-14 — first version: camera, coordinate spaces, zoom, dot grid, node rendering and dragging, fixes made and why

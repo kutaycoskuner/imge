@@ -6,8 +6,9 @@
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// Graph editor page: loads the test graph, renders its nodes on an endless canvas and
-	// handles panning (drag empty space), node dragging and wheel zoom toward the cursor.
+	// Graph editor page: loads the test graph (upgraded to the current format version by
+	// $lib/graph/migrations.ts), renders its nodes on an endless canvas and handles panning
+	// (drag empty space), node dragging and wheel zoom toward the cursor.
 	// All world <-> screen math lives in $lib/camera.ts; see docs/graph-editor-canvas.md.
 	import PolkaDots from '$lib/components/PolkaDots.svelte';
 	import OriginAxes from '$lib/components/OriginAxes.svelte';
@@ -16,6 +17,7 @@
 	import AssistanceMsg from '$lib/components/AssistanceMsg.svelte';
 	import { onMount } from 'svelte';
 	import { camera, viewport, panBy, zoomAt, trackViewport } from '$lib/camera';
+	import { migrateGraph, stampCurrentVersion, CURRENT_GRAPH_VERSION } from '$lib/graph/migrations';
 
 	// exp() turns wheel delta into a smooth factor for both mouse wheels and trackpads
 	const WHEEL_ZOOM_SPEED = 0.0015;
@@ -90,7 +92,8 @@
 	// import export functions
 	// -----------------------------------------------------------------------------------
 	function exportJSON(): void {
-		const jsonString = JSON.stringify(jsonData, null, 2);
+		// always written as the current format version, see docs/graph-format.md
+		const jsonString = JSON.stringify(stampCurrentVersion(jsonData as any), null, 2);
 		const blob = new Blob([jsonString], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
 
@@ -109,9 +112,18 @@
 		(async () => {
 			try {
 				const response = await fetch('data/test-node-graph.json');
-				jsonData = await response.json();
+				// older format versions are upgraded on load; say so, never silently
+				const { graph, fromVersion, applied } = migrateGraph(await response.json());
+				if (applied.length > 0) {
+					console.info(
+						`graph upgraded from v${fromVersion} to v${CURRENT_GRAPH_VERSION}:\n  ` +
+							applied.join('\n  ')
+					);
+				}
+				jsonData = graph;
 			} catch (error) {
-				console.error('Error fetching JSON:', error);
+				// includes GraphFormatError: not a graph file, or from a newer app version
+				console.error('Error loading graph:', error);
 			}
 		})();
 		return stopTracking;

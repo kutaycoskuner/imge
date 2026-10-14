@@ -27,31 +27,23 @@
 # Installation and Use
 
 ### Prerequisites
-1. Install [node.js](https://nodejs.org/en/download/package-manager)
+- **Node.js 18+**: [Install Node.js](https://nodejs.org/en/download/package-manager)
 
+### Install and run
+```bash
+# 1. Clone the repository and go into it
+git clone https://github.com/kutaycoskuner/imge.git
+cd imge
 
-### Install
-1. Clone project
-    ```
-    git clone https://github.com/kutaycoskuner/imge.git
-    ```
-2. Navigate to project directory
-    ```bash
-    cd imge
-    ```
-3. Install npm packages
-    ```
-    npm install
-    ```
-### Run the program
-1. Navigate to project directory
-    ```bash
-    cd imge
-    ```
-2. Run development server
-    ```
-    npm run dev
-    ```
+# 2. Install packages
+npm install
+
+# 3. Start the development server (opens on http://localhost:5173)
+npm run dev
+
+# optional: run the unit tests
+npm run test:unit -- --run
+```
 
 # Features
 
@@ -70,6 +62,7 @@
 - [x] rendering from json content
 - [x] node movement
 - [x] export data as json
+- [x] versioned graph format, older files upgraded on load
 - [ ] link rendering
 - [ ] node linking
 - [ ] vertical / horizontal frameworks
@@ -77,6 +70,7 @@
 
 # Docs
 - [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
+- [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
 
 # Roadmap
 - [ ] Accessibility buttons: Import / Export
