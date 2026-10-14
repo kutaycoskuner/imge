@@ -52,6 +52,37 @@ const DB_STORE = 'handles';
 const FOLDER_KEY = 'graph-folder';
 const AUTOSAVE_KEY = 'imge.graphEditor.autosave';
 const AUTOSAVE_DELAY_MS = 800; // after the last change, so a drag saves once, not per frame
+const DOWNLOAD_COUNTER_KEY = 'imge.graphEditor.downloadCounter'; // { date, n } of the last download
+
+/**
+ * Default graph name "imgegraph-YYYYMMDD-NN": today's local date and the first two-digit
+ * number from `start` that isn't in `taken` (names without ".json"), e.g. imgegraph-20261014-01.
+ */
+export function defaultGraphName(taken: string[] = [], date = new Date(), start = 1): string {
+	const day = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
+	const used = new Set(taken.map((t) => t.toLowerCase()));
+	for (let n = start; ; n++) {
+		const name = `imgegraph-${day}-${String(n).padStart(2, '0')}`;
+		if (!used.has(name)) return name;
+	}
+}
+
+/**
+ * Next default name for a download. The browser can't see the downloads folder, so the
+ * last number used today is kept in localStorage; it starts again at 01 each day.
+ */
+function nextDownloadName(): string {
+	const today = defaultGraphName().slice(10, 18); // the YYYYMMDD part
+	let n = 1;
+	try {
+		const last = JSON.parse(localStorage.getItem(DOWNLOAD_COUNTER_KEY) ?? 'null');
+		if (last?.date === today) n = last.n + 1;
+		localStorage.setItem(DOWNLOAD_COUNTER_KEY, JSON.stringify({ date: today, n }));
+	} catch {
+		// storage blocked: every download of the session starts at 01
+	}
+	return defaultGraphName([], new Date(), n);
+}
 
 export interface Workspace {
 	supported: boolean; // folder access (read + write) available in this browser
@@ -307,8 +338,10 @@ export async function save(): Promise<void> {
 /** Saves the open graph under a new name in the folder; asks before overwriting any file. */
 export async function saveAs(rawName: string): Promise<void> {
 	const { folder } = get(workspace);
-	const name = normalizeFileName(rawName);
-	if (!name) return patch({ status: 'Type a file name first' });
+	// an empty name field saves under the next free default name (imgegraph-YYYYMMDD-NN)
+	const typed = rawName.trim() || defaultGraphName(get(workspace).files.map((f) => f.name));
+	const name = normalizeFileName(typed);
+	if (!name) return patch({ status: 'Type a graph name first' });
 	if (folder && (await fileExists(folder, name)) && !confirm(`${name} already exists. Overwrite it?`)) {
 		return;
 	}
@@ -402,7 +435,8 @@ export function uploadGraph(): void {
 
 /** Downloads the open graph as a .json file (also the toolbar's Export). */
 export function downloadGraph(): void {
-	const name = get(workspace).fileName ?? 'graph_data.json';
+	// a graph without a file yet gets the default name, e.g. imgegraph-20261014-01.json
+	const name = get(workspace).fileName ?? `${nextDownloadName()}.json`;
 	const blob = new Blob([JSON.stringify(stampCurrentVersion(get(graph)), null, 2) + '\n'], {
 		type: 'application/json'
 	});

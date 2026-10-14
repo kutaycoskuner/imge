@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-14
+	//   last update     : 2026-10-15
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -13,7 +13,8 @@
 	//          drag node = move (all selected), drag from a port = link, drag a linked
 	//          input's end away = detach
 	//   keys   Shift+A add node at mouse, Delete/Backspace delete selection, F2 rename,
-	//          F link two selected nodes, Esc cancel a link drag (otherwise it opens the menu)
+	//          F link two selected nodes, +/- zoom, Home fit graph, Ctrl+S save,
+	//          Ctrl+Shift+S download, Esc cancel a link drag (otherwise it opens the menu)
 	// It also puts GraphEditorMenu into the Esc menu (open/save on the computer) and tracks
 	// unsaved changes for it. Graph operations and link rules live in $lib/graph/store.ts,
 	// files in $lib/graph/file-access.ts, world <-> screen math in $lib/camera.ts; see
@@ -36,7 +37,8 @@
 		trackViewport,
 		screenToWorld,
 		fitBounds,
-		resetCamera
+		resetCamera,
+		ZOOM_STEP
 	} from '$lib/camera';
 	import type { Point } from '$lib/camera';
 	import {
@@ -44,7 +46,8 @@
 		initWorkspace,
 		loadGraph,
 		trackChanges,
-		downloadGraph
+		downloadGraph,
+		save
 	} from '$lib/graph/file-access';
 	import {
 		graph,
@@ -54,13 +57,13 @@
 		removeLink,
 		removeNodes,
 		moveNodes,
-		findLinkInto,
+		linksInto,
 		quickLink,
 		selectNode,
 		createNodeAt,
 		type LinkOutcome
 	} from '$lib/graph/store';
-	import type { Link } from '$lib/graph/types';
+	import type { Link, LinkEnd } from '$lib/graph/types';
 	import { assistanceMsg, menuOpen, pageMenu } from '../stores/imge_main';
 
 	// exp() turns wheel delta into a smooth factor for both mouse wheels and trackpads
@@ -70,9 +73,15 @@
 	let isPanningSpace = false;
 	let isDraggingNodes = false;
 
-	// link being dragged from a port; `to` is the mouse in world-layer CSS coords
-	let linkDrag: { nodeId: number; kind: 'input' | 'output'; portId: string; to: Point } | null =
-		null;
+	// link being dragged from a port; `to` is the mouse in world-layer CSS coords; `carried`
+	// is the link picked up from a connected input (re-routed links keep their id and name)
+	let linkDrag: {
+		nodeId: string;
+		kind: 'input' | 'output';
+		portId: string;
+		to: Point;
+		carried?: Link;
+	} | null = null;
 
 	// last mouse position in screen px; moves are applied as deltas from it
 	let lastX = 0,
@@ -92,12 +101,12 @@
 	}
 
 	const LINK_MESSAGES: Partial<Record<LinkOutcome, string>> = {
-		replaced: 'Link replaced: an input takes one link',
+		exists: 'That link already exists',
 		'self-link': 'A node cannot link to itself',
 		'unknown-port': 'Links go from an output (right) to an input (left)'
 	};
 
-	function connect(link: Link): void {
+	function connect(link: { source: LinkEnd; target: LinkEnd; id?: string; type?: string; name?: string }): void {
 		let outcome: LinkOutcome = 'exists';
 		graph.update((g) => {
 			const result = addLink(g, link);
@@ -123,19 +132,13 @@
 
 		const linkHit = target.closest<SVGElement>('.link-hit');
 		if (linkHit) {
-			selection.set({
-				nodes: [],
-				link: {
-					targetNodeId: Number(linkHit.dataset.targetNodeId),
-					targetInputId: linkHit.dataset.targetInputId!
-				}
-			});
+			selection.set({ nodes: [], link: linkHit.dataset.linkId! });
 			return;
 		}
 
 		const nodeElement = target.closest<HTMLElement>('.node');
 		if (nodeElement) {
-			selection.update((sel) => selectNode(sel, Number(nodeElement.dataset.id), event.shiftKey));
+			selection.update((sel) => selectNode(sel, nodeElement.dataset.id!, event.shiftKey));
 			isDraggingNodes = true;
 			return;
 		}
@@ -174,18 +177,17 @@
 	// Link dragging
 	// -----------------------------------------------------------------------------------
 	function startLinkDrag(port: HTMLElement): void {
-		const nodeId = Number(port.dataset.nodeId);
+		const nodeId = port.dataset.nodeId!;
 		const kind = port.dataset.portKind as 'input' | 'output';
 		const portId = port.dataset.portId!;
 		const to = toLayer(mouseWorld());
 
-		const existing =
-			kind === 'input' ? findLinkInto($graph, { targetNodeId: nodeId, targetInputId: portId }) : null;
+		// grabbing a connected input picks up its most recent link and carries it from its output,
+		// so it can be dropped on another input or released on empty space to delete it
+		const existing = kind === 'input' ? linksInto($graph, { node: nodeId, port: portId }).at(-1) : undefined;
 		if (existing) {
-			// grabbing a connected input detaches its link and carries it from its output,
-			// so it can be dropped on another input or released on empty space to delete it
-			graph.update((g) => removeLink(g, existing));
-			linkDrag = { nodeId: existing.sourceNodeId, kind: 'output', portId: existing.sourceOutputId, to };
+			graph.update((g) => removeLink(g, existing.id));
+			linkDrag = { nodeId: existing.source.node, kind: 'output', portId: existing.source.port, to, carried: existing };
 		} else {
 			linkDrag = { nodeId, kind, portId, to };
 		}
@@ -197,15 +199,19 @@
 		const port = dropTarget?.closest<HTMLElement>('.port');
 		if (!port) return; // released on empty space: no link
 
-		const nodeId = Number(port.dataset.nodeId);
+		const nodeId = port.dataset.nodeId!;
 		const kind = port.dataset.portKind;
 		const portId = port.dataset.portId!;
 		if (kind === drag.kind) {
 			notify('Links go from an output (right) to an input (left)');
 		} else if (drag.kind === 'output') {
-			connect({ sourceNodeId: drag.nodeId, sourceOutputId: drag.portId, targetNodeId: nodeId, targetInputId: portId });
+			connect({
+				...(drag.carried ? { id: drag.carried.id, type: drag.carried.type, name: drag.carried.name } : {}),
+				source: { node: drag.nodeId, port: drag.portId },
+				target: { node: nodeId, port: portId }
+			});
 		} else {
-			connect({ sourceNodeId: nodeId, sourceOutputId: portId, targetNodeId: drag.nodeId, targetInputId: drag.portId });
+			connect({ source: { node: nodeId, port: portId }, target: { node: drag.nodeId, port: drag.portId } });
 		}
 	}
 
@@ -214,13 +220,32 @@
 	// runs in the capture phase, before the Esc menu's own listener, so an Esc that cancels
 	// something here can call preventDefault and keep the menu closed
 	function handleKeydown(event: KeyboardEvent): void {
+		// Ctrl+S / Ctrl+Shift+S (Cmd on a Mac) work everywhere, also in the menu and while
+		// typing, and always replace the browser's own "save page"
+		if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 's') {
+			event.preventDefault();
+			if (event.shiftKey) downloadGraph();
+			else saveShortcut();
+			return;
+		}
+
 		if ($menuOpen) return; // the menu has the keyboard; Esc closes it
 		const target = event.target as HTMLElement;
 		if (target.closest('input, textarea, [contenteditable="true"]')) return;
 		if (event.ctrlKey || event.metaKey || event.altKey) return;
 
 		const key = event.key.toLowerCase();
-		if (key === 'a' && event.shiftKey) {
+		if (key === '+' || key === '=') {
+			// "=" is the unshifted "+" key on most layouts; numpad "+" also arrives as "+"
+			event.preventDefault();
+			zoomAt(ZOOM_STEP);
+		} else if (key === '-') {
+			event.preventDefault();
+			zoomAt(1 / ZOOM_STEP);
+		} else if (key === 'home') {
+			event.preventDefault();
+			fitGraphInView();
+		} else if (key === 'a' && event.shiftKey) {
 			event.preventDefault();
 			createNodeAt(mouseWorld());
 		} else if (key === 'delete' || key === 'backspace') {
@@ -238,6 +263,17 @@
 		}
 	}
 
+	// Ctrl+S: save to the graph's file (written into the folder, or downloaded in a read-only
+	// folder); a graph without a file yet opens the menu, where Save as names it
+	function saveShortcut(): void {
+		if ($workspace.fileName) {
+			save();
+		} else {
+			menuOpen.set(true);
+			notify('Not saved yet: choose a folder or use Save as');
+		}
+	}
+
 	function deleteSelection(): void {
 		const sel = $selection;
 		if (sel.link) graph.update((g) => removeLink(g, sel.link!));
@@ -249,7 +285,7 @@
 		const ids = $selection.nodes;
 		if (ids.length !== 2) return notify('Select two nodes (Shift+click), then press F');
 		const link = quickLink($graph, ids[0], ids[1]);
-		if (!link) return notify('No free input to link: each input takes one link');
+		if (!link) return notify('These nodes are already linked (or have no output / input)');
 		connect(link);
 	}
 
@@ -299,7 +335,7 @@
 			maxX = -Infinity,
 			maxY = -Infinity;
 		for (const node of nodes) {
-			const el = document.querySelector<HTMLElement>(`.world .node[data-id="${node._id}"]`);
+			const el = document.querySelector<HTMLElement>(`.world .node[data-id="${node.id}"]`);
 			// offsetWidth/Height ignore the zoom transform, so they are world units
 			const width = el?.offsetWidth ?? 0;
 			const height = el?.offsetHeight ?? 0;
@@ -338,8 +374,8 @@
 			style="transform: translate({worldTranslateX}px, {worldTranslateY}px) scale({$camera.zoom});"
 		>
 			<GraphLinks drag={linkDrag} />
-			{#each $graph.data.nodes as node (node._id)}
-				<GraphNode {node} selected={$selection.nodes.includes(node._id)} />
+			{#each $graph.data.nodes as node (node.id)}
+				<GraphNode {node} selected={$selection.nodes.includes(node.id)} />
 			{/each}
 		</div>
 	</div>

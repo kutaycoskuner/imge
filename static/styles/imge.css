@@ -104,6 +104,25 @@ new
     background-color: var(--col-selected);
 }
 
+/* keyboard key caps (Kbd.svelte, and any <kbd> on the site) */
+kbd {
+    display: inline-block;
+    min-width: 1.2em;
+    padding: 0.05em 0.4em;
+    font-family: inherit;
+    font-size: 0.8em;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    text-transform: none;
+    color: var(--col);
+    background: var(--bg);
+    border: 1px solid var(--col-border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
 /* selection: Blender-like orange */
 :root {
     --col-selected: #ffa033;

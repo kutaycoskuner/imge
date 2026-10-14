@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-14
+	//   last update     : 2026-10-15
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -13,6 +13,7 @@
 	// docs/graph-saving.md, "A menu for each page".
 	import { onMount } from 'svelte';
 	import { menuOpen, pageMenu } from '../../stores/imge_main';
+	import Kbd from './Kbd.svelte';
 
 	let mainSelectionName: string = '';
 
@@ -45,7 +46,7 @@
 {#if $menuOpen}
 	<div class="overlay">
 		<button class="overlay-close" on:click={() => menuOpen.set(false)}>
-			<span class="overlay-close-text">Close</span> <span class="overlay-close-icon">&times;</span>
+			<span class="overlay-close-text">Close <Kbd keys="Esc" /></span> <span class="overlay-close-icon">&times;</span>
 		</button>
 
 		{#if $pageMenu}

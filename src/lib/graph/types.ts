@@ -55,9 +55,47 @@ export interface GraphV1 {
 }
 
 // -----------------------------------------------------------------------------------------
+// v2 -- ids n1 / l1 / i1 / o1, `name`, ports directly on the node; links have their own id
+// and source/target endpoints, and an input may take many links
+// -----------------------------------------------------------------------------------------
+export interface PortV2 {
+	id: string; // unique only within its node: inputs i1, i2 ..., outputs o1, o2 ...
+	type: string;
+	label: string;
+}
+
+export interface NodeV2 {
+	id: string; // unique within the graph: n1, n2 ...
+	name: string;
+	type: string;
+	position: { x: number; y: number }; // top-left corner, world coords, y up
+	inputs: PortV2[];
+	outputs: PortV2[];
+}
+
+export interface LinkEndV2 {
+	node: string; // node id
+	port: string; // port id within that node
+}
+
+export interface LinkV2 {
+	id: string; // unique within the graph: l1, l2 ...; it stays the same when the link is re-routed
+	type: string;
+	name?: string;
+	source: LinkEndV2; // an output port
+	target: LinkEndV2; // an input port
+}
+
+export interface GraphV2 {
+	metadata: { format: typeof GRAPH_FORMAT; version: 2; [key: string]: unknown };
+	data: { nodes: NodeV2[]; links: LinkV2[] };
+}
+
+// -----------------------------------------------------------------------------------------
 // current version -- the app only works with these
 // -----------------------------------------------------------------------------------------
-export type Port = PortV1;
-export type GraphNode = NodeV1;
-export type Link = LinkV1;
-export type Graph = GraphV1;
+export type Port = PortV2;
+export type GraphNode = NodeV2;
+export type LinkEnd = LinkEndV2;
+export type Link = LinkV2;
+export type Graph = GraphV2;

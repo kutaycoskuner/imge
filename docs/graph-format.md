@@ -1,8 +1,8 @@
 # Graph file format
 
-The JSON structure the graph editor loads and exports, its version history, and how to add a new version with an adapter that upgrades older files.
+The JSON structure the graph editor loads and exports, its version history with a sample per version, and how to add a new version with an adapter that upgrades older files.
 
-Current version: **1**
+Current version: **2**
 
 ## Files
 
@@ -10,29 +10,34 @@ Current version: **1**
 |---|---|
 | `src/lib/graph/types.ts` | TypeScript shapes, one set per version; old versions stay frozen for their adapters. |
 | `src/lib/graph/migrations.ts` | `CURRENT_GRAPH_VERSION`, the adapters and `migrateGraph()`. |
-| `src/lib/graph/migrations.spec.ts` | Tests: every old version upgrades correctly; bad files are refused. |
+| `src/lib/graph/migrations.spec.ts` | Tests: every version sample upgrades to exactly the current sample; bad files are refused. |
+| `static/data/samples/graph-v<n>.json` | The same tiny graph (2 nodes, 1 link) saved in each format version, to compare versions side by side; also the test fixtures. |
 | `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera branch, graph-data branch), each link meaning "builds on". |
 
-## Structure (version 1)
+## Structure (version 2)
 
 ```json
 {
-    "metadata": { "format": "imge-graph", "version": 1 },
+    "metadata": { "format": "imge-graph", "version": 2 },
     "data": {
         "nodes": [
             {
-                "_id": 0,
+                "id": "n1",
+                "name": "First Node",
                 "type": "basic",
                 "position": { "x": 0, "y": -140 },
-                "data": {
-                    "title": "First Node",
-                    "inputs": [],
-                    "outputs": [{ "id": "output_0", "type": "basic", "label": "Output A" }]
-                }
+                "inputs": [],
+                "outputs": [{ "id": "o1", "type": "basic", "label": "Output A" }]
             }
         ],
         "links": [
-            { "sourceNodeId": 0, "sourceOutputId": "output_0", "targetNodeId": 1, "targetInputId": "input_0" }
+            {
+                "id": "l1",
+                "type": "basic",
+                "name": "optional",
+                "source": { "node": "n1", "port": "o1" },
+                "target": { "node": "n2", "port": "i1" }
+            }
         ]
     }
 }
@@ -43,36 +48,51 @@ Current version: **1**
     - `version`: whole number, the format version the file is written in
     - other keys are allowed and carried over unchanged
 - `data.nodes[]`
-    - `_id`: number, unique within the graph
+    - `id`: string, unique within the graph: `n1`, `n2` ...; the editor never reuses an id
+    - `name`: text shown on the node
     - `type`: node kind, currently always `"basic"`
     - `position`: world coordinates of the node's top-left corner; x right, **y up** (see [graph-editor-canvas.md](graph-editor-canvas.md))
-    - `data.title`: text shown on the node
-    - `data.inputs[]` / `data.outputs[]`: ports
-        - `id`: unique **within its node only**, e.g. `output_0`
+    - `inputs[]` / `outputs[]`: ports
+        - `id`: unique **within its node only**: inputs `i1`, `i2` ..., outputs `o1`, `o2` ...
         - `type`: port kind, currently always `"basic"`
-        - `label`: display name
+        - `label`: display name (shown as a tooltip on the port)
+    - other keys are allowed and carried over unchanged
 - `data.links[]`: one connection from an output port to an input port
-    - `sourceNodeId` + `sourceOutputId`: the output it starts at
-    - `targetNodeId` + `targetInputId`: the input it ends at
-    - a port is identified by node id + port id together, because port ids repeat across nodes
+    - `id`: string, unique within the graph: `l1`, `l2` ...; it means nothing on purpose, so it stays the same when the link is re-routed and anything attached to it keeps track of it
+    - `type`: link kind, currently always `"basic"`
+    - `name`: optional label (shown as a tooltip on the link)
+    - `source`: `{ node, port }`, the output it starts at
+    - `target`: `{ node, port }`, the input it ends at
     - rules (enforced by the editor, `addLink()` in `src/lib/graph/store.ts`):
         - always from an output to an input; never from a node to itself
-        - an input has at most one link, so `targetNodeId` + `targetInputId` identifies a link; no separate link id is needed
-        - an output may feed any number of inputs
+        - any number of links may meet at a port, in both directions (many-to-many)
+        - no exact duplicates: one link per output-port → input-port pair
+
+## Version samples
+
+The same graph (First Node → Second Node) in every version, so the differences are easy to see:
+
+| Version | Sample |
+|---|---|
+| 0 | [graph-v0.json](../static/data/samples/graph-v0.json) |
+| 1 | [graph-v1.json](../static/data/samples/graph-v1.json) |
+| 2 | [graph-v2.json](../static/data/samples/graph-v2.json) |
+
+The tests load every sample and check that it upgrades to **exactly** the newest one, so the samples double as the adapters' specification.
 
 ## Loading and saving
 
 - **Loading:** the editor passes every file through `migrateGraph()`.
     - the version is read from `metadata.version`; a file with neither `format` nor `version` is version 0
-    - adapters run one after another until the file reaches the current version: `0 → 1 → 2 ...`
-    - every adapter that ran is logged in the browser console ("graph upgraded from v0 to v1: ..."), so an upgrade never happens silently
+    - adapters run one after another until the file reaches the current version: `0 → 1 → 2`
+    - every adapter that ran is logged in the browser console ("graph upgraded from v0 to v2: ..."), so an upgrade never happens silently
     - the original object is not changed
 - **Refused files:** throw `GraphFormatError` instead of being guessed at:
     - no `data.nodes` array (not a graph file)
     - another `format` name
     - a `version` that isn't a whole number ≥ 1
     - a version newer than the app (the file was written by a newer imge)
-- **Saving:** Export always writes the current version (`stampCurrentVersion()`).
+- **Saving:** always writes the current version (`stampCurrentVersion()`).
 
 ## Version history
 
@@ -80,6 +100,7 @@ Current version: **1**
 |---|---|---|---|
 | 0 | before 2026-10-14 | Unversioned files: empty `metadata`, positions with **y down**. | – |
 | 1 | 2026-10-14 | Adds `metadata.format` and `metadata.version`. Positions use **y up**, since the editor's world y axis now points up. | `0 → 1`: adds the metadata, negates every node's `position.y` so the layout looks the same as before. |
+| 2 | 2026-10-15 | Ids follow one scheme: nodes `n1`, `n2` ..., links `l1`, `l2` ..., ports per node `i1` ... / `o1` ... (were `_id` numbers and `input_0` / `output_0`). `name` (was `data.title`), ports directly on the node (were in `data`). Links get their own `id`, a `type`, an optional `name`, and `source` / `target` endpoints (were four `source…Id` / `target…Id` fields). An input may take many links. | `1 → 2`: renumbers nodes, ports and links by position in the file (the link ends follow), renames the node fields and moves the ports up, turns the endpoint fields into `source` / `target`. |
 
 ## Adding a new version
 
@@ -91,20 +112,21 @@ Do this for every change to the file structure or to what a field means, however
     - `description`: what changes, in words a user understands (it's logged on load)
     - `migrate`: a pure function from `GraphV<n>` to `GraphV<n+1>`; it returns a new object and keeps every field it doesn't change
 3. **Version:** set `CURRENT_GRAPH_VERSION = n+1`.
-4. **Test:** in `migrations.spec.ts`, add a fixture in the old version `n` and a test that upgrades it to the current version and checks the changed fields. The older fixtures stay; they now run through the longer chain too.
-5. **Test graph:** update `static/data/test-node-graph.json` to the new version.
-6. **Docs:** add a row to the version history above and update the structure section.
+4. **Sample:** add `static/data/samples/graph-v<n+1>.json` (the same tiny graph in the new version) and a line for it in `SAMPLES` in `migrations.spec.ts`. The tests then check that every older sample upgrades to exactly the new one.
+5. **Base graph:** update `static/data/test-node-graph.json` to the new version.
+6. **Docs:** add a row to the version history and the samples table above, and update the structure section.
 
 **Never edit a released adapter.** Files already upgraded by it would no longer match what it produces. If an adapter was wrong, fix it with a new version and adapter.
 
 ## Known gaps (candidates for a later version)
 
-- Nodes use `_id`, while links refer to nodes as `sourceNodeId` / `targetNodeId`: the naming is inconsistent.
-- Links have no id of their own; with one link per input that's enough for now (target node + input identifies a link), but it would be needed if an input ever accepts several links.
-- Import isn't wired up yet; only the test graph is loaded.
+- Ports can't be added or removed in the editor yet; new nodes have one input and one output.
+- Link `type` and `name` can't be edited in the editor yet; they are kept when a link is re-routed.
 
 ## Changes
 
+- 2026-10-15 — v2 ids follow one scheme: nodes `n1`, links `l1`, inputs `i1`, outputs `o1` (v2 wasn't released yet, so the `1 → 2` adapter does the renaming; no v3)
+- 2026-10-14 — format version 2 (string ids, `name`, ports on the node, links with id / type / name / source / target, many-to-many links); version samples in `static/data/samples/`; the base graph is stored as v2
 - 2026-10-14 — base graph replaced by a feature map of the editor (17 nodes, 15 links)
 - 2026-10-14 — link rules added (output → input, no self-links, one link per input, which makes target node + input the link's identity); format version unchanged
 - 2026-10-14 — first version: structure of format version 1, loading/saving rules, version history (v0, v1), procedure for adding a new version

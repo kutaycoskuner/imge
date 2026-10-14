@@ -64,19 +64,19 @@ npm run test:unit -- --run
 - [x] rendering from json content
 - [x] node movement (multi-select with Shift+click moves together)
 - [x] add / delete nodes (toolbar button or Shift+A, Delete)
-- [x] node title editing (double-click or F2)
+- [x] node name editing (double-click or F2)
 - [x] link rendering
-- [x] node linking (drag output to input, or F on two selected nodes; drag an input's end away to detach)
-- [x] export data as json
+- [x] node linking (drag output to input, or F on two selected nodes; drag an input's end away to detach); many links per port, each link with its own id
+- [x] export data as json (default name imgegraph-<date>-<NN>.json)
 - [x] point the editor at a folder on your computer: its imge graphs are listed by name and open with a click; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
 - [x] Esc menu per page (graph editor has its own)
-- [x] versioned graph format, older files upgraded on load
+- [x] versioned graph format (now v2), older files upgraded on load; a sample per version in static/data/samples
 - [ ] vertical / horizontal frameworks
 - [ ] node content / color editing
 - [ ] add / remove ports
 - [ ] undo
 
-Shortcuts (Shift+A, F2, F, Delete ...) and link rules: [docs/graph-editing.md](docs/graph-editing.md#mouse-and-keys)
+Shortcuts (Shift+A, F2, F, Delete, +/-, Home, Ctrl+S, Ctrl+Shift+S, Esc) and link rules: [docs/graph-editing.md](docs/graph-editing.md#mouse-and-keys); the toolbar hints and menu buttons show their keys as key caps
 
 # Docs
 - [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid

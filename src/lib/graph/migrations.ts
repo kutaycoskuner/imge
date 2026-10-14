@@ -17,9 +17,16 @@
 // Adding a version: docs/graph-format.md, "Adding a new version".
 // -----------------------------------------------------------------------------------------
 
-import { GRAPH_FORMAT, type Graph, type GraphV0, type GraphV1 } from './types';
+import {
+	GRAPH_FORMAT,
+	type Graph,
+	type GraphV0,
+	type GraphV1,
+	type GraphV2,
+	type PortV1
+} from './types';
 
-export const CURRENT_GRAPH_VERSION = 1;
+export const CURRENT_GRAPH_VERSION = 2;
 
 export class GraphFormatError extends Error {
 	constructor(message: string) {
@@ -55,6 +62,53 @@ const MIGRATIONS: Migration[] = [
 				}))
 			}
 		})
+	},
+	{
+		from: 1,
+		to: 2,
+		description:
+			'ids renumbered (nodes n1.., links l1.., inputs i1.., outputs o1..), title -> name, ports on the node, links get source/target',
+		migrate: (graph: GraphV1): GraphV2 => {
+			// everything is renumbered by position: nodes n1, n2 ... in file order, each
+			// node's inputs i1, i2 ... and outputs o1, o2 ...; the maps let link ends follow
+			const nodeIds = new Map<number, string>();
+			const portIds = new Map<string, string>(); // "<old node>:<i|o>:<old port>" -> new port
+			const rename = (oldNode: number, ports: PortV1[], prefix: 'i' | 'o') =>
+				ports.map((port, i) => {
+					const id = `${prefix}${i + 1}`;
+					portIds.set(`${oldNode}:${prefix}:${port.id}`, id);
+					return { ...port, id };
+				});
+			const nodes = graph.data.nodes.map(({ _id, data, ...rest }, i) => {
+				nodeIds.set(_id, `n${i + 1}`);
+				return {
+					...rest, // type, position and any extra keys carry over
+					id: `n${i + 1}`,
+					name: data.title,
+					inputs: rename(_id, data.inputs, 'i'),
+					outputs: rename(_id, data.outputs, 'o')
+				};
+			});
+			// an end pointing at a missing node or port keeps its old id (as text), so nothing is lost
+			const end = (oldNode: number, prefix: 'i' | 'o', oldPort: string) => ({
+				node: nodeIds.get(oldNode) ?? String(oldNode),
+				port: portIds.get(`${oldNode}:${prefix}:${oldPort}`) ?? oldPort
+			});
+			return {
+				...graph,
+				metadata: { ...graph.metadata, format: GRAPH_FORMAT, version: 2 },
+				data: {
+					...graph.data,
+					nodes,
+					links: graph.data.links.map((link, i) => ({
+						id: `l${i + 1}`,
+						type: 'basic',
+						source: end(link.sourceNodeId, 'o', link.sourceOutputId),
+						target: end(link.targetNodeId, 'i', link.targetInputId)
+					}))
+				}
+			};
+		}
 	}
 ];
 

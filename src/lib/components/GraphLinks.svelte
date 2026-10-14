@@ -14,15 +14,15 @@
 	// its node's corner), so curves stay attached when a title changes a node's size. The
 	// offsets don't depend on pan/zoom, so they are re-measured only after the graph changes.
 	// Each link has an invisible wide `.link-hit` path so it's easy to click; the page reads
-	// its data-* attributes to select it.
+	// its data-link-id to select it. A link's optional name shows as a tooltip.
 	import { browser } from '$app/environment';
 	import { tick } from 'svelte';
-	import { graph, selection, isLinkKey } from '$lib/graph/store';
+	import { graph, selection } from '$lib/graph/store';
 	import type { Point } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
 
 	export let drag: {
-		nodeId: number;
+		nodeId: string;
 		kind: 'input' | 'output';
 		portId: string;
 		to: Point; // mouse, world layer CSS coords
@@ -59,11 +59,11 @@
 	function portPosition(
 		nodes: GraphNode[],
 		offsets: Record<string, Point>,
-		nodeId: number,
+		nodeId: string,
 		kind: string,
 		portId: string
 	): Point | null {
-		const node = nodes.find((n) => n._id === nodeId);
+		const node = nodes.find((n) => n.id === nodeId);
 		const offset = offsets[`${nodeId}:${kind}:${portId}`];
 		if (!node || !offset) return null;
 		return { x: node.position.x + offset.x, y: -node.position.y + offset.y };
@@ -79,10 +79,10 @@
 	$: nodes = $graph.data.nodes;
 
 	$: paths = $graph.data.links.flatMap((link) => {
-		const from = portPosition(nodes, portOffsets, link.sourceNodeId, 'output', link.sourceOutputId);
-		const to = portPosition(nodes, portOffsets, link.targetNodeId, 'input', link.targetInputId);
+		const from = portPosition(nodes, portOffsets, link.source.node, 'output', link.source.port);
+		const to = portPosition(nodes, portOffsets, link.target.node, 'input', link.target.port);
 		if (!from || !to) return [];
-		return [{ link, d: curve(from, to), selected: isLinkKey(link, $selection.link) }];
+		return [{ link, d: curve(from, to), selected: link.id === $selection.link }];
 	});
 
 	$: preview = (() => {
@@ -95,14 +95,11 @@
 </script>
 
 <svg class="links-layer" aria-hidden="true">
-	{#each paths as { link, d, selected } (`${link.targetNodeId}:${link.targetInputId}`)}
+	{#each paths as { link, d, selected } (link.id)}
 		<path class="link" class:selected {d} />
-		<path
-			class="link-hit"
-			{d}
-			data-target-node-id={link.targetNodeId}
-			data-target-input-id={link.targetInputId}
-		/>
+		<path class="link-hit" {d} data-link-id={link.id}>
+			{#if link.name}<title>{link.name}</title>{/if}
+		</path>
 	{/each}
 	{#if preview}
 		<path class="link link-preview" d={preview} />

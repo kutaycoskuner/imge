@@ -2,13 +2,14 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-14
+	//   last update     : 2026-10-15
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// The graph editor's Esc menu (registered by routes/+page.svelte): point it at a folder
 	// on the computer (edit folder, remember it or remove the saved folder), see the imge
-	// graphs in it by name and open one with a click, save / save as, optional autosave.
+	// graphs in it by name and open one with a click, save / save as, optional autosave,
+	// download a copy. Buttons with a shortcut show it as key caps (Kbd).
 	// Chrome and Edge read and write the folder; Firefox and Safari can only read it, so
 	// saving downloads the file there. All actions and state live in $lib/graph/file-access.ts.
 	import {
@@ -22,8 +23,11 @@
 		save,
 		saveAs,
 		setAutosave,
-		uploadGraph
+		uploadGraph,
+		downloadGraph,
+		defaultGraphName
 	} from '$lib/graph/file-access';
+	import Kbd from './Kbd.svelte';
 
 	let saveAsName = '';
 	$: w = $workspace;
@@ -121,11 +125,16 @@
 						>{/if}
 				</span>
 				<button class="action" disabled={!w.fileName} on:click={save}>
-					{w.folder ? 'Save' : 'Save (download)'}
+					{w.folder ? 'Save' : 'Save (download)'} <Kbd keys="Ctrl+S" />
 				</button>
 			</div>
 			<form class="row" on:submit|preventDefault={() => saveAs(saveAsName)}>
-				<input class="name" placeholder="graph name" bind:value={saveAsName} />
+				<!-- left empty, Save as uses the shown default name -->
+				<input
+					class="name"
+					placeholder={defaultGraphName(w.files.map((f) => f.name))}
+					bind:value={saveAsName}
+				/>
 				<button class="action" type="submit">{w.folder ? 'Save as' : 'Save as (download)'}</button>
 			</form>
 			{#if w.folder}
@@ -141,11 +150,14 @@
 		</section>
 	{/if}
 
-	{#if !w.supported}
-		<div class="row">
+	<div class="row">
+		{#if !w.supported}
 			<button class="action subtle" on:click={uploadGraph}>Open a single file…</button>
-		</div>
-	{/if}
+		{/if}
+		<button class="action subtle" on:click={downloadGraph}>
+			Download a copy <Kbd keys="Ctrl+Shift+S" />
+		</button>
+	</div>
 
 	{#if w.status}
 		<p class="status">{w.status}</p>

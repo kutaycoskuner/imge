@@ -6,102 +6,117 @@
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
 // store.ts -- the open graph, the selection, and every create/update/delete operation on
-// nodes and links.
+// nodes and links (graph format v2, see docs/graph-format.md).
 //
 // Operations are pure functions (graph in, new graph out) so they are easy to test and
 // never half-apply; components call them through `graph.update(g => op(g, ...))`.
-// Link rules live in addLink(): output -> input only, no self-links, one link per input
-// (a new one replaces the old), outputs may feed many inputs. Because of the one-per-input
-// rule, a link is identified by its target node + target input (`LinkKey`).
+// Link rules live in addLink(): output -> input only, no self-links, no exact duplicates
+// (same output port to same input port); otherwise any number of links may meet at a port.
+// Links are identified by their own id, which never changes when a link is edited.
+// Id scheme: nodes n1, n2 ..., links l1, l2 ..., ports per node i1, i2 ... / o1, o2 ...
 //
-// Used by: routes/+page.svelte, GraphNode, GraphLinks, UI_GraphEditor.
-// Details: docs/graph-editor-canvas.md ("Editing nodes and links"), docs/graph-format.md
+// Used by: routes/+page.svelte, GraphNode, GraphLinks, UI_GraphEditor, file-access.ts.
+// Details: docs/graph-editing.md, docs/graph-format.md
 // -----------------------------------------------------------------------------------------
 
 import { writable } from 'svelte/store';
-import { GRAPH_FORMAT, type Graph, type GraphNode, type Link } from './types';
+import { GRAPH_FORMAT, type Graph, type GraphNode, type Link, type LinkEnd } from './types';
 
 export interface Point {
 	x: number;
 	y: number;
 }
 
-export interface LinkKey {
-	targetNodeId: number;
-	targetInputId: string;
-}
-
 export interface Selection {
-	nodes: number[]; // in selection order
-	link: LinkKey | null;
+	nodes: string[]; // node ids, in selection order
+	link: string | null; // link id
 }
 
-export type LinkOutcome = 'added' | 'replaced' | 'exists' | 'self-link' | 'unknown-port';
+/** What addLink did: 'added', or why the graph is unchanged. */
+export type LinkOutcome = 'added' | 'exists' | 'self-link' | 'unknown-port';
 
 // a new node's top-left is placed this far from the requested point, so the node appears
 // roughly centered on it (a default node is about 192 x 80 px at zoom 1)
 const NEW_NODE_OFFSET: Point = { x: -96, y: 40 };
 
 export function emptyGraph(): Graph {
-	return { metadata: { format: GRAPH_FORMAT, version: 1 }, data: { nodes: [], links: [] } };
+	return { metadata: { format: GRAPH_FORMAT, version: 2 }, data: { nodes: [], links: [] } };
 }
 
 export const graph = writable<Graph>(emptyGraph());
 export const selection = writable<Selection>({ nodes: [], link: null });
-export const editingNodeId = writable<number | null>(null); // node whose title is being edited
+export const editingNodeId = writable<string | null>(null); // node whose name is being edited
+
+// -----------------------------------------------------------------------------------------
+// ids
+// -----------------------------------------------------------------------------------------
+/** Next free node id: "n" + one above the highest "n<number>" id (n1, n2 ...); never reused. */
+export function nextNodeId(g: Graph): string {
+	return nextId(g.data.nodes, 'n');
+}
+
+/** Next free link id: "l" + one above the highest "l<number>" id (l1, l2 ...); never reused. */
+export function nextLinkId(g: Graph): string {
+	return nextId(g.data.links, 'l');
+}
+
+// "<prefix><n>" with n one above the highest number already used with that prefix;
+// ids in another form are ignored
+function nextId(items: { id: string }[], prefix: string): string {
+	const pattern = new RegExp(`^${prefix}(\\d+)$`);
+	const numbers = items
+		.map((item) => pattern.exec(item.id))
+		.filter((m): m is RegExpExecArray => m !== null)
+		.map((m) => Number(m[1]));
+	return `${prefix}${Math.max(0, ...numbers) + 1}`;
+}
 
 // -----------------------------------------------------------------------------------------
 // nodes
 // -----------------------------------------------------------------------------------------
-export function nextNodeId(g: Graph): number {
-	return g.data.nodes.reduce((max, n) => Math.max(max, n._id), -1) + 1;
-}
-
 /** Adds a node with one input and one output, roughly centered on `at` (world coords). */
-export function addNode(g: Graph, at: Point, title = 'Node'): { graph: Graph; node: GraphNode } {
+export function addNode(g: Graph, at: Point, name = 'Node'): { graph: Graph; node: GraphNode } {
 	const node: GraphNode = {
-		_id: nextNodeId(g),
+		id: nextNodeId(g),
+		name,
 		type: 'basic',
 		position: { x: Math.round(at.x + NEW_NODE_OFFSET.x), y: Math.round(at.y + NEW_NODE_OFFSET.y) },
-		data: {
-			title,
-			inputs: [{ id: 'input_0', type: 'basic', label: 'Input' }],
-			outputs: [{ id: 'output_0', type: 'basic', label: 'Output' }]
-		}
+		inputs: [{ id: 'i1', type: 'basic', label: 'Input' }],
+		outputs: [{ id: 'o1', type: 'basic', label: 'Output' }]
 	};
 	return { graph: withNodes(g, [...g.data.nodes, node]), node };
 }
 
-/** Sets a node's title; an empty or blank title keeps the old one. */
-export function renameNode(g: Graph, nodeId: number, title: string): Graph {
-	const trimmed = title.trim();
+/** Sets a node's name; an empty or blank name keeps the old one. */
+export function renameNode(g: Graph, nodeId: string, name: string): Graph {
+	const trimmed = name.trim();
 	if (!trimmed) return g;
 	return withNodes(
 		g,
-		g.data.nodes.map((n) => (n._id === nodeId ? { ...n, data: { ...n.data, title: trimmed } } : n))
+		g.data.nodes.map((n) => (n.id === nodeId ? { ...n, name: trimmed } : n))
 	);
 }
 
 /** Moves the given nodes by a world-space delta. */
-export function moveNodes(g: Graph, nodeIds: number[], dx: number, dy: number): Graph {
+export function moveNodes(g: Graph, nodeIds: string[], dx: number, dy: number): Graph {
 	const ids = new Set(nodeIds);
 	return withNodes(
 		g,
 		g.data.nodes.map((n) =>
-			ids.has(n._id) ? { ...n, position: { x: n.position.x + dx, y: n.position.y + dy } } : n
+			ids.has(n.id) ? { ...n, position: { x: n.position.x + dx, y: n.position.y + dy } } : n
 		)
 	);
 }
 
 /** Removes nodes and every link attached to them. */
-export function removeNodes(g: Graph, nodeIds: number[]): Graph {
+export function removeNodes(g: Graph, nodeIds: string[]): Graph {
 	const ids = new Set(nodeIds);
 	return {
 		...g,
 		data: {
 			...g.data,
-			nodes: g.data.nodes.filter((n) => !ids.has(n._id)),
-			links: g.data.links.filter((l) => !ids.has(l.sourceNodeId) && !ids.has(l.targetNodeId))
+			nodes: g.data.nodes.filter((n) => !ids.has(n.id)),
+			links: g.data.links.filter((l) => !ids.has(l.source.node) && !ids.has(l.target.node))
 		}
 	};
 }
@@ -109,84 +124,92 @@ export function removeNodes(g: Graph, nodeIds: number[]): Graph {
 // -----------------------------------------------------------------------------------------
 // links
 // -----------------------------------------------------------------------------------------
-const hasPort = (g: Graph, nodeId: number, kind: 'inputs' | 'outputs', portId: string) =>
-	g.data.nodes.some((n) => n._id === nodeId && n.data[kind].some((p) => p.id === portId));
+const hasPort = (g: Graph, end: LinkEnd, kind: 'inputs' | 'outputs') =>
+	g.data.nodes.some((n) => n.id === end.node && n[kind].some((p) => p.id === end.port));
+
+const sameEnd = (a: LinkEnd, b: LinkEnd) => a.node === b.node && a.port === b.port;
 
 /**
- * Connects an output to an input, following the link rules.
+ * Connects an output port (`source`) to an input port (`target`), following the link rules.
+ *
+ * Args:
+ *     link: the two ends, plus optional `type`, `name`, and `id` -- pass the old id when
+ *         re-routing a link so it keeps its identity (ignored if another link uses it).
  *
  * Returns:
- *     The new graph and what happened: 'added', 'replaced' (the input had another link),
- *     or, with the graph unchanged, 'exists', 'self-link' or 'unknown-port'.
+ *     The new graph, what happened, and the new link when one was added. With any outcome
+ *     other than 'added' the graph is unchanged: 'exists' (this exact link is there),
+ *     'self-link', or 'unknown-port' (missing node/port, or an input used as source).
  */
-export function addLink(g: Graph, link: Link): { graph: Graph; outcome: LinkOutcome } {
-	if (link.sourceNodeId === link.targetNodeId) return { graph: g, outcome: 'self-link' };
-	if (
-		!hasPort(g, link.sourceNodeId, 'outputs', link.sourceOutputId) ||
-		!hasPort(g, link.targetNodeId, 'inputs', link.targetInputId)
-	) {
+export function addLink(
+	g: Graph,
+	link: { source: LinkEnd; target: LinkEnd; type?: string; name?: string; id?: string }
+): { graph: Graph; outcome: LinkOutcome; link?: Link } {
+	if (link.source.node === link.target.node) return { graph: g, outcome: 'self-link' };
+	if (!hasPort(g, link.source, 'outputs') || !hasPort(g, link.target, 'inputs')) {
 		return { graph: g, outcome: 'unknown-port' };
 	}
+	if (findLink(g, link.source, link.target)) return { graph: g, outcome: 'exists' };
 
-	const current = findLinkInto(g, link);
-	if (
-		current &&
-		current.sourceNodeId === link.sourceNodeId &&
-		current.sourceOutputId === link.sourceOutputId
-	) {
-		return { graph: g, outcome: 'exists' };
-	}
-	const links = g.data.links.filter((l) => !isLinkKey(l, link));
+	const idFree = link.id && !g.data.links.some((l) => l.id === link.id);
+	const created: Link = {
+		id: idFree ? link.id! : nextLinkId(g),
+		type: link.type ?? 'basic',
+		...(link.name ? { name: link.name } : {}),
+		source: { ...link.source },
+		target: { ...link.target }
+	};
 	return {
-		graph: { ...g, data: { ...g.data, links: [...links, { ...link }] } },
-		outcome: current ? 'replaced' : 'added'
+		graph: { ...g, data: { ...g.data, links: [...g.data.links, created] } },
+		outcome: 'added',
+		link: created
 	};
 }
 
-export function removeLink(g: Graph, key: LinkKey): Graph {
-	return { ...g, data: { ...g.data, links: g.data.links.filter((l) => !isLinkKey(l, key)) } };
+export function removeLink(g: Graph, linkId: string): Graph {
+	return { ...g, data: { ...g.data, links: g.data.links.filter((l) => l.id !== linkId) } };
 }
 
-/** The link going into the given input, if any. */
-export function findLinkInto(g: Graph, key: LinkKey): Link | undefined {
-	return g.data.links.find((l) => isLinkKey(l, key));
+/** The link from this output to this input, if there is one. */
+export function findLink(g: Graph, source: LinkEnd, target: LinkEnd): Link | undefined {
+	return g.data.links.find((l) => sameEnd(l.source, source) && sameEnd(l.target, target));
 }
 
-export function isLinkKey(link: LinkKey, key: LinkKey | null): boolean {
-	return (
-		!!key && link.targetNodeId === key.targetNodeId && link.targetInputId === key.targetInputId
-	);
+/** All links going into an input port, oldest first. */
+export function linksInto(g: Graph, target: LinkEnd): Link[] {
+	return g.data.links.filter((l) => sameEnd(l.target, target));
 }
 
 /**
  * Picks the link the F shortcut makes between two nodes: the first output of one into the
- * first input of the other that has no link yet. Left to right is tried first (the usual
- * reading direction of a graph); if that isn't possible, right to left.
+ * first input of the other. Left to right is tried first (the usual reading direction of
+ * a graph); if that isn't possible or already exists, right to left.
  *
  * Returns:
- *     The link, or null when either node is missing or no direction has an output and a
- *     free input.
+ *     The link's ends, or null when either node is missing or neither direction works.
  */
-export function quickLink(g: Graph, nodeIdA: number, nodeIdB: number): Link | null {
-	const a = g.data.nodes.find((n) => n._id === nodeIdA);
-	const b = g.data.nodes.find((n) => n._id === nodeIdB);
+export function quickLink(
+	g: Graph,
+	nodeIdA: string,
+	nodeIdB: string
+): { source: LinkEnd; target: LinkEnd } | null {
+	const a = g.data.nodes.find((n) => n.id === nodeIdA);
+	const b = g.data.nodes.find((n) => n.id === nodeIdB);
 	if (!a || !b || a === b) return null;
 	const [left, right] = a.position.x <= b.position.x ? [a, b] : [b, a];
 	return linkBetween(g, left, right) ?? linkBetween(g, right, left);
 }
 
-function linkBetween(g: Graph, source: GraphNode, target: GraphNode): Link | null {
-	const output = source.data.outputs[0];
-	const input = target.data.inputs.find(
-		(p) => !findLinkInto(g, { targetNodeId: target._id, targetInputId: p.id })
-	);
+function linkBetween(
+	g: Graph,
+	from: GraphNode,
+	to: GraphNode
+): { source: LinkEnd; target: LinkEnd } | null {
+	const output = from.outputs[0];
+	const input = to.inputs[0];
 	if (!output || !input) return null;
-	return {
-		sourceNodeId: source._id,
-		sourceOutputId: output.id,
-		targetNodeId: target._id,
-		targetInputId: input.id
-	};
+	const ends = { source: { node: from.id, port: output.id }, target: { node: to.id, port: input.id } };
+	return findLink(g, ends.source, ends.target) ? null : ends;
 }
 
 // -----------------------------------------------------------------------------------------
@@ -196,7 +219,7 @@ function linkBetween(g: Graph, source: GraphNode, target: GraphNode): Link | nul
  * Selects a node. With `additive` (Shift+click) it toggles the node in the selection;
  * without, a node that is already selected keeps the selection so a group can be dragged.
  */
-export function selectNode(sel: Selection, nodeId: number, additive: boolean): Selection {
+export function selectNode(sel: Selection, nodeId: string, additive: boolean): Selection {
 	const selected = sel.nodes.includes(nodeId);
 	if (additive) {
 		return {
@@ -218,7 +241,7 @@ export function createNodeAt(at: Point): GraphNode {
 		created = result.node;
 		return result.graph;
 	});
-	selection.set({ nodes: [created._id], link: null });
+	selection.set({ nodes: [created.id], link: null });
 	return created;
 }
 

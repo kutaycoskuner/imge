@@ -2,14 +2,15 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-14
+	//   last update     : 2026-10-15
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, fit graph,
 	// add node at the screen center, open graph (opens the Esc menu), export (download) and a
-	// test pan button.
-	// Camera changes go through $lib/camera.ts; export is dispatched to the page.
+	// test pan button. Hover hints show each button's key in [brackets], drawn as key caps
+	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
+	// the page.
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
@@ -80,7 +81,7 @@
 		tabindex="0"
 		on:click={zoomIn}
 		on:keydown={(event) => event.key === 'Enter' && zoomIn()}
-		on:mouseenter={() => handleMouseOver('Zoom In')}
+		on:mouseenter={() => handleMouseOver('Zoom In [+]')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg
@@ -109,7 +110,7 @@
 		tabindex="0"
 		on:click={zoomOut}
 		on:keydown={(event) => event.key === 'Enter' && zoomOut()}
-		on:mouseenter={() => handleMouseOver('Zoom Out')}
+		on:mouseenter={() => handleMouseOver('Zoom Out [-]')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg
@@ -138,7 +139,7 @@
 		tabindex="0"
 		on:click={addNode}
 		on:keydown={(event) => event.key === 'Enter' && addNode()}
-		on:mouseenter={() => handleMouseOver('Add Node (Shift+A at mouse)')}
+		on:mouseenter={() => handleMouseOver('Add Node [Shift+A] at mouse')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg
@@ -166,7 +167,7 @@
 		tabindex="0"
 		on:click={fitToScreen}
 		on:keydown={(event) => event.key === 'Enter' && fitToScreen()}
-		on:mouseenter={() => handleMouseOver('Fit Graph')}
+		on:mouseenter={() => handleMouseOver('Fit Graph [Home]')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg
@@ -193,7 +194,7 @@
 		tabindex="0"
 		on:click={openGraphMenu}
 		on:keydown={(event) => event.key === 'Enter' && openGraphMenu()}
-		on:mouseenter={() => handleMouseOver('Open Graph (Esc menu)')}
+		on:mouseenter={() => handleMouseOver('Open Graph [Esc]')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg
@@ -218,7 +219,7 @@
 		tabindex="0"
 		on:click={exportGraph}
 		on:keydown={(event) => event.key === 'Enter' && exportGraph()}
-		on:mouseenter={() => handleMouseOver('Export Graph')}
+		on:mouseenter={() => handleMouseOver('Download Graph [Ctrl+Shift+S]')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg

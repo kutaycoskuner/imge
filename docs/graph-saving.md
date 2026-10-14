@@ -38,8 +38,8 @@ The folder is read and written directly.
 | **Edit folder…** | Point the editor at another folder (the folder dialog opens again). |
 | **Remove saved folder** | Deletes the remembered folder from the browser; it's no longer offered next time. Your files are not touched. |
 | **Reopen "*folder*"** | On a later visit, when a folder was remembered. The browser asks once to allow access again, then the graphs are listed. |
-| **Save** | Writes the open graph back to its file. Enabled once the graph has a file name. |
-| **Save as** | Type a name (`.json` is added; characters not allowed in file names become `-`) and the graph is saved under it in the folder. Asks before overwriting any existing file. |
+| **Save** (<kbd>Ctrl</kbd>+<kbd>S</kbd>) | Writes the open graph back to its file. Enabled once the graph has a file name; pressing Ctrl+S before that opens the menu so you can choose a folder or use Save as. |
+| **Save as** | Type a name (`.json` is added; characters not allowed in file names become `-`) and the graph is saved under it in the folder. Left empty, it uses the default name shown in the field: `imgegraph-<date>-<NN>`, e.g. `imgegraph-20261014-01`, with the first number not yet in the folder. Asks before overwriting any existing file. |
 | ☐ **Autosave** | Off by default. When on, the open file is saved 0.8 s after the last change (so a drag saves once, not on every frame). The setting is kept in this browser. |
 | • unsaved changes | Shown next to the graph name when it changed since it was opened or saved. Opening another graph then asks first. |
 
@@ -50,11 +50,11 @@ All results and errors (saved, couldn't open, access not allowed ...) appear as 
 These browsers let a page **read** a folder you pick, but never write to it or remember it. The menu says so in one line. There:
 
 - **Choose folder…** / **Edit folder…** picks a folder each visit; the imge graphs in it are listed the same way, marked "(read only)", and open with a click.
-- **Save (download)** / **Save as (download)** downloads the updated graph under its file name; put it back into the folder yourself.
+- **Save (download)** (<kbd>Ctrl</kbd>+<kbd>S</kbd>) / **Save as (download)** downloads the updated graph under its file name; put it back into the folder yourself.
 - There's no "remember" and no autosave, since the browser can't write to the folder.
 - **Open a single file…** uploads one graph file, without choosing a folder.
 
-The toolbar's export button (the arrow pointing down) always downloads, in every browser.
+The toolbar's export button (the arrow pointing down), the menu's **Download a copy** and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> always download, in every browser. A graph that doesn't have a file yet downloads as `imgegraph-<date>-<NN>.json` (e.g. `imgegraph-20261014-01.json`); the number counts up with each such download and starts again at `01` the next day.
 
 ### What is stored where
 
@@ -63,12 +63,13 @@ The toolbar's export button (the arrow pointing down) always downloads, in every
 | Your graphs | The `.json` files in the folder you chose, on your computer. | No. |
 | Access to the folder ("remember") | A folder handle in the browser's IndexedDB storage (`imge` database), only after you answer **Yes**. A cookie can't hold folder access, and browsers never tell a page a folder's real path; the handle is the browser's safe equivalent. | No. |
 | Autosave on/off | `localStorage` key `imge.graphEditor.autosave`. | No. |
+| Last default download number of the day | `localStorage` key `imge.graphEditor.downloadCounter` (the browser can't see your downloads folder, so it counts here). | No. |
 
 Clearing the site's data in the browser removes the remembered folder and the autosave setting; your files stay where they are.
 
 ## The Esc menu
 
-- **Esc** opens and closes the menu on every page; so does the menu's Close button.
+- **Esc** opens and closes the menu on every page; so does the menu's Close button (shown as "Close <kbd>Esc</kbd>").
 - In the graph editor, Esc first cancels what's in progress, and only opens the menu when nothing is:
     - while dragging a new link: cancels the drag
     - while editing a title: cancels the edit
@@ -115,6 +116,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 | `refreshFiles()` | Re-reads the folder and lists its imge graphs (`GraphEntry`: file name, name, node count); counts other `.json` files in `skipped`. |
 | `openFile(fileName)` | Opens a graph from the folder (writable or read-only); asks first if there are unsaved changes. |
 | `save()` / `saveAs(name)` | Writes the open graph (as the current format version) to its file / under a new name; in a read-only folder they download instead. |
+| `defaultGraphName(taken?, date?, start?)` | `imgegraph-YYYYMMDD-NN` with the first number from `start` not in `taken`. |
 | `normalizeFileName(input)` | Turns typed text into a safe `.json` file name, or `null` if nothing usable is left. |
 | `setAutosave(on)` | Turns autosave on or off and keeps the setting. |
 | `uploadGraph()` / `downloadGraph()` | Open by upload / save by download, for browsers without folder access and the toolbar's export. |
@@ -128,5 +130,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-10-15 — Ctrl+S saves (or opens the menu when the graph has no file yet), Ctrl+Shift+S and the new "Download a copy" button download; keys shown as key caps on the buttons
+- 2026-10-14 — default graph name `imgegraph-<date>-<NN>` for downloads of graphs without a file and for an empty Save as; menu close button reads "Close (esc)"
 - 2026-10-14 — only imge graphs are listed (by name, with node count; other .json files are counted as skipped); "Edit folder…" and "Remove saved folder" replace "Change…" and "Forget"; Firefox and Safari can read a folder (read-only) instead of only uploading single files
 - 2026-10-14 — first version: folder access (choose, remember, reopen, forget), open / save / save as, autosave, upload/download fallback, contextual Esc menu and how pages add one
