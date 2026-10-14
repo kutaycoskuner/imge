@@ -13,7 +13,7 @@
 // Files from a newer app, or that aren't graph files, are refused with GraphFormatError
 // instead of being guessed at.
 //
-// Used by: routes/graph_editor/+page.svelte (load and export).
+// Used by: routes/+page.svelte (load and export).
 // Adding a version: docs/graph-format.md, "Adding a new version".
 // -----------------------------------------------------------------------------------------
 

@@ -38,7 +38,8 @@ cd imge
 # 2. Install packages
 npm install
 
-# 3. Start the development server (opens on http://localhost:5173)
+# 3. Start the development server: http://localhost:5173 opens the graph editor,
+#    matrix addition is at /matrix_addition, csv editor at /csv_editor
 npm run dev
 
 # optional: run the unit tests
@@ -55,6 +56,7 @@ npm run test:unit -- --run
 - [x] endless 2d canvas: one camera for pan and zoom, nodes / dots / coordinates always in sync
 - [x] pan by dragging empty space, follows the mouse at any zoom
 - [x] zoom toward cursor (mouse wheel) and screen center (buttons)
+- [x] fit graph: the whole graph is shown on load, and with the toolbar's fit button
 - [x] faint dot grid that follows the canvas (spacing doubles when zoomed out)
 - [x] origin marker (dev only): red / green L at (0, 0) toward +x / +y (Blender axis colors)
 - [x] coordinates tracker (world coordinates, x right, y up)
@@ -66,6 +68,8 @@ npm run test:unit -- --run
 - [x] link rendering
 - [x] node linking (drag output to input, or F on two selected nodes; drag an input's end away to detach)
 - [x] export data as json
+- [x] point the editor at a folder on your computer: its imge graphs are listed by name and open with a click; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
+- [x] Esc menu per page (graph editor has its own)
 - [x] versioned graph format, older files upgraded on load
 - [ ] vertical / horizontal frameworks
 - [ ] node content / color editing
@@ -78,6 +82,7 @@ Shortcuts (Shift+A, F2, F, Delete ...) and link rules: [docs/graph-editing.md](d
 - [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
 - [Node and link editing](docs/graph-editing.md): mouse and keys, link rules, function reference for the graph store
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
+- [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
 
 # Roadmap
 - [ ] Accessibility buttons: Import / Export

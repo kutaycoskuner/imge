@@ -28,15 +28,16 @@ State as of 2026-10-14.
 | Drag node | Move it, and every other selected node with it. |
 | Toolbar "Add Node" | New node at the screen center. |
 | **Shift+A** | New node centered on the mouse. |
-| Double-click title, or **F2** | Edit the title. Enter or clicking away saves; Esc cancels; an empty title keeps the old one. |
+| Double-click title, or **F2** | Edit the title. Enter or clicking away saves; Esc cancels (without opening the menu); an empty title keeps the old one. |
 | **Delete** / **Backspace** | Remove the selected link, or the selected nodes together with all their links. |
 | Drag from an output point | A dashed curve follows the mouse; release on an input point to link. |
 | Drag from a free input point | The same, backwards; release on an output point. |
 | Drag from a connected input point | Picks up its link from the output end: release on another input to re-route it, on empty space to remove it. |
 | **F** | Link two selected nodes: first output into the first free input, left node into right node; if that isn't possible, right into left. |
-| **Esc** | Cancel a link drag, or clear the selection. |
+| **Esc** | Cancel a link drag; otherwise open the menu (open / save graphs, see [graph-saving.md](graph-saving.md)). |
 
 - Shortcuts are ignored while typing in a title, so Backspace there edits text instead of deleting the node.
+- Shortcuts are paused while the Esc menu is open.
 - Shortcuts are also ignored while Ctrl, Cmd or Alt is held, so browser shortcuts keep working.
 - A new node has the title "Node", one input and one output.
 
@@ -119,7 +120,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 |---|---|
 | `src/lib/graph/store.ts` | Stores and the functions above; the only place that changes the graph. |
 | `src/lib/graph/store.spec.ts` | Unit tests for every operation and link rule (`npm run test:unit -- --run`). |
-| `src/routes/graph_editor/+page.svelte` | Turns mouse and keys into store calls: selecting, dragging, link drags, shortcuts, messages. |
+| `src/routes/+page.svelte` | Turns mouse and keys into store calls: selecting, dragging, link drags, shortcuts, messages. |
 | `src/lib/components/GraphNode.svelte` | Draws one node: title with inline editing, input and output points, selected highlight. |
 | `src/lib/components/GraphLinks.svelte` | Draws the links and the dashed preview while a link is dragged. |
 | `src/lib/components/UI_GraphEditor.svelte` | Toolbar; its "Add Node" button calls `createNodeAt`. |
@@ -142,4 +143,6 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-14 — page path updated: the graph editor is now `src/routes/+page.svelte` (home page `/`)
+- 2026-10-14 — Esc no longer clears the selection: it cancels a link drag or title edit, otherwise opens the menu (click empty space to clear the selection)
 - 2026-10-14 — first version: mouse and keys, link rules and messages (taken over from graph-editor-canvas.md), function reference for `store.ts`, how the parts fit together

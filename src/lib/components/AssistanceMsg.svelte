@@ -5,7 +5,7 @@
 
 	onMount(() => {
 		// set initial message to show at start
-		assistanceMsg.set('esc for settings');
+		assistanceMsg.set('esc for menu');
 		setTimeout(() => {
 			assistanceMsg.set('');
 		}, 3000);

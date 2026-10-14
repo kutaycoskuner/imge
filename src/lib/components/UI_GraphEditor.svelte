@@ -6,15 +6,16 @@
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, reset view,
-	// add node at the screen center, import (placeholder), export and a test pan button.
+	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, fit graph,
+	// add node at the screen center, open graph (opens the Esc menu), export (download) and a
+	// test pan button.
 	// Camera changes go through $lib/camera.ts; export is dispatched to the page.
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 
-	import { screenSizeIndex, assistanceMsg, colorMode } from '../../stores/imge_main';
-	import { ZOOM_STEP, camera, panBy, zoomAt, resetCamera } from '$lib/camera';
+	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen } from '../../stores/imge_main';
+	import { ZOOM_STEP, camera, panBy, zoomAt } from '$lib/camera';
 	import { createNodeAt } from '$lib/graph/store';
 
 	const dispatch = createEventDispatcher();
@@ -55,12 +56,16 @@
 		dispatch('requestExport');
 	};
 
+	// opening graphs (folder or upload) lives in the Esc menu, see GraphEditorMenu.svelte
+	const openGraphMenu = () => menuOpen.set(true);
+
 	// moves the canvas 10 px to the right
 	const test = () => panBy(10, 0);
 
 	// Emit events (fitToScreen and addNode)
 
-	const fitToScreen = () => resetCamera();
+	// fitting needs the rendered node sizes, so the page does it
+	const fitToScreen = () => dispatch('requestFit');
 
 	// the camera's x/y is the world point at the screen center
 	const addNode = () => createNodeAt({ x: $camera.x, y: $camera.y });
@@ -161,7 +166,7 @@
 		tabindex="0"
 		on:click={fitToScreen}
 		on:keydown={(event) => event.key === 'Enter' && fitToScreen()}
-		on:mouseenter={() => handleMouseOver('Reset View')}
+		on:mouseenter={() => handleMouseOver('Fit Graph')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg
@@ -183,11 +188,12 @@
 
 	<!-- Import Graph -->
 	<div
-		class="access-function not-selected"
+		class="access-function"
 		role="button"
 		tabindex="0"
-		on:keydown={(event) => event.key === 'Enter' && handleMouseOver('Import Graph')}
-		on:mouseenter={() => handleMouseOver('Import Graph')}
+		on:click={openGraphMenu}
+		on:keydown={(event) => event.key === 'Enter' && openGraphMenu()}
+		on:mouseenter={() => handleMouseOver('Open Graph (Esc menu)')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg

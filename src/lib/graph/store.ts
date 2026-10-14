@@ -14,7 +14,7 @@
 // (a new one replaces the old), outputs may feed many inputs. Because of the one-per-input
 // rule, a link is identified by its target node + target input (`LinkKey`).
 //
-// Used by: routes/graph_editor/+page.svelte, GraphNode, GraphLinks, UI_GraphEditor.
+// Used by: routes/+page.svelte, GraphNode, GraphLinks, UI_GraphEditor.
 // Details: docs/graph-editor-canvas.md ("Editing nodes and links"), docs/graph-format.md
 // -----------------------------------------------------------------------------------------
 

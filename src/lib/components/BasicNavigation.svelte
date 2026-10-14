@@ -5,8 +5,8 @@
 
 <!-- src/lib/components/Nav.svelte -->
 <nav>
-	<a href="{base}/">matrix addition</a>
-	<a href="{base}/graph_editor">graph editor</a>
+	<a href="{base}/">graph editor</a>
+	<a href="{base}/matrix_addition">matrix addition</a>
 	<a href="{base}/csv_editor">csv editor</a>
 	<!-- <a href="{base}/keyframe">motion animation</a>
 	<a href="{base}/pixel">pixel shader</a> -->

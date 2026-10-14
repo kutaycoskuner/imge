@@ -12,7 +12,7 @@ State as of 2026-10-14.
 | Coordinate system | World units, x to the right, y up (moving the mouse up increases y). (0, 0) is at the screen center after a reset; 1 unit = 1 px at zoom 1. |
 | Pan | Drag empty space; the canvas follows the mouse at any zoom. |
 | Zoom | Mouse wheel zooms toward the cursor; +/− buttons zoom ×1.2 toward the screen center. Range 0.04–4. |
-| Reset view | Toolbar button: back to (0, 0) at zoom 1. |
+| Fit graph | On load, and with the toolbar's corner-brackets button: the whole graph is centered and zoomed to fit the window (zoom at most 1). |
 | Dot grid | Endless, faint background; 40-unit spacing that doubles when zoomed out; stays lined up with the nodes. |
 | Origin marker | Development only: red/green L at (0, 0) pointing toward +x and +y, Blender axis colors, fixed 40 px size. |
 | Coordinate tracker | Bottom right; whole world coordinates under the mouse. |
@@ -28,14 +28,14 @@ State as of 2026-10-14.
 | File | Role |
 |---|---|
 | `src/lib/camera.ts` | The camera store, viewport size and all world/screen conversions. The only place with that math. |
-| `src/routes/graph_editor/+page.svelte` | Loads the graph; turns mouse and keys into camera moves and graph edits (pan, zoom, select, drag, link, shortcuts). |
+| `src/routes/+page.svelte` | Loads the graph; turns mouse and keys into camera moves and graph edits (pan, zoom, select, drag, link, shortcuts). |
 | `src/lib/graph/store.ts` | The open graph, the selection, and every node/link operation; the link rules live here. |
 | `src/lib/components/GraphNode.svelte` | One node: title (with inline editing), ports, selected highlight. |
 | `src/lib/components/GraphLinks.svelte` | SVG layer that draws the links and the preview while dragging a new one. |
 | `src/lib/components/PolkaDots.svelte` | Endless dot grid that follows the camera. |
 | `src/lib/components/OriginAxes.svelte` | Origin marker: red/green L at world (0, 0). |
 | `src/lib/components/CoordTracker.svelte` | Shows the world coordinates under the mouse. |
-| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, reset view, export. |
+| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, open (menu), export. |
 | `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node`, port, selection and link styles. |
 | `static/data/test-node-graph.json` | Test graph; node `position` values are world coordinates. File structure and versions: [graph-format.md](graph-format.md). |
 
@@ -85,7 +85,10 @@ Because the nodes, the dots, the origin marker and the coordinate tracker all us
 - **Mouse wheel:** zooms toward the cursor; the point under the mouse stays where it is (`zoomAt` with the mouse position). The wheel delta goes through `exp()`, so mouse wheels and trackpads both feel smooth.
 - **+ / − buttons:** zoom toward the screen center by a factor of 1.2 per press.
 - Zoom is multiplied, not added, so every step feels the same size at any zoom level.
-- **Reset view** returns to `{ x: 0, y: 0, zoom: 1 }`.
+- **Fit graph** (on every load, and the toolbar's corner-brackets button):
+    - measures the box around all nodes (their rendered size, since titles change it)
+    - centers the camera on it and picks the largest zoom that shows it with 60 px to spare on each side (`fitBounds` in `camera.ts`)
+    - never zooms in past 1, so a small graph isn't blown up; an empty graph goes to `{ x: 0, y: 0, zoom: 1 }`
 
 ## Dot grid
 
@@ -140,6 +143,8 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Changes
 
+- 2026-10-14 — the view fits the whole graph on load; the toolbar's "Reset view" became "Fit graph"
+- 2026-10-14 — the graph editor is now the home page: `src/routes/+page.svelte` (was `src/routes/graph_editor/+page.svelte`; `/graph_editor` redirects to `/`)
 - 2026-10-14 — origin marker shown only in development (`npm run dev`), not in production builds
 - 2026-10-14 — "Editing nodes and links" (mouse and keys, link rules, how links are drawn, ports) moved to graph-editing.md; feature table points there
 - 2026-10-14 — node and link editing: select, add (button / Shift+A), rename (double-click / F2), delete, link by drag or F, detach; links drawn as curves; ports stack in columns

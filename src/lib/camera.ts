@@ -17,7 +17,7 @@
 //     world.x  =  (screen.x - screenCenter.x) / zoom + camera.x
 //     world.y  = -(screen.y - screenCenter.y) / zoom + camera.y
 //
-// Used by: routes/graph_editor/+page.svelte, PolkaDots, CoordTracker, UI_GraphEditor.
+// Used by: routes/+page.svelte, PolkaDots, CoordTracker, UI_GraphEditor.
 // Details: docs/graph-editor-canvas.md
 // -----------------------------------------------------------------------------------------
 
@@ -86,6 +86,32 @@ export function zoomAt(factor: number, anchor?: Point): void {
 			y: w.y + (a.y - vp.height / 2) / zoom
 		};
 	});
+}
+
+/** A world-space rectangle (y up, so maxY is the top edge). */
+export interface Bounds {
+	minX: number;
+	minY: number;
+	maxX: number;
+	maxY: number;
+}
+
+/**
+ * Centers the view on a world rectangle and zooms so all of it is visible.
+ *
+ * Args:
+ *     padding: screen px kept free around the rectangle on every side.
+ *
+ * Zoom never goes above 1 (small graphs aren't blown up) or below MIN_ZOOM.
+ */
+export function fitBounds(bounds: Bounds, padding = 60): void {
+	const vp = get(viewport);
+	const width = Math.max(1, bounds.maxX - bounds.minX);
+	const height = Math.max(1, bounds.maxY - bounds.minY);
+	const zoom = clampZoom(
+		Math.min(1, (vp.width - 2 * padding) / width, (vp.height - 2 * padding) / height)
+	);
+	camera.set({ x: (bounds.minX + bounds.maxX) / 2, y: (bounds.minY + bounds.maxY) / 2, zoom });
 }
 
 /** Back to the origin at the screen center, zoom 1. */

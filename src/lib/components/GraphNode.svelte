@@ -34,7 +34,11 @@
 
 	function handleKey(event: KeyboardEvent): void {
 		if (event.key === 'Enter') commit();
-		else if (event.key === 'Escape') cancel();
+		else if (event.key === 'Escape') {
+			// this Esc only cancels the edit; preventDefault keeps the Esc menu closed
+			event.preventDefault();
+			cancel();
+		}
 	}
 
 	// focus and select the whole title when the field appears

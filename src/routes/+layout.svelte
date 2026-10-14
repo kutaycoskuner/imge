@@ -31,7 +31,6 @@
 <BasicNavigation />
 <SettingsOverlay />
 <!-- <LeftHoverNavigation /> -->
-<SettingsOverlay />
 
 
 {@render children()}
