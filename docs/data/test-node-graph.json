@@ -1,52 +1,582 @@
 {
-    "metadata": {},
+    "metadata": {
+        "format": "imge-graph",
+        "version": 2
+    },
     "data": {
         "nodes": [
             {
-                "_id": 0,
+                "id": "n1",
+                "name": "Camera (pan + zoom)",
                 "type": "basic",
                 "position": {
-                    "x": 0,
-                    "y": 140
+                    "x": -700,
+                    "y": 250
                 },
-                "data": {
-                    "title": "First Node",
-                    "inputs": [],
-                    "outputs": [
-                        {
-                            "id": "output_0",
-                            "type": "basic",
-                            "label": "Output A"
-                        }
-                    ]
-                }
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
             },
             {
-                "_id": 1,
+                "id": "n2",
+                "name": "Coordinate system (y up)",
                 "type": "basic",
                 "position": {
-                    "x": 400,
-                    "y": 40
+                    "x": -400,
+                    "y": 350
                 },
-                "data": {
-                    "title": "Second Node",
-                    "inputs": [
-                        {
-                            "id": "input_0",
-                            "type": "basic",
-                            "label": "Input A"
-                        }
-                    ],
-                    "outputs": []
-                }
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n3",
+                "name": "Pan (drag empty space)",
+                "type": "basic",
+                "position": {
+                    "x": -400,
+                    "y": 250
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n4",
+                "name": "Zoom (wheel to cursor)",
+                "type": "basic",
+                "position": {
+                    "x": -400,
+                    "y": 150
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n5",
+                "name": "Dot grid (adaptive)",
+                "type": "basic",
+                "position": {
+                    "x": -100,
+                    "y": 450
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n6",
+                "name": "Origin marker (dev only)",
+                "type": "basic",
+                "position": {
+                    "x": -100,
+                    "y": 350
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n7",
+                "name": "Coordinate tracker",
+                "type": "basic",
+                "position": {
+                    "x": -100,
+                    "y": 250
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n8",
+                "name": "Graph format v2",
+                "type": "basic",
+                "position": {
+                    "x": -700,
+                    "y": -200
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n9",
+                "name": "Format adapters (v0 to v2)",
+                "type": "basic",
+                "position": {
+                    "x": -400,
+                    "y": -200
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n10",
+                "name": "Graph store",
+                "type": "basic",
+                "position": {
+                    "x": -100,
+                    "y": -200
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n11",
+                "name": "Node CRUD",
+                "type": "basic",
+                "position": {
+                    "x": 200,
+                    "y": -100
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n12",
+                "name": "Link CRUD",
+                "type": "basic",
+                "position": {
+                    "x": 200,
+                    "y": -330
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n13",
+                "name": "Title editing (F2)",
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -30
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n14",
+                "name": "Selection (Shift+click)",
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -130
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n15",
+                "name": "Drag to link",
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -250
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n16",
+                "name": "F quick link",
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -350
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n17",
+                "name": "Detach / re-route",
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -450
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
             }
         ],
         "links": [
             {
-                "sourceNodeId": 0,
-                "sourceOutputId": "output_0",
-                "targetNodeId": 1,
-                "targetInputId": "input_0"
+                "id": "l1",
+                "type": "basic",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n2",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n3",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "source": {
+                    "node": "n8",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "source": {
+                    "node": "n9",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n10",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l9",
+                "type": "basic",
+                "source": {
+                    "node": "n10",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n11",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l10",
+                "type": "basic",
+                "source": {
+                    "node": "n10",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n12",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l11",
+                "type": "basic",
+                "source": {
+                    "node": "n11",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n13",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l12",
+                "type": "basic",
+                "source": {
+                    "node": "n11",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n14",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l13",
+                "type": "basic",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n15",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l14",
+                "type": "basic",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n16",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l15",
+                "type": "basic",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n17",
+                    "port": "i1"
+                }
             }
         ]
     }
