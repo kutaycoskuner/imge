@@ -68,26 +68,109 @@
 /* ---------------------------------------------------------------------------------------
 new
 --------------------------------------------------------------------------------------- */
-.node-input {
-    width: 10px;
-    height: 10px;
-    background-color: var(--col);
-    border-radius: 15%;
+/* port columns on the node's left (inputs) and right (outputs) edge, centered vertically;
+   several ports stack instead of overlapping */
+.node .inputs,
+.node .outputs {
     position: absolute;
-    top: 50%;
-    left: -5px;
-    transform: translateY(-50%);    
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
 }
 
+.node .inputs {
+    left: -6px;
+}
+
+.node .outputs {
+    right: -6px;
+}
+
+.node-input,
 .node-output {
     width: 10px;
     height: 10px;
     background-color: var(--col);
     border-radius: 15%;
+    cursor: crosshair;
+}
+
+.node-input:hover,
+.node-output:hover {
+    background-color: var(--col-selected);
+}
+
+/* selection: Blender-like orange */
+:root {
+    --col-selected: #ffa033;
+}
+
+.node.selected {
+    border-color: var(--col-selected);
+    box-shadow: 0 0 0 1px var(--col-selected), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.node-title {
+    cursor: text;
+}
+
+.node-title-input {
+    width: 100%;
+    box-sizing: border-box;
+    font: inherit;
+    text-align: center;
+    color: var(--col);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--col-selected);
+    outline: none;
+}
+
+/* links: SVG at the world origin, drawn in the world layer's coordinates */
+.links-layer {
     position: absolute;
-    top: 50%;
-    right: -5px;
-    transform: translateY(-50%);    
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.link {
+    fill: none;
+    stroke: var(--col);
+    stroke-width: 2px;
+    opacity: 0.6;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+}
+
+.link.selected {
+    stroke: var(--col-selected);
+    opacity: 1;
+}
+
+.link-preview {
+    stroke-dasharray: 6 4;
+}
+
+/* invisible wide stroke so a thin link is easy to click */
+.link-hit {
+    fill: none;
+    stroke: transparent;
+    stroke-width: 12px;
+    vector-effect: non-scaling-stroke;
+    pointer-events: stroke;
+    cursor: pointer;
+}
+
+.content-wrapper.linking {
+    cursor: crosshair;
 }
 
 .connections {

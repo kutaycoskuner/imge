@@ -11,7 +11,7 @@ Current version: **1**
 | `src/lib/graph/types.ts` | TypeScript shapes, one set per version; old versions stay frozen for their adapters. |
 | `src/lib/graph/migrations.ts` | `CURRENT_GRAPH_VERSION`, the adapters and `migrateGraph()`. |
 | `src/lib/graph/migrations.spec.ts` | Tests: every old version upgrades correctly; bad files are refused. |
-| `static/data/test-node-graph.json` | Test graph the editor loads, stored as the current version. |
+| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera branch, graph-data branch), each link meaning "builds on". |
 
 ## Structure (version 1)
 
@@ -55,6 +55,10 @@ Current version: **1**
     - `sourceNodeId` + `sourceOutputId`: the output it starts at
     - `targetNodeId` + `targetInputId`: the input it ends at
     - a port is identified by node id + port id together, because port ids repeat across nodes
+    - rules (enforced by the editor, `addLink()` in `src/lib/graph/store.ts`):
+        - always from an output to an input; never from a node to itself
+        - an input has at most one link, so `targetNodeId` + `targetInputId` identifies a link; no separate link id is needed
+        - an output may feed any number of inputs
 
 ## Loading and saving
 
@@ -96,9 +100,11 @@ Do this for every change to the file structure or to what a field means, however
 ## Known gaps (candidates for a later version)
 
 - Nodes use `_id`, while links refer to nodes as `sourceNodeId` / `targetNodeId`: the naming is inconsistent.
-- Links have no id of their own, so a single link can't be selected or deleted by id.
+- Links have no id of their own; with one link per input that's enough for now (target node + input identifies a link), but it would be needed if an input ever accepts several links.
 - Import isn't wired up yet; only the test graph is loaded.
 
 ## Changes
 
+- 2026-10-14 — base graph replaced by a feature map of the editor (17 nodes, 15 links)
+- 2026-10-14 — link rules added (output → input, no self-links, one link per input, which makes target node + input the link's identity); format version unchanged
 - 2026-10-14 — first version: structure of format version 1, loading/saving rules, version history (v0, v1), procedure for adding a new version

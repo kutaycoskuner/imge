@@ -9,17 +9,23 @@
                 "_id": 0,
                 "type": "basic",
                 "position": {
-                    "x": 0,
-                    "y": -140
+                    "x": -700,
+                    "y": 250
                 },
                 "data": {
-                    "title": "First Node",
-                    "inputs": [],
+                    "title": "Camera (pan + zoom)",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
                     "outputs": [
                         {
                             "id": "output_0",
                             "type": "basic",
-                            "label": "Output A"
+                            "label": "Output"
                         }
                     ]
                 }
@@ -28,19 +34,400 @@
                 "_id": 1,
                 "type": "basic",
                 "position": {
-                    "x": 400,
-                    "y": -40
+                    "x": -400,
+                    "y": 350
                 },
                 "data": {
-                    "title": "Second Node",
+                    "title": "Coordinate system (y up)",
                     "inputs": [
                         {
                             "id": "input_0",
                             "type": "basic",
-                            "label": "Input A"
+                            "label": "Input"
                         }
                     ],
-                    "outputs": []
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 2,
+                "type": "basic",
+                "position": {
+                    "x": -400,
+                    "y": 250
+                },
+                "data": {
+                    "title": "Pan (drag empty space)",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 3,
+                "type": "basic",
+                "position": {
+                    "x": -400,
+                    "y": 150
+                },
+                "data": {
+                    "title": "Zoom (wheel to cursor)",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 4,
+                "type": "basic",
+                "position": {
+                    "x": -100,
+                    "y": 450
+                },
+                "data": {
+                    "title": "Dot grid (adaptive)",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 5,
+                "type": "basic",
+                "position": {
+                    "x": -100,
+                    "y": 350
+                },
+                "data": {
+                    "title": "Origin marker (dev only)",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 6,
+                "type": "basic",
+                "position": {
+                    "x": -100,
+                    "y": 250
+                },
+                "data": {
+                    "title": "Coordinate tracker",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 7,
+                "type": "basic",
+                "position": {
+                    "x": -700,
+                    "y": -200
+                },
+                "data": {
+                    "title": "Graph format v1",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 8,
+                "type": "basic",
+                "position": {
+                    "x": -400,
+                    "y": -200
+                },
+                "data": {
+                    "title": "Format adapters (v0 to v1)",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 9,
+                "type": "basic",
+                "position": {
+                    "x": -100,
+                    "y": -200
+                },
+                "data": {
+                    "title": "Graph store",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 10,
+                "type": "basic",
+                "position": {
+                    "x": 200,
+                    "y": -100
+                },
+                "data": {
+                    "title": "Node CRUD",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 11,
+                "type": "basic",
+                "position": {
+                    "x": 200,
+                    "y": -330
+                },
+                "data": {
+                    "title": "Link CRUD",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 12,
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -30
+                },
+                "data": {
+                    "title": "Title editing (F2)",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 13,
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -130
+                },
+                "data": {
+                    "title": "Selection (Shift+click)",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 14,
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -250
+                },
+                "data": {
+                    "title": "Drag to link",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 15,
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -350
+                },
+                "data": {
+                    "title": "F quick link",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
+                }
+            },
+            {
+                "_id": 16,
+                "type": "basic",
+                "position": {
+                    "x": 500,
+                    "y": -450
+                },
+                "data": {
+                    "title": "Detach / re-route",
+                    "inputs": [
+                        {
+                            "id": "input_0",
+                            "type": "basic",
+                            "label": "Input"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "id": "output_0",
+                            "type": "basic",
+                            "label": "Output"
+                        }
+                    ]
                 }
             }
         ],
@@ -49,6 +436,90 @@
                 "sourceNodeId": 0,
                 "sourceOutputId": "output_0",
                 "targetNodeId": 1,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 0,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 2,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 0,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 3,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 1,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 4,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 1,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 5,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 1,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 6,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 7,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 8,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 8,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 9,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 9,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 10,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 9,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 11,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 10,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 12,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 10,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 13,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 11,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 14,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 11,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 15,
+                "targetInputId": "input_0"
+            },
+            {
+                "sourceNodeId": 11,
+                "sourceOutputId": "output_0",
+                "targetNodeId": 16,
                 "targetInputId": "input_0"
             }
         ]

@@ -9,6 +9,7 @@
 	// Origin marker for the graph editor: an L at world (0, 0) whose arms point toward +x
 	// (red, right) and +y (green, up), in Blender's axis colors. The arms keep a fixed
 	// screen length like a gizmo, so the marker stays readable at every zoom.
+	// Development aid only: the graph editor page renders it only when `dev` is true.
 	import { camera, viewport, worldToScreen } from '$lib/camera';
 
 	const ARM_LENGTH = 40; // px on screen, one dot spacing at zoom 1

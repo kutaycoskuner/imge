@@ -56,23 +56,30 @@ npm run test:unit -- --run
 - [x] pan by dragging empty space, follows the mouse at any zoom
 - [x] zoom toward cursor (mouse wheel) and screen center (buttons)
 - [x] faint dot grid that follows the canvas (spacing doubles when zoomed out)
-- [x] origin marker: red / green L at (0, 0) toward +x / +y (Blender axis colors)
+- [x] origin marker (dev only): red / green L at (0, 0) toward +x / +y (Blender axis colors)
 - [x] coordinates tracker (world coordinates, x right, y up)
 - [x] node rendering
 - [x] rendering from json content
-- [x] node movement
+- [x] node movement (multi-select with Shift+click moves together)
+- [x] add / delete nodes (toolbar button or Shift+A, Delete)
+- [x] node title editing (double-click or F2)
+- [x] link rendering
+- [x] node linking (drag output to input, or F on two selected nodes; drag an input's end away to detach)
 - [x] export data as json
 - [x] versioned graph format, older files upgraded on load
-- [ ] link rendering
-- [ ] node linking
 - [ ] vertical / horizontal frameworks
 - [ ] node content / color editing
+- [ ] add / remove ports
+- [ ] undo
+
+Shortcuts (Shift+A, F2, F, Delete ...) and link rules: [docs/graph-editing.md](docs/graph-editing.md#mouse-and-keys)
 
 # Docs
 - [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
+- [Node and link editing](docs/graph-editing.md): mouse and keys, link rules, function reference for the graph store
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
 
 # Roadmap
 - [ ] Accessibility buttons: Import / Export
 - [x] Export data
-- [ ] Adding links on ui
+- [x] Adding links on ui

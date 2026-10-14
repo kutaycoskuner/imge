@@ -7,14 +7,15 @@
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, reset view,
-	// add node (not wired yet), import (placeholder), export and a test pan button.
+	// add node at the screen center, import (placeholder), export and a test pan button.
 	// Camera changes go through $lib/camera.ts; export is dispatched to the page.
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	import { screenSizeIndex, assistanceMsg, colorMode } from '../../stores/imge_main';
-	import { ZOOM_STEP, panBy, zoomAt, resetCamera } from '$lib/camera';
+	import { ZOOM_STEP, camera, panBy, zoomAt, resetCamera } from '$lib/camera';
+	import { createNodeAt } from '$lib/graph/store';
 
 	const dispatch = createEventDispatcher();
 	// Access store variables
@@ -61,9 +62,8 @@
 
 	const fitToScreen = () => resetCamera();
 
-	const addNode = () => {
-		//   dispatch('addNode');
-	};
+	// the camera's x/y is the world point at the screen center
+	const addNode = () => createNodeAt({ x: $camera.x, y: $camera.y });
 </script>
 
 <!-- Template -->
@@ -133,7 +133,7 @@
 		tabindex="0"
 		on:click={addNode}
 		on:keydown={(event) => event.key === 'Enter' && addNode()}
-		on:mouseenter={() => handleMouseOver('Add Node')}
+		on:mouseenter={() => handleMouseOver('Add Node (Shift+A at mouse)')}
 		on:mouseleave={handleMouseLeave}
 	>
 		<svg

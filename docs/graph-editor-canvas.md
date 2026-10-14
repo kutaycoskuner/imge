@@ -1,6 +1,6 @@
 # Graph editor canvas
 
-How the graph editor's endless canvas works: the camera, the two coordinate spaces, zoom, the dot grid, node rendering and dragging.
+How the graph editor's endless canvas works: the camera, the two coordinate spaces, zoom, the dot grid and node rendering. Editing nodes and links: [graph-editing.md](graph-editing.md).
 
 State as of 2026-10-14.
 
@@ -14,26 +14,29 @@ State as of 2026-10-14.
 | Zoom | Mouse wheel zooms toward the cursor; +/− buttons zoom ×1.2 toward the screen center. Range 0.04–4. |
 | Reset view | Toolbar button: back to (0, 0) at zoom 1. |
 | Dot grid | Endless, faint background; 40-unit spacing that doubles when zoomed out; stays lined up with the nodes. |
-| Origin marker | Red/green L at (0, 0) pointing toward +x and +y, Blender axis colors, fixed 40 px size. |
+| Origin marker | Development only: red/green L at (0, 0) pointing toward +x and +y, Blender axis colors, fixed 40 px size. |
 | Coordinate tracker | Bottom right; whole world coordinates under the mouse. |
-| Nodes | Loaded from `static/data/test-node-graph.json`: title, input/output points, add indicators on hover. |
-| Node drag | Follows the mouse at any zoom. |
+| Nodes | Loaded from `static/data/test-node-graph.json`: title, input points (left), output points (right). |
+| Node and link editing | Select, add, rename, move, delete, link, detach: see [graph-editing.md](graph-editing.md). |
 | Export | Downloads the graph as `graph_data.json`. |
-| Assistance message | Toolbar buttons show a hint on hover. |
+| Assistance message | Toolbar buttons show a hint on hover; refused edits show a short message. |
 | Test button | Pans the canvas 10 px to the right (click or Enter). |
-| Not wired up yet | Add node, import, links between nodes. |
+| Not wired up yet | Import, adding/removing ports, undo. |
 
 ## Files
 
 | File | Role |
 |---|---|
 | `src/lib/camera.ts` | The camera store, viewport size and all world/screen conversions. The only place with that math. |
-| `src/routes/graph_editor/+page.svelte` | Loads the graph, renders nodes in the world layer, handles pan, node drag and wheel zoom. |
+| `src/routes/graph_editor/+page.svelte` | Loads the graph; turns mouse and keys into camera moves and graph edits (pan, zoom, select, drag, link, shortcuts). |
+| `src/lib/graph/store.ts` | The open graph, the selection, and every node/link operation; the link rules live here. |
+| `src/lib/components/GraphNode.svelte` | One node: title (with inline editing), ports, selected highlight. |
+| `src/lib/components/GraphLinks.svelte` | SVG layer that draws the links and the preview while dragging a new one. |
 | `src/lib/components/PolkaDots.svelte` | Endless dot grid that follows the camera. |
 | `src/lib/components/OriginAxes.svelte` | Origin marker: red/green L at world (0, 0). |
 | `src/lib/components/CoordTracker.svelte` | Shows the world coordinates under the mouse. |
-| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, reset view, export. |
-| `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node` styles. |
+| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, reset view, export. |
+| `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node`, port, selection and link styles. |
 | `static/data/test-node-graph.json` | Test graph; node `position` values are world coordinates. File structure and versions: [graph-format.md](graph-format.md). |
 
 ## Two coordinate spaces
@@ -74,7 +77,7 @@ Because the nodes, the dots, the origin marker and the coordinate tracker all us
 ## Panning and dragging
 
 - Drag on empty space: the camera moves by the mouse delta divided by the zoom (`panBy`), so the canvas stays under the mouse at any zoom.
-- Drag a node: its position changes by the mouse delta divided by the zoom, so the node stays under the mouse; dragging up increases its y.
+- Drag a node: its position (and that of every other selected node) changes by the mouse delta divided by the zoom, so the nodes stay under the mouse; dragging up increases y.
 - Mouse move and mouse up are listened to on the window, so a drag doesn't get stuck when the mouse leaves the canvas.
 
 ## Zoom
@@ -95,6 +98,7 @@ Because the nodes, the dots, the origin marker and the coordinate tracker all us
 
 ## Origin marker
 
+- A development aid: it's shown with `npm run dev` and left out of production builds (the page renders it only when SvelteKit's `dev` flag is true).
 - An L with its corner on world (0, 0); its arms point where coordinates grow:
     - red arm toward +x (right), `#FF3352`
     - green arm toward +y (up), `#8BDC00`
@@ -106,6 +110,10 @@ Because the nodes, the dots, the origin marker and the coordinate tracker all us
 
 - Shows `screenToWorld(mouse)`, rounded to whole units.
 - It also updates when the view moves under a still mouse (wheel zoom, toolbar buttons).
+
+## Editing nodes and links
+
+Moved to [graph-editing.md](graph-editing.md): mouse and keys, link rules, messages, and the functions behind them.
 
 ## What was fixed (2026-10-14) and why
 
@@ -127,11 +135,14 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 ## Known limits
 
 - The test graph is loaded from `static/data/test-node-graph.json` (upgraded to the current format version on load, see [graph-format.md](graph-format.md)); Import isn't wired up yet.
-- Links between nodes aren't rendered yet.
+- Editing limits (no undo, fixed ports): see [graph-editing.md](graph-editing.md#known-limits).
 - Every node is a DOM element; very large graphs may need culling (skip nodes outside the screen) later.
 
 ## Changes
 
+- 2026-10-14 — origin marker shown only in development (`npm run dev`), not in production builds
+- 2026-10-14 — "Editing nodes and links" (mouse and keys, link rules, how links are drawn, ports) moved to graph-editing.md; feature table points there
+- 2026-10-14 — node and link editing: select, add (button / Shift+A), rename (double-click / F2), delete, link by drag or F, detach; links drawn as curves; ports stack in columns
 - 2026-10-14 — test graph is now loaded through the format-version upgrade; link to graph-format.md
 - 2026-10-14 — origin marker added (red/green L, Blender axis colors); world y axis now points up; dots made fainter (opacity 0.32, 24 px minimum spacing)
 - 2026-10-14 — first version: camera, coordinate spaces, zoom, dot grid, node rendering and dragging, fixes made and why
