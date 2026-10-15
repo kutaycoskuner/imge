@@ -4,6 +4,9 @@
 <h3 align="center">
     Study project: Web based node editor / matrix calculators
 </h3>
+<p align="center">
+    Live: <a href="https://kutaycoskuner.github.io/imge/">kutaycoskuner.github.io/imge</a>
+</p>
 <!-- <p align="center">
     <a href="#">Docs</a> |
     <a href="#">Report an Issue</a> 
@@ -12,15 +15,15 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.6.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.10.1-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
 
-![first frame](_display/0.4.1-matrix_sum.png)
-<figcaption>v0.22 Node and link display</figcaption>
+![graph editor](_display/0.10-graph_editor.png)
+<figcaption>v0.10 graph editor: feature map</figcaption>
 
 </p>
 
@@ -83,8 +86,9 @@ Shortcuts (Shift+A, F2, F, Delete, +/-, Home, Ctrl+S, Ctrl+Shift+S, Esc) and lin
 - [Node and link editing](docs/graph-editing.md): mouse and keys, link rules, function reference for the graph store
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
 - [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
+The live site counts visits with a self-hosted analytics script (archrium); local runs (`npm run dev`, preview) are not counted.
 
 # Roadmap
-- [ ] Accessibility buttons: Import / Export
+- [x] Accessibility buttons: Import / Export
 - [x] Export data
 - [x] Adding links on ui
