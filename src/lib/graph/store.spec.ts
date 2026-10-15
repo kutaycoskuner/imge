@@ -24,8 +24,14 @@ import {
 	removeLink,
 	removeNodes,
 	renameNode,
-	selectNode
+	selectNode,
+	cycleLinkShape,
+	setAllLinkShapes,
+	setLinkBend,
+	linkShapeOverride,
+	graph
 } from './store';
+import { get } from 'svelte/store';
 import type { Graph } from './types';
 
 // three nodes n1 n2 n3, left to right, each with input i1 and output o1; no links
@@ -96,11 +102,17 @@ describe('nodes', () => {
 });
 
 describe('link rules', () => {
-	it('adds a link l1 with type and both ends', () => {
+	it('adds a link l1 with type, shape spline and both ends', () => {
 		const { graph, outcome, link: created } = addLink(threeNodes(), ends('n1', 'n2'));
 		expect(outcome).toBe('added');
-		expect(created).toEqual({ id: 'l1', type: 'basic', ...ends('n1', 'n2') });
+		expect(created).toEqual({ id: 'l1', type: 'basic', shape: 'spline', ...ends('n1', 'n2') });
 		expect(graph.data.links).toEqual([created]);
+	});
+
+	it('keeps a given shape and bend (re-routing)', () => {
+		const { link: created } = addLink(threeNodes(), { ...ends('n1', 'n2'), shape: 'manhattan', bend: 0.3 });
+		expect(created?.shape).toBe('manhattan');
+		expect(created?.bend).toBe(0.3);
 	});
 
 	it('keeps a given id when re-routing, unless another link already uses it', () => {
@@ -157,6 +169,46 @@ describe('link rules', () => {
 		let g = link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n3');
 		g = removeLink(g, 'l1');
 		expect(nextLinkId(g)).toBe('l3');
+	});
+});
+
+describe('link shapes', () => {
+	it('cycles one link spline -> line -> manhattan -> spline, leaving the others', () => {
+		let g = link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n3');
+		const shapes: string[] = [];
+		for (let i = 0; i < 3; i++) {
+			g = cycleLinkShape(g, 'l1');
+			shapes.push(g.data.links[0].shape);
+		}
+		expect(shapes).toEqual(['line', 'manhattan', 'spline']);
+		expect(g.data.links[1].shape).toBe('spline');
+	});
+
+	it('applies one shape to all links, keeping their bends', () => {
+		let g = link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n3');
+		g = setLinkBend(g, 'l1', 0.2);
+		g = setAllLinkShapes(g, 'manhattan');
+		expect(g.data.links.map((l) => l.shape)).toEqual(['manhattan', 'manhattan']);
+		expect(g.data.links[0].bend).toBe(0.2);
+	});
+
+	it('clamps the bend to 0..1', () => {
+		let g = link(threeNodes(), 'n1', 'n2');
+		expect(setLinkBend(g, 'l1', 1.7).data.links[0].bend).toBe(1);
+		expect(setLinkBend(g, 'l1', -0.2).data.links[0].bend).toBe(0);
+	});
+
+	it('the display override never touches the graph data', () => {
+		const g = link(threeNodes(), 'n1', 'n2');
+		const before = structuredClone(g);
+		linkShapeOverride.set('line');
+		graph.set(g);
+		expect(get(graph)).toEqual(before);
+		linkShapeOverride.set(null);
+	});
+
+	it('new nodes have no color', () => {
+		expect(threeNodes().data.nodes.every((n) => n.color === null)).toBe(true);
 	});
 });
 

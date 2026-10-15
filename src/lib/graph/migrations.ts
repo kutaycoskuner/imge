@@ -23,10 +23,11 @@ import {
 	type GraphV0,
 	type GraphV1,
 	type GraphV2,
+	type GraphV3,
 	type PortV1
 } from './types';
 
-export const CURRENT_GRAPH_VERSION = 2;
+export const CURRENT_GRAPH_VERSION = 3;
 
 export class GraphFormatError extends Error {
 	constructor(message: string) {
@@ -109,6 +110,21 @@ const MIGRATIONS: Migration[] = [
 				}
 			};
 		}
+	},
+	{
+		from: 2,
+		to: 3,
+		description: 'nodes get color (none), links get shape (spline, as drawn so far)',
+		migrate: (graph: GraphV2): GraphV3 => ({
+			...graph,
+			metadata: { ...graph.metadata, format: GRAPH_FORMAT, version: 3 },
+			data: {
+				...graph.data,
+				// a color some file already carried as an extra key is kept
+				nodes: graph.data.nodes.map((node) => ({ ...node, color: (node as any).color ?? null })),
+				links: graph.data.links.map((link) => ({ ...link, shape: 'spline' }))
+			}
+		})
 	}
 ];
 

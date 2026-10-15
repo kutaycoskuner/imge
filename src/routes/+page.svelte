@@ -12,8 +12,9 @@
 	//   mouse  drag empty space = pan, wheel = zoom to cursor, click/Shift+click = select,
 	//          drag node = move (all selected), drag from a port = link, drag a linked
 	//          input's end away = detach
-	//   keys   Shift+A add node at mouse, Delete/Backspace delete selection, F2 rename,
-	//          F link two selected nodes, +/- zoom, Home fit graph, Ctrl+S save,
+	//   keys   Shift+N new graph, Shift+A add node at mouse, Delete/Backspace delete selection, F2 rename,
+	//          F link two selected nodes, L next shape of the selected link (drag a selected
+	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
 	//          Ctrl+Shift+S download, Esc cancel a link drag (otherwise it opens the menu)
 	// It also puts GraphEditorMenu into the Esc menu (open/save on the computer) and tracks
 	// unsaved changes for it. Graph operations and link rules live in $lib/graph/store.ts,
@@ -47,7 +48,8 @@
 		loadGraph,
 		trackChanges,
 		downloadGraph,
-		save
+		save,
+		newGraph
 	} from '$lib/graph/file-access';
 	import {
 		graph,
@@ -61,6 +63,10 @@
 		quickLink,
 		selectNode,
 		createNodeAt,
+		cycleLinkShape,
+		setLinkBend,
+		persistLinkShapeOverride,
+		linkShapeOverride,
 		type LinkOutcome
 	} from '$lib/graph/store';
 	import type { Link, LinkEnd } from '$lib/graph/types';
@@ -72,6 +78,10 @@
 
 	let isPanningSpace = false;
 	let isDraggingNodes = false;
+
+	// corner of a selected manhattan link being dragged: the bend maps `from` (0) .. `to` (1)
+	// along `axis` in world-layer CSS coords (read from the grab area's data-* attributes)
+	let bendDrag: { linkId: string; axis: 'x' | 'y'; from: number; to: number } | null = null;
 
 	// link being dragged from a port; `to` is the mouse in world-layer CSS coords; `carried`
 	// is the link picked up from a connected input (re-routed links keep their id and name)
@@ -106,7 +116,9 @@
 		'unknown-port': 'Links go from an output (right) to an input (left)'
 	};
 
-	function connect(link: { source: LinkEnd; target: LinkEnd; id?: string; type?: string; name?: string }): void {
+	function connect(
+		link: Pick<Link, 'source' | 'target'> & Partial<Pick<Link, 'id' | 'type' | 'name' | 'shape' | 'bend'>>
+	): void {
 		let outcome: LinkOutcome = 'exists';
 		graph.update((g) => {
 			const result = addLink(g, link);
@@ -129,6 +141,13 @@
 
 		const port = target.closest<HTMLElement>('.port');
 		if (port) return startLinkDrag(port);
+
+		const bendHandle = target.closest<SVGElement>('.link-bend');
+		if (bendHandle) {
+			const { linkId, axis, from, to } = bendHandle.dataset;
+			bendDrag = { linkId: linkId!, axis: axis as 'x' | 'y', from: Number(from), to: Number(to) };
+			return;
+		}
 
 		const linkHit = target.closest<SVGElement>('.link-hit');
 		if (linkHit) {
@@ -155,6 +174,14 @@
 
 		if (linkDrag) {
 			linkDrag = { ...linkDrag, to: toLayer(mouseWorld()) };
+		} else if (bendDrag) {
+			const drag = bendDrag;
+			const mouse = toLayer(mouseWorld());
+			const span = drag.to - drag.from;
+			if (span !== 0) {
+				const bend = ((drag.axis === 'x' ? mouse.x : mouse.y) - drag.from) / span;
+				graph.update((g) => setLinkBend(g, drag.linkId, bend));
+			}
 		} else if (isPanningSpace) {
 			panBy(dx, dy);
 		} else if (isDraggingNodes) {
@@ -168,6 +195,7 @@
 		if (linkDrag) finishLinkDrag(event.target as HTMLElement);
 		isPanningSpace = false;
 		isDraggingNodes = false;
+		bendDrag = null;
 	}
 
 	function handleWheel(event: WheelEvent): void {
@@ -206,7 +234,15 @@
 			notify('Links go from an output (right) to an input (left)');
 		} else if (drag.kind === 'output') {
 			connect({
-				...(drag.carried ? { id: drag.carried.id, type: drag.carried.type, name: drag.carried.name } : {}),
+				...(drag.carried
+					? {
+							id: drag.carried.id,
+							type: drag.carried.type,
+							name: drag.carried.name,
+							shape: drag.carried.shape,
+							bend: drag.carried.bend
+						}
+					: {}),
 				source: { node: drag.nodeId, port: drag.portId },
 				target: { node: nodeId, port: portId }
 			});
@@ -245,6 +281,10 @@
 		} else if (key === 'home') {
 			event.preventDefault();
 			fitGraphInView();
+		} else if (key === 'n' && event.shiftKey) {
+			// Shift+N: Ctrl+Shift+N belongs to the browser (private / closed window) and never arrives
+			event.preventDefault();
+			newGraph();
 		} else if (key === 'a' && event.shiftKey) {
 			event.preventDefault();
 			createNodeAt(mouseWorld());
@@ -254,6 +294,9 @@
 		} else if (key === 'f2') {
 			event.preventDefault();
 			if ($selection.nodes.length === 1) editingNodeId.set($selection.nodes[0]);
+		} else if (key === 'l' && !event.shiftKey) {
+			event.preventDefault();
+			cycleSelectedLinkShape();
 		} else if (key === 'f' && !event.shiftKey) {
 			event.preventDefault();
 			linkSelectedNodes();
@@ -272,6 +315,15 @@
 			menuOpen.set(true);
 			notify('Not saved yet: choose a folder or use Save as');
 		}
+	}
+
+	// L: next shape for the selected link (spline -> line -> manhattan), saved in the link
+	function cycleSelectedLinkShape(): void {
+		const linkId = $selection.link;
+		if (!linkId) return notify('Select a link, then press [L] to change its shape');
+		graph.update((g) => cycleLinkShape(g, linkId));
+		const shape = $graph.data.links.find((l) => l.id === linkId)?.shape;
+		notify($linkShapeOverride ? `Link shape: ${shape} (hidden by the display override)` : `Link shape: ${shape}`);
 	}
 
 	function deleteSelection(): void {
@@ -294,6 +346,7 @@
 	onMount(() => {
 		const stopTracking = trackViewport();
 		const stopChangeTracking = trackChanges();
+		const stopOverride = persistLinkShapeOverride();
 		pageMenu.set({ title: 'Graph editor', component: GraphEditorMenu });
 		(async () => {
 			await initWorkspace();
@@ -309,6 +362,7 @@
 		return () => {
 			stopTracking();
 			stopChangeTracking();
+			stopOverride();
 			clearTimeout(messageTimer);
 			pageMenu.set(null);
 			menuOpen.set(false);

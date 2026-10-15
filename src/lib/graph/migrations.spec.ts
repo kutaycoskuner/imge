@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-14
+//   last update     : 2026-10-15
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -24,12 +24,14 @@ import { GRAPH_FORMAT } from './types';
 import sampleV0 from '../../../static/data/samples/graph-v0.json';
 import sampleV1 from '../../../static/data/samples/graph-v1.json';
 import sampleV2 from '../../../static/data/samples/graph-v2.json';
+import sampleV3 from '../../../static/data/samples/graph-v3.json';
 
 // one sample per format version, oldest first; copies so no test can change another's input
 const SAMPLES: Record<number, () => any> = {
 	0: () => structuredClone(sampleV0),
 	1: () => structuredClone(sampleV1),
-	2: () => structuredClone(sampleV2)
+	2: () => structuredClone(sampleV2),
+	3: () => structuredClone(sampleV3)
 };
 const current = SAMPLES[CURRENT_GRAPH_VERSION];
 
@@ -97,6 +99,16 @@ describe('adapter details', () => {
 			[{ node: 'n2', port: 'o2' }, { node: 'n1', port: 'i2' }],
 			[{ node: 'n1', port: 'o1' }, { node: 'n2', port: 'i1' }]
 		]);
+	});
+});
+
+describe('adapter 2 -> 3', () => {
+	it('adds color null and shape spline, keeping a color a node already had', () => {
+		const v2 = SAMPLES[2]();
+		v2.data.nodes[1].color = '#ff0000';
+		const { graph } = migrateGraph(v2);
+		expect(graph.data.nodes.map((n) => n.color)).toEqual([null, '#ff0000']);
+		expect(graph.data.links.map((l) => l.shape)).toEqual(['spline']);
 	});
 });
 

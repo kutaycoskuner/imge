@@ -25,7 +25,7 @@
 // -----------------------------------------------------------------------------------------
 
 import { writable, get } from 'svelte/store';
-import { graph, selection } from './store';
+import { graph, selection, emptyGraph } from './store';
 import {
 	migrateGraph,
 	readGraphVersion,
@@ -154,6 +154,22 @@ export function loadGraph(raw: unknown, fileName: string | null): void {
 	graph.set(loaded);
 	selection.set({ nodes: [], link: null });
 	workspace.update((w) => ({ ...w, fileName, dirty: false, loads: w.loads + 1 }));
+}
+
+/**
+ * Starts a new, empty graph without a file name (Shift+N, menu "New graph"); asks first if
+ * the open graph has unsaved changes. The chosen folder stays, so Save as puts it there.
+ *
+ * Returns:
+ *     False when the user kept the open graph.
+ */
+export function newGraph(): boolean {
+	if (get(workspace).dirty && !confirm('The open graph has unsaved changes. Start a new graph anyway?')) {
+		return false;
+	}
+	loadGraph(emptyGraph(), null);
+	patch({ status: 'New graph: not saved yet' });
+	return true;
 }
 
 let autosaveTimer: ReturnType<typeof setTimeout> | undefined;

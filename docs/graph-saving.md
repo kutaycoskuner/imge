@@ -23,7 +23,7 @@ Open the menu with **Esc**, or with the toolbar's open button (the arrow pointin
 ### Which files are listed
 
 - Only `.json` files **directly in the chosen folder** (subfolders aren't searched) that are **imge graphs**: their `metadata.format` is `imge-graph`, or they are old unversioned graphs (see [graph-format.md](graph-format.md)).
-- Each is shown by its name (the file name without `.json`) with its node count, e.g. `feature map · 17 nodes`.
+- Each is shown by its name (the file name without `.json`) with its node count, e.g. `feature map · 33 nodes`.
 - Other `.json` files are not listed, and not hidden silently either: the menu says how many were skipped ("1 other .json file in this folder isn't an imge graph").
 - Clicking a name opens that graph; older format versions are upgraded on load.
 
@@ -40,6 +40,7 @@ The folder is read and written directly.
 | **Reopen "*folder*"** | On a later visit, when a folder was remembered. The browser asks once to allow access again, then the graphs are listed. |
 | **Save** (<kbd>Ctrl</kbd>+<kbd>S</kbd>) | Writes the open graph back to its file. Enabled once the graph has a file name; pressing Ctrl+S before that opens the menu so you can choose a folder or use Save as. |
 | **Save as** | Type a name (`.json` is added; characters not allowed in file names become `-`) and the graph is saved under it in the folder. Left empty, it uses the default name shown in the field: `imgegraph-<date>-<NN>`, e.g. `imgegraph-20261014-01`, with the first number not yet in the folder. Asks before overwriting any existing file. |
+| **New graph** (<kbd>Shift</kbd>+<kbd>N</kbd>) | Starts an empty graph without a file name (asks first if the open graph has unsaved changes); the folder stays chosen, so Save as puts it there. Available in every browser. |
 | ☐ **Autosave** | Off by default. When on, the open file is saved 0.8 s after the last change (so a drag saves once, not on every frame). The setting is kept in this browser. |
 | • unsaved changes | Shown next to the graph name when it changed since it was opened or saved. Opening another graph then asks first. |
 
@@ -74,6 +75,7 @@ Clearing the site's data in the browser removes the remembered folder and the au
     - while dragging a new link: cancels the drag
     - while editing a title: cancels the edit
 - While the menu is open, the editor's shortcuts are paused (typing a file name doesn't add or delete nodes).
+- The graph editor's menu also has a **Links** section: "Show all links as …" (display only, not saved in the graph) and "Apply to all links" (writes the shape into every link); see [graph-editing.md](graph-editing.md#link-shapes).
 
 ### A menu for each page
 
@@ -130,6 +132,8 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-10-15 — "New graph" button and Shift+N: empty graph without a file name
+- 2026-10-15 — the graph editor menu has a Links section (display-only shape override, apply a shape to all links)
 - 2026-10-15 — Ctrl+S saves (or opens the menu when the graph has no file yet), Ctrl+Shift+S and the new "Download a copy" button download; keys shown as key caps on the buttons
 - 2026-10-14 — default graph name `imgegraph-<date>-<NN>` for downloads of graphs without a file and for an empty Save as; menu close button reads "Close (esc)"
 - 2026-10-14 — only imge graphs are listed (by name, with node count; other .json files are counted as skipped); "Edit folder…" and "Remove saved folder" replace "Change…" and "Forget"; Firefox and Safari can read a folder (read-only) instead of only uploading single files

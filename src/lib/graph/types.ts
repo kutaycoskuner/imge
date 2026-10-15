@@ -92,10 +92,35 @@ export interface GraphV2 {
 }
 
 // -----------------------------------------------------------------------------------------
+// v3 -- nodes get a color, links get a drawing shape (and a bend for manhattan links)
+// -----------------------------------------------------------------------------------------
+export const LINK_SHAPES = ['spline', 'line', 'manhattan'] as const;
+export type LinkShape = (typeof LINK_SHAPES)[number];
+
+export type PortV3 = PortV2;
+export type LinkEndV3 = LinkEndV2;
+
+export interface NodeV3 extends NodeV2 {
+	color: string | null; // CSS color, e.g. "#4a90d9"; null = the theme's default
+}
+
+export interface LinkV3 extends LinkV2 {
+	shape: LinkShape; // how the link is drawn
+	// manhattan only: where the vertical segment sits, as a fraction of the horizontal gap
+	// between output (0) and input (1); missing = 0.5 (the middle)
+	bend?: number;
+}
+
+export interface GraphV3 {
+	metadata: { format: typeof GRAPH_FORMAT; version: 3; [key: string]: unknown };
+	data: { nodes: NodeV3[]; links: LinkV3[] };
+}
+
+// -----------------------------------------------------------------------------------------
 // current version -- the app only works with these
 // -----------------------------------------------------------------------------------------
-export type Port = PortV2;
-export type GraphNode = NodeV2;
-export type LinkEnd = LinkEndV2;
-export type Link = LinkV2;
-export type Graph = GraphV2;
+export type Port = PortV3;
+export type GraphNode = NodeV3;
+export type LinkEnd = LinkEndV3;
+export type Link = LinkV3;
+export type Graph = GraphV3;

@@ -9,7 +9,8 @@
 	// The graph editor's Esc menu (registered by routes/+page.svelte): point it at a folder
 	// on the computer (edit folder, remember it or remove the saved folder), see the imge
 	// graphs in it by name and open one with a click, save / save as, optional autosave,
-	// download a copy. Buttons with a shortcut show it as key caps (Kbd).
+	// download a copy; a Links section with the display-only shape override and "apply to all
+	// links" (writes the shape into every link). Buttons with a shortcut show it as key caps.
 	// Chrome and Edge read and write the folder; Firefox and Safari can only read it, so
 	// saving downloads the file there. All actions and state live in $lib/graph/file-access.ts.
 	import {
@@ -25,14 +26,32 @@
 		setAutosave,
 		uploadGraph,
 		downloadGraph,
-		defaultGraphName
+		defaultGraphName,
+		newGraph
 	} from '$lib/graph/file-access';
+	import { menuOpen } from '../../stores/imge_main';
 	import Kbd from './Kbd.svelte';
+	import { graph, linkShapeOverride, setAllLinkShapes } from '$lib/graph/store';
+	import { LINK_SHAPES, type LinkShape } from '$lib/graph/types';
 
 	let saveAsName = '';
 	$: w = $workspace;
 	$: hasFolder = !!w.folder || w.readOnly;
 	$: pickFolder = w.supported ? chooseFolder : chooseFolderReadOnly;
+
+	// shape written into every link by "Apply to all links"; follows the display override
+	// when one is set, so "show as manhattan" then "apply" keeps what you see
+	let applyShape: LinkShape = 'spline';
+	$: if ($linkShapeOverride) applyShape = $linkShapeOverride;
+
+	function applyToAllLinks(): void {
+		const count = $graph.data.links.length;
+		if (!confirm(`Change the shape of all ${count} links to "${applyShape}"? This changes the graph data.`)) {
+			return;
+		}
+		graph.update((g) => setAllLinkShapes(g, applyShape));
+		linkShapeOverride.set(null); // the data now shows it; the override would only hide later changes
+	}
 </script>
 
 <div class="graph-menu">
@@ -150,7 +169,34 @@
 		</section>
 	{/if}
 
+	<!-- links -->
+	<section>
+		<h3>Links</h3>
+		<div class="row">
+			<span>Show all links as</span>
+			<select
+				class="choice"
+				value={$linkShapeOverride ?? ''}
+				on:change={(e) => linkShapeOverride.set((e.currentTarget.value || null) as LinkShape | null)}
+			>
+				<option value="">their own shape</option>
+				{#each LINK_SHAPES as shape}<option value={shape}>{shape}</option>{/each}
+			</select>
+			<span class="note">display only, not saved</span>
+		</div>
+		<div class="row">
+			<select class="choice" bind:value={applyShape}>
+				{#each LINK_SHAPES as shape}<option value={shape}>{shape}</option>{/each}
+			</select>
+			<button class="action" on:click={applyToAllLinks}>Apply to all links</button>
+			<span class="note">changes the data; one link: select it and press <Kbd keys="L" /></span>
+		</div>
+	</section>
+
 	<div class="row">
+		<button class="action subtle" on:click={() => newGraph() && menuOpen.set(false)}>
+			New graph <Kbd keys="Shift+N" />
+		</button>
 		{#if !w.supported}
 			<button class="action subtle" on:click={uploadGraph}>Open a single file…</button>
 		{/if}
@@ -260,6 +306,16 @@
 
 	.file-meta {
 		opacity: 0.6;
+	}
+
+	.choice {
+		font: inherit;
+		font-size: 0.85em;
+		color: var(--col);
+		background: var(--bg);
+		border: 1px solid var(--col-border);
+		border-radius: 4px;
+		padding: 0.2em 0.4em;
 	}
 
 	.name {

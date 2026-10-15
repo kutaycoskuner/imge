@@ -188,6 +188,21 @@ kbd {
     cursor: pointer;
 }
 
+/* grab area on a selected manhattan link's middle segment (drag to move the corner) */
+.link-bend {
+    fill: none;
+    stroke: var(--col-selected);
+    stroke-opacity: 0.25;
+    stroke-width: 10px;
+    vector-effect: non-scaling-stroke;
+    pointer-events: stroke;
+    cursor: ns-resize;
+}
+
+.link-bend.vertical {
+    cursor: ew-resize;
+}
+
 .content-wrapper.linking {
     cursor: crosshair;
 }

@@ -2,7 +2,7 @@
 
 The JSON structure the graph editor loads and exports, its version history with a sample per version, and how to add a new version with an adapter that upgrades older files.
 
-Current version: **2**
+Current version: **3**
 
 ## Files
 
@@ -12,19 +12,20 @@ Current version: **2**
 | `src/lib/graph/migrations.ts` | `CURRENT_GRAPH_VERSION`, the adapters and `migrateGraph()`. |
 | `src/lib/graph/migrations.spec.ts` | Tests: every version sample upgrades to exactly the current sample; bad files are refused. |
 | `static/data/samples/graph-v<n>.json` | The same tiny graph (2 nodes, 1 link) saved in each format version, to compare versions side by side; also the test fixtures. |
-| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera branch, graph-data branch), each link meaning "builds on". |
+| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data; 33 nodes, 33 links), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), and "Shortcuts & key caps" takes four links into one input. |
 
-## Structure (version 2)
+## Structure (version 3)
 
 ```json
 {
-    "metadata": { "format": "imge-graph", "version": 2 },
+    "metadata": { "format": "imge-graph", "version": 3 },
     "data": {
         "nodes": [
             {
                 "id": "n1",
                 "name": "First Node",
                 "type": "basic",
+                "color": null,
                 "position": { "x": 0, "y": -140 },
                 "inputs": [],
                 "outputs": [{ "id": "o1", "type": "basic", "label": "Output A" }]
@@ -35,6 +36,8 @@ Current version: **2**
                 "id": "l1",
                 "type": "basic",
                 "name": "optional",
+                "shape": "manhattan",
+                "bend": 0.5,
                 "source": { "node": "n1", "port": "o1" },
                 "target": { "node": "n2", "port": "i1" }
             }
@@ -51,6 +54,7 @@ Current version: **2**
     - `id`: string, unique within the graph: `n1`, `n2` ...; the editor never reuses an id
     - `name`: text shown on the node
     - `type`: node kind, currently always `"basic"`
+    - `color`: CSS color text such as `"#4a90d9"`, or `null` for the theme's default; stored only for now, not drawn yet
     - `position`: world coordinates of the node's top-left corner; x right, **y up** (see [graph-editor-canvas.md](graph-editor-canvas.md))
     - `inputs[]` / `outputs[]`: ports
         - `id`: unique **within its node only**: inputs `i1`, `i2` ..., outputs `o1`, `o2` ...
@@ -61,6 +65,14 @@ Current version: **2**
     - `id`: string, unique within the graph: `l1`, `l2` ...; it means nothing on purpose, so it stays the same when the link is re-routed and anything attached to it keeps track of it
     - `type`: link kind, currently always `"basic"`
     - `name`: optional label (shown as a tooltip on the link)
+    - `shape`: how the link is drawn
+        - `"spline"`: a curve with horizontal tangents (the default)
+        - `"line"`: a straight line
+        - `"manhattan"`: right angles: out horizontally, one vertical segment, in horizontally
+    - `bend`: optional, used by `"manhattan"`: where the vertical segment sits, as a fraction of the horizontal gap from the output (`0`) to the input (`1`); missing means `0.5`
+        - a fraction rather than a position, so the corner stays in proportion when nodes move
+        - for a backward link (input left of its output) the link goes out a short stub, across, and back in; `bend` then places the crossing segment between the two ports' heights
+        - kept when the shape changes, so a link switched back to manhattan gets its corner back
     - `source`: `{ node, port }`, the output it starts at
     - `target`: `{ node, port }`, the input it ends at
     - rules (enforced by the editor, `addLink()` in `src/lib/graph/store.ts`):
@@ -77,6 +89,7 @@ The same graph (First Node → Second Node) in every version, so the differences
 | 0 | [graph-v0.json](../static/data/samples/graph-v0.json) |
 | 1 | [graph-v1.json](../static/data/samples/graph-v1.json) |
 | 2 | [graph-v2.json](../static/data/samples/graph-v2.json) |
+| 3 | [graph-v3.json](../static/data/samples/graph-v3.json) |
 
 The tests load every sample and check that it upgrades to **exactly** the newest one, so the samples double as the adapters' specification.
 
@@ -84,8 +97,8 @@ The tests load every sample and check that it upgrades to **exactly** the newest
 
 - **Loading:** the editor passes every file through `migrateGraph()`.
     - the version is read from `metadata.version`; a file with neither `format` nor `version` is version 0
-    - adapters run one after another until the file reaches the current version: `0 → 1 → 2`
-    - every adapter that ran is logged in the browser console ("graph upgraded from v0 to v2: ..."), so an upgrade never happens silently
+    - adapters run one after another until the file reaches the current version: `0 → 1 → 2 → 3`
+    - every adapter that ran is logged in the browser console ("graph upgraded from v0 to v3: ..."), so an upgrade never happens silently
     - the original object is not changed
 - **Refused files:** throw `GraphFormatError` instead of being guessed at:
     - no `data.nodes` array (not a graph file)
@@ -101,6 +114,7 @@ The tests load every sample and check that it upgrades to **exactly** the newest
 | 0 | before 2026-10-14 | Unversioned files: empty `metadata`, positions with **y down**. | – |
 | 1 | 2026-10-14 | Adds `metadata.format` and `metadata.version`. Positions use **y up**, since the editor's world y axis now points up. | `0 → 1`: adds the metadata, negates every node's `position.y` so the layout looks the same as before. |
 | 2 | 2026-10-15 | Ids follow one scheme: nodes `n1`, `n2` ..., links `l1`, `l2` ..., ports per node `i1` ... / `o1` ... (were `_id` numbers and `input_0` / `output_0`). `name` (was `data.title`), ports directly on the node (were in `data`). Links get their own `id`, a `type`, an optional `name`, and `source` / `target` endpoints (were four `source…Id` / `target…Id` fields). An input may take many links. | `1 → 2`: renumbers nodes, ports and links by position in the file (the link ends follow), renames the node fields and moves the ports up, turns the endpoint fields into `source` / `target`. |
+| 3 | 2026-10-15 | Nodes get `color` (`null` = theme default). Links get `shape` (`spline`, `line`, `manhattan`) and, for manhattan, an optional `bend`. | `2 → 3`: adds `color: null` to every node (a color a node already carried as an extra key is kept) and `shape: "spline"` to every link, so old graphs look exactly as before. |
 
 ## Adding a new version
 
@@ -121,10 +135,13 @@ Do this for every change to the file structure or to what a field means, however
 ## Known gaps (candidates for a later version)
 
 - Ports can't be added or removed in the editor yet; new nodes have one input and one output.
-- Link `type` and `name` can't be edited in the editor yet; they are kept when a link is re-routed.
+- Link `type` and `name` can't be edited in the editor yet; they are kept (with `shape` and `bend`) when a link is re-routed.
+- Node `color` is stored but not drawn or editable yet.
 
 ## Changes
 
+- 2026-10-15 — base graph rebuilt for the current features (33 nodes, 33 links, three branches showing all link shapes and many-to-many)
+- 2026-10-15 — format version 3: node `color`, link `shape` (spline / line / manhattan) and `bend`; sample graph-v3.json; base graph stored as v3
 - 2026-10-15 — v2 ids follow one scheme: nodes `n1`, links `l1`, inputs `i1`, outputs `o1` (v2 wasn't released yet, so the `1 → 2` adapter does the renaming; no v3)
 - 2026-10-14 — format version 2 (string ids, `name`, ports on the node, links with id / type / name / source / target, many-to-many links); version samples in `static/data/samples/`; the base graph is stored as v2
 - 2026-10-14 — base graph replaced by a feature map of the editor (17 nodes, 15 links)

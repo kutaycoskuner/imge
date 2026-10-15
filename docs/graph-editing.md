@@ -7,6 +7,7 @@ State as of 2026-10-14.
 - [Using it](#using-it)
     - [Mouse and keys](#mouse-and-keys)
     - [Link rules](#link-rules)
+    - [Link shapes](#link-shapes)
     - [Messages](#messages)
 - [Functions](#functions)
     - [Stores](#stores)
@@ -34,6 +35,9 @@ State as of 2026-10-14.
 | Drag from an input point without links | The same, backwards; release on an output point. |
 | Drag from an input point that has links | Picks up its most recent link from the output end: release on another input to re-route it (it keeps its id and name), on empty space to remove it. |
 | **F** | Link two selected nodes: first output into the first input, left node into right node; if that link already exists (or isn't possible), right into left. |
+| **Shift+N** | New empty graph (asks first if the open one has unsaved changes); see [graph-saving.md](graph-saving.md). Ctrl+Shift+N can't be used: the browser keeps it (private window in Chrome / Edge, reopen closed window in Firefox). |
+| **L** | Next shape for the selected link: spline → line → manhattan → spline (saved in the link). |
+| Drag a selected manhattan link's middle segment | Move its corner (the highlighted grab area); saved as the link's `bend`. |
 | **+** / **=** and **-** | Zoom in / out by ×1.2 toward the screen center (the mouse wheel zooms toward the cursor). |
 | **Home** | Fit the whole graph in the window (same as the toolbar's corner-brackets button). |
 | **Ctrl+S** (Cmd+S) | Save the graph to its file; a graph without a file yet opens the menu (see [graph-saving.md](graph-saving.md)). Replaces the browser's "save page". |
@@ -55,6 +59,23 @@ State as of 2026-10-14.
 - An output can feed any number of inputs.
 
 Every link has its own id (`l1`, `l2` ...), which never changes, even when the link is re-routed (see [graph-format.md](graph-format.md)).
+
+### Link shapes
+
+Every link stores its own `shape` (see [graph-format.md](graph-format.md)):
+
+| Shape | Look |
+|---|---|
+| `spline` | Curve leaving the output to the right and entering the input from the left. New links start as spline. |
+| `line` | Straight line. |
+| `manhattan` | Right angles: out horizontally, one vertical segment, in horizontally. A backward link (input left of its output) goes out a short stub, across, and back in, so it doesn't run through its nodes. |
+
+- **One link:** select it and press <kbd>L</kbd>.
+- **The corner of a manhattan link:** select the link; its middle segment gets a highlighted grab area. Drag it sideways (or up and down for a backward link) to move the corner. It's stored as `bend`, a fraction of the gap, so it stays in proportion when nodes move.
+- **All links**, in the Esc menu's **Links** section:
+    - **Show all links as …**: a display-only override. Every link is drawn in that shape, but nothing in the graph changes; choose "their own shape" to see each link's own again. It is remembered in this browser (`localStorage` key `imge.graphEditor.linkShapeOverride`), never saved in the graph file.
+    - **Apply to all links**: writes the chosen shape into every link (asks first) and turns the display override off. Bends are kept.
+- While the override is on, <kbd>L</kbd> still changes the link's own shape; the message says it's hidden by the override.
 
 ### Messages
 
@@ -81,6 +102,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `graph` | The open graph (`Graph`). Starts as `emptyGraph()`; the page fills it after loading and upgrading the file. |
 | `selection` | `{ nodes: string[], link: string \| null }`: selected node ids in selection order, or one selected link id. Never both. |
 | `editingNodeId` | Id of the node whose name is being edited, or `null`. `GraphNode` shows the text field for that node. |
+| `linkShapeOverride` | Display-only link shape (`'spline'`, `'line'`, `'manhattan'`) or `null` for each link's own; never written into the graph. `persistLinkShapeOverride()` (called by the page on mount) restores it from and saves it to this browser. |
 
 ### Nodes
 
@@ -99,8 +121,11 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 | Function | Does | Returns |
 |---|---|---|
-| `addLink(g, { source, target, type?, name?, id? })` | Connects an output (`source`) to an input (`target`), following the [link rules](#link-rules). Gets the next id, or the given `id` when re-routing (if no other link uses it). | `{ graph, outcome, link? }`, see below |
+| `addLink(g, { source, target, type?, name?, shape?, bend?, id? })` | Connects an output (`source`) to an input (`target`), following the [link rules](#link-rules). Shape defaults to `spline`. Gets the next id, or the given `id` when re-routing (if no other link uses it); re-routing also passes the old shape and bend. | `{ graph, outcome, link? }`, see below |
 | `removeLink(g, linkId)` | Removes one link by its id. | `Graph` |
+| `cycleLinkShape(g, linkId)` | Next shape for one link: spline → line → manhattan → spline. | `Graph` |
+| `setAllLinkShapes(g, shape)` | Writes one shape into every link ("Apply to all links"); bends are kept. | `Graph` |
+| `setLinkBend(g, linkId, bend)` | Sets a link's `bend`, clamped to 0..1. | `Graph` |
 | `findLink(g, source, target)` | The link from this output to this input, if any. | `Link \| undefined` |
 | `linksInto(g, target)` | All links going into an input port, oldest first. | `Link[]` |
 | `quickLink(g, nodeIdA, nodeIdB)` | The ends of the link the F key makes: first output of one node into the first input of the other, left to right first, then right to left; skips a link that already exists. Doesn't change the graph. | `{ source, target } \| null` |
@@ -149,6 +174,8 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-15 — Shift+N starts a new empty graph
+- 2026-10-15 — link shapes (spline / line / manhattan): L cycles the selected link, drag a manhattan link's corner, display-only override and "apply to all links" in the menu; new functions `cycleLinkShape`, `setAllLinkShapes`, `setLinkBend`, store `linkShapeOverride`
 - 2026-10-15 — ids follow the scheme nodes `n1`, links `l1`, inputs `i1`, outputs `o1`
 - 2026-10-15 — new keys: + / = and - zoom, Home fits the graph, Ctrl+S saves, Ctrl+Shift+S downloads; hints and menu buttons show keys as key caps
 - 2026-10-14 — graph format v2: many links may meet at a port (linking into a connected input adds instead of replacing), exact duplicates refused, links selected / deleted / re-routed by their own id (re-routing keeps it), nodes have a `name`; function reference updated (`nextLinkId`, `findLink`, `linksInto`; `findLinkInto` / `isLinkKey` removed)
