@@ -23,7 +23,7 @@ Open the menu with **Esc**, or with the toolbar's open button (the arrow pointin
 ### Which files are listed
 
 - Only `.json` files **directly in the chosen folder** (subfolders aren't searched) that are **imge graphs**: their `metadata.format` is `imge-graph`, or they are old unversioned graphs (see [graph-format.md](graph-format.md)).
-- Each is shown by its name (the file name without `.json`) with its node count, e.g. `feature map · 33 nodes`.
+- Each is shown by its name (the file name without `.json`) with its node count, e.g. `feature map · 34 nodes`.
 - Other `.json` files are not listed, and not hidden silently either: the menu says how many were skipped ("1 other .json file in this folder isn't an imge graph").
 - Clicking a name opens that graph; older format versions are upgraded on load.
 
@@ -75,7 +75,7 @@ Clearing the site's data in the browser removes the remembered folder and the au
     - while dragging a new link: cancels the drag
     - while editing a title: cancels the edit
 - While the menu is open, the editor's shortcuts are paused (typing a file name doesn't add or delete nodes).
-- The graph editor's menu also has a **Links** section: "Show all links as …" (display only, not saved in the graph) and "Apply to all links" (writes the shape into every link); see [graph-editing.md](graph-editing.md#link-shapes).
+- The graph editor's menu also has a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) and the direction-chevrons toggle; see [graph-editing.md](graph-editing.md#link-shapes).
 
 ### A menu for each page
 
@@ -132,6 +132,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-10-16 — the menu's Links section also has the arrow override, apply arrow to all links and the chevron toggle
 - 2026-10-15 — "New graph" button and Shift+N: empty graph without a file name
 - 2026-10-15 — the graph editor menu has a Links section (display-only shape override, apply a shape to all links)
 - 2026-10-15 — Ctrl+S saves (or opens the menu when the graph has no file yet), Ctrl+Shift+S and the new "Download a copy" button download; keys shown as key caps on the buttons

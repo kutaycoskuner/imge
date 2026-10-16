@@ -126,6 +126,17 @@ kbd {
 /* selection: Blender-like orange */
 :root {
     --col-selected: #ffa033;
+    /* links: the text colour mixed into the background (looks like 60 % opacity, but solid,
+       so an arrowhead covers its line instead of letting it show through) */
+    --col-link: color-mix(in srgb, var(--col) 60%, var(--bg));
+}
+
+/* the theme's text colour may carry a little transparency (dark: #ebf4f1ee): force the link
+   colour fully opaque where the browser can (relative colour syntax) */
+@supports (color: rgb(from red r g b / 1)) {
+    :root {
+        --col-link: rgb(from color-mix(in srgb, var(--col) 60%, var(--bg)) r g b / 1);
+    }
 }
 
 .node.selected {
@@ -162,16 +173,14 @@ kbd {
 
 .link {
     fill: none;
-    stroke: var(--col);
+    stroke: var(--col-link);
     stroke-width: 2px;
-    opacity: 0.6;
     vector-effect: non-scaling-stroke;
     pointer-events: none;
 }
 
 .link.selected {
     stroke: var(--col-selected);
-    opacity: 1;
 }
 
 .link-preview {
@@ -188,7 +197,62 @@ kbd {
     cursor: pointer;
 }
 
-/* grab area on a selected manhattan link's middle segment (drag to move the corner) */
+/* arrowheads (SVG markers on .link paths) and mid-link direction chevrons */
+.link-arrow {
+    fill: var(--col-link);
+}
+
+.link-arrow.selected {
+    fill: var(--col-selected);
+}
+
+.link-chevrons path {
+    fill: none;
+    stroke: var(--col-link);
+    stroke-width: 1.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.link-chevrons.selected path {
+    stroke: var(--col-selected);
+}
+
+/* link name in the middle of the link; the stroke in the background colour keeps it
+   readable where it crosses other lines */
+.link-label {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: var(--col);
+    stroke: var(--bg);
+    stroke-width: 4px;
+    paint-order: stroke;
+    pointer-events: none;
+    user-select: none;
+}
+
+.link-label.selected {
+    fill: var(--col-selected);
+}
+
+.link-name-input {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 10em;
+    font: 11px Arial, sans-serif;
+    text-align: center;
+    color: var(--col);
+    background: var(--bg);
+    border: 1px solid var(--col-selected);
+    border-radius: 3px;
+    outline: none;
+    z-index: 30;
+}
+
+/* grab area on a selected link's corner (manhattan) or lane (links going around their nodes) */
 .link-bend {
     fill: none;
     stroke: var(--col-selected);

@@ -24,10 +24,11 @@ import {
 	type GraphV1,
 	type GraphV2,
 	type GraphV3,
+	type GraphV4,
 	type PortV1
 } from './types';
 
-export const CURRENT_GRAPH_VERSION = 3;
+export const CURRENT_GRAPH_VERSION = 4;
 
 export class GraphFormatError extends Error {
 	constructor(message: string) {
@@ -123,6 +124,24 @@ const MIGRATIONS: Migration[] = [
 				// a color some file already carried as an extra key is kept
 				nodes: graph.data.nodes.map((node) => ({ ...node, color: (node as any).color ?? null })),
 				links: graph.data.links.map((link) => ({ ...link, shape: 'spline' }))
+			}
+		})
+	},
+	{
+		from: 3,
+		to: 4,
+		description: 'links get arrow (none, as drawn so far) and route (above) for cycle-closing links',
+		migrate: (graph: GraphV3): GraphV4 => ({
+			...graph,
+			metadata: { ...graph.metadata, format: GRAPH_FORMAT, version: 4 },
+			data: {
+				...graph.data,
+				// values a file already carried as extra keys are kept
+				links: graph.data.links.map((link) => ({
+					...link,
+					arrow: (link as any).arrow ?? 'none',
+					route: (link as any).route ?? 'above'
+				}))
 			}
 		})
 	}

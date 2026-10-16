@@ -8,6 +8,8 @@ State as of 2026-10-14.
     - [Mouse and keys](#mouse-and-keys)
     - [Link rules](#link-rules)
     - [Link shapes](#link-shapes)
+    - [Arrows and link names](#arrows-and-link-names)
+    - [Cycles and self-loops](#cycles-and-self-loops)
     - [Messages](#messages)
 - [Functions](#functions)
     - [Stores](#stores)
@@ -37,6 +39,9 @@ State as of 2026-10-14.
 | **F** | Link two selected nodes: first output into the first input, left node into right node; if that link already exists (or isn't possible), right into left. |
 | **Shift+N** | New empty graph (asks first if the open one has unsaved changes); see [graph-saving.md](graph-saving.md). Ctrl+Shift+N can't be used: the browser keeps it (private window in Chrome / Edge, reopen closed window in Firefox). |
 | **L** | Next shape for the selected link: spline → line → manhattan → spline (saved in the link). |
+| **D** | Next arrow for the selected link: forward → both → backward → none (saved in the link). |
+| **R** | Route the selected link above or below its nodes (used when it closes a cycle or is a self-loop). |
+| Double-click a link, or **F2** with a link selected | Edit the link's name, shown in the middle of the link. Enter or clicking away saves; Esc cancels; an empty name removes it. |
 | Drag a selected manhattan link's middle segment | Move its corner (the highlighted grab area); saved as the link's `bend`. |
 | **+** / **=** and **-** | Zoom in / out by ×1.2 toward the screen center (the mouse wheel zooms toward the cursor). |
 | **Home** | Fit the whole graph in the window (same as the toolbar's corner-brackets button). |
@@ -53,7 +58,7 @@ State as of 2026-10-14.
 ### Link rules
 
 - A link always goes from an output (right side of a node) to an input (left side).
-- A node can't link to itself.
+- Cycles are allowed (1 → 2 → 1), and so is a link from a node to itself (a self-loop); see [Cycles and self-loops](#cycles-and-self-loops).
 - Any number of links may meet at a port, in both directions (many-to-many): linking into a connected input adds a link.
 - No exact duplicates: one link per output-port → input-port pair.
 - An output can feed any number of inputs.
@@ -74,8 +79,41 @@ Every link stores its own `shape` (see [graph-format.md](graph-format.md)):
 - **The corner of a manhattan link:** select the link; its middle segment gets a highlighted grab area. Drag it sideways (or up and down for a backward link) to move the corner. It's stored as `bend`, a fraction of the gap, so it stays in proportion when nodes move.
 - **All links**, in the Esc menu's **Links** section:
     - **Show all links as …**: a display-only override. Every link is drawn in that shape, but nothing in the graph changes; choose "their own shape" to see each link's own again. It is remembered in this browser (`localStorage` key `imge.graphEditor.linkShapeOverride`), never saved in the graph file.
-    - **Apply to all links**: writes the chosen shape into every link (asks first) and turns the display override off. Bends are kept.
+    - **Apply shape to all links**: writes the chosen shape into every link (asks first) and turns the display override off. Bends are kept.
 - While the override is on, <kbd>L</kbd> still changes the link's own shape; the message says it's hidden by the override.
+
+### Arrows and link names
+
+Every link stores its own `arrow`, relative to its direction (output → input):
+
+| Arrow | Look |
+|---|---|
+| `forward` | → arrowhead at the input. New links start with it. |
+| `backward` | ← arrowhead at the output. |
+| `both` | ↔ arrowheads at both ends. |
+| `none` | no arrowhead (graphs from before v4 open this way, so they look as before). |
+
+- **One link:** select it and press <kbd>D</kbd>.
+- **All links**, in the Esc menu's **Links** section, the same way as shapes:
+    - **Show all arrows as …**: display only, not saved (`localStorage` key `imge.graphEditor.linkArrowOverride`)
+    - **Apply arrow to all links**: writes the arrow into every link (asks first) and turns the arrow override off
+    - **Direction chevrons**: a display option (`imge.graphEditor.showChevrons`) that adds small chevrons in the middle of every link that has an arrow, pointing the same way. Useful where the ends are hidden behind other lines.
+- Arrowheads end just outside the port square, so the port never covers them. Lines, arrowheads and chevrons share one solid colour (`--col-link` in `imge.css`: the text colour mixed into the background), so a line never shows through its arrowhead.
+- **Names:** a link's `name` is drawn in the middle of the link, with an outline in the background colour so it stays readable over other lines. Double-click a link (or select it and press <kbd>F2</kbd>) to edit it.
+
+### Cycles and self-loops
+
+- **Cycles are allowed:** 1 → 2 → 1, 1 → 2 → 3 → 1, several at once.
+- **Which link closes a cycle** is worked out on every change (`findBackLinks()`), not stored:
+    - the editor walks the graph from the leftmost node, following links in left-to-right order of their targets
+    - a link to a node that is already on the current walk path closes a cycle
+    - so "left = earlier" is the reading direction; in 1 → 2 → 1 with 1 on the left, 2 → 1 closes it
+- **That link goes around its nodes** instead of across them: out of the output, along a lane above (default) or below the nodes, and back into the input, in its own shape (spline, line or manhattan).
+    - the lane starts just outside the link's own two nodes and moves further out only past nodes it would run through, so it takes the nearest free gap
+    - links whose lanes would overlap get stacked lanes
+- **Self-loops** (a node's output into its own input) are drawn the same way: a loop around the node.
+- **Changing the route:** select the link and press <kbd>R</kbd> (above ↔ below, saved as `route`). The selected link's lane gets a highlighted grab area: drag it to move the lane closer or further (saved as `bend`).
+- Links that only point backwards on screen without forming a cycle (an input placed left of its output) keep their normal drawing.
 
 ### Messages
 
@@ -84,7 +122,6 @@ When an action is refused or changes something you might not expect, a short mes
 | Situation | Message |
 |---|---|
 | The same output-to-input link already exists | That link already exists |
-| Link from a node to itself | A node cannot link to itself |
 | Output dropped on an output, or input on an input | Links go from an output (right) to an input (left) |
 | F with fewer or more than two nodes selected | Select two nodes (Shift+click), then press F |
 | F when both directions are already linked (or a node has no output / input) | These nodes are already linked (or have no output / input) |
@@ -102,7 +139,11 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `graph` | The open graph (`Graph`). Starts as `emptyGraph()`; the page fills it after loading and upgrading the file. |
 | `selection` | `{ nodes: string[], link: string \| null }`: selected node ids in selection order, or one selected link id. Never both. |
 | `editingNodeId` | Id of the node whose name is being edited, or `null`. `GraphNode` shows the text field for that node. |
-| `linkShapeOverride` | Display-only link shape (`'spline'`, `'line'`, `'manhattan'`) or `null` for each link's own; never written into the graph. `persistLinkShapeOverride()` (called by the page on mount) restores it from and saves it to this browser. |
+| `editingLinkId` | Id of the link whose name is being edited, or `null`. `GraphLinks` shows the text field in the middle of that link. |
+| `linkShapeOverride` / `linkArrowOverride` | Display-only shape / arrow for all links, or `null` for each link's own; never written into the graph. |
+| `showChevrons` | Display-only: direction chevrons in the middle of links. |
+
+`persistViewSettings()` (called by the page on mount) restores the three display settings from this browser and saves every change there.
 
 ### Nodes
 
@@ -121,11 +162,16 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 | Function | Does | Returns |
 |---|---|---|
-| `addLink(g, { source, target, type?, name?, shape?, bend?, id? })` | Connects an output (`source`) to an input (`target`), following the [link rules](#link-rules). Shape defaults to `spline`. Gets the next id, or the given `id` when re-routing (if no other link uses it); re-routing also passes the old shape and bend. | `{ graph, outcome, link? }`, see below |
+| `addLink(g, { source, target, type?, name?, shape?, bend?, arrow?, route?, id? })` | Connects an output (`source`) to an input (`target`), following the [link rules](#link-rules); source and target may be the same node. Defaults: shape `spline`, arrow `forward`, route `above`. Gets the next id, or the given `id` when re-routing (if no other link uses it); re-routing also passes the old shape, bend, arrow and route. | `{ graph, outcome, link? }`, see below |
 | `removeLink(g, linkId)` | Removes one link by its id. | `Graph` |
 | `cycleLinkShape(g, linkId)` | Next shape for one link: spline → line → manhattan → spline. | `Graph` |
-| `setAllLinkShapes(g, shape)` | Writes one shape into every link ("Apply to all links"); bends are kept. | `Graph` |
-| `setLinkBend(g, linkId, bend)` | Sets a link's `bend`, clamped to 0..1. | `Graph` |
+| `setAllLinkShapes(g, shape)` | Writes one shape into every link ("Apply shape to all links"); bends are kept. | `Graph` |
+| `setLinkBend(g, linkId, bend)` | Sets a link's `bend`, clamped to 0..1 (a manhattan corner, or the lane distance of a link going around). | `Graph` |
+| `cycleLinkArrow(g, linkId)` | Next arrow for one link: forward → both → backward → none → forward. | `Graph` |
+| `setAllLinkArrows(g, arrow)` | Writes one arrow into every link ("Apply arrow to all links"). | `Graph` |
+| `toggleLinkRoute(g, linkId)` | Flips a link's route: above ↔ below. | `Graph` |
+| `renameLink(g, linkId, name)` | Sets a link's name (trimmed); an empty name removes it. | `Graph` |
+| `findBackLinks(g)` | Ids of the links that close a cycle (see [Cycles and self-loops](#cycles-and-self-loops)); self-loops are not included. Doesn't change the graph. | `Set<string>` |
 | `findLink(g, source, target)` | The link from this output to this input, if any. | `Link \| undefined` |
 | `linksInto(g, target)` | All links going into an input port, oldest first. | `Link[]` |
 | `quickLink(g, nodeIdA, nodeIdB)` | The ends of the link the F key makes: first output of one node into the first input of the other, left to right first, then right to left; skips a link that already exists. Doesn't change the graph. | `{ source, target } \| null` |
@@ -136,7 +182,6 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 |---|---|---|
 | `'added'` | New link (returned as `link`). | changed |
 | `'exists'` | Exactly this link is already there. | unchanged |
-| `'self-link'` | Source and target are the same node. | unchanged |
 | `'unknown-port'` | A node or port doesn't exist, or an input was given as the source (or an output as the target). | unchanged |
 
 ### Selection
@@ -159,7 +204,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 - **Finding what was clicked:** the page reads `data-*` attributes from the element under the mouse:
     - ports carry `data-node-id`, `data-port-kind` (`input` / `output`) and `data-port-id`
     - nodes carry `data-id`
-    - links carry `data-link-id` on an invisible 12 px wide path, so a thin curve is easy to click; a link's `name` shows as its tooltip
+    - links carry `data-link-id` on an invisible 12 px wide path, so a thin curve is easy to click; double-clicking it edits the link's name
 - **Drawing links:** `GraphLinks` is an SVG layer inside the world layer, so it pans and zooms with the nodes.
     - Port positions are measured from the rendered nodes: each port's offset from its node's corner, using `offsetLeft`/`offsetTop`, which ignore pan and zoom.
     - They're measured again after every graph change, so a curve stays attached when a longer name makes a node bigger.
@@ -174,6 +219,8 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-16 — links, arrowheads and chevrons use one solid colour, so lines no longer show through arrowheads
+- 2026-10-16 — arrows per link (D, menu override and apply to all, mid-link chevrons), link names drawn mid-link (double-click / F2), cycles and self-loops allowed and drawn around their nodes (R route, lane drag); new functions `cycleLinkArrow`, `setAllLinkArrows`, `toggleLinkRoute`, `renameLink`, `findBackLinks`, `persistViewSettings`; "self-link" outcome removed
 - 2026-10-15 — Shift+N starts a new empty graph
 - 2026-10-15 — link shapes (spline / line / manhattan): L cycles the selected link, drag a manhattan link's corner, display-only override and "apply to all links" in the menu; new functions `cycleLinkShape`, `setAllLinkShapes`, `setLinkBend`, store `linkShapeOverride`
 - 2026-10-15 — ids follow the scheme nodes `n1`, links `l1`, inputs `i1`, outputs `o1`

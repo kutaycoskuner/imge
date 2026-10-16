@@ -29,7 +29,12 @@ import {
 	setAllLinkShapes,
 	setLinkBend,
 	linkShapeOverride,
-	graph
+	graph,
+	cycleLinkArrow,
+	setAllLinkArrows,
+	toggleLinkRoute,
+	renameLink,
+	findBackLinks
 } from './store';
 import { get } from 'svelte/store';
 import type { Graph } from './types';
@@ -105,7 +110,14 @@ describe('link rules', () => {
 	it('adds a link l1 with type, shape spline and both ends', () => {
 		const { graph, outcome, link: created } = addLink(threeNodes(), ends('n1', 'n2'));
 		expect(outcome).toBe('added');
-		expect(created).toEqual({ id: 'l1', type: 'basic', shape: 'spline', ...ends('n1', 'n2') });
+		expect(created).toEqual({
+			id: 'l1',
+			type: 'basic',
+			shape: 'spline',
+			arrow: 'forward',
+			route: 'above',
+			...ends('n1', 'n2')
+		});
 		expect(graph.data.links).toEqual([created]);
 	});
 
@@ -146,10 +158,15 @@ describe('link rules', () => {
 		expect(graph.data.links).toHaveLength(1);
 	});
 
-	it('refuses a link from a node to itself', () => {
+	it('allows a link from a node to itself (self-loop)', () => {
 		const { graph, outcome } = addLink(threeNodes(), ends('n2', 'n2'));
-		expect(outcome).toBe('self-link');
-		expect(graph.data.links).toEqual([]);
+		expect(outcome).toBe('added');
+		expect(graph.data.links).toHaveLength(1);
+	});
+
+	it('allows cycles: 1 -> 2 -> 1', () => {
+		const g = link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n1');
+		expect(g.data.links).toHaveLength(2);
 	});
 
 	it('refuses unknown nodes or ports (e.g. input used as source)', () => {
@@ -209,6 +226,73 @@ describe('link shapes', () => {
 
 	it('new nodes have no color', () => {
 		expect(threeNodes().data.nodes.every((n) => n.color === null)).toBe(true);
+	});
+});
+
+describe('arrows, route and link names', () => {
+	it('cycles one arrow forward -> both -> backward -> none -> forward', () => {
+		let g = link(threeNodes(), 'n1', 'n2');
+		const arrows: string[] = [];
+		for (let i = 0; i < 4; i++) {
+			g = cycleLinkArrow(g, 'l1');
+			arrows.push(g.data.links[0].arrow);
+		}
+		expect(arrows).toEqual(['both', 'backward', 'none', 'forward']);
+	});
+
+	it('applies one arrow to all links', () => {
+		let g = link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n3');
+		g = setAllLinkArrows(g, 'none');
+		expect(g.data.links.map((l) => l.arrow)).toEqual(['none', 'none']);
+	});
+
+	it('flips the route above <-> below', () => {
+		let g = link(threeNodes(), 'n1', 'n2');
+		g = toggleLinkRoute(g, 'l1');
+		expect(g.data.links[0].route).toBe('below');
+		expect(toggleLinkRoute(g, 'l1').data.links[0].route).toBe('above');
+	});
+
+	it('names a link and removes the name when it is cleared', () => {
+		let g = renameLink(link(threeNodes(), 'n1', 'n2'), 'l1', '  feeds  ');
+		expect(g.data.links[0].name).toBe('feeds');
+		g = renameLink(g, 'l1', '  ');
+		expect('name' in g.data.links[0]).toBe(false);
+	});
+});
+
+describe('findBackLinks (cycles)', () => {
+	it('finds no back links without cycles', () => {
+		const g = link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n3');
+		expect([...findBackLinks(g)]).toEqual([]);
+	});
+
+	it('1 -> 2 -> 1: the link pointing back left closes the cycle', () => {
+		const g = link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n1'); // l1, l2
+		expect([...findBackLinks(g)]).toEqual(['l2']);
+	});
+
+	it('the same cycle created in the other order still marks the right-to-left link', () => {
+		const g = link(link(threeNodes(), 'n2', 'n1'), 'n1', 'n2'); // l1 = n2 -> n1
+		expect([...findBackLinks(g)]).toEqual(['l1']);
+	});
+
+	it('a three-node cycle 1 -> 2 -> 3 -> 1 has one back link', () => {
+		const g = link(link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n3'), 'n3', 'n1');
+		expect([...findBackLinks(g)]).toEqual(['l3']);
+	});
+
+	it('two separate cycles give two back links', () => {
+		let g = threeNodes();
+		g = addNode(g, { x: 900, y: 0 }).graph; // n4
+		g = link(link(g, 'n1', 'n2'), 'n2', 'n1'); // l1, l2
+		g = link(link(g, 'n3', 'n4'), 'n4', 'n3'); // l3, l4
+		expect([...findBackLinks(g)].sort()).toEqual(['l2', 'l4']);
+	});
+
+	it('self-loops are not back links (they are drawn as loops)', () => {
+		const g = link(threeNodes(), 'n1', 'n1');
+		expect([...findBackLinks(g)]).toEqual([]);
 	});
 });
 

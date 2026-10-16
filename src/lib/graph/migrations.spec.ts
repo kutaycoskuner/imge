@@ -25,13 +25,15 @@ import sampleV0 from '../../../static/data/samples/graph-v0.json';
 import sampleV1 from '../../../static/data/samples/graph-v1.json';
 import sampleV2 from '../../../static/data/samples/graph-v2.json';
 import sampleV3 from '../../../static/data/samples/graph-v3.json';
+import sampleV4 from '../../../static/data/samples/graph-v4.json';
 
 // one sample per format version, oldest first; copies so no test can change another's input
 const SAMPLES: Record<number, () => any> = {
 	0: () => structuredClone(sampleV0),
 	1: () => structuredClone(sampleV1),
 	2: () => structuredClone(sampleV2),
-	3: () => structuredClone(sampleV3)
+	3: () => structuredClone(sampleV3),
+	4: () => structuredClone(sampleV4)
 };
 const current = SAMPLES[CURRENT_GRAPH_VERSION];
 
@@ -109,6 +111,18 @@ describe('adapter 2 -> 3', () => {
 		const { graph } = migrateGraph(v2);
 		expect(graph.data.nodes.map((n) => n.color)).toEqual([null, '#ff0000']);
 		expect(graph.data.links.map((l) => l.shape)).toEqual(['spline']);
+	});
+});
+
+describe('adapter 3 -> 4', () => {
+	it('adds arrow none and route above, keeping values a link already had', () => {
+		const v3 = SAMPLES[3]();
+		v3.data.links.push({ ...v3.data.links[0], id: 'l2', arrow: 'both', route: 'below' });
+		const { graph } = migrateGraph(v3);
+		expect(graph.data.links.map((l) => [l.arrow, l.route])).toEqual([
+			['none', 'above'],
+			['both', 'below']
+		]);
 	});
 });
 

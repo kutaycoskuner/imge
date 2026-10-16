@@ -1,7 +1,7 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 3
+        "version": 4
     },
     "data": {
         "nodes": [
@@ -199,7 +199,7 @@
             },
             {
                 "id": "n9",
-                "name": "Graph format v3",
+                "name": "Graph format v4",
                 "type": "basic",
                 "color": null,
                 "position": {
@@ -223,7 +223,7 @@
             },
             {
                 "id": "n10",
-                "name": "Format adapters (v0 to v3)",
+                "name": "Format adapters (v0 to v4)",
                 "type": "basic",
                 "color": null,
                 "position": {
@@ -607,6 +607,30 @@
             },
             {
                 "id": "n26",
+                "name": "Cycles & arrows (D, R)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -330,
+                    "y": -275
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n27",
                 "name": "Esc menu (per page)",
                 "type": "basic",
                 "color": null,
@@ -630,7 +654,7 @@
                 ]
             },
             {
-                "id": "n27",
+                "id": "n28",
                 "name": "Graph folder",
                 "type": "basic",
                 "color": null,
@@ -654,7 +678,7 @@
                 ]
             },
             {
-                "id": "n28",
+                "id": "n29",
                 "name": "Download (Ctrl+Shift+S)",
                 "type": "basic",
                 "color": null,
@@ -678,7 +702,7 @@
                 ]
             },
             {
-                "id": "n29",
+                "id": "n30",
                 "name": "Display override (links)",
                 "type": "basic",
                 "color": null,
@@ -702,7 +726,7 @@
                 ]
             },
             {
-                "id": "n30",
+                "id": "n31",
                 "name": "Save / Save as (Ctrl+S)",
                 "type": "basic",
                 "color": null,
@@ -726,7 +750,7 @@
                 ]
             },
             {
-                "id": "n31",
+                "id": "n32",
                 "name": "Autosave",
                 "type": "basic",
                 "color": null,
@@ -750,7 +774,7 @@
                 ]
             },
             {
-                "id": "n32",
+                "id": "n33",
                 "name": "Read-only folder (Firefox)",
                 "type": "basic",
                 "color": null,
@@ -774,7 +798,7 @@
                 ]
             },
             {
-                "id": "n33",
+                "id": "n34",
                 "name": "Shortcuts & key caps",
                 "type": "basic",
                 "color": null,
@@ -803,6 +827,8 @@
                 "id": "l1",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n1",
                     "port": "o1"
@@ -816,6 +842,8 @@
                 "id": "l2",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n1",
                     "port": "o1"
@@ -829,6 +857,8 @@
                 "id": "l3",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n1",
                     "port": "o1"
@@ -842,6 +872,8 @@
                 "id": "l4",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n1",
                     "port": "o1"
@@ -855,6 +887,8 @@
                 "id": "l5",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n2",
                     "port": "o1"
@@ -868,6 +902,8 @@
                 "id": "l6",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n2",
                     "port": "o1"
@@ -881,6 +917,8 @@
                 "id": "l7",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n2",
                     "port": "o1"
@@ -894,6 +932,8 @@
                 "id": "l8",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n9",
                     "port": "o1"
@@ -907,6 +947,8 @@
                 "id": "l9",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n10",
                     "port": "o1"
@@ -919,7 +961,10 @@
             {
                 "id": "l10",
                 "type": "basic",
+                "name": "read / write",
                 "shape": "manhattan",
+                "arrow": "both",
+                "route": "above",
                 "source": {
                     "node": "n9",
                     "port": "o1"
@@ -933,6 +978,8 @@
                 "id": "l11",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n12",
                     "port": "o1"
@@ -946,6 +993,8 @@
                 "id": "l12",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n12",
                     "port": "o1"
@@ -959,6 +1008,8 @@
                 "id": "l13",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n13",
                     "port": "o1"
@@ -972,6 +1023,8 @@
                 "id": "l14",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n13",
                     "port": "o1"
@@ -985,6 +1038,8 @@
                 "id": "l15",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n13",
                     "port": "o1"
@@ -998,6 +1053,8 @@
                 "id": "l16",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n13",
                     "port": "o1"
@@ -1011,6 +1068,8 @@
                 "id": "l17",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n14",
                     "port": "o1"
@@ -1024,6 +1083,8 @@
                 "id": "l18",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n14",
                     "port": "o1"
@@ -1037,6 +1098,8 @@
                 "id": "l19",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n14",
                     "port": "o1"
@@ -1050,6 +1113,8 @@
                 "id": "l20",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n14",
                     "port": "o1"
@@ -1063,6 +1128,23 @@
                 "id": "l21",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n26",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l22",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n22",
                     "port": "o1"
@@ -1073,9 +1155,11 @@
                 }
             },
             {
-                "id": "l22",
+                "id": "l23",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n22",
                     "port": "o1"
@@ -1086,9 +1170,11 @@
                 }
             },
             {
-                "id": "l23",
+                "id": "l24",
                 "type": "basic",
                 "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n22",
                     "port": "o1"
@@ -1099,24 +1185,13 @@
                 }
             },
             {
-                "id": "l24",
-                "type": "basic",
-                "shape": "line",
-                "source": {
-                    "node": "n26",
-                    "port": "o1"
-                },
-                "target": {
-                    "node": "n27",
-                    "port": "i1"
-                }
-            },
-            {
                 "id": "l25",
                 "type": "basic",
                 "shape": "line",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
-                    "node": "n26",
+                    "node": "n27",
                     "port": "o1"
                 },
                 "target": {
@@ -1128,8 +1203,10 @@
                 "id": "l26",
                 "type": "basic",
                 "shape": "line",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
-                    "node": "n26",
+                    "node": "n27",
                     "port": "o1"
                 },
                 "target": {
@@ -1141,6 +1218,8 @@
                 "id": "l27",
                 "type": "basic",
                 "shape": "line",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
                     "node": "n27",
                     "port": "o1"
@@ -1154,8 +1233,10 @@
                 "id": "l28",
                 "type": "basic",
                 "shape": "line",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
-                    "node": "n27",
+                    "node": "n28",
                     "port": "o1"
                 },
                 "target": {
@@ -1167,8 +1248,10 @@
                 "id": "l29",
                 "type": "basic",
                 "shape": "line",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
-                    "node": "n27",
+                    "node": "n28",
                     "port": "o1"
                 },
                 "target": {
@@ -1179,9 +1262,11 @@
             {
                 "id": "l30",
                 "type": "basic",
-                "shape": "spline",
+                "shape": "line",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
-                    "node": "n15",
+                    "node": "n28",
                     "port": "o1"
                 },
                 "target": {
@@ -1193,12 +1278,14 @@
                 "id": "l31",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
-                    "node": "n20",
+                    "node": "n15",
                     "port": "o1"
                 },
                 "target": {
-                    "node": "n33",
+                    "node": "n34",
                     "port": "i1"
                 }
             },
@@ -1206,12 +1293,14 @@
                 "id": "l32",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
-                    "node": "n22",
+                    "node": "n20",
                     "port": "o1"
                 },
                 "target": {
-                    "node": "n33",
+                    "node": "n34",
                     "port": "i1"
                 }
             },
@@ -1219,12 +1308,61 @@
                 "id": "l33",
                 "type": "basic",
                 "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
                 "source": {
-                    "node": "n30",
+                    "node": "n22",
                     "port": "o1"
                 },
                 "target": {
-                    "node": "n33",
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l34",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n31",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l35",
+                "type": "basic",
+                "name": "specify",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n11",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l36",
+                "type": "basic",
+                "name": "after each change",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n32",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n32",
                     "port": "i1"
                 }
             }

@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-15
+	//   last update     : 2026-10-16
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -10,26 +10,39 @@
 	// dragged. Coordinates here are the world layer's CSS space: (x, -y) of world coords,
 	// scaled by the layer's own transform.
 	//
-	// Shapes (link.shape, or linkShapeOverride for display only):
+	// Shape (link.shape, or linkShapeOverride for display only):
 	//   spline     curve with horizontal tangents
 	//   line       straight line
-	//   manhattan  right angles: out horizontally, a vertical segment at `bend` (0 = output,
-	//              1 = input) of the horizontal gap, in horizontally. A backward link (input
-	//              left of the output) goes out a stub, across at `bend` of the vertical gap,
-	//              and back in, so it doesn't run through its nodes.
-	// A selected manhattan link gets a `.link-bend` grab area on its middle segment; the page
-	// drags it and reads the segment's range from its data-* attributes.
+	//   manhattan  right angles; the vertical segment sits at `bend` (0 = output, 1 = input)
+	//              of the horizontal gap; an input left of its output gets stubs in and out
+	// Links that close a cycle (findBackLinks) and self-loops go *around* their nodes instead:
+	// out of the output, along a lane above (route "above", default) or below the nodes they
+	// pass, and back into the input, in the link's shape. `bend` sets the lane's distance
+	// from the nodes; links whose lanes would overlap get stacked lanes.
+	// Arrows (link.arrow or linkArrowOverride): SVG markers at the input (forward), the
+	// output (backward), both or none; showChevrons adds direction chevrons in the middle.
+	// A link's name is drawn in its middle; editingLinkId shows a text field there instead.
+	// A selected link with an adjustable corner or lane gets a `.link-bend` grab area; the
+	// page drags it and reads the bend's range from its data-* attributes.
 	//
-	// Port positions are measured from the rendered nodes (offset of each port's center from
-	// its node's corner), so links stay attached when a name changes a node's size. The
-	// offsets don't depend on pan/zoom, so they are re-measured only after the graph changes.
-	// Each link has an invisible wide `.link-hit` path so it's easy to click; the page reads
-	// its data-link-id to select it. A link's optional name shows as a tooltip.
+	// Port positions and node sizes are measured from the rendered nodes (offsets ignore
+	// pan/zoom), re-measured after every graph change, so links stay attached when a name
+	// changes a node's size. Each link has an invisible wide `.link-hit` path so it's easy to
+	// click; the page reads its data-link-id to select it.
 	import { browser } from '$app/environment';
 	import { tick } from 'svelte';
-	import { graph, selection, linkShapeOverride } from '$lib/graph/store';
+	import {
+		graph,
+		selection,
+		editingLinkId,
+		linkShapeOverride,
+		linkArrowOverride,
+		showChevrons,
+		findBackLinks,
+		renameLink
+	} from '$lib/graph/store';
 	import type { Point } from '$lib/graph/store';
-	import type { GraphNode, LinkShape } from '$lib/graph/types';
+	import type { GraphNode, Link, LinkArrow, LinkShape } from '$lib/graph/types';
 
 	export let drag: {
 		nodeId: string;
@@ -38,18 +51,27 @@
 		to: Point; // mouse, world layer CSS coords
 	} | null = null;
 
-	// length of the straight stub a backward manhattan link leaves and enters its ports with
-	const STUB = 24;
+	const STUB = 24; // straight piece a link leaves / enters a port with when it routes around
+	const SPLINE_PULL = 60; // how far a curve going around reaches out sideways
+	const LANE_MIN = 15; // lane distance from the nodes at bend 0
+	const LANE_RANGE = 120; // extra lane distance at bend 1
+	const LANE_STEP = 18; // gap between stacked lanes
+
+	interface Size {
+		w: number;
+		h: number;
+	}
 
 	// port center relative to its node's top-left corner, keyed by data-port-key
 	let portOffsets: Record<string, Point> = {};
+	let nodeSizes: Record<string, Size> = {};
 
-	$: $graph, measurePorts();
+	$: $graph, measure();
 
-	async function measurePorts(): Promise<void> {
+	async function measure(): Promise<void> {
 		if (!browser) return; // no DOM during server-side prerendering
 		await tick(); // wait until the nodes for this graph are in the DOM
-		const next: Record<string, Point> = {};
+		const ports: Record<string, Point> = {};
 		document.querySelectorAll<HTMLElement>('.world .port[data-port-key]').forEach((port) => {
 			const node = port.closest<HTMLElement>('.node');
 			if (!node) return;
@@ -62,13 +84,16 @@
 				y += el.offsetTop;
 				el = el.offsetParent as HTMLElement | null;
 			}
-			next[port.dataset.portKey!] = { x, y };
+			ports[port.dataset.portKey!] = { x, y };
 		});
-		portOffsets = next;
+		const sizes: Record<string, Size> = {};
+		document.querySelectorAll<HTMLElement>('.world .node[data-id]').forEach((node) => {
+			sizes[node.dataset.id!] = { w: node.offsetWidth, h: node.offsetHeight };
+		});
+		portOffsets = ports;
+		nodeSizes = sizes;
 	}
 
-	// nodes and offsets are passed in (not read from the closure) so the `$:` blocks below
-	// re-run when either changes
 	function portPosition(
 		nodes: GraphNode[],
 		offsets: Record<string, Point>,
@@ -82,79 +107,280 @@
 		return { x: node.position.x + offset.x, y: -node.position.y + offset.y };
 	}
 
-	// the middle segment of a manhattan link: vertical at x (forward) or horizontal at y
-	// (backward), with the range `bend` 0..1 maps onto
+	// -------------------------------------------------------------------------------------
+	// geometry: every path is also kept as points (curves sampled) to find its middle
+	// -------------------------------------------------------------------------------------
 	interface Bend {
 		axis: 'x' | 'y';
 		from: number; // coordinate at bend 0
 		to: number; // coordinate at bend 1
-		at: number; // current coordinate
-		span: [number, number]; // the segment's extent along the other axis
-		cross: number; // the other axis' position for a horizontal segment / x for vertical
+		d: string; // the grab area's path
+		vertical: boolean;
 	}
 
-	function manhattan(from: Point, to: Point, bend: number): { d: string; bend: Bend } {
-		if (to.x - from.x >= 2 * STUB) {
-			const x = from.x + bend * (to.x - from.x);
+	interface Drawn {
+		d: string;
+		pts: Point[];
+		bend?: Bend;
+	}
+
+	const polyline = (pts: Point[]): string => 'M ' + pts.map((p) => `${p.x} ${p.y}`).join(' L ');
+
+	function cubic(p0: Point, c1: Point, c2: Point, p3: Point, n = 16): Point[] {
+		const out: Point[] = [];
+		for (let i = 0; i <= n; i++) {
+			const t = i / n;
+			const u = 1 - t;
+			out.push({
+				x: u * u * u * p0.x + 3 * u * u * t * c1.x + 3 * u * t * t * c2.x + t * t * t * p3.x,
+				y: u * u * u * p0.y + 3 * u * u * t * c1.y + 3 * u * t * t * c2.y + t * t * t * p3.y
+			});
+		}
+		return out;
+	}
+
+	function direct(shape: LinkShape, from: Point, to: Point, bend = 0.5): Drawn {
+		if (shape === 'line') return { d: polyline([from, to]), pts: [from, to] };
+		if (shape === 'manhattan') {
+			if (to.x - from.x >= 2 * STUB) {
+				const x = from.x + bend * (to.x - from.x);
+				const pts = [from, { x, y: from.y }, { x, y: to.y }, to];
+				return {
+					d: polyline(pts),
+					pts,
+					bend: { axis: 'x', from: from.x, to: to.x, d: polyline([pts[1], pts[2]]), vertical: true }
+				};
+			}
+			// input left of the output (not a cycle): out a stub, across, back in a stub
+			const y = from.y + bend * (to.y - from.y);
+			const a = { x: from.x + STUB, y };
+			const b = { x: to.x - STUB, y };
+			const pts = [from, { x: a.x, y: from.y }, a, b, { x: b.x, y: to.y }, to];
 			return {
-				d: `M ${from.x} ${from.y} H ${x} V ${to.y} H ${to.x}`,
-				bend: { axis: 'x', from: from.x, to: to.x, at: x, span: [from.y, to.y], cross: x }
+				d: polyline(pts),
+				pts,
+				bend: { axis: 'y', from: from.y, to: to.y, d: polyline([a, b]), vertical: false }
 			};
 		}
-		// backward: out a stub, across at `bend` of the vertical gap, back in a stub
-		const out = from.x + STUB;
-		const into = to.x - STUB;
-		const y = from.y + bend * (to.y - from.y);
+		const c = Math.max(40, Math.abs(to.x - from.x) * 0.5);
+		const c1 = { x: from.x + c, y: from.y };
+		const c2 = { x: to.x - c, y: to.y };
 		return {
-			d: `M ${from.x} ${from.y} H ${out} V ${y} H ${into} V ${to.y} H ${to.x}`,
-			bend: { axis: 'y', from: from.y, to: to.y, at: y, span: [into, out], cross: y }
+			d: `M ${from.x} ${from.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${to.x} ${to.y}`,
+			pts: cubic(from, c1, c2, to)
 		};
 	}
 
-	function shapePath(shape: LinkShape, from: Point, to: Point, bend = 0.5): { d: string; bend?: Bend } {
-		if (shape === 'line') return { d: `M ${from.x} ${from.y} L ${to.x} ${to.y}` };
-		if (shape === 'manhattan') return manhattan(from, to, bend);
-		// spline: horizontal tangents, leaves an output to the right, enters an input from the left
-		const c = Math.max(40, Math.abs(to.x - from.x) * 0.5);
-		return { d: `M ${from.x} ${from.y} C ${from.x + c} ${from.y}, ${to.x - c} ${to.y}, ${to.x} ${to.y}` };
+	// a link going around its nodes along a lane at laneY; laneAt(bend) gives the lane's y
+	function around(shape: LinkShape, from: Point, to: Point, laneY: number, bendRange: [number, number]): Drawn {
+		const out = { x: from.x + STUB, y: laneY };
+		const into = { x: to.x - STUB, y: laneY };
+		const grab: Bend = {
+			axis: 'y',
+			from: bendRange[0],
+			to: bendRange[1],
+			d: polyline([out, into]),
+			vertical: false
+		};
+		if (shape === 'manhattan') {
+			const pts = [from, { x: out.x, y: from.y }, out, into, { x: into.x, y: to.y }, to];
+			return { d: polyline(pts), pts, bend: grab };
+		}
+		if (shape === 'line') {
+			const pts = [from, out, into, to];
+			return { d: polyline(pts), pts, bend: grab };
+		}
+		const mid = { x: (out.x + into.x) / 2, y: laneY };
+		const a1 = { x: from.x + SPLINE_PULL, y: from.y };
+		const a2 = { x: from.x + SPLINE_PULL, y: laneY };
+		const b1 = { x: to.x - SPLINE_PULL, y: laneY };
+		const b2 = { x: to.x - SPLINE_PULL, y: to.y };
+		return {
+			d:
+				`M ${from.x} ${from.y} C ${a1.x} ${a1.y}, ${a2.x} ${a2.y}, ${mid.x} ${mid.y}` +
+				` C ${b1.x} ${b1.y}, ${b2.x} ${b2.y}, ${to.x} ${to.y}`,
+			pts: [...cubic(from, a1, a2, mid), ...cubic(mid, b1, b2, to).slice(1)],
+			bend: grab
+		};
 	}
 
-	$: nodes = $graph.data.nodes;
+	// point halfway along a path, and the direction of the path there (degrees)
+	function middle(pts: Point[]): { p: Point; angle: number } {
+		const lengths = pts.slice(1).map((p, i) => Math.hypot(p.x - pts[i].x, p.y - pts[i].y));
+		let rest = lengths.reduce((a, b) => a + b, 0) / 2;
+		for (let i = 0; i < lengths.length; i++) {
+			if (rest <= lengths[i] && lengths[i] > 0) {
+				const t = rest / lengths[i];
+				const a = pts[i];
+				const b = pts[i + 1];
+				return {
+					p: { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t },
+					angle: (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI
+				};
+			}
+			rest -= lengths[i];
+		}
+		return { p: pts[0], angle: 0 };
+	}
 
-	$: paths = $graph.data.links.flatMap((link) => {
-		const from = portPosition(nodes, portOffsets, link.source.node, 'output', link.source.port);
-		const to = portPosition(nodes, portOffsets, link.target.node, 'input', link.target.port);
-		if (!from || !to) return [];
-		const shape = $linkShapeOverride ?? link.shape;
-		const { d, bend } = shapePath(shape, from, to, link.bend);
-		const selected = link.id === $selection.link;
-		return [{ link, d, selected, bend: selected ? bend : undefined }];
-	});
+	// -------------------------------------------------------------------------------------
+	// all links, drawn
+	// -------------------------------------------------------------------------------------
+	interface Placed {
+		link: Link;
+		d: string;
+		mid: { p: Point; angle: number };
+		arrow: LinkArrow;
+		selected: boolean;
+		bend?: Bend;
+	}
+
+	$: placed = (() => {
+		const nodes = $graph.data.nodes;
+		const back = findBackLinks($graph);
+		const box = (n: GraphNode) => {
+			const size = nodeSizes[n.id] ?? { w: 0, h: 0 };
+			return { left: n.position.x, right: n.position.x + size.w, top: -n.position.y, bottom: -n.position.y + size.h };
+		};
+		const lanes: { route: string; x0: number; x1: number }[] = [];
+		const result: Placed[] = [];
+
+		for (const link of $graph.data.links) {
+			const from = portPosition(nodes, portOffsets, link.source.node, 'output', link.source.port);
+			const to = portPosition(nodes, portOffsets, link.target.node, 'input', link.target.port);
+			if (!from || !to) continue;
+			const shape = $linkShapeOverride ?? link.shape;
+			const goesAround = back.has(link.id) || link.source.node === link.target.node;
+
+			let drawn: Drawn;
+			if (goesAround) {
+				const x0 = Math.min(from.x, to.x) - STUB;
+				const x1 = Math.max(from.x, to.x) + STUB;
+				const inSpan = nodes.map(box).filter((b) => b.right >= x0 && b.left <= x1);
+				const ends = nodes.filter((n) => n.id === link.source.node || n.id === link.target.node).map(box);
+				const stacked = lanes.filter((l) => l.route === link.route && l.x0 <= x1 && l.x1 >= x0).length;
+				lanes.push({ route: link.route, x0, x1 });
+				const offset = LANE_MIN + stacked * LANE_STEP;
+				const bend = link.bend ?? 0.5;
+				const below = link.route === 'below';
+				// start just outside the link's own two nodes, at `bend` of the lane range
+				const base = below
+					? Math.max(...ends.map((b) => b.bottom)) + offset
+					: Math.min(...ends.map((b) => b.top)) - offset;
+				let laneY = below ? base + bend * LANE_RANGE : base - bend * LANE_RANGE;
+				// then move further out past any node the lane would run through, so it takes the
+				// nearest free gap instead of going around everything in its horizontal span
+				for (let moved = true; moved; ) {
+					moved = false;
+					for (const b of inSpan) {
+						if (laneY >= b.top - LANE_MIN / 2 && laneY <= b.bottom + LANE_MIN / 2) {
+							laneY = below ? b.bottom + LANE_MIN : b.top - LANE_MIN;
+							moved = true;
+						}
+					}
+				}
+				drawn = around(shape, from, to, laneY, [base, below ? base + LANE_RANGE : base - LANE_RANGE]);
+			} else {
+				drawn = direct(shape, from, to, link.bend);
+			}
+
+			const selected = link.id === $selection.link;
+			result.push({
+				link,
+				d: drawn.d,
+				mid: middle(drawn.pts),
+				arrow: $linkArrowOverride ?? link.arrow,
+				selected,
+				// the grab area only where the bend does something: manhattan corners, lanes
+				bend: selected && (goesAround || shape === 'manhattan') ? drawn.bend : undefined
+			});
+		}
+		return result;
+	})();
 
 	$: preview = (() => {
 		if (!drag) return null;
-		const port = portPosition(nodes, portOffsets, drag.nodeId, drag.kind, drag.portId);
+		const port = portPosition($graph.data.nodes, portOffsets, drag.nodeId, drag.kind, drag.portId);
 		if (!port) return null;
 		// a drag always reads output -> input, whichever end it started from
 		const shape = $linkShapeOverride ?? 'spline';
-		return drag.kind === 'output' ? shapePath(shape, port, drag.to).d : shapePath(shape, drag.to, port).d;
+		return drag.kind === 'output' ? direct(shape, port, drag.to).d : direct(shape, drag.to, port).d;
 	})();
+
+	const markerEnd = (arrow: LinkArrow, selected: boolean) =>
+		arrow === 'forward' || arrow === 'both' ? `url(#imge-arrow${selected ? '-selected' : ''})` : undefined;
+	const markerStart = (arrow: LinkArrow, selected: boolean) =>
+		arrow === 'backward' || arrow === 'both' ? `url(#imge-arrow${selected ? '-selected' : ''})` : undefined;
+
+	// -------------------------------------------------------------------------------------
+	// link name editing (F2 or double-click on a selected link)
+	// -------------------------------------------------------------------------------------
+	let draft = '';
+	$: editing = placed.find((p) => p.link.id === $editingLinkId);
+	$: if ($editingLinkId) draft = $graph.data.links.find((l) => l.id === $editingLinkId)?.name ?? '';
+
+	function commit(): void {
+		const id = $editingLinkId; // the store: blur can fire after Esc already ended editing
+		if (!id) return;
+		graph.update((g) => renameLink(g, id, draft));
+		editingLinkId.set(null);
+	}
+
+	function handleKey(event: KeyboardEvent): void {
+		if (event.key === 'Enter') commit();
+		else if (event.key === 'Escape') {
+			event.preventDefault(); // this Esc only cancels the edit; keeps the Esc menu closed
+			editingLinkId.set(null);
+		}
+	}
+
+	function focusSelect(el: HTMLInputElement) {
+		el.focus();
+		el.select();
+	}
 </script>
 
 <svg class="links-layer" aria-hidden="true">
-	{#each paths as { link, d, selected, bend } (link.id)}
-		<path class="link" class:selected {d} />
-		<path class="link-hit" {d} data-link-id={link.id}>
-			{#if link.name}<title>{link.name}</title>{/if}
-		</path>
+	<defs>
+		<!-- orient auto-start-reverse: used at the start of a path it points backwards;
+		     refX past the tip ends the arrow just outside the port square instead of under it -->
+		<marker id="imge-arrow" viewBox="0 0 10 10" refX="17" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+			<path class="link-arrow" d="M 0 1 L 9 5 L 0 9 z" />
+		</marker>
+		<marker id="imge-arrow-selected" viewBox="0 0 10 10" refX="17" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+			<path class="link-arrow selected" d="M 0 1 L 9 5 L 0 9 z" />
+		</marker>
+	</defs>
+
+	{#each placed as { link, d, mid, arrow, selected, bend } (link.id)}
+		<path
+			class="link"
+			class:selected
+			{d}
+			data-link-id={link.id}
+			data-arrow={arrow}
+			marker-end={markerEnd(arrow, selected)}
+			marker-start={markerStart(arrow, selected)}
+		/>
+		<path class="link-hit" {d} data-link-id={link.id} />
+
+		{#if $showChevrons && arrow !== 'none'}
+			<g class="link-chevrons" class:selected transform="translate({mid.p.x} {mid.p.y}) rotate({mid.angle})">
+				{#if arrow === 'forward' || arrow === 'both'}<path d="M -3 -4 L 2 0 L -3 4" transform={arrow === 'both' ? 'translate(5 0)' : ''} />{/if}
+				{#if arrow === 'backward' || arrow === 'both'}<path d="M 3 -4 L -2 0 L 3 4" transform={arrow === 'both' ? 'translate(-5 0)' : ''} />{/if}
+			</g>
+		{/if}
+
+		{#if link.name && link.id !== $editingLinkId}
+			<text class="link-label" class:selected x={mid.p.x} y={mid.p.y - 8} data-link-id={link.id}>{link.name}</text>
+		{/if}
+
 		{#if bend}
-			<!-- grab area for moving the corner of a selected manhattan link -->
+			<!-- grab area for the corner of a manhattan link, or the lane of a link going around -->
 			<path
 				class="link-bend"
-				class:vertical={bend.axis === 'x'}
-				d={bend.axis === 'x'
-					? `M ${bend.cross} ${bend.span[0]} V ${bend.span[1]}`
-					: `M ${bend.span[0]} ${bend.cross} H ${bend.span[1]}`}
+				class:vertical={bend.vertical}
+				d={bend.d}
 				data-link-id={link.id}
 				data-axis={bend.axis}
 				data-from={bend.from}
@@ -162,7 +388,20 @@
 			/>
 		{/if}
 	{/each}
+
 	{#if preview}
-		<path class="link link-preview" d={preview} />
+		<path class="link link-preview" d={preview} marker-end="url(#imge-arrow)" />
 	{/if}
 </svg>
+
+{#if editing}
+	<input
+		class="link-name-input"
+		style="left: {editing.mid.p.x}px; top: {editing.mid.p.y - 8}px;"
+		placeholder="link name"
+		bind:value={draft}
+		use:focusSelect
+		on:keydown|stopPropagation={handleKey}
+		on:blur={commit}
+	/>
+{/if}

@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-15
+	//   last update     : 2026-10-16
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -13,7 +13,8 @@
 	//          drag node = move (all selected), drag from a port = link, drag a linked
 	//          input's end away = detach
 	//   keys   Shift+N new graph, Shift+A add node at mouse, Delete/Backspace delete selection, F2 rename,
-	//          F link two selected nodes, L next shape of the selected link (drag a selected
+	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
+	//          link, F2 or double-click renames a link (drag a selected
 	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
 	//          Ctrl+Shift+S download, Esc cancel a link drag (otherwise it opens the menu)
 	// It also puts GraphEditorMenu into the Esc menu (open/save on the computer) and tracks
@@ -64,9 +65,14 @@
 		selectNode,
 		createNodeAt,
 		cycleLinkShape,
+		cycleLinkArrow,
+		toggleLinkRoute,
+		findBackLinks,
 		setLinkBend,
-		persistLinkShapeOverride,
+		persistViewSettings,
 		linkShapeOverride,
+		linkArrowOverride,
+		editingLinkId,
 		type LinkOutcome
 	} from '$lib/graph/store';
 	import type { Link, LinkEnd } from '$lib/graph/types';
@@ -79,7 +85,8 @@
 	let isPanningSpace = false;
 	let isDraggingNodes = false;
 
-	// corner of a selected manhattan link being dragged: the bend maps `from` (0) .. `to` (1)
+	// corner of a selected manhattan link (or the lane of a link going around its nodes) being
+	// dragged: the bend maps `from` (0) .. `to` (1)
 	// along `axis` in world-layer CSS coords (read from the grab area's data-* attributes)
 	let bendDrag: { linkId: string; axis: 'x' | 'y'; from: number; to: number } | null = null;
 
@@ -112,12 +119,11 @@
 
 	const LINK_MESSAGES: Partial<Record<LinkOutcome, string>> = {
 		exists: 'That link already exists',
-		'self-link': 'A node cannot link to itself',
 		'unknown-port': 'Links go from an output (right) to an input (left)'
 	};
 
 	function connect(
-		link: Pick<Link, 'source' | 'target'> & Partial<Pick<Link, 'id' | 'type' | 'name' | 'shape' | 'bend'>>
+		link: Pick<Link, 'source' | 'target'> & Partial<Pick<Link, 'id' | 'type' | 'name' | 'shape' | 'bend' | 'arrow' | 'route'>>
 	): void {
 		let outcome: LinkOutcome = 'exists';
 		graph.update((g) => {
@@ -198,6 +204,14 @@
 		bendDrag = null;
 	}
 
+	// double-click on a link: edit its name (node names handle their own double-click)
+	function handleDoubleClick(event: MouseEvent): void {
+		const linkHit = (event.target as Element).closest<SVGElement>('.link-hit');
+		if (!linkHit) return;
+		selection.set({ nodes: [], link: linkHit.dataset.linkId! });
+		editingLinkId.set(linkHit.dataset.linkId!);
+	}
+
 	function handleWheel(event: WheelEvent): void {
 		zoomAt(Math.exp(-event.deltaY * WHEEL_ZOOM_SPEED), { x: event.clientX, y: event.clientY });
 	}
@@ -240,7 +254,9 @@
 							type: drag.carried.type,
 							name: drag.carried.name,
 							shape: drag.carried.shape,
-							bend: drag.carried.bend
+							bend: drag.carried.bend,
+							arrow: drag.carried.arrow,
+							route: drag.carried.route
 						}
 					: {}),
 				source: { node: drag.nodeId, port: drag.portId },
@@ -294,6 +310,13 @@
 		} else if (key === 'f2') {
 			event.preventDefault();
 			if ($selection.nodes.length === 1) editingNodeId.set($selection.nodes[0]);
+			else if ($selection.link) editingLinkId.set($selection.link);
+		} else if (key === 'd' && !event.shiftKey) {
+			event.preventDefault();
+			cycleSelectedLinkArrow();
+		} else if (key === 'r' && !event.shiftKey) {
+			event.preventDefault();
+			toggleSelectedLinkRoute();
 		} else if (key === 'l' && !event.shiftKey) {
 			event.preventDefault();
 			cycleSelectedLinkShape();
@@ -318,6 +341,29 @@
 	}
 
 	// L: next shape for the selected link (spline -> line -> manhattan), saved in the link
+	// D: next arrow for the selected link (forward -> both -> backward -> none), saved in the link
+	function cycleSelectedLinkArrow(): void {
+		const linkId = $selection.link;
+		if (!linkId) return notify('Select a link, then press [D] to change its arrow');
+		graph.update((g) => cycleLinkArrow(g, linkId));
+		const arrow = $graph.data.links.find((l) => l.id === linkId)?.arrow;
+		notify($linkArrowOverride ? `Arrow: ${arrow} (hidden by the display override)` : `Arrow: ${arrow}`);
+	}
+
+	// R: flips the side a cycle-closing link or self-loop goes around (above / below)
+	function toggleSelectedLinkRoute(): void {
+		const linkId = $selection.link;
+		if (!linkId) return notify('Select a link, then press [R] to route it above or below');
+		graph.update((g) => toggleLinkRoute(g, linkId));
+		const link = $graph.data.links.find((l) => l.id === linkId)!;
+		const goesAround = link.source.node === link.target.node || findBackLinks($graph).has(linkId);
+		notify(
+			goesAround
+				? `Route: ${link.route}`
+				: `Route: ${link.route} (used when the link closes a cycle or loops back to its node)`
+		);
+	}
+
 	function cycleSelectedLinkShape(): void {
 		const linkId = $selection.link;
 		if (!linkId) return notify('Select a link, then press [L] to change its shape');
@@ -346,7 +392,7 @@
 	onMount(() => {
 		const stopTracking = trackViewport();
 		const stopChangeTracking = trackChanges();
-		const stopOverride = persistLinkShapeOverride();
+		const stopOverride = persistViewSettings();
 		pageMenu.set({ title: 'Graph editor', component: GraphEditorMenu });
 		(async () => {
 			await initWorkspace();
@@ -421,6 +467,7 @@
 	role="presentation"
 	on:mousedown={handleMouseDown}
 	on:wheel|nonpassive|preventDefault={handleWheel}
+	on:dblclick={handleDoubleClick}
 >
 	<div class="content-wrapper" class:linking={linkDrag}>
 		<div

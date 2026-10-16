@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-15
+	//   last update     : 2026-10-16
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -31,8 +31,35 @@
 	} from '$lib/graph/file-access';
 	import { menuOpen } from '../../stores/imge_main';
 	import Kbd from './Kbd.svelte';
-	import { graph, linkShapeOverride, setAllLinkShapes } from '$lib/graph/store';
-	import { LINK_SHAPES, type LinkShape } from '$lib/graph/types';
+	import {
+		graph,
+		linkShapeOverride,
+		linkArrowOverride,
+		showChevrons,
+		setAllLinkShapes,
+		setAllLinkArrows
+	} from '$lib/graph/store';
+	import { LINK_SHAPES, LINK_ARROWS, type LinkShape, type LinkArrow } from '$lib/graph/types';
+
+	// what the arrow choices look like in the selects
+	const ARROW_LABELS: Record<LinkArrow, string> = {
+		forward: '→ forward',
+		both: '↔ both',
+		backward: '← backward',
+		none: 'none'
+	};
+
+	let applyArrow: LinkArrow = 'forward';
+	$: if ($linkArrowOverride) applyArrow = $linkArrowOverride;
+
+	function applyArrowToAllLinks(): void {
+		const count = $graph.data.links.length;
+		if (!confirm(`Set the arrow of all ${count} links to "${applyArrow}"? This changes the graph data.`)) {
+			return;
+		}
+		graph.update((g) => setAllLinkArrows(g, applyArrow));
+		linkArrowOverride.set(null);
+	}
 
 	let saveAsName = '';
 	$: w = $workspace;
@@ -188,9 +215,37 @@
 			<select class="choice" bind:value={applyShape}>
 				{#each LINK_SHAPES as shape}<option value={shape}>{shape}</option>{/each}
 			</select>
-			<button class="action" on:click={applyToAllLinks}>Apply to all links</button>
+			<button class="action" on:click={applyToAllLinks}>Apply shape to all links</button>
 			<span class="note">changes the data; one link: select it and press <Kbd keys="L" /></span>
 		</div>
+
+		<div class="row">
+			<span>Show all arrows as</span>
+			<select
+				class="choice"
+				value={$linkArrowOverride ?? ''}
+				on:change={(e) => linkArrowOverride.set((e.currentTarget.value || null) as LinkArrow | null)}
+			>
+				<option value="">their own arrow</option>
+				{#each LINK_ARROWS as arrow}<option value={arrow}>{ARROW_LABELS[arrow]}</option>{/each}
+			</select>
+			<span class="note">display only, not saved</span>
+		</div>
+		<div class="row">
+			<select class="choice" bind:value={applyArrow}>
+				{#each LINK_ARROWS as arrow}<option value={arrow}>{ARROW_LABELS[arrow]}</option>{/each}
+			</select>
+			<button class="action" on:click={applyArrowToAllLinks}>Apply arrow to all links</button>
+			<span class="note">changes the data; one link: select it and press <Kbd keys="D" /></span>
+		</div>
+		<label class="row toggle">
+			<input type="checkbox" bind:checked={$showChevrons} />
+			<span>Direction chevrons in the middle of links (display only)</span>
+		</label>
+		<p class="note">
+			A selected link: <Kbd keys="R" /> routes it above or below when it closes a cycle or loops back
+			to its node; <Kbd keys="F2" /> or double-click edits its name.
+		</p>
 	</section>
 
 	<div class="row">

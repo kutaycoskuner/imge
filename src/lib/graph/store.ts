@@ -1,34 +1,40 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-14
+//   last update     : 2026-10-16
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
-// store.ts -- the open graph, the selection, and every create/update/delete operation on
-// nodes and links (graph format v3, see docs/graph-format.md).
+// store.ts -- the open graph, the selection, display settings, and every create/update/
+// delete operation on nodes and links (graph format v4, see docs/graph-format.md).
 //
 // Operations are pure functions (graph in, new graph out) so they are easy to test and
 // never half-apply; components call them through `graph.update(g => op(g, ...))`.
-// Link rules live in addLink(): output -> input only, no self-links, no exact duplicates
-// (same output port to same input port); otherwise any number of links may meet at a port.
+// Link rules live in addLink(): output -> input only, no exact duplicates (same output port
+// to same input port); otherwise any number of links may meet at a port, links may form
+// cycles (1 -> 2 -> 1), and a node may link to itself (self-loop).
 // Links are identified by their own id, which never changes when a link is edited.
 // Id scheme: nodes n1, n2 ..., links l1, l2 ..., ports per node i1, i2 ... / o1, o2 ...
-// Links carry their drawing shape (spline / line / manhattan + bend); linkShapeOverride can
-// draw all links in one shape for display only, setAllLinkShapes writes one shape into all.
+// Links carry how they are drawn: shape (spline / line / manhattan + bend), arrow
+// (forward / both / backward / none) and route (above / below, for links that go around
+// their nodes: findBackLinks() finds the links that close a cycle). The display overrides
+// draw all links one way without changing the data; setAll* write one value into all.
 //
-// Used by: routes/+page.svelte, GraphNode, GraphLinks, UI_GraphEditor, file-access.ts.
-// Details: docs/graph-editing.md, docs/graph-format.md
+// Used by: routes/+page.svelte, GraphNode, GraphLinks, GraphEditorMenu, UI_GraphEditor,
+// file-access.ts. Details: docs/graph-editing.md, docs/graph-format.md
 // -----------------------------------------------------------------------------------------
 
-import { writable } from 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 import {
 	GRAPH_FORMAT,
+	LINK_ARROWS,
 	LINK_SHAPES,
 	type Graph,
 	type GraphNode,
 	type Link,
+	type LinkArrow,
 	type LinkEnd,
+	type LinkRoute,
 	type LinkShape
 } from './types';
 
@@ -43,37 +49,55 @@ export interface Selection {
 }
 
 /** What addLink did: 'added', or why the graph is unchanged. */
-export type LinkOutcome = 'added' | 'exists' | 'self-link' | 'unknown-port';
+export type LinkOutcome = 'added' | 'exists' | 'unknown-port';
 
 // a new node's top-left is placed this far from the requested point, so the node appears
 // roughly centered on it (a default node is about 192 x 80 px at zoom 1)
 const NEW_NODE_OFFSET: Point = { x: -96, y: 40 };
 
 export function emptyGraph(): Graph {
-	return { metadata: { format: GRAPH_FORMAT, version: 3 }, data: { nodes: [], links: [] } };
+	return { metadata: { format: GRAPH_FORMAT, version: 4 }, data: { nodes: [], links: [] } };
 }
 
 export const graph = writable<Graph>(emptyGraph());
 export const selection = writable<Selection>({ nodes: [], link: null });
 export const editingNodeId = writable<string | null>(null); // node whose name is being edited
+export const editingLinkId = writable<string | null>(null); // link whose name is being edited
 
-// display-only override: draws every link in this shape without changing any link's data;
-// null = each link is drawn in its own shape. A view setting, never written to the file.
-export const linkShapeOverride = writable<LinkShape | null>(null);
-const OVERRIDE_KEY = 'imge.graphEditor.linkShapeOverride';
+// -----------------------------------------------------------------------------------------
+// display settings: change only how links are drawn, never the graph; kept in this browser
+// -----------------------------------------------------------------------------------------
+export const linkShapeOverride = writable<LinkShape | null>(null); // null = each link's own
+export const linkArrowOverride = writable<LinkArrow | null>(null); // null = each link's own
+export const showChevrons = writable<boolean>(false); // direction chevrons in the middle of links
 
-/** Restores the display override from this browser and keeps it there. Call once (onMount). */
-export function persistLinkShapeOverride(): () => void {
+/** Restores the display settings from this browser and keeps them there. Call once (onMount). */
+export function persistViewSettings(): () => void {
+	const stops = [
+		persist(linkShapeOverride, 'imge.graphEditor.linkShapeOverride', (v) =>
+			(LINK_SHAPES as readonly string[]).includes(v) ? (v as LinkShape) : null
+		),
+		persist(linkArrowOverride, 'imge.graphEditor.linkArrowOverride', (v) =>
+			(LINK_ARROWS as readonly string[]).includes(v) ? (v as LinkArrow) : null
+		),
+		persist(showChevrons, 'imge.graphEditor.showChevrons', (v) => v === 'true')
+	];
+	return () => stops.forEach((stop) => stop());
+}
+
+// reads a setting (when stored) and writes every change back; storage may be blocked
+// (private window), then the setting just isn't remembered
+function persist<T>(store: Writable<T>, key: string, parse: (stored: string) => T): () => void {
 	try {
-		const saved = localStorage.getItem(OVERRIDE_KEY);
-		if ((LINK_SHAPES as readonly string[]).includes(saved ?? '')) linkShapeOverride.set(saved as LinkShape);
+		const stored = localStorage.getItem(key);
+		if (stored !== null) store.set(parse(stored));
 	} catch {
-		// storage blocked: the override just isn't remembered
+		// storage blocked
 	}
-	return linkShapeOverride.subscribe((shape) => {
+	return store.subscribe((value) => {
 		try {
-			if (shape) localStorage.setItem(OVERRIDE_KEY, shape);
-			else localStorage.removeItem(OVERRIDE_KEY);
+			if (value === null || value === false) localStorage.removeItem(key);
+			else localStorage.setItem(key, String(value));
 		} catch {
 			// storage blocked
 		}
@@ -165,16 +189,18 @@ const sameEnd = (a: LinkEnd, b: LinkEnd) => a.node === b.node && a.port === b.po
 
 /**
  * Connects an output port (`source`) to an input port (`target`), following the link rules.
+ * Source and target may be the same node (a self-loop).
  *
  * Args:
- *     link: the two ends, plus optional `type`, `name`, `shape` (default spline), `bend`
- *         and `id` -- pass the old id, shape and bend when re-routing a link so it keeps
- *         its identity and look (the id is ignored if another link uses it).
+ *     link: the two ends, plus optional `type`, `name`, `shape` (default spline), `bend`,
+ *         `arrow` (default forward), `route` (default above) and `id` -- pass the old values
+ *         when re-routing a link so it keeps its identity and look (the id is ignored if
+ *         another link uses it).
  *
  * Returns:
  *     The new graph, what happened, and the new link when one was added. With any outcome
- *     other than 'added' the graph is unchanged: 'exists' (this exact link is there),
- *     'self-link', or 'unknown-port' (missing node/port, or an input used as source).
+ *     other than 'added' the graph is unchanged: 'exists' (this exact link is there) or
+ *     'unknown-port' (missing node/port, or an input used as source).
  */
 export function addLink(
 	g: Graph,
@@ -186,9 +212,10 @@ export function addLink(
 		id?: string;
 		shape?: LinkShape;
 		bend?: number;
+		arrow?: LinkArrow;
+		route?: LinkRoute;
 	}
 ): { graph: Graph; outcome: LinkOutcome; link?: Link } {
-	if (link.source.node === link.target.node) return { graph: g, outcome: 'self-link' };
 	if (!hasPort(g, link.source, 'outputs') || !hasPort(g, link.target, 'inputs')) {
 		return { graph: g, outcome: 'unknown-port' };
 	}
@@ -201,6 +228,8 @@ export function addLink(
 		...(link.name ? { name: link.name } : {}),
 		shape: link.shape ?? 'spline',
 		...(link.bend !== undefined ? { bend: link.bend } : {}),
+		arrow: link.arrow ?? 'forward',
+		route: link.route ?? 'above',
 		source: { ...link.source },
 		target: { ...link.target }
 	};
@@ -209,6 +238,16 @@ export function addLink(
 		outcome: 'added',
 		link: created
 	};
+}
+
+/** Sets a link's name (shown in the middle of the link); an empty name removes it. */
+export function renameLink(g: Graph, linkId: string, name: string): Graph {
+	const trimmed = name.trim();
+	return withLinks(g, (l) => {
+		if (l.id !== linkId) return l;
+		const { name: _old, ...rest } = l;
+		return trimmed ? { ...rest, name: trimmed } : rest;
+	});
 }
 
 /** Switches one link to the next shape: spline -> line -> manhattan -> spline. */
@@ -225,7 +264,32 @@ export function setAllLinkShapes(g: Graph, shape: LinkShape): Graph {
 	return withLinks(g, (l) => ({ ...l, shape }));
 }
 
-/** Moves a manhattan link's vertical segment: 0 = at the output, 1 = at the input. */
+/** Switches one link to the next arrow: forward -> both -> backward -> none -> forward. */
+export function cycleLinkArrow(g: Graph, linkId: string): Graph {
+	return withLinks(g, (l) =>
+		l.id === linkId
+			? { ...l, arrow: LINK_ARROWS[(LINK_ARROWS.indexOf(l.arrow) + 1) % LINK_ARROWS.length] }
+			: l
+	);
+}
+
+/** Sets every link's arrow ("apply to all links"). */
+export function setAllLinkArrows(g: Graph, arrow: LinkArrow): Graph {
+	return withLinks(g, (l) => ({ ...l, arrow }));
+}
+
+/** Flips the side a cycle-closing link or self-loop goes around: above <-> below. */
+export function toggleLinkRoute(g: Graph, linkId: string): Graph {
+	return withLinks(g, (l) =>
+		l.id === linkId ? { ...l, route: l.route === 'above' ? 'below' : 'above' } : l
+	);
+}
+
+/**
+ * Sets a link's `bend`, clamped to 0..1: for a manhattan link the position of its vertical
+ * segment (0 = at the output, 1 = at the input); for a link going around its nodes, how far
+ * from the nodes it runs (0 = close, 1 = far).
+ */
 export function setLinkBend(g: Graph, linkId: string, bend: number): Graph {
 	const clamped = Math.min(1, Math.max(0, bend));
 	return withLinks(g, (l) => (l.id === linkId ? { ...l, bend: clamped } : l));
@@ -246,12 +310,55 @@ export function linksInto(g: Graph, target: LinkEnd): Link[] {
 }
 
 /**
+ * Finds the links that close a cycle (1 -> 2 -> 1: the link 2 -> 1). These are drawn going
+ * around their nodes instead of across them. Self-loops are not included (they are always
+ * drawn around their node).
+ *
+ * Walks the graph depth-first, starting from the leftmost node and following each node's
+ * links in left-to-right order of their targets; a link to a node that is on the current
+ * walk path closes a cycle. Starting from the left makes "left = earlier" the reading
+ * direction, so the link pointing back to the left is the one that goes around.
+ *
+ * Returns:
+ *     The ids of the cycle-closing links.
+ */
+export function findBackLinks(g: Graph): Set<string> {
+	const x = new Map(g.data.nodes.map((n) => [n.id, n.position.x]));
+	const byX = (a: string, b: string) => (x.get(a) ?? 0) - (x.get(b) ?? 0);
+	const outgoing = new Map<string, Link[]>();
+	for (const link of g.data.links) {
+		if (link.source.node === link.target.node) continue; // self-loop
+		const list = outgoing.get(link.source.node) ?? [];
+		list.push(link);
+		outgoing.set(link.source.node, list);
+	}
+	for (const list of outgoing.values()) list.sort((a, b) => byX(a.target.node, b.target.node));
+
+	const back = new Set<string>();
+	const state = new Map<string, 'on-path' | 'done'>();
+	const visit = (nodeId: string): void => {
+		state.set(nodeId, 'on-path');
+		for (const link of outgoing.get(nodeId) ?? []) {
+			const next = state.get(link.target.node);
+			if (next === 'on-path') back.add(link.id);
+			else if (next === undefined) visit(link.target.node);
+		}
+		state.set(nodeId, 'done');
+	};
+	for (const nodeId of g.data.nodes.map((n) => n.id).sort(byX)) {
+		if (!state.has(nodeId)) visit(nodeId);
+	}
+	return back;
+}
+
+/**
  * Picks the link the F shortcut makes between two nodes: the first output of one into the
  * first input of the other. Left to right is tried first (the usual reading direction of
  * a graph); if that isn't possible or already exists, right to left.
  *
  * Returns:
- *     The link's ends, or null when either node is missing or neither direction works.
+ *     The link's ends, or null when either node is missing, both are the same node, or
+ *     neither direction works.
  */
 export function quickLink(
 	g: Graph,

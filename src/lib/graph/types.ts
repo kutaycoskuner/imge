@@ -117,10 +117,34 @@ export interface GraphV3 {
 }
 
 // -----------------------------------------------------------------------------------------
+// v4 -- links get an arrow (direction marks) and a route for links that go around their
+// nodes (links closing a cycle, and self-loops); self-loops are allowed
+// -----------------------------------------------------------------------------------------
+// arrow, relative to the link's own direction (output -> input); this is also the D key order
+export const LINK_ARROWS = ['forward', 'both', 'backward', 'none'] as const;
+export type LinkArrow = (typeof LINK_ARROWS)[number];
+export const LINK_ROUTES = ['above', 'below'] as const;
+export type LinkRoute = (typeof LINK_ROUTES)[number];
+
+export type PortV4 = PortV3;
+export type LinkEndV4 = LinkEndV3;
+export type NodeV4 = NodeV3;
+
+export interface LinkV4 extends LinkV3 {
+	arrow: LinkArrow; // forward = arrow at the input, backward = at the output, both, none
+	route: LinkRoute; // side a cycle-closing link or self-loop goes around its nodes
+}
+
+export interface GraphV4 {
+	metadata: { format: typeof GRAPH_FORMAT; version: 4; [key: string]: unknown };
+	data: { nodes: NodeV4[]; links: LinkV4[] };
+}
+
+// -----------------------------------------------------------------------------------------
 // current version -- the app only works with these
 // -----------------------------------------------------------------------------------------
-export type Port = PortV3;
-export type GraphNode = NodeV3;
-export type LinkEnd = LinkEndV3;
-export type Link = LinkV3;
-export type Graph = GraphV3;
+export type Port = PortV4;
+export type GraphNode = NodeV4;
+export type LinkEnd = LinkEndV4;
+export type Link = LinkV4;
+export type Graph = GraphV4;
