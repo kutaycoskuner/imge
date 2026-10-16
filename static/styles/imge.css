@@ -90,6 +90,27 @@ new
     right: -6px;
 }
 
+/* top-to-bottom graphs: inputs along the top edge, outputs along the bottom edge */
+.world.top-to-bottom .node .inputs,
+.world.top-to-bottom .node .outputs {
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 10px;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.world.top-to-bottom .node .inputs {
+    top: -6px;
+    bottom: auto;
+}
+
+.world.top-to-bottom .node .outputs {
+    top: auto;
+    bottom: -6px;
+}
+
 .node-input,
 .node-output {
     width: 10px;

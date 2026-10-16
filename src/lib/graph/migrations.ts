@@ -25,10 +25,11 @@ import {
 	type GraphV2,
 	type GraphV3,
 	type GraphV4,
+	type GraphV5,
 	type PortV1
 } from './types';
 
-export const CURRENT_GRAPH_VERSION = 4;
+export const CURRENT_GRAPH_VERSION = 5;
 
 export class GraphFormatError extends Error {
 	constructor(message: string) {
@@ -142,6 +143,21 @@ const MIGRATIONS: Migration[] = [
 					arrow: (link as any).arrow ?? 'none',
 					route: (link as any).route ?? 'above'
 				}))
+			}
+		})
+	},
+	{
+		from: 4,
+		to: 5,
+		description: 'the graph gets direction (left-to-right, as drawn so far)',
+		migrate: (graph: GraphV4): GraphV5 => ({
+			...graph,
+			metadata: {
+				...graph.metadata,
+				format: GRAPH_FORMAT,
+				version: 5,
+				// a direction a file already carried as an extra key is kept
+				direction: (graph.metadata as any).direction ?? 'left-to-right'
 			}
 		})
 	}

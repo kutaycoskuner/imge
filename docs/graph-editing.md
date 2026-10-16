@@ -10,6 +10,7 @@ State as of 2026-10-14.
     - [Link shapes](#link-shapes)
     - [Arrows and link names](#arrows-and-link-names)
     - [Cycles and self-loops](#cycles-and-self-loops)
+    - [Direction and transpose](#direction-and-transpose)
     - [Messages](#messages)
 - [Functions](#functions)
     - [Stores](#stores)
@@ -115,6 +116,24 @@ Every link stores its own `arrow`, relative to its direction (output → input):
 - **Changing the route:** select the link and press <kbd>R</kbd> (above ↔ below, saved as `route`). The selected link's lane gets a highlighted grab area: drag it to move the lane closer or further (saved as `bend`).
 - Links that only point backwards on screen without forming a cycle (an input placed left of its output) keep their normal drawing.
 
+### Direction and transpose
+
+A graph's **direction** is **left-to-right** (the default) or **top-to-bottom**; it's stored in the graph file (`metadata.direction`). **Transpose** switches it and turns the layout: with the toolbar's Transpose button (crossed arrows: the current direction is drawn strong, the other faded) or the **Direction** choice in the Esc menu's **Graph** section.
+
+| | left-to-right | top-to-bottom |
+|---|---|---|
+| Ports | inputs on the left edge, outputs on the right | inputs on the top edge, outputs on the bottom |
+| Links | leave rightwards, enter from the left | leave downwards, enter from above |
+| Manhattan | out horizontally, vertical segment, in horizontally | out vertically, horizontal segment, in vertically |
+| Links around their nodes (`route`) | above / below | left / right |
+| Reading order (F key, which link closes a cycle) | left to right | top to bottom |
+
+- **Transpose turns the layout:** every node's centre (x, y) moves to (−y · k, −x / k), so a left-to-right chain becomes a top-to-bottom one, and nodes stacked from top to bottom end up side by side from left to right, in the same order. The view then fits the whole graph again.
+    - k is the nodes' average (width + 30) / height: nodes are much wider than tall, so siblings need more room side by side than they had stacked; without it they would overlap
+    - the same k applies both ways, so switching back gives exactly the original positions
+    - it turns the layout, it doesn't re-arrange it: a layout built for one direction can come out wide and flat in the other (the feature map, whose branches are stacked, spreads out sideways in top-to-bottom)
+- Links are drawn by the same geometry in both directions: for top-to-bottom it runs with x and y swapped (`GraphLinks.svelte`, `flow`).
+
 ### Messages
 
 When an action is refused or changes something you might not expect, a short message appears at the bottom of the screen for 2.5 s:
@@ -171,6 +190,9 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `setAllLinkArrows(g, arrow)` | Writes one arrow into every link ("Apply arrow to all links"). | `Graph` |
 | `toggleLinkRoute(g, linkId)` | Flips a link's route: above ↔ below. | `Graph` |
 | `renameLink(g, linkId, name)` | Sets a link's name (trimmed); an empty name removes it. | `Graph` |
+| `transposeGraph(g, sizes)` | Turns the layout between the directions: node centres (x, y) → (−y · k, −x / k), k = average (width + 30) / height from `sizes`; its own inverse. | `Graph` |
+| `setDirection(g, direction, sizes)` | Sets `metadata.direction` and turns the layout with `transposeGraph` (Transpose); unchanged when it's already that direction. | `Graph` |
+| `measureNodeSizes()` | Rendered width / height of every node, in world units (from the DOM; for `setDirection`). | `Record<id, { w, h }>` |
 | `findBackLinks(g)` | Ids of the links that close a cycle (see [Cycles and self-loops](#cycles-and-self-loops)); self-loops are not included. Doesn't change the graph. | `Set<string>` |
 | `findLink(g, source, target)` | The link from this output to this input, if any. | `Link \| undefined` |
 | `linksInto(g, target)` | All links going into an input port, oldest first. | `Link[]` |
@@ -219,6 +241,10 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-16 — "orientation" renamed to "direction" (`metadata.direction`, `setDirection`); the toolbar button and its action are called Transpose
+
+- 2026-10-16 — toolbar button to switch the orientation; messages are drawn above the graph on a solid panel
+- 2026-10-16 — orientation (left-to-right / top-to-bottom) in the menu's Graph section: ports, links, routes and reading order follow it; switching turns the layout reversibly; new functions `transposeGraph`, `setOrientation`, `measureNodeSizes`
 - 2026-10-16 — links, arrowheads and chevrons use one solid colour, so lines no longer show through arrowheads
 - 2026-10-16 — arrows per link (D, menu override and apply to all, mid-link chevrons), link names drawn mid-link (double-click / F2), cycles and self-loops allowed and drawn around their nodes (R route, lane drag); new functions `cycleLinkArrow`, `setAllLinkArrows`, `toggleLinkRoute`, `renameLink`, `findBackLinks`, `persistViewSettings`; "self-link" outcome removed
 - 2026-10-15 — Shift+N starts a new empty graph

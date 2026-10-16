@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-15
+//   last update     : 2026-10-16
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -26,6 +26,7 @@ import sampleV1 from '../../../static/data/samples/graph-v1.json';
 import sampleV2 from '../../../static/data/samples/graph-v2.json';
 import sampleV3 from '../../../static/data/samples/graph-v3.json';
 import sampleV4 from '../../../static/data/samples/graph-v4.json';
+import sampleV5 from '../../../static/data/samples/graph-v5.json';
 
 // one sample per format version, oldest first; copies so no test can change another's input
 const SAMPLES: Record<number, () => any> = {
@@ -33,7 +34,8 @@ const SAMPLES: Record<number, () => any> = {
 	1: () => structuredClone(sampleV1),
 	2: () => structuredClone(sampleV2),
 	3: () => structuredClone(sampleV3),
-	4: () => structuredClone(sampleV4)
+	4: () => structuredClone(sampleV4),
+	5: () => structuredClone(sampleV5)
 };
 const current = SAMPLES[CURRENT_GRAPH_VERSION];
 
@@ -124,6 +126,16 @@ describe('adapter 3 -> 4', () => {
 			['both', 'below']
 		]);
 	});
+
+});
+
+describe('adapter 4 -> 5', () => {
+	it('sets direction left-to-right, keeping one a file already had', () => {
+		expect(migrateGraph(SAMPLES[4]()).graph.metadata.direction).toBe('left-to-right');
+		const v4 = SAMPLES[4]();
+		v4.metadata.direction = 'top-to-bottom';
+		expect(migrateGraph(v4).graph.metadata.direction).toBe('top-to-bottom');
+	});
 });
 
 describe('readGraphVersion', () => {
@@ -170,6 +182,7 @@ describe('stampCurrentVersion', () => {
 		expect(stamped.metadata).toEqual({
 			format: GRAPH_FORMAT,
 			version: CURRENT_GRAPH_VERSION,
+			direction: 'left-to-right',
 			author: 'x'
 		});
 	});

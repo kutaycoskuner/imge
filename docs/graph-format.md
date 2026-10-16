@@ -2,7 +2,7 @@
 
 The JSON structure the graph editor loads and exports, its version history with a sample per version, and how to add a new version with an adapter that upgrades older files.
 
-Current version: **4**
+Current version: **5**
 
 ## Files
 
@@ -14,11 +14,11 @@ Current version: **4**
 | `static/data/samples/graph-v<n>.json` | The same tiny graph (2 nodes, 1 link) saved in each format version, to compare versions side by side; also the test fixtures. |
 | `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data; 34 nodes, 36 links), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
 
-## Structure (version 4)
+## Structure (version 5)
 
 ```json
 {
-    "metadata": { "format": "imge-graph", "version": 4 },
+    "metadata": { "format": "imge-graph", "version": 5, "direction": "left-to-right" },
     "data": {
         "nodes": [
             {
@@ -51,6 +51,10 @@ Current version: **4**
 - `metadata`
     - `format`: always `"imge-graph"`; tells a graph file apart from any other JSON
     - `version`: whole number, the format version the file is written in
+    - `direction`: `"left-to-right"` (default) or `"top-to-bottom"`; the graph's reading direction
+        - left-to-right: inputs on a node's left edge, outputs on its right; links flow rightwards
+        - top-to-bottom: inputs on the top edge, outputs on the bottom; links flow downwards
+        - node positions are stored as they are drawn; Transpose in the editor switches the direction and turns them (see [graph-editing.md](graph-editing.md#direction-and-transpose))
     - other keys are allowed and carried over unchanged
 - `data.nodes[]`
     - `id`: string, unique within the graph: `n1`, `n2` ...; the editor never reuses an id
@@ -81,7 +85,7 @@ Current version: **4**
         - `"backward"`: arrowhead at the output end
         - `"both"`: arrowheads at both ends
         - `"none"`: no arrowheads
-    - `route`: `"above"` (default) or `"below"`; the side a link goes around its nodes when it closes a cycle (1 → 2 → 1: the link pointing back to the left) or loops back to its own node. Other links ignore it.
+    - `route`: `"above"` (default) or `"below"`; the side a link goes around its nodes when it closes a cycle (1 → 2 → 1: the link pointing back against the reading direction) or loops back to its own node. In top-to-bottom graphs above means left and below means right. Other links ignore it.
     - `source`: `{ node, port }`, the output it starts at
     - `target`: `{ node, port }`, the input it ends at
     - rules (enforced by the editor, `addLink()` in `src/lib/graph/store.ts`):
@@ -102,6 +106,7 @@ The same graph (First Node → Second Node) in every version, so the differences
 | 2 | [graph-v2.json](../static/data/samples/graph-v2.json) |
 | 3 | [graph-v3.json](../static/data/samples/graph-v3.json) |
 | 4 | [graph-v4.json](../static/data/samples/graph-v4.json) |
+| 5 | [graph-v5.json](../static/data/samples/graph-v5.json) |
 
 The tests load every sample and check that it upgrades to **exactly** the newest one, so the samples double as the adapters' specification.
 
@@ -109,8 +114,8 @@ The tests load every sample and check that it upgrades to **exactly** the newest
 
 - **Loading:** the editor passes every file through `migrateGraph()`.
     - the version is read from `metadata.version`; a file with neither `format` nor `version` is version 0
-    - adapters run one after another until the file reaches the current version: `0 → 1 → 2 → 3 → 4`
-    - every adapter that ran is logged in the browser console ("graph upgraded from v0 to v4: ..."), so an upgrade never happens silently
+    - adapters run one after another until the file reaches the current version: `0 → 1 → 2 → 3 → 4 → 5`
+    - every adapter that ran is logged in the browser console ("graph upgraded from v0 to v5: ..."), so an upgrade never happens silently
     - the original object is not changed
 - **Refused files:** throw `GraphFormatError` instead of being guessed at:
     - no `data.nodes` array (not a graph file)
@@ -128,6 +133,7 @@ The tests load every sample and check that it upgrades to **exactly** the newest
 | 2 | 2026-10-15 | Ids follow one scheme: nodes `n1`, `n2` ..., links `l1`, `l2` ..., ports per node `i1` ... / `o1` ... (were `_id` numbers and `input_0` / `output_0`). `name` (was `data.title`), ports directly on the node (were in `data`). Links get their own `id`, a `type`, an optional `name`, and `source` / `target` endpoints (were four `source…Id` / `target…Id` fields). An input may take many links. | `1 → 2`: renumbers nodes, ports and links by position in the file (the link ends follow), renames the node fields and moves the ports up, turns the endpoint fields into `source` / `target`. |
 | 3 | 2026-10-15 | Nodes get `color` (`null` = theme default). Links get `shape` (`spline`, `line`, `manhattan`) and, for manhattan, an optional `bend`. | `2 → 3`: adds `color: null` to every node (a color a node already carried as an extra key is kept) and `shape: "spline"` to every link, so old graphs look exactly as before. |
 | 4 | 2026-10-16 | Links get `arrow` (`forward`, `backward`, `both`, `none`) and `route` (`above`, `below`). Cycles and self-loops are allowed; a link that closes a cycle and a self-loop go around their nodes on the `route` side, with `name` drawn in the middle of every link. | `3 → 4`: adds `arrow: "none"` and `route: "above"` to every link (values a link already carried as extra keys are kept), so old graphs look exactly as before. |
+| 5 | 2026-10-16 | The graph gets `metadata.direction` (`left-to-right`, `top-to-bottom`): ports, links, routes and reading order follow it; Transpose in the editor switches it and turns the layout. | `4 → 5`: adds `direction: "left-to-right"` (a value a file already carried is kept), so old graphs look exactly as before. |
 
 ## Adding a new version
 
@@ -153,6 +159,8 @@ Do this for every change to the file structure or to what a field means, however
 
 ## Changes
 
+
+- 2026-10-16 — format version 5: `metadata.direction` (left-to-right / top-to-bottom), `4 → 5` adapter, sample graph-v5.json; base graph stored as v5
 - 2026-10-16 — format version 4: link `arrow` and `route`; cycles and self-loops allowed; link names drawn mid-link; sample graph-v4.json; base graph stored as v4 with arrows, a cycle, a self-loop and named links
 - 2026-10-15 — base graph rebuilt for the current features (33 nodes, 33 links, three branches showing all link shapes and many-to-many)
 - 2026-10-15 — format version 3: node `color`, link `shape` (spline / line / manhattan) and `bend`; sample graph-v3.json; base graph stored as v3

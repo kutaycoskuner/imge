@@ -34,7 +34,8 @@ import {
 	setAllLinkArrows,
 	toggleLinkRoute,
 	renameLink,
-	findBackLinks
+	findBackLinks,
+	setDirection
 } from './store';
 import { get } from 'svelte/store';
 import type { Graph } from './types';
@@ -293,6 +294,46 @@ describe('findBackLinks (cycles)', () => {
 	it('self-loops are not back links (they are drawn as loops)', () => {
 		const g = link(threeNodes(), 'n1', 'n1');
 		expect([...findBackLinks(g)]).toEqual([]);
+	});
+});
+
+describe('direction', () => {
+	const sizes = { n1: { w: 192, h: 60 }, n2: { w: 192, h: 60 }, n3: { w: 192, h: 60 } };
+	const uneven = { n1: { w: 192, h: 60 }, n2: { w: 150, h: 95 }, n3: { w: 210, h: 60 } };
+
+	it('new graphs are left-to-right', () => {
+		expect(emptyGraph().metadata.direction).toBe('left-to-right');
+	});
+
+	it('turns a left-to-right row into a top-to-bottom column, in the same order', () => {
+		const g = setDirection(threeNodes(), 'top-to-bottom', sizes);
+		expect(g.metadata.direction).toBe('top-to-bottom');
+		const centres = g.data.nodes.map((n) => ({ x: n.position.x + sizes[n.id as 'n1'].w / 2, y: n.position.y - sizes[n.id as 'n1'].h / 2 }));
+		// same column (the row's y was the same), first node on top
+		expect(new Set(centres.map((c) => Math.round(c.x))).size).toBe(1);
+		expect(centres[0].y).toBeGreaterThan(centres[1].y);
+		expect(centres[1].y).toBeGreaterThan(centres[2].y);
+	});
+
+	it('switching back gives the original positions, also with nodes of different sizes', () => {
+		const g = threeNodes();
+		const back = setDirection(setDirection(g, 'top-to-bottom', uneven), 'left-to-right', uneven);
+		back.data.nodes.forEach((n, i) => {
+			expect(n.position.x).toBeCloseTo(g.data.nodes[i].position.x, 9);
+			expect(n.position.y).toBeCloseTo(g.data.nodes[i].position.y, 9);
+		});
+	});
+
+	it('setting the same direction changes nothing', () => {
+		const g = threeNodes();
+		expect(setDirection(g, 'left-to-right', sizes)).toBe(g);
+	});
+
+	it('top-to-bottom: the link pointing back up closes the cycle, F links top into bottom', () => {
+		let g = setDirection(threeNodes(), 'top-to-bottom', sizes); // n1 top, n3 bottom
+		expect(quickLink(g, 'n3', 'n1')).toEqual(ends('n1', 'n3'));
+		g = link(link(g, 'n1', 'n2'), 'n2', 'n1'); // l1 down, l2 back up
+		expect([...findBackLinks(g)]).toEqual(['l2']);
 	});
 });
 

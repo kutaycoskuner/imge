@@ -75,7 +75,7 @@ Clearing the site's data in the browser removes the remembered folder and the au
     - while dragging a new link: cancels the drag
     - while editing a title: cancels the edit
 - While the menu is open, the editor's shortcuts are paused (typing a file name doesn't add or delete nodes).
-- The graph editor's menu also has a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) and the direction-chevrons toggle; see [graph-editing.md](graph-editing.md#link-shapes).
+- The graph editor's menu also has a **Graph** section with the direction (left-to-right / top-to-bottom; Transpose turns the layout, see [graph-editing.md](graph-editing.md#direction-and-transpose)), and a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) and the direction-chevrons toggle; see [graph-editing.md](graph-editing.md#link-shapes).
 
 ### A menu for each page
 
@@ -132,6 +132,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-10-16 — the menu's Graph section with the direction (Transpose)
 - 2026-10-16 — the menu's Links section also has the arrow override, apply arrow to all links and the chevron toggle
 - 2026-10-15 — "New graph" button and Shift+N: empty graph without a file name
 - 2026-10-15 — the graph editor menu has a Links section (display-only shape override, apply a shape to all links)

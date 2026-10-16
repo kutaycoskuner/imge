@@ -1,7 +1,8 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 4
+        "version": 5,
+        "direction": "left-to-right"
     },
     "data": {
         "nodes": [
@@ -199,7 +200,7 @@
             },
             {
                 "id": "n9",
-                "name": "Graph format v4",
+                "name": "Graph format v5",
                 "type": "basic",
                 "color": null,
                 "position": {
@@ -223,7 +224,7 @@
             },
             {
                 "id": "n10",
-                "name": "Format adapters (v0 to v4)",
+                "name": "Format adapters (v0 to v5)",
                 "type": "basic",
                 "color": null,
                 "position": {

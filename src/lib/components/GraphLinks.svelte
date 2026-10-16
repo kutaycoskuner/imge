@@ -22,6 +22,7 @@
 	// Arrows (link.arrow or linkArrowOverride): SVG markers at the input (forward), the
 	// output (backward), both or none; showChevrons adds direction chevrons in the middle.
 	// A link's name is drawn in its middle; editingLinkId shows a text field there instead.
+	// Top-to-bottom graphs use the same geometry with x and y swapped (see `flow`).
 	// A selected link with an adjustable corner or lane gets a `.link-bend` grab area; the
 	// page drags it and reads the bend's range from its data-* attributes.
 	//
@@ -124,7 +125,18 @@
 		bend?: Bend;
 	}
 
-	const polyline = (pts: Point[]): string => 'M ' + pts.map((p) => `${p.x} ${p.y}`).join(' L ');
+	// The geometry below is written for left-to-right graphs (links leave to the right and
+	// enter from the left). Top-to-bottom graphs are drawn in a "flow space" with x and y
+	// swapped: points go in through `flow()` and come out through `flow()` again (the swap is
+	// its own inverse), so every shape, lane and chevron works in both directions (left-to-right and top-to-bottom).
+	let swap = false; // set at the start of each drawing pass from the graph's direction
+	const flow = (p: Point): Point => (swap ? { x: p.y, y: p.x } : p);
+	const xy = (p: Point): string => {
+		const q = flow(p);
+		return `${q.x} ${q.y}`;
+	};
+
+	const polyline = (pts: Point[]): string => 'M ' + pts.map(xy).join(' L ');
 
 	function cubic(p0: Point, c1: Point, c2: Point, p3: Point, n = 16): Point[] {
 		const out: Point[] = [];
@@ -142,7 +154,8 @@
 	function direct(shape: LinkShape, from: Point, to: Point, bend = 0.5): Drawn {
 		if (shape === 'line') return { d: polyline([from, to]), pts: [from, to] };
 		if (shape === 'manhattan') {
-			if (to.x - from.x >= 2 * STUB) {
+			// forward whenever the input is ahead of the output at all (also in tight layouts)
+			if (to.x - from.x >= 8) {
 				const x = from.x + bend * (to.x - from.x);
 				const pts = [from, { x, y: from.y }, { x, y: to.y }, to];
 				return {
@@ -166,7 +179,7 @@
 		const c1 = { x: from.x + c, y: from.y };
 		const c2 = { x: to.x - c, y: to.y };
 		return {
-			d: `M ${from.x} ${from.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${to.x} ${to.y}`,
+			d: `M ${xy(from)} C ${xy(c1)}, ${xy(c2)}, ${xy(to)}`,
 			pts: cubic(from, c1, c2, to)
 		};
 	}
@@ -196,9 +209,7 @@
 		const b1 = { x: to.x - SPLINE_PULL, y: laneY };
 		const b2 = { x: to.x - SPLINE_PULL, y: to.y };
 		return {
-			d:
-				`M ${from.x} ${from.y} C ${a1.x} ${a1.y}, ${a2.x} ${a2.y}, ${mid.x} ${mid.y}` +
-				` C ${b1.x} ${b1.y}, ${b2.x} ${b2.y}, ${to.x} ${to.y}`,
+			d: `M ${xy(from)} C ${xy(a1)}, ${xy(a2)}, ${xy(mid)} C ${xy(b1)}, ${xy(b2)}, ${xy(to)}`,
 			pts: [...cubic(from, a1, a2, mid), ...cubic(mid, b1, b2, to).slice(1)],
 			bend: grab
 		};
@@ -235,20 +246,32 @@
 		bend?: Bend;
 	}
 
+	// a bend's axis and orientation in layer space (it was computed in flow space)
+	const toLayer = (bend: Bend | undefined): Bend | undefined =>
+		bend && swap ? { ...bend, axis: bend.axis === 'x' ? 'y' : 'x', vertical: !bend.vertical } : bend;
+
 	$: placed = (() => {
+		swap = $graph.metadata.direction === 'top-to-bottom';
 		const nodes = $graph.data.nodes;
 		const back = findBackLinks($graph);
+		// node boxes in flow space (for top-to-bottom: layer top/bottom become left/right)
 		const box = (n: GraphNode) => {
 			const size = nodeSizes[n.id] ?? { w: 0, h: 0 };
-			return { left: n.position.x, right: n.position.x + size.w, top: -n.position.y, bottom: -n.position.y + size.h };
+			const left = n.position.x;
+			const top = -n.position.y;
+			return swap
+				? { left: top, right: top + size.h, top: left, bottom: left + size.w }
+				: { left, right: left + size.w, top, bottom: top + size.h };
 		};
 		const lanes: { route: string; x0: number; x1: number }[] = [];
 		const result: Placed[] = [];
 
 		for (const link of $graph.data.links) {
-			const from = portPosition(nodes, portOffsets, link.source.node, 'output', link.source.port);
-			const to = portPosition(nodes, portOffsets, link.target.node, 'input', link.target.port);
-			if (!from || !to) continue;
+			const fromLayer = portPosition(nodes, portOffsets, link.source.node, 'output', link.source.port);
+			const toLayerPt = portPosition(nodes, portOffsets, link.target.node, 'input', link.target.port);
+			if (!fromLayer || !toLayerPt) continue;
+			const from = flow(fromLayer);
+			const to = flow(toLayerPt);
 			const shape = $linkShapeOverride ?? link.shape;
 			const goesAround = back.has(link.id) || link.source.node === link.target.node;
 
@@ -288,11 +311,11 @@
 			result.push({
 				link,
 				d: drawn.d,
-				mid: middle(drawn.pts),
+				mid: middle(drawn.pts.map(flow)),
 				arrow: $linkArrowOverride ?? link.arrow,
 				selected,
 				// the grab area only where the bend does something: manhattan corners, lanes
-				bend: selected && (goesAround || shape === 'manhattan') ? drawn.bend : undefined
+				bend: selected && (goesAround || shape === 'manhattan') ? toLayer(drawn.bend) : undefined
 			});
 		}
 		return result;
@@ -300,11 +323,14 @@
 
 	$: preview = (() => {
 		if (!drag) return null;
-		const port = portPosition($graph.data.nodes, portOffsets, drag.nodeId, drag.kind, drag.portId);
-		if (!port) return null;
+		swap = $graph.metadata.direction === 'top-to-bottom';
+		const portLayer = portPosition($graph.data.nodes, portOffsets, drag.nodeId, drag.kind, drag.portId);
+		if (!portLayer) return null;
+		const port = flow(portLayer);
+		const mouse = flow(drag.to);
 		// a drag always reads output -> input, whichever end it started from
 		const shape = $linkShapeOverride ?? 'spline';
-		return drag.kind === 'output' ? direct(shape, port, drag.to).d : direct(shape, drag.to, port).d;
+		return drag.kind === 'output' ? direct(shape, port, mouse).d : direct(shape, mouse, port).d;
 	})();
 
 	const markerEnd = (arrow: LinkArrow, selected: boolean) =>

@@ -37,9 +37,24 @@
 		linkArrowOverride,
 		showChevrons,
 		setAllLinkShapes,
-		setAllLinkArrows
+		setAllLinkArrows,
+		setDirection,
+		measureNodeSizes
 	} from '$lib/graph/store';
-	import { LINK_SHAPES, LINK_ARROWS, type LinkShape, type LinkArrow } from '$lib/graph/types';
+	import {
+		LINK_SHAPES,
+		LINK_ARROWS,
+		DIRECTIONS,
+		type LinkShape,
+		type LinkArrow,
+		type Direction
+	} from '$lib/graph/types';
+
+	// node sizes come from the rendered nodes, so the layout turns around node centres
+	function changeDirection(direction: Direction): void {
+		const sizes = measureNodeSizes();
+		graph.update((g) => setDirection(g, direction, sizes));
+	}
 
 	// what the arrow choices look like in the selects
 	const ARROW_LABELS: Record<LinkArrow, string> = {
@@ -195,6 +210,22 @@
 			{/if}
 		</section>
 	{/if}
+
+	<!-- graph -->
+	<section>
+		<h3>Graph</h3>
+		<div class="row">
+			<span>Direction</span>
+			<select
+				class="choice"
+				value={$graph.metadata.direction}
+				on:change={(e) => changeDirection(e.currentTarget.value as Direction)}
+			>
+				{#each DIRECTIONS as o}<option value={o}>{o}</option>{/each}
+			</select>
+			<span class="note">Transpose turns the layout; switching back restores it</span>
+		</div>
+	</section>
 
 	<!-- links -->
 	<section>

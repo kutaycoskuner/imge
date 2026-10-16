@@ -17,7 +17,9 @@
 // Id scheme: nodes n1, n2 ..., links l1, l2 ..., ports per node i1, i2 ... / o1, o2 ...
 // Links carry how they are drawn: shape (spline / line / manhattan + bend), arrow
 // (forward / both / backward / none) and route (above / below, for links that go around
-// their nodes: findBackLinks() finds the links that close a cycle). The display overrides
+// their nodes: findBackLinks() finds the links that close a cycle). The graph's direction
+// (left-to-right / top-to-bottom) sets the reading order; setDirection() turns the
+// layout with it. The display overrides
 // draw all links one way without changing the data; setAll* write one value into all.
 //
 // Used by: routes/+page.svelte, GraphNode, GraphLinks, GraphEditorMenu, UI_GraphEditor,
@@ -35,7 +37,8 @@ import {
 	type LinkArrow,
 	type LinkEnd,
 	type LinkRoute,
-	type LinkShape
+	type LinkShape,
+	type Direction
 } from './types';
 
 export interface Point {
@@ -56,7 +59,10 @@ export type LinkOutcome = 'added' | 'exists' | 'unknown-port';
 const NEW_NODE_OFFSET: Point = { x: -96, y: 40 };
 
 export function emptyGraph(): Graph {
-	return { metadata: { format: GRAPH_FORMAT, version: 4 }, data: { nodes: [], links: [] } };
+	return {
+		metadata: { format: GRAPH_FORMAT, version: 5, direction: 'left-to-right' },
+		data: { nodes: [], links: [] }
+	};
 }
 
 export const graph = writable<Graph>(emptyGraph());
@@ -314,16 +320,17 @@ export function linksInto(g: Graph, target: LinkEnd): Link[] {
  * around their nodes instead of across them. Self-loops are not included (they are always
  * drawn around their node).
  *
- * Walks the graph depth-first, starting from the leftmost node and following each node's
- * links in left-to-right order of their targets; a link to a node that is on the current
- * walk path closes a cycle. Starting from the left makes "left = earlier" the reading
- * direction, so the link pointing back to the left is the one that goes around.
+ * Walks the graph depth-first, starting from the first node in reading order (leftmost in a
+ * left-to-right graph, topmost in a top-to-bottom one) and following each node's links in
+ * reading order of their targets; a link to a node that is on the current walk path closes
+ * a cycle. So "earlier in reading order" is the direction, and the link pointing back is
+ * the one that goes around.
  *
  * Returns:
  *     The ids of the cycle-closing links.
  */
 export function findBackLinks(g: Graph): Set<string> {
-	const x = new Map(g.data.nodes.map((n) => [n.id, n.position.x]));
+	const x = new Map(g.data.nodes.map((n) => [n.id, along(g, n)]));
 	const byX = (a: string, b: string) => (x.get(a) ?? 0) - (x.get(b) ?? 0);
 	const outgoing = new Map<string, Link[]>();
 	for (const link of g.data.links) {
@@ -368,8 +375,69 @@ export function quickLink(
 	const a = g.data.nodes.find((n) => n.id === nodeIdA);
 	const b = g.data.nodes.find((n) => n.id === nodeIdB);
 	if (!a || !b || a === b) return null;
-	const [left, right] = a.position.x <= b.position.x ? [a, b] : [b, a];
-	return linkBetween(g, left, right) ?? linkBetween(g, right, left);
+	const [first, second] = along(g, a) <= along(g, b) ? [a, b] : [b, a];
+	return linkBetween(g, first, second) ?? linkBetween(g, second, first);
+}
+
+/** A node's position along the graph's reading direction (x, or downwards for top-to-bottom). */
+function along(g: Graph, n: GraphNode): number {
+	return g.metadata.direction === 'top-to-bottom' ? -n.position.y : n.position.x;
+}
+
+// -----------------------------------------------------------------------------------------
+// direction
+// -----------------------------------------------------------------------------------------
+/**
+ * Turns the layout between the two directions: every node's centre (x, y) moves to
+ * (-y * k, -x / k), so a left-to-right chain becomes a top-to-bottom one and nodes stacked
+ * from top to bottom end up side by side from left to right, in the same order.
+ *
+ * k is the nodes' average (width + 30) / height: nodes are much wider than tall, so siblings that
+ * sat close above each other need more room side by side (and a chain needs less room
+ * downwards than sideways); without it they would overlap. The same k applies both ways,
+ * which makes the turn its own inverse: doing it twice gives the original positions back.
+ * Only positions change, without rounding, so nothing drifts.
+ *
+ * Args:
+ *     sizes: each node's rendered width / height (world units), for its centre and for k;
+ *         a node without a size is turned around its top-left corner.
+ */
+export function transposeGraph(g: Graph, sizes: Record<string, { w: number; h: number }>): Graph {
+	// side by side, nodes need their width plus a gap where they had their height before
+	const GAP = 30;
+	const measured = g.data.nodes.map((n) => sizes[n.id]).filter((s) => s && s.w > 0 && s.h > 0);
+	const avg = (pick: (s: { w: number; h: number }) => number) =>
+		measured.reduce((sum, s) => sum + pick(s), 0) / measured.length;
+	const k = measured.length ? (avg((s) => s.w) + GAP) / avg((s) => s.h) : 1;
+	return withNodes(
+		g,
+		g.data.nodes.map((n) => {
+			const { w, h } = sizes[n.id] ?? { w: 0, h: 0 };
+			const cx = n.position.x + w / 2;
+			const cy = n.position.y - h / 2; // y up: the top-left corner is the centre plus h/2
+			return { ...n, position: { x: 0 - cy * k - w / 2, y: 0 - cx / k + h / 2 } };
+		})
+	);
+}
+
+/** Switches the graph's direction and turns the layout with it (see transposeGraph). */
+export function setDirection(
+	g: Graph,
+	direction: Direction,
+	sizes: Record<string, { w: number; h: number }>
+): Graph {
+	if (g.metadata.direction === direction) return g;
+	const turned = transposeGraph(g, sizes);
+	return { ...turned, metadata: { ...turned.metadata, direction } };
+}
+
+/** Rendered size of every node in world units (offsetWidth/Height ignore the zoom). */
+export function measureNodeSizes(): Record<string, { w: number; h: number }> {
+	const sizes: Record<string, { w: number; h: number }> = {};
+	document.querySelectorAll<HTMLElement>('.world .node[data-id]').forEach((el) => {
+		sizes[el.dataset.id!] = { w: el.offsetWidth, h: el.offsetHeight };
+	});
+	return sizes;
 }
 
 function linkBetween(

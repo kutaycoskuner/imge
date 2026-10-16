@@ -15,7 +15,7 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.12.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.13.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
@@ -74,6 +74,7 @@ npm run test:unit -- --run
 - [x] link shapes: spline, straight line or manhattan (right angles, draggable corner); L changes the selected link, the Esc menu can show all links in one shape or apply one shape to all
 - [x] arrows per link: forward, backward, both or none (D), optional mid-link chevrons; link names shown in the middle of the link (double-click or F2)
 - [x] cycles (1 -> 2 -> 1) and self-loops: the link closing a cycle goes around its nodes, above or below (R), lane draggable
+- [x] direction: left-to-right or top-to-bottom; Transpose (toolbar button or Esc menu) switches it, ports, links and routes follow; switching back restores the layout
 - [x] export data as json (default name imgegraph-<date>-<NN>.json)
 - [x] point the editor at a folder on your computer: its imge graphs are listed by name and open with a click; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
 - [x] Esc menu per page (graph editor has its own)

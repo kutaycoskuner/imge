@@ -2,11 +2,13 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-15
+	//   last update     : 2026-10-16
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, fit graph,
+	// transpose (switch the direction left-to-right / top-to-bottom and turn the layout; the icon's
+	// strong arrow is the current direction),
 	// add node at the screen center, open graph (opens the Esc menu), export (download) and a
 	// test pan button. Hover hints show each button's key in [brackets], drawn as key caps
 	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
@@ -17,7 +19,19 @@
 
 	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen } from '../../stores/imge_main';
 	import { ZOOM_STEP, camera, panBy, zoomAt } from '$lib/camera';
-	import { createNodeAt } from '$lib/graph/store';
+	import { createNodeAt, graph, setDirection, measureNodeSizes } from '$lib/graph/store';
+	import type { Direction } from '$lib/graph/types';
+
+	// transpose: switch between left-to-right and top-to-bottom; the layout turns around node centres
+	$: direction = $graph.metadata.direction;
+	let nextDirection: Direction;
+	$: nextDirection = direction === 'top-to-bottom' ? 'left-to-right' : 'top-to-bottom';
+	const transpose = () => {
+		const target = nextDirection;
+		const sizes = measureNodeSizes();
+		graph.update((g) => setDirection(g, target, sizes));
+		handleMouseOver(`Direction: ${target}`);
+	};
 
 	const dispatch = createEventDispatcher();
 	// Access store variables
@@ -184,6 +198,38 @@
 			<path
 				d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
 			/>
+		</svg>
+	</div>
+
+	<!-- Transpose: the current direction is drawn strong, the other faded -->
+	<div
+		class="access-function"
+		role="button"
+		tabindex="0"
+		on:click={transpose}
+		on:keydown={(event) => event.key === 'Enter' && transpose()}
+		on:mouseenter={() => handleMouseOver(`Transpose to ${nextDirection}`)}
+		on:mouseleave={handleMouseLeave}
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		>
+			<!-- vertical double arrow (top-to-bottom) -->
+			<g opacity={direction === 'top-to-bottom' ? 1 : 0.35}>
+				<path d="M12 3v18M8.5 6.5 12 3l3.5 3.5M8.5 17.5 12 21l3.5-3.5" />
+			</g>
+			<!-- horizontal arrows on both sides, with a gap around the vertical one (left-to-right) -->
+			<g opacity={direction === 'top-to-bottom' ? 0.35 : 1}>
+				<path d="M3 12h6M6 9l-3 3 3 3M15 12h6M18 9l3 3-3 3" />
+			</g>
 		</svg>
 	</div>
 

@@ -453,6 +453,15 @@
 		fittedLoads = $workspace.loads;
 		fitGraphInView();
 	}
+
+	// switching the direction turns the layout (menu, setDirection); show all of it again
+	$: direction = $graph.metadata.direction;
+	let fittedDirection: string | undefined;
+	$: if (direction !== fittedDirection) {
+		const changed = fittedDirection !== undefined;
+		fittedDirection = direction;
+		if (changed) fitGraphInView();
+	}
 </script>
 
 <!-- window-level move/up so a drag keeps working when the mouse leaves the viewport -->
@@ -472,6 +481,7 @@
 	<div class="content-wrapper" class:linking={linkDrag}>
 		<div
 			class="world"
+			class:top-to-bottom={direction === 'top-to-bottom'}
 			style="transform: translate({worldTranslateX}px, {worldTranslateY}px) scale({$camera.zoom});"
 		>
 			<GraphLinks drag={linkDrag} />

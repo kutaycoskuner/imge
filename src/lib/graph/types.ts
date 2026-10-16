@@ -141,10 +141,33 @@ export interface GraphV4 {
 }
 
 // -----------------------------------------------------------------------------------------
+// v5 -- the graph gets a direction (left-to-right or top-to-bottom)
+// -----------------------------------------------------------------------------------------
+// reading direction of the whole graph: where links leave (outputs) and enter (inputs);
+// links going around their nodes use route above = left, below = right in top-to-bottom
+export const DIRECTIONS = ['left-to-right', 'top-to-bottom'] as const;
+export type Direction = (typeof DIRECTIONS)[number];
+
+export type PortV5 = PortV4;
+export type LinkEndV5 = LinkEndV4;
+export type NodeV5 = NodeV4;
+export type LinkV5 = LinkV4;
+
+export interface GraphV5 {
+	metadata: {
+		format: typeof GRAPH_FORMAT;
+		version: 5;
+		direction: Direction; // left-to-right: ports on the left / right edges; top-to-bottom: top / bottom
+		[key: string]: unknown;
+	};
+	data: { nodes: NodeV5[]; links: LinkV5[] };
+}
+
+// -----------------------------------------------------------------------------------------
 // current version -- the app only works with these
 // -----------------------------------------------------------------------------------------
-export type Port = PortV4;
-export type GraphNode = NodeV4;
-export type LinkEnd = LinkEndV4;
-export type Link = LinkV4;
-export type Graph = GraphV4;
+export type Port = PortV5;
+export type GraphNode = NodeV5;
+export type LinkEnd = LinkEndV5;
+export type Link = LinkV5;
+export type Graph = GraphV5;

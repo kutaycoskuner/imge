@@ -35,21 +35,30 @@
 {/if}
 
 <style>
-	@media (min-width: 1025px) {
-		.assistance-msg {
-			user-select: none;
-			font-size: 0.9em;
-			font-weight: 600;
-			text-transform: lowercase;
-			position: fixed;
-			top: -10%;
-			left: -50%;
-			width: 200%;
-			height: 200%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			pointer-events: none;
-		}
+	/* at every window width (it used to apply above 1024 px only, so narrow or zoomed
+	   windows got an unstyled message behind the graph) */
+	.assistance-msg {
+		user-select: none;
+		font-size: 0.9em;
+		font-weight: 600;
+		text-transform: lowercase;
+		position: fixed;
+		left: 50%;
+		bottom: 10%;
+		transform: translateX(-50%);
+		max-width: 90vw;
+		text-align: center;
+		pointer-events: none;
+		/* above the graph (world layer 10-20), the toolbar (30) and the Esc menu (100) */
+		z-index: 950;
+	}
+
+	/* the message itself sits on a plain background, so it stays readable over nodes and links */
+	.assistance-msg > span {
+		display: inline-block;
+		padding: 0.35em 0.9em;
+		color: var(--col);
+		background: var(--bg);
+		border-radius: 4px;
 	}
 </style>
