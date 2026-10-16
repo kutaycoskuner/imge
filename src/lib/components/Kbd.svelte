@@ -2,13 +2,13 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-15
+	//   last update     : 2026-10-16
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Shows a keyboard shortcut as key caps: "Ctrl+Shift+S" -> [Ctrl]+[Shift]+[S]. A single
 	// character, including "+" itself, is one key. The cap style is the global `kbd` rule in
-	// static/styles/imge.css. Used by AssistanceMsg, SettingsOverlay and GraphEditorMenu.
+	// static/styles/imge.css. Used by AssistanceMsg, SettingsOverlay, GraphEditorMenu and GraphKeysMenu.
 	export let keys: string;
 
 	$: parts = keys.length === 1 ? [keys] : keys.split('+');

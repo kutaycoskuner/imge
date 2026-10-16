@@ -29,6 +29,8 @@
 	import GraphNode from '$lib/components/GraphNode.svelte';
 	import GraphLinks from '$lib/components/GraphLinks.svelte';
 	import GraphEditorMenu from '$lib/components/GraphEditorMenu.svelte';
+	import GraphExamplesMenu from '$lib/components/GraphExamplesMenu.svelte';
+	import GraphKeysMenu from '$lib/components/GraphKeysMenu.svelte';
 	import { onMount, tick } from 'svelte';
 	import { dev } from '$app/environment';
 	import {
@@ -76,7 +78,7 @@
 		type LinkOutcome
 	} from '$lib/graph/store';
 	import type { Link, LinkEnd } from '$lib/graph/types';
-	import { assistanceMsg, menuOpen, pageMenu } from '../stores/imge_main';
+	import { assistanceMsg, menuOpen, menuTab, pageMenu } from '../stores/imge_main';
 
 	// exp() turns wheel delta into a smooth factor for both mouse wheels and trackpads
 	const WHEEL_ZOOM_SPEED = 0.0015;
@@ -335,6 +337,7 @@
 		if ($workspace.fileName) {
 			save();
 		} else {
+			menuTab.set('config'); // where Save as and the folder are
 			menuOpen.set(true);
 			notify('Not saved yet: choose a folder or use Save as');
 		}
@@ -393,7 +396,14 @@
 		const stopTracking = trackViewport();
 		const stopChangeTracking = trackChanges();
 		const stopOverride = persistViewSettings();
-		pageMenu.set({ title: 'Graph editor', component: GraphEditorMenu });
+		pageMenu.set({
+			title: 'Graph editor',
+			tabs: [
+				{ id: 'config', label: 'Config', component: GraphEditorMenu },
+				{ id: 'examples', label: 'Examples', component: GraphExamplesMenu },
+				{ id: 'keys', label: 'Keybindings', component: GraphKeysMenu }
+			]
+		});
 		(async () => {
 			await initWorkspace();
 			try {

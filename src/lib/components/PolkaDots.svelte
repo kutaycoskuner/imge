@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-14
+	//   last update     : 2026-10-16
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -10,7 +10,9 @@
 	// background follows the camera, so it never runs out and lines up with the nodes.
 	// Dots sit on world multiples of the spacing; when zoomed out so far that they would
 	// crowd together, the spacing doubles instead of the grid disappearing.
+	// Hidden with the toolbar's dot grid button (showDotGrid, a display setting).
 	import { camera, viewport } from '$lib/camera';
+	import { showDotGrid } from '$lib/graph/store';
 
 	const BASE_SPACING = 40; // world units between dots at zoom 1
 	const MIN_SCREEN_SPACING = 24; // px; below this the grid doubles its spacing
@@ -33,6 +35,7 @@
 	$: dotRadius = Math.min(1.2, Math.max(0.6, 0.8 * $camera.zoom));
 </script>
 
+{#if $showDotGrid}
 <div
 	class="polka-dots"
 	style={`background-image: radial-gradient(circle, var(--col-transparent) ${dotRadius}px, transparent ${dotRadius + 0.8}px);` +
@@ -40,3 +43,4 @@
 		` background-position: ${originX - tile / 2}px ${originY - tile / 2}px;` +
 		` opacity: ${DOT_OPACITY};`}
 ></div>
+{/if}

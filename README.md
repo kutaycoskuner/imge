@@ -15,7 +15,7 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.13.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.14.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
@@ -60,7 +60,7 @@ npm run test:unit -- --run
 - [x] pan by dragging empty space, follows the mouse at any zoom
 - [x] zoom toward cursor (mouse wheel) and screen center (buttons)
 - [x] fit graph: the whole graph is shown on load, and with the toolbar's fit button
-- [x] faint dot grid that follows the canvas (spacing doubles when zoomed out)
+- [x] faint dot grid that follows the canvas (spacing doubles when zoomed out), on / off with a toolbar button
 - [x] origin marker (dev only): red / green L at (0, 0) toward +x / +y (Blender axis colors)
 - [x] coordinates tracker (world coordinates, x right, y up)
 - [x] node rendering
@@ -77,8 +77,9 @@ npm run test:unit -- --run
 - [x] direction: left-to-right or top-to-bottom; Transpose (toolbar button or Esc menu) switches it, ports, links and routes follow; switching back restores the layout
 - [x] export data as json (default name imgegraph-<date>-<NN>.json)
 - [x] point the editor at a folder on your computer: its imge graphs are listed by name and open with a click; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
-- [x] Esc menu per page (graph editor has its own)
-- [x] versioned graph format (now v4), older files upgraded on load; a sample per version in static/data/samples
+- [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
+- [x] versioned graph format (now v5), older files upgraded on load; a sample per version in static/data/samples
+- [x] example graphs in the Esc menu (mind map, flowchart, search tree, lattice, architecture map, release process, UML-ish), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)
 - [ ] node colors (stored in the file since v3, not drawn yet)
 - [ ] vertical / horizontal frameworks
 - [ ] node content editing
@@ -92,6 +93,7 @@ Shortcuts (Shift+N, Shift+A, F2, F, L, D, R, Delete, +/-, Home, Ctrl+S, Ctrl+Shi
 - [Node and link editing](docs/graph-editing.md): mouse and keys, link rules, link shapes, function reference for the graph store
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
 - [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
+- [Graph types](docs/graph-types.md): kinds of graphs imge could draw, which are possible today and what each still needs
 
 The live site counts visits with a self-hosted analytics script (archrium); local runs (`npm run dev`, preview) are not counted.
 

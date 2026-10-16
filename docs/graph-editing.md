@@ -2,7 +2,7 @@
 
 How to create, edit and delete nodes and links in the graph editor, the rules links follow, and a reference for the functions behind it.
 
-State as of 2026-10-14.
+State as of 2026-10-16.
 
 - [Using it](#using-it)
     - [Mouse and keys](#mouse-and-keys)
@@ -51,6 +51,7 @@ State as of 2026-10-14.
 | **Esc** | Cancel a link drag; otherwise open the menu (open / save graphs, see [graph-saving.md](graph-saving.md)). |
 
 - Shortcuts are ignored while typing a name, so Backspace there edits text instead of deleting the node.
+- The Esc menu's **Keybindings** tab lists these keys as key caps (`GraphKeysMenu.svelte`; keep it in step with this table).
 - Shortcuts are paused while the Esc menu is open, except Ctrl+S and Ctrl+Shift+S, which work everywhere.
 - The toolbar's hover hints and the menu's buttons show their key as key caps, e.g. <kbd>Shift</kbd>+<kbd>A</kbd>: a hint text puts keys in square brackets (`"Add Node [Shift+A]"`) and `AssistanceMsg` draws them with `Kbd.svelte`.
 - Other Ctrl / Cmd / Alt combinations are left to the browser.
@@ -241,6 +242,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-16 — the Esc menu's Keybindings tab lists the shortcuts as key caps
 - 2026-10-16 — "orientation" renamed to "direction" (`metadata.direction`, `setDirection`); the toolbar button and its action are called Transpose
 
 - 2026-10-16 — toolbar button to switch the orientation; messages are drawn above the graph on a solid panel

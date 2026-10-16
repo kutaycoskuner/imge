@@ -8,7 +8,7 @@
 	// -----------------------------------------------------------------------------------------
 	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, fit graph,
 	// transpose (switch the direction left-to-right / top-to-bottom and turn the layout; the icon's
-	// strong arrow is the current direction),
+	// strong arrow is the current direction), dot grid on / off,
 	// add node at the screen center, open graph (opens the Esc menu), export (download) and a
 	// test pan button. Hover hints show each button's key in [brackets], drawn as key caps
 	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
@@ -17,9 +17,15 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 
-	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen } from '../../stores/imge_main';
+	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen, menuTab } from '../../stores/imge_main';
 	import { ZOOM_STEP, camera, panBy, zoomAt } from '$lib/camera';
-	import { createNodeAt, graph, setDirection, measureNodeSizes } from '$lib/graph/store';
+	import { createNodeAt, graph, setDirection, measureNodeSizes, showDotGrid } from '$lib/graph/store';
+
+	// dot grid on / off (a display setting, remembered in this browser)
+	const toggleDotGrid = () => {
+		showDotGrid.update((shown) => !shown);
+		handleMouseOver($showDotGrid ? 'Dot grid shown' : 'Dot grid hidden');
+	};
 	import type { Direction } from '$lib/graph/types';
 
 	// transpose: switch between left-to-right and top-to-bottom; the layout turns around node centres
@@ -71,8 +77,11 @@
 		dispatch('requestExport');
 	};
 
-	// opening graphs (folder or upload) lives in the Esc menu, see GraphEditorMenu.svelte
-	const openGraphMenu = () => menuOpen.set(true);
+	// opening graphs (folder or upload) lives in the Esc menu's Config tab, see GraphEditorMenu.svelte
+	const openGraphMenu = () => {
+		menuTab.set('config');
+		menuOpen.set(true);
+	};
 
 	// moves the canvas 10 px to the right
 	const test = () => panBy(10, 0);
@@ -229,6 +238,29 @@
 			<!-- horizontal arrows on both sides, with a gap around the vertical one (left-to-right) -->
 			<g opacity={direction === 'top-to-bottom' ? 0.35 : 1}>
 				<path d="M3 12h6M6 9l-3 3 3 3M15 12h6M18 9l3 3-3 3" />
+			</g>
+		</svg>
+	</div>
+
+	<!-- Dot grid on / off: dots in perspective; shown = strong at the bottom fading up, hidden = all faded -->
+	<div
+		class="access-function"
+		role="button"
+		tabindex="0"
+		on:click={toggleDotGrid}
+		on:keydown={(event) => event.key === 'Enter' && toggleDotGrid()}
+		on:mouseenter={() => handleMouseOver($showDotGrid ? 'Hide Dot Grid' : 'Show Dot Grid')}
+		on:mouseleave={handleMouseLeave}
+	>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+			<g opacity="0.3">
+				<circle cx="8" cy="6.5" r="1.3" /><circle cx="12" cy="6.5" r="1.3" /><circle cx="16" cy="6.5" r="1.3" />
+			</g>
+			<g opacity={$showDotGrid ? 0.6 : 0.3}>
+				<circle cx="6.2" cy="12" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="17.8" cy="12" r="1.5" />
+			</g>
+			<g opacity={$showDotGrid ? 1 : 0.3}>
+				<circle cx="4.3" cy="17.8" r="1.7" /><circle cx="12" cy="17.8" r="1.7" /><circle cx="19.7" cy="17.8" r="1.7" />
 			</g>
 		</svg>
 	</div>

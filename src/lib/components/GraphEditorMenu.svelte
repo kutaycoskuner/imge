@@ -6,10 +6,11 @@
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// The graph editor's Esc menu (registered by routes/+page.svelte): point it at a folder
-	// on the computer (edit folder, remember it or remove the saved folder), see the imge
-	// graphs in it by name and open one with a click, save / save as, optional autosave,
-	// download a copy; a Links section with the display-only shape override and "apply to all
+	// The Config tab of the graph editor's Esc menu (registered by routes/+page.svelte, next
+	// to the Examples and Keybindings tabs): point it at a folder on the computer (edit
+	// folder, remember it or remove the saved folder), see the imge graphs in it by name and
+	// open one with a click, save / save as, optional autosave, download a copy; the graph's
+	// direction; a Links section with the display-only shape override and "apply to all
 	// links" (writes the shape into every link). Buttons with a shortcut show it as key caps.
 	// Chrome and Edge read and write the folder; Firefox and Safari can only read it, so
 	// saving downloads the file there. All actions and state live in $lib/graph/file-access.ts.

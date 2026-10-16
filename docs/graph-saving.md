@@ -2,7 +2,7 @@
 
 How the graph editor opens and saves graphs on your computer, what it remembers and where, and how each page gets its own Esc menu.
 
-State as of 2026-10-14.
+State as of 2026-10-16.
 
 - [Opening and saving](#opening-and-saving)
     - [Which files are listed](#which-files-are-listed)
@@ -64,6 +64,7 @@ The toolbar's export button (the arrow pointing down), the menu's **Download a c
 | Your graphs | The `.json` files in the folder you chose, on your computer. | No. |
 | Access to the folder ("remember") | A folder handle in the browser's IndexedDB storage (`imge` database), only after you answer **Yes**. A cookie can't hold folder access, and browsers never tell a page a folder's real path; the handle is the browser's safe equivalent. | No. |
 | Autosave on/off | `localStorage` key `imge.graphEditor.autosave`. | No. |
+| Last open menu tab | `localStorage` key `imge.menuTab.<page title>`, e.g. `imge.menuTab.Graph editor`. | No. |
 | Last default download number of the day | `localStorage` key `imge.graphEditor.downloadCounter` (the browser can't see your downloads folder, so it counts here). | No. |
 
 Clearing the site's data in the browser removes the remembered folder and the autosave setting; your files stay where they are.
@@ -75,7 +76,11 @@ Clearing the site's data in the browser removes the remembered folder and the au
     - while dragging a new link: cancels the drag
     - while editing a title: cancels the edit
 - While the menu is open, the editor's shortcuts are paused (typing a file name doesn't add or delete nodes).
-- The graph editor's menu also has a **Graph** section with the direction (left-to-right / top-to-bottom; Transpose turns the layout, see [graph-editing.md](graph-editing.md#direction-and-transpose)), and a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) and the direction-chevrons toggle; see [graph-editing.md](graph-editing.md#link-shapes).
+- The graph editor's menu has three tabs, switched at the top right of the menu (a segmented switch: the outer corners slightly rounded, the middle square, the open tab faintly tinted cerulean). The menu takes at most 80% of the window's height and scrolls when it is taller (title and switch stay at the top). The tab you used last is opened again, also after a reload; the toolbar's open button and Ctrl+S without a file go straight to Config.
+    - **Config:** folder, graphs in the folder, save, the graph's direction, links, new graph and download (everything described on this page).
+    - **Examples:** one example graph per kind of graph (see [graph-types.md](graph-types.md)), as compact cerulean chips with name and kind, each with its description. A click opens it without a file name (asks first if the open graph has unsaved changes); Save as in Config stores it in your folder under a name of your own. The examples are `static/data/examples/*.json`, listed in `static/data/examples/index.json`; the Feature map (the start graph) is listed first.
+    - **Keybindings:** every shortcut as key caps and the mouse actions (the same as [graph-editing.md](graph-editing.md#mouse-and-keys), shorter).
+- The Config tab also has a **Graph** section with the direction (left-to-right / top-to-bottom; Transpose turns the layout, see [graph-editing.md](graph-editing.md#direction-and-transpose)), and a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) and the direction-chevrons toggle; see [graph-editing.md](graph-editing.md#link-shapes).
 
 ### A menu for each page
 
@@ -95,7 +100,17 @@ Clearing the site's data in the browser removes the remembered folder and the au
         };
     });
     ```
-3. If the page uses Esc itself, listen in the capture phase (`<svelte:window on:keydown|capture={...} />`) and call `event.preventDefault()` when the key press was used; the menu ignores Esc presses that were already used.
+3. For tabs, give `tabs` instead of `component`; a switch appears in the menu's header (with more than one tab), and `menuTab` holds the open tab's id (set it to open a given tab from code):
+    ```ts
+    pageMenu.set({
+        title: 'My page',
+        tabs: [
+            { id: 'config', label: 'Config', component: MyConfigMenu },
+            { id: 'help', label: 'Help', component: MyHelpMenu }
+        ]
+    });
+    ```
+4. If the page uses Esc itself, listen in the capture phase (`<svelte:window on:keydown|capture={...} />`) and call `event.preventDefault()` when the key press was used; the menu ignores Esc presses that were already used.
 
 Pages without their own menu (currently the matrix and CSV pages) show the default menu.
 
@@ -122,6 +137,8 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 | `normalizeFileName(input)` | Turns typed text into a safe `.json` file name, or `null` if nothing usable is left. |
 | `setAutosave(on)` | Turns autosave on or off and keeps the setting. |
 | `uploadGraph()` / `downloadGraph()` | Open by upload / save by download, for browsers without folder access and the toolbar's export. |
+| `listExamples()` | Reads `data/examples/index.json`: the example graphs (`ExampleGraph`: name, kind, file, description). |
+| `openExample(example)` | Opens an example graph without a file name; asks first if there are unsaved changes. |
 
 ## Known limits
 
@@ -132,6 +149,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-10-16 — the menu's tabs Config / Examples / Keybindings (switch at the top right, last tab remembered); Examples: example graphs, one per kind of graph, as cerulean chips that open without a file name; page menus fit the window up to 1024 px wide (they started off-screen to the left), take at most 80% of its height and scroll
 - 2026-10-16 — the menu's Graph section with the direction (Transpose)
 - 2026-10-16 — the menu's Links section also has the arrow override, apply arrow to all links and the chevron toggle
 - 2026-10-15 — "New graph" button and Shift+N: empty graph without a file name

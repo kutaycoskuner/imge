@@ -13,7 +13,7 @@ State as of 2026-10-14.
 | Pan | Drag empty space; the canvas follows the mouse at any zoom. |
 | Zoom | Mouse wheel zooms toward the cursor; +/− buttons zoom ×1.2 toward the screen center. Range 0.04–4. |
 | Fit graph | On load, and with the toolbar's corner-brackets button: the whole graph is centered and zoomed to fit the window (zoom at most 1). |
-| Dot grid | Endless, faint background; 40-unit spacing that doubles when zoomed out; stays lined up with the nodes. |
+| Dot grid | Endless, faint background; 40-unit spacing that doubles when zoomed out; stays lined up with the nodes. Shown or hidden with the toolbar's dot grid button. |
 | Origin marker | Development only: red/green L at (0, 0) pointing toward +x and +y, Blender axis colors, fixed 40 px size. |
 | Coordinate tracker | Bottom right; whole world coordinates under the mouse. |
 | Nodes | Loaded from `static/data/test-node-graph.json`: title, input points (left), output points (right). |
@@ -92,6 +92,7 @@ Because the nodes, the dots, the origin marker and the coordinate tracker all us
 
 ## Dot grid
 
+- **On / off:** the toolbar's dot grid button (dots in perspective: strong at the bottom while shown, all faded while hidden). A display setting remembered in this browser (`localStorage` key `imge.graphEditor.hideDotGrid`, stored only while hidden), not saved in the graph.
 - One fixed, full-screen layer with a repeating `radial-gradient` background. The browser repeats it forever, so it never runs out.
 - Tile size = spacing × zoom. Background position = the screen position of world `(0, 0)` minus half a tile, so a dot sits exactly on the origin and on every multiple of the spacing.
 - Spacing is 40 world units. When zooming out would put dots closer than 24 px, the spacing doubles (80, 160, ...), so the grid stays sparse instead of vanishing or crowding.
@@ -143,6 +144,7 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Changes
 
+- 2026-10-16 — dot grid can be hidden with a toolbar button (remembered in the browser)
 - 2026-10-14 — the view fits the whole graph on load; the toolbar's "Reset view" became "Fit graph"
 - 2026-10-14 — the graph editor is now the home page: `src/routes/+page.svelte` (was `src/routes/graph_editor/+page.svelte`; `/graph_editor` redirects to `/`)
 - 2026-10-14 — origin marker shown only in development (`npm run dev`), not in production builds

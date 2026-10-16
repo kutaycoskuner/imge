@@ -76,6 +76,7 @@ export const editingLinkId = writable<string | null>(null); // link whose name i
 export const linkShapeOverride = writable<LinkShape | null>(null); // null = each link's own
 export const linkArrowOverride = writable<LinkArrow | null>(null); // null = each link's own
 export const showChevrons = writable<boolean>(false); // direction chevrons in the middle of links
+export const showDotGrid = writable<boolean>(true); // the background dot grid
 
 /** Restores the display settings from this browser and keeps them there. Call once (onMount). */
 export function persistViewSettings(): () => void {
@@ -86,7 +87,9 @@ export function persistViewSettings(): () => void {
 		persist(linkArrowOverride, 'imge.graphEditor.linkArrowOverride', (v) =>
 			(LINK_ARROWS as readonly string[]).includes(v) ? (v as LinkArrow) : null
 		),
-		persist(showChevrons, 'imge.graphEditor.showChevrons', (v) => v === 'true')
+		persist(showChevrons, 'imge.graphEditor.showChevrons', (v) => v === 'true'),
+		// stored only when hidden ("false"); the default (shown) leaves nothing behind
+		persistHidden(showDotGrid, 'imge.graphEditor.hideDotGrid')
 	];
 	return () => stops.forEach((stop) => stop());
 }
@@ -104,6 +107,23 @@ function persist<T>(store: Writable<T>, key: string, parse: (stored: string) => 
 		try {
 			if (value === null || value === false) localStorage.removeItem(key);
 			else localStorage.setItem(key, String(value));
+		} catch {
+			// storage blocked
+		}
+	});
+}
+
+// for a setting that is on by default: remembers only that it was turned off
+function persistHidden(store: Writable<boolean>, key: string): () => void {
+	try {
+		if (localStorage.getItem(key) === 'true') store.set(false);
+	} catch {
+		// storage blocked
+	}
+	return store.subscribe((shown) => {
+		try {
+			if (shown) localStorage.removeItem(key);
+			else localStorage.setItem(key, 'true');
 		} catch {
 			// storage blocked
 		}

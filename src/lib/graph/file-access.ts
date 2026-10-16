@@ -172,6 +172,47 @@ export function newGraph(): boolean {
 	return true;
 }
 
+/** An example graph listed in static/data/examples/index.json. */
+export interface ExampleGraph {
+	name: string;
+	kind: string; // the graph type it shows (see docs/graph-types.md)
+	file: string; // path under data/
+	description: string;
+}
+
+/** The example graphs offered in the menu; an empty list when the index can't be read. */
+export async function listExamples(): Promise<ExampleGraph[]> {
+	try {
+		const response = await fetch('data/examples/index.json');
+		return (await response.json()).examples ?? [];
+	} catch (error) {
+		console.error('Could not read the example list:', error);
+		return [];
+	}
+}
+
+/**
+ * Opens an example graph without a file name (so saving asks for a name and the example
+ * is never overwritten); asks first if the open graph has unsaved changes.
+ *
+ * Returns:
+ *     False when the user kept the open graph or the example couldn't be loaded.
+ */
+export async function openExample(example: ExampleGraph): Promise<boolean> {
+	if (get(workspace).dirty && !confirm('The open graph has unsaved changes. Open the example anyway?')) {
+		return false;
+	}
+	try {
+		const response = await fetch(`data/${example.file}`);
+		loadGraph(await response.json(), null);
+		patch({ status: `Opened the example "${example.name}" (not saved yet)` });
+		return true;
+	} catch (error) {
+		patch({ status: `Could not open the example "${example.name}": ${(error as Error).message}` });
+		return false;
+	}
+}
+
 let autosaveTimer: ReturnType<typeof setTimeout> | undefined;
 
 /**

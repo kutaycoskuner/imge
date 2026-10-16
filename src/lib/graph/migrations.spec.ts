@@ -138,6 +138,42 @@ describe('adapter 4 -> 5', () => {
 	});
 });
 
+// example graphs offered in the editor's menu, and the start graph, keyed by their path under data/
+const DATA = import.meta.glob('../../../static/data/{test-node-graph,examples/*}.json', {
+	eager: true,
+	import: 'default'
+}) as Record<string, any>;
+const dataFile = (file: string) => DATA[`../../../static/data/${file}`];
+
+describe('example graphs', () => {
+	const index = dataFile('examples/index.json');
+
+	it('the example list is there and every listed file exists', () => {
+		expect(index.examples.length).toBeGreaterThan(0);
+		for (const example of index.examples) expect(dataFile(example.file), example.file).toBeDefined();
+	});
+
+	it('every example is stored as the current format version, so it never needs an upgrade', () => {
+		for (const example of index.examples) {
+			expect(readGraphVersion(dataFile(example.file)), example.file).toBe(CURRENT_GRAPH_VERSION);
+		}
+	});
+
+	it('every example has unique ids and its links point at existing nodes and ports', () => {
+		for (const example of index.examples) {
+			const { nodes, links } = dataFile(example.file).data;
+			const nodeIds = nodes.map((n: any) => n.id);
+			expect(new Set(nodeIds).size, example.file).toBe(nodeIds.length);
+			expect(new Set(links.map((l: any) => l.id)).size, example.file).toBe(links.length);
+			const has = (end: any, kind: 'inputs' | 'outputs') =>
+				nodes.some((n: any) => n.id === end.node && n[kind].some((p: any) => p.id === end.port));
+			for (const l of links) {
+				expect(has(l.source, 'outputs') && has(l.target, 'inputs'), `${example.file} ${l.id}`).toBe(true);
+			}
+		}
+	});
+});
+
 describe('readGraphVersion', () => {
 	it('refuses files that are not graphs', () => {
 		expect(() => readGraphVersion({ foo: 1 })).toThrow(GraphFormatError);
