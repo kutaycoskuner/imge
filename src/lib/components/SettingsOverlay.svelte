@@ -16,6 +16,7 @@
 	import { onMount } from 'svelte';
 	import { menuOpen, pageMenu, menuTab } from '../../stores/imge_main';
 	import Kbd from './Kbd.svelte';
+	import IconUpload from '$lib/icons/icon-upload.svelte';
 
 	const tabKey = (title: string) => `imge.menuTab.${title}`;
 
@@ -103,19 +104,7 @@
 						class={mainSelectionName === 'upload' ? 'selected' : 'selected'}
 						on:click={() => setMenu(true, true, 'upload')}
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="21"
-							height="21"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 8l-5-5-5 5M12 4.2v10.3" />
-						</svg>
+						<IconUpload width="21" height="21" />
 						<span>upload</span>
 					</button>
 				</div>

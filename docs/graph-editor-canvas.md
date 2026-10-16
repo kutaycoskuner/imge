@@ -35,7 +35,8 @@ State as of 2026-10-14.
 | `src/lib/components/PolkaDots.svelte` | Endless dot grid that follows the camera. |
 | `src/lib/components/OriginAxes.svelte` | Origin marker: red/green L at world (0, 0). |
 | `src/lib/components/CoordTracker.svelte` | Shows the world coordinates under the mouse. |
-| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, open (menu), export. |
+| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, transpose, dot grid, snap, open (menu), export. The buttons are a data list (`buttons`: icon, hint, action) rendered by one loop. |
+| `src/lib/icons/` | One component per icon, reusable on any page; markup only, state as props (see its README). |
 | `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node`, port, selection and link styles. |
 | `static/data/test-node-graph.json` | Test graph; node `position` values are world coordinates. File structure and versions: [graph-format.md](graph-format.md). |
 
@@ -148,6 +149,7 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Changes
 
+- 2026-10-16 — toolbar icons moved to `src/lib/icons/`, toolbar buttons kept as a data list
 - 2026-10-16 — node dragging snaps to half grid squares (Alt = free, toolbar snap button); grid spacing moved to `camera.ts` (`gridSpacing`, `snapStep`)
 - 2026-10-16 — dot grid can be hidden with a toolbar button (remembered in the browser)
 - 2026-10-14 — the view fits the whole graph on load; the toolbar's "Reset view" became "Fit graph"

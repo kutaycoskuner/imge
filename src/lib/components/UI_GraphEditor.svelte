@@ -12,7 +12,7 @@
 	// add node at the screen center, open graph (opens the Esc menu), export (download) and a
 	// test pan button. Hover hints show each button's key in [brackets], drawn as key caps
 	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
-	// the page.
+	// the page. The buttons are a data list (`buttons`); their icons live in $lib/icons.
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
@@ -32,6 +32,15 @@
 		handleMouseOver($snapToGrid ? 'Snapping on' : 'Snapping off');
 	};
 	import type { Direction } from '$lib/graph/types';
+	import IconPlus from '$lib/icons/icon-plus.svelte';
+	import IconMinus from '$lib/icons/icon-minus.svelte';
+	import IconAddNode from '$lib/icons/icon-add-node.svelte';
+	import IconFit from '$lib/icons/icon-fit.svelte';
+	import IconTranspose from '$lib/icons/icon-transpose.svelte';
+	import IconDotGrid from '$lib/icons/icon-dot-grid.svelte';
+	import IconSnap from '$lib/icons/icon-snap.svelte';
+	import IconChevronUp from '$lib/icons/icon-chevron-up.svelte';
+	import IconChevronDown from '$lib/icons/icon-chevron-down.svelte';
 
 	// transpose: switch between left-to-right and top-to-bottom; the layout turns around node centres
 	$: direction = $graph.metadata.direction;
@@ -98,267 +107,63 @@
 
 	// the camera's x/y is the world point at the screen center
 	const addNode = () => createNodeAt({ x: $camera.x, y: $camera.y });
+
+	// Toolbar entries, top to bottom: data only (icon, hover hint, action); the template
+	// renders them all the same way. Stateful icons get their state through iconProps.
+	type ToolbarButton = {
+		id: string;
+		hint: string;
+		action: () => void;
+		icon?: typeof IconPlus;
+		iconProps?: Record<string, unknown>;
+		text?: string; // shown instead of an icon
+	};
+	let buttons: ToolbarButton[];
+	$: buttons = [
+		{ id: 'zoom-in', icon: IconPlus, hint: 'Zoom In [+]', action: zoomIn },
+		{ id: 'zoom-out', icon: IconMinus, hint: 'Zoom Out [-]', action: zoomOut },
+		{ id: 'add-node', icon: IconAddNode, hint: 'Add Node [Shift+A] at mouse', action: addNode },
+		{ id: 'fit', icon: IconFit, hint: 'Fit Graph [Home]', action: fitToScreen },
+		{ id: 'transpose', icon: IconTranspose, iconProps: { direction }, hint: `Transpose to ${nextDirection}`, action: transpose },
+		{
+			id: 'dot-grid',
+			icon: IconDotGrid,
+			iconProps: { on: $showDotGrid },
+			hint: $showDotGrid ? 'Hide Dot Grid' : 'Show Dot Grid',
+			action: toggleDotGrid
+		},
+		{
+			id: 'snap',
+			icon: IconSnap,
+			iconProps: { on: $snapToGrid },
+			hint: $snapToGrid ? 'Turn Snapping Off' : 'Turn Snapping On',
+			action: toggleSnap
+		},
+		{ id: 'open', icon: IconChevronUp, hint: 'Open Graph [Esc]', action: openGraphMenu },
+		{ id: 'download', icon: IconChevronDown, hint: 'Download Graph [Ctrl+Shift+S]', action: exportGraph },
+		{ id: 'test', text: 'T', hint: 'test button', action: test }
+	];
 </script>
 
-<!-- Template -->
+<!-- Template: one button per toolbar entry -->
 <div class="access-wrapper">
-	<!-- Zoom In -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={zoomIn}
-		on:keydown={(event) => event.key === 'Enter' && zoomIn()}
-		on:mouseenter={() => handleMouseOver('Zoom In [+]')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			class="w-6 h-6 text-gray-800 dark:text-white"
-			aria-hidden="true"
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			fill="none"
-			viewBox="0 0 24 24"
+	{#each buttons as button (button.id)}
+		<div
+			class="access-function"
+			role="button"
+			tabindex="0"
+			on:click={button.action}
+			on:keydown={(event) => event.key === 'Enter' && button.action()}
+			on:mouseenter={() => handleMouseOver(button.hint)}
+			on:mouseleave={handleMouseLeave}
 		>
-			<path
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M5 12h14m-7 7V5"
-			/>
-		</svg>
-	</div>
-
-	<!-- Zoom Out -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={zoomOut}
-		on:keydown={(event) => event.key === 'Enter' && zoomOut()}
-		on:mouseenter={() => handleMouseOver('Zoom Out [-]')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			class="w-6 h-6 text-gray-800 dark:text-white"
-			aria-hidden="true"
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<path
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M5 12h14"
-			/>
-		</svg>
-	</div>
-
-	<!-- Add Node -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={addNode}
-		on:keydown={(event) => event.key === 'Enter' && addNode()}
-		on:mouseenter={() => handleMouseOver('Add Node [Shift+A] at mouse')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			class="w-6 h-6 text-gray-800 dark:text-white"
-			aria-hidden="true"
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<path
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-width="2"
-				d="M7.926 10.898 15 7.727m-7.074 5.39L15 16.29M8 12a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm12 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm0-11a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"
-			/>
-		</svg>
-	</div>
-
-	<!-- Fit to Screen -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={fitToScreen}
-		on:keydown={(event) => event.key === 'Enter' && fitToScreen()}
-		on:mouseenter={() => handleMouseOver('Fit Graph [Home]')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path
-				d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
-			/>
-		</svg>
-	</div>
-
-	<!-- Transpose: the current direction is drawn strong, the other faded -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={transpose}
-		on:keydown={(event) => event.key === 'Enter' && transpose()}
-		on:mouseenter={() => handleMouseOver(`Transpose to ${nextDirection}`)}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<!-- vertical double arrow (top-to-bottom) -->
-			<g opacity={direction === 'top-to-bottom' ? 1 : 0.35}>
-				<path d="M12 3v18M8.5 6.5 12 3l3.5 3.5M8.5 17.5 12 21l3.5-3.5" />
-			</g>
-			<!-- horizontal arrows on both sides, with a gap around the vertical one (left-to-right) -->
-			<g opacity={direction === 'top-to-bottom' ? 0.35 : 1}>
-				<path d="M3 12h6M6 9l-3 3 3 3M15 12h6M18 9l3 3-3 3" />
-			</g>
-		</svg>
-	</div>
-
-	<!-- Dot grid on / off: dots in perspective; shown = strong at the bottom fading up, hidden = all faded -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={toggleDotGrid}
-		on:keydown={(event) => event.key === 'Enter' && toggleDotGrid()}
-		on:mouseenter={() => handleMouseOver($showDotGrid ? 'Hide Dot Grid' : 'Show Dot Grid')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-			<g opacity="0.3">
-				<circle cx="8" cy="6.5" r="1.3" /><circle cx="12" cy="6.5" r="1.3" /><circle cx="16" cy="6.5" r="1.3" />
-			</g>
-			<g opacity={$showDotGrid ? 0.6 : 0.3}>
-				<circle cx="6.2" cy="12" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="17.8" cy="12" r="1.5" />
-			</g>
-			<g opacity={$showDotGrid ? 1 : 0.3}>
-				<circle cx="4.3" cy="17.8" r="1.7" /><circle cx="12" cy="17.8" r="1.7" /><circle cx="19.7" cy="17.8" r="1.7" />
-			</g>
-		</svg>
-	</div>
-
-	<!-- Snap to grid on / off: a square with dotted guides running out of its corners; off = guides faded -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={toggleSnap}
-		on:keydown={(event) => event.key === 'Enter' && toggleSnap()}
-		on:mouseenter={() => handleMouseOver($snapToGrid ? 'Turn Snapping Off' : 'Turn Snapping On')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-			<rect x="9" y="9" width="6" height="6" fill="none" stroke="currentColor" stroke-width="2" />
-			<g fill="currentColor" opacity={$snapToGrid ? 1 : 0.3}>
-				<!-- guides above and below the corners -->
-				<circle cx="9" cy="3.5" r="1.1" /><circle cx="9" cy="6.2" r="1.1" />
-				<circle cx="15" cy="3.5" r="1.1" /><circle cx="15" cy="6.2" r="1.1" />
-				<circle cx="9" cy="17.8" r="1.1" /><circle cx="9" cy="20.5" r="1.1" />
-				<circle cx="15" cy="17.8" r="1.1" /><circle cx="15" cy="20.5" r="1.1" />
-				<!-- guides left and right of the corners -->
-				<circle cx="3.5" cy="9" r="1.1" /><circle cx="6.2" cy="9" r="1.1" />
-				<circle cx="3.5" cy="15" r="1.1" /><circle cx="6.2" cy="15" r="1.1" />
-				<circle cx="17.8" cy="9" r="1.1" /><circle cx="20.5" cy="9" r="1.1" />
-				<circle cx="17.8" cy="15" r="1.1" /><circle cx="20.5" cy="15" r="1.1" />
-			</g>
-		</svg>
-	</div>
-
-	<!-- Import Graph -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={openGraphMenu}
-		on:keydown={(event) => event.key === 'Enter' && openGraphMenu()}
-		on:mouseenter={() => handleMouseOver('Open Graph [Esc]')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path d="M18 15l-6-6-6 6" />
-		</svg>
-	</div>
-
-	<!-- Export Graph -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={exportGraph}
-		on:keydown={(event) => event.key === 'Enter' && exportGraph()}
-		on:mouseenter={() => handleMouseOver('Download Graph [Ctrl+Shift+S]')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path d="M6 9l6 6 6-6" />
-		</svg>
-	</div>
-
-	<!-- Test -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={test}
-		on:keydown={(event) => event.key === 'Enter' && test()}
-		on:mouseenter={() => handleMouseOver('test button')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<div>T</div>
-	</div>
+			{#if button.icon}
+				<svelte:component this={button.icon} {...button.iconProps} />
+			{:else}
+				<div>{button.text}</div>
+			{/if}
+		</div>
+	{/each}
 </div>
 
 <!-- Styles -->
@@ -388,7 +193,8 @@
 		cursor: pointer;
 	}
 
-	.access-function svg {
+	/* the icons are their own components (src/lib/icons), so their svg is styled globally */
+	.access-function :global(svg) {
 		width: 100%;
 		height: 100%;
 		opacity: 0.8;

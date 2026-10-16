@@ -1,6 +1,17 @@
 <script lang="ts">
+	// -----------------------------------------------------------------------------------------
+	//   author          : Kutay Coskuner
+	//   ai-contributors : unknown (before 2026-10-16), Claude Opus 5.5 (claude-opus-5-5)
+	//   last update     : 2026-10-16
+	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+	//                     Check outputs before relying on them.
+	// -----------------------------------------------------------------------------------------
+	// Light / dark theme toggle button: shows the moon in dark mode and the sun in light mode
+	// (icons from $lib/icons) and switches the theme in $lib/ColorTheme.svelte on click.
 	import { fly } from 'svelte/transition';
 	import { theme } from '$lib/ColorTheme.svelte';
+	import IconMoon from '$lib/icons/icon-moon.svelte';
+	import IconSun from '$lib/icons/icon-sun.svelte';
 
 	let currentTheme: string;
 	// Subscribe to the theme store
@@ -12,37 +23,11 @@
 <button class="ncolor-mode" on:click={theme.toggle} aria-label="Toggle theme">
 	{#if currentTheme === 'dark'}
 		<div class="dark-mode">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="w-6 h-6"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
-				/>
-			</svg>
+			<IconMoon />
 		</div>
 	{:else}
 		<div class="light-mode">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="w-6 h-6"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-				/>
-			</svg>
+			<IconSun />
 		</div>
 	{/if}
 </button>

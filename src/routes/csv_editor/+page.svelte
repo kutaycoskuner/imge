@@ -1,4 +1,6 @@
 <script lang="ts">
+    import IconExclamation from '$lib/icons/icon-exclamation.svelte';
+
     type Column = {
         id: string;
         title: string;
@@ -460,10 +462,7 @@
                                     {#if isEdited}
                                         <!-- Exclamation in circle SVG badge -->
                                         <span class="edited-badge" title="Data modified">
-                                            <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
-                                                <circle cx="8" cy="8" r="7" />
-                                                <path d="M8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4zm0 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" fill="#ffffff" />
-                                            </svg>
+                                            <IconExclamation />
                                         </span>
                                     {/if}
                                     <input
