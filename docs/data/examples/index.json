@@ -1,0 +1,52 @@
+{
+    "examples": [
+        {
+            "name": "Feature map",
+            "kind": "relation map",
+            "file": "test-node-graph.json",
+            "description": "The editor's own features and how they build on each other (the start graph)."
+        },
+        {
+            "name": "Trip planning",
+            "kind": "mind map",
+            "file": "examples/trip-planning.json",
+            "description": "An idea in the middle, related ideas around it; no arrows, curved links."
+        },
+        {
+            "name": "Find the largest number",
+            "kind": "flowchart",
+            "file": "examples/find-largest.json",
+            "description": "An algorithm top to bottom: yes / no branches and a loop drawn around the steps."
+        },
+        {
+            "name": "Binary search tree",
+            "kind": "number tree",
+            "file": "examples/binary-search-tree.json",
+            "description": "Smaller values to the left, larger to the right; straight lines, no arrows."
+        },
+        {
+            "name": "Subsets of {a, b, c}",
+            "kind": "lattice",
+            "file": "examples/subset-lattice.json",
+            "description": "A Hasse diagram: every subset under the sets that contain it; lines, no arrows."
+        },
+        {
+            "name": "Web app architecture",
+            "kind": "architecture map",
+            "file": "examples/web-app-architecture.json",
+            "description": "Services and how requests flow between them; manhattan links with named protocols."
+        },
+        {
+            "name": "Release process",
+            "kind": "process planning",
+            "file": "examples/release-process.json",
+            "description": "Steps in order; review and test loop back to development, drawn above and below."
+        },
+        {
+            "name": "Shapes (UML-ish)",
+            "kind": "UML (partly)",
+            "file": "examples/shapes-uml.json",
+            "description": "Classes and inheritance; arrows point to the parent class (no UML arrow heads yet)."
+        }
+    ]
+}

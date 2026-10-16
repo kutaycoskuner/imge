@@ -1,0 +1,305 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 5,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "name": "Plan",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n2",
+                "name": "Develop",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 290,
+                    "y": 0
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n3",
+                "name": "Code review",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": 0
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n4",
+                "name": "Test",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 870,
+                    "y": 0
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n5",
+                "name": "Deploy to staging",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 1160,
+                    "y": 0
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n6",
+                "name": "Release",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 1450,
+                    "y": 0
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n7",
+                "name": "Monitor",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 1740,
+                    "y": 0
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n2",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n3",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "name": "changes requested",
+                "shape": "manhattan",
+                "bend": 0.2,
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n2",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "name": "fix",
+                "shape": "manhattan",
+                "bend": 0.2,
+                "arrow": "forward",
+                "route": "below",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n2",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,385 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 5,
+        "direction": "top-to-bottom"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "name": "{a, b, c}",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n2",
+                "name": "{a, b}",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -320,
+                    "y": -170
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n3",
+                "name": "{a, c}",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": -170
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n4",
+                "name": "{b, c}",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 320,
+                    "y": -170
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n5",
+                "name": "{a}",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -320,
+                    "y": -340
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n6",
+                "name": "{b}",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": -340
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n7",
+                "name": "{c}",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 320,
+                    "y": -340
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n8",
+                "name": "∅",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": -510
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n2",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n3",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l9",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l10",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l11",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l12",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n7",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}
