@@ -1,4 +1,15 @@
 <script lang="ts">
+	// -----------------------------------------------------------------------------------------
+	//   author          : Kutay Coskuner
+	//   ai-contributors : unknown (before 2026-10-16), Claude Opus 5.5 (claude-opus-5-5)
+	//   last update     : 2026-10-16
+	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+	//                     Check outputs before relying on them.
+	// -----------------------------------------------------------------------------------------
+	// Bottom-left bar on every page (from +layout.svelte): links to the GitHub repository and
+	// other projects with a hover tooltip, then the site's version and last update.
+	// The version comes from package.json and the last update is the build date, both set
+	// in vite.config.ts (__APP_VERSION__, __BUILD_DATE__); bump package.json for a release.
 	import { base } from '$app/paths';
 	import * as config from '$lib/config';
 
@@ -8,6 +19,9 @@
 
 	let tooltipText = '';
 	let showTooltip = false;
+
+	const version = __APP_VERSION__;
+	const lastUpdate = __BUILD_DATE__;
 </script>
 
 <nav>
@@ -68,6 +82,8 @@
 				<div class="tooltip-text">
 					{tooltipText}
 				</div>
+			{:else}
+				<div class="version">v{version} · last update {lastUpdate}</div>
 			{/if}
 		</div>
 	</div>
@@ -135,6 +151,18 @@
 	.icon-button :global(svg) {
 		width: 1.2rem;
 		height: 1.2rem;
+	}
+
+	/* in the tooltip's place while no icon is hovered, quieter than the icons */
+	.version {
+		padding-left: 1rem;
+		padding-bottom: 0.5rem;
+		display: flex;
+		align-items: center;
+		font-size: 0.7rem;
+		opacity: 0.5;
+		user-select: none;
+		white-space: nowrap;
 	}
 
 	.tooltip-text {

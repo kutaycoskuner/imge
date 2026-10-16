@@ -15,7 +15,7 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.15.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.16.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
@@ -62,6 +62,7 @@ npm run test:unit -- --run
 - [x] fit graph: the whole graph is shown on load, and with the toolbar's fit button
 - [x] faint dot grid that follows the canvas (spacing doubles when zoomed out), on / off with a toolbar button
 - [x] node dragging snaps to half grid squares (Alt = free move), on / off with a toolbar button
+- [x] version and last update (build date) in the bottom-left bar; the version comes from package.json
 - [x] origin marker (dev only): red / green L at (0, 0) toward +x / +y (Blender axis colors)
 - [x] coordinates tracker (world coordinates, x right, y up)
 - [x] node rendering
