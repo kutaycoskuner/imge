@@ -11,19 +11,13 @@
 	// Dots sit on world multiples of the spacing; when zoomed out so far that they would
 	// crowd together, the spacing doubles instead of the grid disappearing.
 	// Hidden with the toolbar's dot grid button (showDotGrid, a display setting).
-	import { camera, viewport } from '$lib/camera';
+	import { camera, viewport, gridSpacing } from '$lib/camera';
 	import { showDotGrid } from '$lib/graph/store';
 
-	const BASE_SPACING = 40; // world units between dots at zoom 1
-	const MIN_SCREEN_SPACING = 24; // px; below this the grid doubles its spacing
 	const DOT_OPACITY = 0.32; // the grid is a hint of space, it should stay in the background
 
-	// world spacing that keeps dots at least MIN_SCREEN_SPACING apart on screen
-	$: worldSpacing = (() => {
-		let spacing = BASE_SPACING;
-		while (spacing * $camera.zoom < MIN_SCREEN_SPACING) spacing *= 2;
-		return spacing;
-	})();
+	// spacing (and its doubling when zoomed out) lives in camera.ts, shared with node snapping
+	$: worldSpacing = gridSpacing($camera.zoom);
 	$: tile = worldSpacing * $camera.zoom;
 
 	// screen position of world (0, 0); the gradient draws each dot at its tile's center,

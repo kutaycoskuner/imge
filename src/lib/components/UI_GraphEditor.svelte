@@ -8,7 +8,7 @@
 	// -----------------------------------------------------------------------------------------
 	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, fit graph,
 	// transpose (switch the direction left-to-right / top-to-bottom and turn the layout; the icon's
-	// strong arrow is the current direction), dot grid on / off,
+	// strong arrow is the current direction), dot grid on / off, snap to grid on / off,
 	// add node at the screen center, open graph (opens the Esc menu), export (download) and a
 	// test pan button. Hover hints show each button's key in [brackets], drawn as key caps
 	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
@@ -19,12 +19,17 @@
 
 	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen, menuTab } from '../../stores/imge_main';
 	import { ZOOM_STEP, camera, panBy, zoomAt } from '$lib/camera';
-	import { createNodeAt, graph, setDirection, measureNodeSizes, showDotGrid } from '$lib/graph/store';
+	import { createNodeAt, graph, setDirection, measureNodeSizes, showDotGrid, snapToGrid } from '$lib/graph/store';
 
 	// dot grid on / off (a display setting, remembered in this browser)
 	const toggleDotGrid = () => {
 		showDotGrid.update((shown) => !shown);
 		handleMouseOver($showDotGrid ? 'Dot grid shown' : 'Dot grid hidden');
+	};
+	// snap to grid on / off (a display setting like the dot grid; Alt+drag moves freely either way)
+	const toggleSnap = () => {
+		snapToGrid.update((on) => !on);
+		handleMouseOver($snapToGrid ? 'Snapping on' : 'Snapping off');
 	};
 	import type { Direction } from '$lib/graph/types';
 
@@ -261,6 +266,33 @@
 			</g>
 			<g opacity={$showDotGrid ? 1 : 0.3}>
 				<circle cx="4.3" cy="17.8" r="1.7" /><circle cx="12" cy="17.8" r="1.7" /><circle cx="19.7" cy="17.8" r="1.7" />
+			</g>
+		</svg>
+	</div>
+
+	<!-- Snap to grid on / off: a square with dotted guides running out of its corners; off = guides faded -->
+	<div
+		class="access-function"
+		role="button"
+		tabindex="0"
+		on:click={toggleSnap}
+		on:keydown={(event) => event.key === 'Enter' && toggleSnap()}
+		on:mouseenter={() => handleMouseOver($snapToGrid ? 'Turn Snapping Off' : 'Turn Snapping On')}
+		on:mouseleave={handleMouseLeave}
+	>
+		<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+			<rect x="9" y="9" width="6" height="6" fill="none" stroke="currentColor" stroke-width="2" />
+			<g fill="currentColor" opacity={$snapToGrid ? 1 : 0.3}>
+				<!-- guides above and below the corners -->
+				<circle cx="9" cy="3.5" r="1.1" /><circle cx="9" cy="6.2" r="1.1" />
+				<circle cx="15" cy="3.5" r="1.1" /><circle cx="15" cy="6.2" r="1.1" />
+				<circle cx="9" cy="17.8" r="1.1" /><circle cx="9" cy="20.5" r="1.1" />
+				<circle cx="15" cy="17.8" r="1.1" /><circle cx="15" cy="20.5" r="1.1" />
+				<!-- guides left and right of the corners -->
+				<circle cx="3.5" cy="9" r="1.1" /><circle cx="6.2" cy="9" r="1.1" />
+				<circle cx="3.5" cy="15" r="1.1" /><circle cx="6.2" cy="15" r="1.1" />
+				<circle cx="17.8" cy="9" r="1.1" /><circle cx="20.5" cy="9" r="1.1" />
+				<circle cx="17.8" cy="15" r="1.1" /><circle cx="20.5" cy="15" r="1.1" />
 			</g>
 		</svg>
 	</div>

@@ -29,7 +29,7 @@ State as of 2026-10-16.
 | Click node / link | Select it (selected items turn orange). |
 | Shift+click node | Add it to the selection, or remove it. |
 | Click empty space | Clear the selection (and start panning). |
-| Drag node | Move it, and every other selected node with it. |
+| Drag node | Move it, and every other selected node with it. Its top-left corner snaps to half grid squares (the dots and the midpoints between them); hold **Alt** to move freely, or turn snapping off with the toolbar's snap button. |
 | Toolbar "Add Node" | New node at the screen center. |
 | **Shift+A** | New node centered on the mouse. |
 | Double-click the name, or **F2** | Edit the node's name. Enter or clicking away saves; Esc cancels (without opening the menu); an empty name keeps the old one. |
@@ -242,6 +242,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-16 — dragged nodes snap to half grid squares (Alt = free move); toolbar button turns snapping on / off
 - 2026-10-16 — the Esc menu's Keybindings tab lists the shortcuts as key caps
 - 2026-10-16 — "orientation" renamed to "direction" (`metadata.direction`, `setDirection`); the toolbar button and its action are called Transpose
 

@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-14
+//   last update     : 2026-10-16
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -16,6 +16,8 @@
 //     screen.y = -(world.y - camera.y) * zoom + screenCenter.y
 //     world.x  =  (screen.x - screenCenter.x) / zoom + camera.x
 //     world.y  = -(screen.y - screenCenter.y) / zoom + camera.y
+//
+// It also owns the dot grid's spacing (gridSpacing), so the dots and node snapping agree.
 //
 // Used by: routes/+page.svelte, PolkaDots, CoordTracker, UI_GraphEditor.
 // Details: docs/graph-editor-canvas.md
@@ -40,6 +42,22 @@ export const ZOOM_STEP = 1.2; // factor per zoom button press; multiplicative so
 
 export const camera = writable<Camera>({ x: 0, y: 0, zoom: 1 });
 export const viewport = writable<{ width: number; height: number }>({ width: 0, height: 0 });
+
+export const GRID_SPACING = 40; // world units between grid dots at zoom 1
+const MIN_SCREEN_GRID_SPACING = 24; // px; below this the grid doubles its spacing
+
+/**
+ * World distance between grid dots at this zoom: GRID_SPACING, doubled until the dots are
+ * at least MIN_SCREEN_GRID_SPACING px apart on screen (so zooming out thins the grid).
+ */
+export function gridSpacing(zoom: number): number {
+	let spacing = GRID_SPACING;
+	while (spacing * zoom < MIN_SCREEN_GRID_SPACING) spacing *= 2;
+	return spacing;
+}
+
+/** Step dragged nodes snap to: half a grid square, so the dots and the midpoints between them. */
+export const snapStep = (zoom: number): number => gridSpacing(zoom) / 2;
 
 const clampZoom = (zoom: number): number => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom));
 

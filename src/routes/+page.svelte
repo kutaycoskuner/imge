@@ -10,7 +10,8 @@
 	// graph (upgraded to the current format version by $lib/graph/migrations.ts) into the
 	// graph store and turns mouse and keyboard input into camera moves and graph edits:
 	//   mouse  drag empty space = pan, wheel = zoom to cursor, click/Shift+click = select,
-	//          drag node = move (all selected), drag from a port = link, drag a linked
+	//          drag node = move (all selected; snaps to half grid squares unless the toolbar
+	//          turned snapping off, Alt = free), drag from a port = link, drag a linked
 	//          input's end away = detach
 	//   keys   Shift+N new graph, Shift+A add node at mouse, Delete/Backspace delete selection, F2 rename,
 	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
@@ -42,6 +43,7 @@
 		screenToWorld,
 		fitBounds,
 		resetCamera,
+		snapStep,
 		ZOOM_STEP
 	} from '$lib/camera';
 	import type { Point } from '$lib/camera';
@@ -71,6 +73,7 @@
 		toggleLinkRoute,
 		findBackLinks,
 		setLinkBend,
+		snapToGrid,
 		persistViewSettings,
 		linkShapeOverride,
 		linkArrowOverride,
@@ -85,7 +88,10 @@
 	const MESSAGE_DURATION_MS = 2500;
 
 	let isPanningSpace = false;
-	let isDraggingNodes = false;
+	// node drag: the grabbed node and where it and the mouse started (world coords); its
+	// top-left corner follows the mouse snapped to half grid squares, the rest of the
+	// selection moves by the same amount so their layout is kept
+	let nodeDrag: { nodeId: string; start: Point; mouseStart: Point } | null = null;
 
 	// corner of a selected manhattan link (or the lane of a link going around its nodes) being
 	// dragged: the bend maps `from` (0) .. `to` (1)
@@ -165,8 +171,11 @@
 
 		const nodeElement = target.closest<HTMLElement>('.node');
 		if (nodeElement) {
-			selection.update((sel) => selectNode(sel, nodeElement.dataset.id!, event.shiftKey));
-			isDraggingNodes = true;
+			const nodeId = nodeElement.dataset.id!;
+			selection.update((sel) => selectNode(sel, nodeId, event.shiftKey));
+			const grabbed = $graph.data.nodes.find((n) => n.id === nodeId);
+			// Shift+click on a selected node deselects it: nothing to drag then
+			if (grabbed && $selection.nodes.includes(nodeId)) nodeDrag = { nodeId, start: { ...grabbed.position }, mouseStart: mouseWorld() };
 			return;
 		}
 
@@ -192,17 +201,15 @@
 			}
 		} else if (isPanningSpace) {
 			panBy(dx, dy);
-		} else if (isDraggingNodes) {
-			// screen px -> world units; y is subtracted because screen y grows down, world y up
-			const ids = $selection.nodes;
-			graph.update((g) => moveNodes(g, ids, dx / $camera.zoom, -dy / $camera.zoom));
+		} else if (nodeDrag) {
+			dragNodes(nodeDrag, event.altKey || !$snapToGrid);
 		}
 	}
 
 	function handleMouseUp(event: MouseEvent): void {
 		if (linkDrag) finishLinkDrag(event.target as HTMLElement);
 		isPanningSpace = false;
-		isDraggingNodes = false;
+		nodeDrag = null;
 		bendDrag = null;
 	}
 
@@ -216,6 +223,25 @@
 
 	function handleWheel(event: WheelEvent): void {
 		zoomAt(Math.exp(-event.deltaY * WHEEL_ZOOM_SPEED), { x: event.clientX, y: event.clientY });
+	}
+
+	// Node dragging
+	// -----------------------------------------------------------------------------------
+	// Places the grabbed node where the mouse has carried it since the drag began (snapped
+	// unless Alt is held or snapping is turned off) and moves the other selected nodes by the same amount. Working from
+	// the start position, not per-frame deltas, keeps the node under the mouse while snapping.
+	function dragNodes(drag: NonNullable<typeof nodeDrag>, free: boolean): void {
+		const mouse = mouseWorld();
+		const step = snapStep($camera.zoom);
+		const snap = (v: number): number => (free ? v : Math.round(v / step) * step);
+		const target = {
+			x: snap(drag.start.x + mouse.x - drag.mouseStart.x),
+			y: snap(drag.start.y + mouse.y - drag.mouseStart.y)
+		};
+		const current = $graph.data.nodes.find((n) => n.id === drag.nodeId)?.position;
+		if (!current || (current.x === target.x && current.y === target.y)) return;
+		const ids = $selection.nodes;
+		graph.update((g) => moveNodes(g, ids, target.x - current.x, target.y - current.y));
 	}
 
 	// Link dragging

@@ -77,6 +77,7 @@ export const linkShapeOverride = writable<LinkShape | null>(null); // null = eac
 export const linkArrowOverride = writable<LinkArrow | null>(null); // null = each link's own
 export const showChevrons = writable<boolean>(false); // direction chevrons in the middle of links
 export const showDotGrid = writable<boolean>(true); // the background dot grid
+export const snapToGrid = writable<boolean>(true); // dragged nodes snap to half grid squares
 
 /** Restores the display settings from this browser and keeps them there. Call once (onMount). */
 export function persistViewSettings(): () => void {
@@ -89,7 +90,8 @@ export function persistViewSettings(): () => void {
 		),
 		persist(showChevrons, 'imge.graphEditor.showChevrons', (v) => v === 'true'),
 		// stored only when hidden ("false"); the default (shown) leaves nothing behind
-		persistHidden(showDotGrid, 'imge.graphEditor.hideDotGrid')
+		persistHidden(showDotGrid, 'imge.graphEditor.hideDotGrid'),
+		persistHidden(snapToGrid, 'imge.graphEditor.noSnap')
 	];
 	return () => stops.forEach((stop) => stop());
 }

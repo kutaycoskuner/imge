@@ -77,7 +77,11 @@ Because the nodes, the dots, the origin marker and the coordinate tracker all us
 ## Panning and dragging
 
 - Drag on empty space: the camera moves by the mouse delta divided by the zoom (`panBy`), so the canvas stays under the mouse at any zoom.
-- Drag a node: its position (and that of every other selected node) changes by the mouse delta divided by the zoom, so the nodes stay under the mouse; dragging up increases y.
+- Drag a node: the grabbed node's position is its start position plus how far the mouse has moved in world units since the drag began (screen delta divided by the zoom; dragging up increases y), so it stays under the mouse.
+    - snapping: that position is rounded to `snapStep(zoom)` = half the dot spacing (20 world units at zoom 1, more when zoomed out and the grid thins), so the node's top-left corner lands on a dot or halfway between two; holding Alt skips the rounding
+    - **On / off:** the toolbar's snap button (a square with dotted guides from its corners; guides faded while off). A display setting remembered in this browser (`localStorage` key `imge.graphEditor.noSnap`, stored only while off), not saved in the graph.
+    - the other selected nodes move by the same amount as the grabbed one, so their layout is kept (they snap only if they were on the grid already)
+    - computed from the start position, not added up per frame, so rounding never makes the node lag behind the mouse
 - Mouse move and mouse up are listened to on the window, so a drag doesn't get stuck when the mouse leaves the canvas.
 
 ## Zoom
@@ -95,7 +99,7 @@ Because the nodes, the dots, the origin marker and the coordinate tracker all us
 - **On / off:** the toolbar's dot grid button (dots in perspective: strong at the bottom while shown, all faded while hidden). A display setting remembered in this browser (`localStorage` key `imge.graphEditor.hideDotGrid`, stored only while hidden), not saved in the graph.
 - One fixed, full-screen layer with a repeating `radial-gradient` background. The browser repeats it forever, so it never runs out.
 - Tile size = spacing × zoom. Background position = the screen position of world `(0, 0)` minus half a tile, so a dot sits exactly on the origin and on every multiple of the spacing.
-- Spacing is 40 world units. When zooming out would put dots closer than 24 px, the spacing doubles (80, 160, ...), so the grid stays sparse instead of vanishing or crowding.
+- Spacing is 40 world units. When zooming out would put dots closer than 24 px, the spacing doubles (80, 160, ...), so the grid stays sparse instead of vanishing or crowding. Computed by `gridSpacing(zoom)` in `camera.ts`, which node snapping uses too.
 - The dots are kept faint on purpose; they hint at space and stay out of the way:
     - radius 0.8 px at zoom 1, growing slightly with zoom between 0.6 and 1.2 px
     - color `--col-transparent` (the theme's text color at 60%), with the whole layer at opacity 0.32 (`DOT_OPACITY` in `PolkaDots.svelte`), so about 19% visible
@@ -144,6 +148,7 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Changes
 
+- 2026-10-16 — node dragging snaps to half grid squares (Alt = free, toolbar snap button); grid spacing moved to `camera.ts` (`gridSpacing`, `snapStep`)
 - 2026-10-16 — dot grid can be hidden with a toolbar button (remembered in the browser)
 - 2026-10-14 — the view fits the whole graph on load; the toolbar's "Reset view" became "Fit graph"
 - 2026-10-14 — the graph editor is now the home page: `src/routes/+page.svelte` (was `src/routes/graph_editor/+page.svelte`; `/graph_editor` redirects to `/`)
