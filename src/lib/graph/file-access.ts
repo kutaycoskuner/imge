@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-14
+//   last update     : 2026-10-17
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -17,6 +17,8 @@
 // - Without it (Firefox, Safari) a folder can only be read: it's picked with a directory
 //   file input each visit, graphs open from it, and saving downloads the updated file.
 // Also tracks unsaved changes and runs the optional autosave (writable folders only).
+// Loading a graph clears the undo history (history.ts); undoing back to the graph as it was
+// loaded or last saved counts as no unsaved changes.
 //
 // Requires: a browser; every function that touches window/IndexedDB is only called from
 // event handlers or onMount, never during server-side prerendering.
@@ -26,6 +28,7 @@
 
 import { writable, get } from 'svelte/store';
 import { graph, selection, emptyGraph } from './store';
+import { clearHistory } from './history';
 import {
 	migrateGraph,
 	readGraphVersion,
@@ -134,7 +137,9 @@ export async function initWorkspace(): Promise<void> {
 	}
 }
 
-let lastLoaded: Graph | null = null; // graph object set by a load; its store update isn't a change
+// graph object as last loaded or saved: the open graph is unsaved exactly when it is another
+// object (operations always return a new one; undo can bring this one back)
+let cleanGraph: Graph | null = null;
 
 /**
  * Upgrades parsed file content to the current format and makes it the open graph.
@@ -150,8 +155,9 @@ export function loadGraph(raw: unknown, fileName: string | null): void {
 			`graph upgraded from v${fromVersion} to v${CURRENT_GRAPH_VERSION}:\n  ` + applied.join('\n  ')
 		);
 	}
-	lastLoaded = loaded;
+	cleanGraph = loaded;
 	graph.set(loaded);
+	clearHistory(); // undo stops at the loaded graph
 	selection.set({ nodes: [], link: null });
 	workspace.update((w) => ({ ...w, fileName, dirty: false, loads: w.loads + 1 }));
 }
@@ -222,9 +228,12 @@ let autosaveTimer: ReturnType<typeof setTimeout> | undefined;
  *     A function that stops tracking.
  */
 export function trackChanges(): () => void {
-	lastLoaded = get(graph);
+	cleanGraph = get(graph);
 	const unsubscribe = graph.subscribe((g) => {
-		if (g === lastLoaded) return;
+		if (g === cleanGraph) {
+			patch({ dirty: false }); // loaded, or undone back to the saved state
+			return;
+		}
 		patch({ dirty: true });
 		const w = get(workspace);
 		if (w.autosave && w.folder && w.fileName) {
@@ -385,8 +394,10 @@ export async function save(): Promise<void> {
 	if (!fileName) return;
 	if (!folder) return downloadGraph();
 	try {
-		await writeFile(folder, fileName, get(graph));
-		patch({ dirty: false, status: `Saved ${fileName} at ${new Date().toLocaleTimeString()}` });
+		const saved = get(graph);
+		await writeFile(folder, fileName, saved);
+		cleanGraph = saved;
+		patch({ dirty: get(graph) !== saved, status: `Saved ${fileName} at ${new Date().toLocaleTimeString()}` });
 	} catch (error) {
 		patch({ status: `Could not save ${fileName}: ${(error as Error).message}` });
 	}
@@ -505,6 +516,7 @@ export function downloadGraph(): void {
 	a.click();
 	document.body.removeChild(a);
 	URL.revokeObjectURL(url);
+	cleanGraph = get(graph);
 	patch({ dirty: false, status: `Downloaded ${name}` });
 }
 

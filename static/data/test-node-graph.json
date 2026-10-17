@@ -845,6 +845,78 @@
                         "label": "Output"
                     }
                 ]
+            },
+            {
+                "id": "n36",
+                "name": "Box select (Shift+drag)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": 400
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n37",
+                "name": "Copy / paste (Ctrl+C, V)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": 300
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n38",
+                "name": "Undo / redo (Ctrl+Z, Y)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -600,
+                    "y": 140
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
             }
         ],
         "links": [
@@ -1403,6 +1475,51 @@
                 },
                 "target": {
                     "node": "n35",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l38",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n36",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l39",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n37",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l40",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n38",
                     "port": "i1"
                 }
             }

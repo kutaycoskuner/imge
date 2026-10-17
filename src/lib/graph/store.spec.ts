@@ -26,6 +26,8 @@ import {
 	renameNode,
 	selectNode,
 	selectBox,
+	copyNodes,
+	pasteNodes,
 	cycleLinkShape,
 	setAllLinkShapes,
 	setLinkBend,
@@ -393,5 +395,51 @@ describe('selectBox', () => {
 
 	it('clears a selected link', () => {
 		expect(selectBox({ nodes: [], link: 'l1' }, ['n1'])).toEqual({ nodes: ['n1'], link: null });
+	});
+});
+
+describe('copy / paste', () => {
+	// n1 -> n2 -> n3; copying n1 and n2 keeps their link but not the one into n3
+	function linked(): Graph {
+		let g = threeNodes();
+		g = link(g, 'n1', 'n2');
+		g = renameLink(link(g, 'n2', 'n3'), 'l1', 'first');
+		return renameNode(g, 'n1', 'Start');
+	}
+
+	it('copies the nodes and only the links between them', () => {
+		const clip = copyNodes(linked(), ['n1', 'n2']);
+		expect(clip.nodes.map((n) => n.id)).toEqual(['n1', 'n2']);
+		expect(clip.links.map((l) => l.id)).toEqual(['l1']);
+	});
+
+	it('pastes with new ids, the group top-left at the point, layout and names kept', () => {
+		const g = linked();
+		const { graph: pasted, nodeIds } = pasteNodes(g, copyNodes(g, ['n1', 'n2']), { x: 1000, y: -500 });
+		expect(nodeIds).toEqual(['n4', 'n5']);
+		const [a, b] = nodeIds.map((id) => pasted.data.nodes.find((n) => n.id === id)!);
+		expect(a.position).toEqual({ x: 1000, y: -500 });
+		expect(b.position.x - a.position.x).toBe(300);
+		expect(a.name).toBe('Start');
+		const copy = pasted.data.links.find((l) => l.id === 'l3')!;
+		expect(copy.source.node).toBe('n4');
+		expect(copy.target.node).toBe('n5');
+		expect(copy.name).toBe('first');
+		expect(pasted.data.links).toHaveLength(3);
+	});
+
+	it('leaves the copied originals untouched, also when the clipboard is pasted twice', () => {
+		const g = linked();
+		const clip = copyNodes(g, ['n1']);
+		let next = pasteNodes(g, clip, { x: 0, y: 0 }).graph;
+		next = pasteNodes(next, clip, { x: 50, y: 0 }).graph;
+		expect(next.data.nodes.map((n) => n.id)).toEqual(['n1', 'n2', 'n3', 'n4', 'n5']);
+		expect(next.data.nodes[0].position).toEqual(g.data.nodes[0].position);
+		expect(clip.nodes[0].id).toBe('n1');
+	});
+
+	it('pastes nothing from an empty clipboard', () => {
+		const g = threeNodes();
+		expect(pasteNodes(g, { nodes: [], links: [] }, { x: 0, y: 0 }).graph).toBe(g);
 	});
 });

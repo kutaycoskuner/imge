@@ -2,7 +2,7 @@
 
 How to create, edit and delete nodes and links in the graph editor, the rules links follow, and a reference for the functions behind it.
 
-State as of 2026-10-16.
+State as of 2026-10-17.
 
 - [Using it](#using-it)
     - [Mouse and keys](#mouse-and-keys)
@@ -11,6 +11,7 @@ State as of 2026-10-16.
     - [Arrows and link names](#arrows-and-link-names)
     - [Cycles and self-loops](#cycles-and-self-loops)
     - [Direction and transpose](#direction-and-transpose)
+    - [Undo and redo](#undo-and-redo)
     - [Messages](#messages)
 - [Functions](#functions)
     - [Stores](#stores)
@@ -35,6 +36,10 @@ State as of 2026-10-16.
 | **Shift+A** | New node centered on the mouse. |
 | Double-click the name, or **F2** | Edit the node's name. Enter or clicking away saves; Esc cancels (without opening the menu); an empty name keeps the old one. |
 | **Delete** / **Backspace** | Remove the selected link, or the selected nodes together with all their links. |
+| **Ctrl+C** (Cmd+C) | Copy the selected nodes and the links between them (links to nodes that aren't selected are left out). Kept in memory for this tab, so it can be pasted into another graph opened in the same tab; a reload forgets it. With no node selected, the browser's own copy runs. |
+| **Ctrl+Z** (Cmd+Z) | Undo the last change; see [Undo and redo](#undo-and-redo). |
+| **Ctrl+Y** or **Ctrl+Shift+Z** | Redo what was undone. |
+| **Ctrl+V** (Cmd+V) | Paste the copied nodes as new nodes (new ids; names, ports and link looks kept), their layout unchanged, with the group's top-left corner at the mouse, snapped like a dragged node unless snapping is off. The pasted nodes become the selection, ready to drag. Pasting again without moving the mouse puts the next copy one grid square further down-right. |
 | Drag from an output point | A dashed curve follows the mouse; release on an input point to link. |
 | Drag from an input point without links | The same, backwards; release on an output point. |
 | Drag from an input point that has links | Picks up its most recent link from the output end: release on another input to re-route it (it keeps its id and name), on empty space to remove it. |
@@ -136,6 +141,16 @@ A graph's **direction** is **left-to-right** (the default) or **top-to-bottom**;
     - it turns the layout, it doesn't re-arrange it: a layout built for one direction can come out wide and flat in the other (the feature map, whose branches are stacked, spreads out sideways in top-to-bottom)
 - Links are drawn by the same geometry in both directions: for top-to-bottom it runs with x and y swapped (`GraphLinks.svelte`, `flow`).
 
+### Undo and redo
+
+- **Ctrl+Z** (Cmd+Z) undoes the last change to the graph; **Ctrl+Y** or **Ctrl+Shift+Z** redoes it. Up to 100 steps are kept.
+- **What is one step:** every edit: add, paste, delete, rename, link, shape / arrow / route, transpose, the menu's "apply to all". A mouse gesture is one step however far it goes: dragging nodes, dragging or re-routing a link, moving a link's corner or lane.
+- **Not steps:** selection, camera (pan / zoom) and display settings (dot grid, snapping, link overrides) aren't part of the graph and aren't undone.
+- **Loading clears it:** opening a graph or an example, or Shift+N, starts a fresh history; undo never goes back into the previous graph.
+- **Unsaved marker:** undoing back to the graph as it was opened or last saved clears the "unsaved changes" marker again; redoing sets it.
+- A new edit after undoing drops the steps that could have been redone. The history is kept in memory only, not in the file; a reload forgets it.
+- While typing a name, Ctrl+Z undoes typing in the field (the browser's own), not graph changes.
+
 ### Messages
 
 When an action is refused or changes something you might not expect, a short message appears at the bottom of the screen for 2.5 s:
@@ -146,6 +161,7 @@ When an action is refused or changes something you might not expect, a short mes
 | Output dropped on an output, or input on an input | Links go from an output (right) to an input (left) |
 | F with fewer or more than two nodes selected | Select two nodes (Shift+click), then press F |
 | F when both directions are already linked (or a node has no output / input) | These nodes are already linked (or have no output / input) |
+| Ctrl+Z / Ctrl+Y with nothing left | Nothing to undo / Nothing to redo |
 
 ## Functions
 
@@ -159,6 +175,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 |---|---|
 | `graph` | The open graph (`Graph`). Starts as `emptyGraph()`; the page fills it after loading and upgrading the file. |
 | `selection` | `{ nodes: string[], link: string \| null }`: selected node ids in selection order, or one selected link id. Never both. |
+| `nodeClipboard` | `{ nodes, links } \| null`: what Ctrl+C copied, in memory for this tab (not saved). |
 | `editingNodeId` | Id of the node whose name is being edited, or `null`. `GraphNode` shows the text field for that node. |
 | `editingLinkId` | Id of the link whose name is being edited, or `null`. `GraphLinks` shows the text field in the middle of that link. |
 | `linkShapeOverride` / `linkArrowOverride` | Display-only shape / arrow for all links, or `null` for each link's own; never written into the graph. |
@@ -212,6 +229,8 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 | Function | Does | Returns |
 |---|---|---|
+| `copyNodes(g, nodeIds)` | Ctrl+C: deep copies of the nodes (graph order) and the links whose both ends are among them, for the `nodeClipboard` store. Doesn't change the graph. | `NodeClipboard` (`{ nodes, links }`) |
+| `pasteNodes(g, clip, at)` | Ctrl+V: adds the clipboard's nodes and links with new ids (n…, l…), moved so the group's top-left (lowest x, highest y of the corners) is at `at`. Works on any graph, also one other than the copied one. | `{ graph, nodeIds }` |
 | `selectBox(base, hitIds)` | Box selection: the nodes of `base` (selected when the drag began) followed by the `hitIds` the box touches now, without duplicates. Clears a selected link. The page measures which nodes the box touches (screen rectangles of the rendered nodes). | `Selection` |
 | `selectNode(sel, nodeId, additive)` | With `additive` (Shift+click): toggles the node in the selection. Without: selects only this node, unless it's already selected, in which case the selection is kept so a group can be dragged. Always clears a selected link. | `Selection` |
 
@@ -221,6 +240,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 |---|---|
 | `src/lib/graph/store.ts` | Stores and the functions above; the only place that changes the graph. |
 | `src/lib/graph/store.spec.ts` | Unit tests for every operation and link rule (`npm run test:unit -- --run`). |
+| `src/lib/graph/history.ts` | Undo / redo: keeps the graph objects from before each change (operations never change a graph, so no copies are needed); `holdHistory` / `releaseHistory` make a mouse gesture one step; `clearHistory` runs on every load. Tests in `history.spec.ts`. |
 | `src/routes/+page.svelte` | Turns mouse and keys into store calls: selecting, dragging, link drags, shortcuts, messages. |
 | `src/lib/components/GraphNode.svelte` | Draws one node: name with inline editing, input and output points, selected highlight. |
 | `src/lib/components/GraphLinks.svelte` | Draws the links and the dashed preview while a link is dragged. |
@@ -238,12 +258,14 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Known limits
 
-- No undo: a deleted node or link is gone (export first if in doubt).
+- Undo covers only the open graph in this tab and is lost on reload or when another graph is opened.
 - Ports can't be added or removed; every new node has one input and one output.
 - The old "add input/output" hover indicators were removed from the node markup because they were never wired up and sat on top of the ports; their CSS is still in `static/styles/imge.css` for when adding ports gets built.
 
 ## Changes
 
+- 2026-10-17 — undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z), one step per edit or mouse gesture; undoing back to the saved graph clears the unsaved marker; new `history.ts`
+- 2026-10-17 — Ctrl+C / Ctrl+V copy and paste nodes with the links between them; new functions `copyNodes`, `pasteNodes`, store `nodeClipboard`
 - 2026-10-17 — box selection: Shift+drag on empty space selects every node the box touches; new function `selectBox`
 - 2026-10-16 — dragged nodes snap to half grid squares (Alt = free move); toolbar button turns snapping on / off
 - 2026-10-16 — the Esc menu's Keybindings tab lists the shortcuts as key caps

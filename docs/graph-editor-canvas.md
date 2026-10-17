@@ -21,7 +21,7 @@ State as of 2026-10-14.
 | Export | Downloads the graph as `graph_data.json`. |
 | Assistance message | Toolbar buttons show a hint on hover; refused edits show a short message. |
 | Test button | Pans the canvas 10 px to the right (click or Enter). |
-| Not wired up yet | Import, adding/removing ports, undo. |
+| Not wired up yet | Import, adding/removing ports. |
 
 ## Files
 
@@ -144,11 +144,12 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 ## Known limits
 
 - The test graph is loaded from `static/data/test-node-graph.json` (upgraded to the current format version on load, see [graph-format.md](graph-format.md)); Import isn't wired up yet.
-- Editing limits (no undo, fixed ports): see [graph-editing.md](graph-editing.md#known-limits).
+- Editing limits (fixed ports, undo only in memory): see [graph-editing.md](graph-editing.md#known-limits).
 - Every node is a DOM element; very large graphs may need culling (skip nodes outside the screen) later.
 
 ## Changes
 
+- 2026-10-17 — undo is wired up (see graph-editing.md)
 - 2026-10-16 — toolbar icons moved to `src/lib/icons/`, toolbar buttons kept as a data list
 - 2026-10-16 — node dragging snaps to half grid squares (Alt = free, toolbar snap button); grid spacing moved to `camera.ts` (`gridSpacing`, `snapStep`)
 - 2026-10-16 — dot grid can be hidden with a toolbar button (remembered in the browser)

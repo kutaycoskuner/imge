@@ -2,7 +2,7 @@
 
 How the graph editor opens and saves graphs on your computer, what it remembers and where, and how each page gets its own Esc menu.
 
-State as of 2026-10-16.
+State as of 2026-10-17.
 
 - [Opening and saving](#opening-and-saving)
     - [Which files are listed](#which-files-are-listed)
@@ -42,7 +42,7 @@ The folder is read and written directly.
 | **Save as** | Type a name (`.json` is added; characters not allowed in file names become `-`) and the graph is saved under it in the folder. Left empty, it uses the default name shown in the field: `imgegraph-<date>-<NN>`, e.g. `imgegraph-20261014-01`, with the first number not yet in the folder. Asks before overwriting any existing file. |
 | **New graph** (<kbd>Shift</kbd>+<kbd>N</kbd>) | Starts an empty graph without a file name (asks first if the open graph has unsaved changes); the folder stays chosen, so Save as puts it there. Available in every browser. |
 | ☐ **Autosave** | Off by default. When on, the open file is saved 0.8 s after the last change (so a drag saves once, not on every frame). The setting is kept in this browser. |
-| • unsaved changes | Shown next to the graph name when it changed since it was opened or saved. Opening another graph then asks first. |
+| • unsaved changes | Shown next to the graph name when it changed since it was opened or saved (undoing back to that state removes it again). Opening another graph then asks first. |
 
 All results and errors (saved, couldn't open, access not allowed ...) appear as a line at the bottom of the menu.
 
@@ -149,6 +149,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-10-17 — undoing back to the opened or saved graph clears the unsaved marker; loading a graph clears the undo history
 - 2026-10-16 — the menu's tabs Config / Examples / Keybindings (switch at the top right, last tab remembered); Examples: example graphs, one per kind of graph, as cerulean chips that open without a file name; page menus fit the window up to 1024 px wide (they started off-screen to the left), take at most 80% of its height and scroll
 - 2026-10-16 — the menu's Graph section with the direction (Transpose)
 - 2026-10-16 — the menu's Links section also has the arrow override, apply arrow to all links and the chevron toggle

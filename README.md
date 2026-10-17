@@ -15,24 +15,25 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.16.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.17.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-
-![graph editor](_display/0.10-graph_editor.png)
-<figcaption>v0.11 graph editor: feature map (link shapes: spline, line, manhattan)</figcaption>
-
+    <img alt="Graph editor showing the feature map, with a box selection being drawn" src="_display/0.17-graph_editor.png" />
+    <br>
+    <sub><i>v0.17.0 graph editor: the feature map, box selection with Shift+drag</i></sub>
 </p>
 
 # Installation and Use
 
 ### Prerequisites
+
 - **Node.js 18+**: [Install Node.js](https://nodejs.org/en/download/package-manager)
 
 ### Install and run
+
 ```bash
 # 1. Clone the repository and go into it
 git clone https://github.com/kutaycoskuner/imge.git
@@ -49,9 +50,19 @@ npm run dev
 npm run test:unit -- --run
 ```
 
+# Docs
+
+- [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
+- [Node and link editing](docs/graph-editing.md): mouse and keys, selection, copy / paste, undo / redo, link rules, link shapes, function reference for the graph store
+- [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
+- [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
+- [Graph types](docs/graph-types.md): kinds of graphs imge could draw, which are possible today and what each still needs
+
+The live site counts visits with a self-hosted analytics script (archrium); local runs (`npm run dev`, preview) are not counted.
+
+
 # Features
 
-### Features
 - [x] basic ui buttons
 - [x] assistance message
 - [x] settings interface
@@ -69,6 +80,8 @@ npm run test:unit -- --run
 - [x] rendering from json content
 - [x] node movement (multi-select with Shift+click or a Shift+drag box moves together)
 - [x] add / delete nodes (toolbar button or Shift+A, Delete)
+- [x] copy / paste nodes with the links between them (Ctrl+C, Ctrl+V at the mouse)
+- [x] undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z; a whole drag is one step)
 - [x] new empty graph (Shift+N or the Esc menu; asks first if there are unsaved changes)
 - [x] node name editing (double-click or F2)
 - [x] link rendering
@@ -86,20 +99,5 @@ npm run test:unit -- --run
 - [ ] vertical / horizontal frameworks
 - [ ] node content editing
 - [ ] add / remove ports
-- [ ] undo
 
-Shortcuts (Shift+N, Shift+A, F2, F, L, D, R, Delete, +/-, Home, Ctrl+S, Ctrl+Shift+S, Esc) and link rules: [docs/graph-editing.md](docs/graph-editing.md#mouse-and-keys); the toolbar hints and menu buttons show their keys as key caps
-
-# Docs
-- [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
-- [Node and link editing](docs/graph-editing.md): mouse and keys, link rules, link shapes, function reference for the graph store
-- [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
-- [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
-- [Graph types](docs/graph-types.md): kinds of graphs imge could draw, which are possible today and what each still needs
-
-The live site counts visits with a self-hosted analytics script (archrium); local runs (`npm run dev`, preview) are not counted.
-
-# Roadmap
-- [x] Accessibility buttons: Import / Export
-- [x] Export data
-- [x] Adding links on ui
+Shortcuts (Shift+N, Shift+A, Ctrl+C, Ctrl+V, Ctrl+Z, Ctrl+Y, F2, F, L, D, R, Delete, +/-, Home, Ctrl+S, Ctrl+Shift+S, Esc) and link rules: [docs/graph-editing.md](docs/graph-editing.md#mouse-and-keys); the toolbar hints and menu buttons show their keys as key caps

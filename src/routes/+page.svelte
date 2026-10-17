@@ -15,6 +15,8 @@
 	//          turned snapping off, Alt = free), drag from a port = link, drag a linked
 	//          input's end away = detach
 	//   keys   Shift+N new graph, Shift+A add node at mouse, Delete/Backspace delete selection, F2 rename,
+	//          Ctrl+C copy the selected nodes (with the links between them), Ctrl+V paste them at
+	//          the mouse, Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo (a whole drag is one step),
 	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
 	//          link, F2 or double-click renames a link (drag a selected
 	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
@@ -46,6 +48,7 @@
 		fitBounds,
 		resetCamera,
 		snapStep,
+		gridSpacing,
 		ZOOM_STEP
 	} from '$lib/camera';
 	import type { Point } from '$lib/camera';
@@ -70,6 +73,9 @@
 		quickLink,
 		selectNode,
 		selectBox,
+		copyNodes,
+		pasteNodes,
+		nodeClipboard,
 		createNodeAt,
 		cycleLinkShape,
 		cycleLinkArrow,
@@ -85,6 +91,7 @@
 		type Selection
 	} from '$lib/graph/store';
 	import type { Link, LinkEnd } from '$lib/graph/types';
+	import { trackHistory, holdHistory, releaseHistory, undo, redo } from '$lib/graph/history';
 	import { assistanceMsg, menuOpen, menuTab, pageMenu } from '../stores/imge_main';
 
 	// exp() turns wheel delta into a smooth factor for both mouse wheels and trackpads
@@ -159,6 +166,8 @@
 		const target = event.target as HTMLElement;
 		if (target.closest('input')) return; // typing in a title field
 
+		// everything this press does until the button is released is one undo step
+		holdHistory();
 		lastX = event.clientX;
 		lastY = event.clientY;
 
@@ -229,6 +238,7 @@
 		nodeDrag = null;
 		bendDrag = null;
 		boxDrag = null;
+		releaseHistory();
 	}
 
 	// double-click on a link: edit its name (node names handle their own double-click)
@@ -356,9 +366,27 @@
 		if ($menuOpen) return; // the menu has the keyboard; Esc closes it
 		const target = event.target as HTMLElement;
 		if (target.closest('input, textarea, [contenteditable="true"]')) return;
+		const key = event.key.toLowerCase();
+		// Ctrl+C / Ctrl+V (Cmd on a Mac): only when there is something to copy / paste, so the
+		// browser's own copy keeps working otherwise; Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo
+		if ((event.ctrlKey || event.metaKey) && !event.altKey) {
+			if (key === 'z' || key === 'y') {
+				event.preventDefault();
+				const redoing = key === 'y' || event.shiftKey;
+				if (!(redoing ? redo() : undo())) notify(redoing ? 'Nothing to redo' : 'Nothing to undo');
+			} else if (event.shiftKey) {
+				// Ctrl+Shift+other: not ours
+			} else if (key === 'c' && $selection.nodes.length) {
+				event.preventDefault();
+				copySelectedNodes();
+			} else if (key === 'v' && $nodeClipboard) {
+				event.preventDefault();
+				pasteAtMouse();
+			}
+			return;
+		}
 		if (event.ctrlKey || event.metaKey || event.altKey) return;
 
-		const key = event.key.toLowerCase();
 		if (key === '+' || key === '=') {
 			// "=" is the unshifted "+" key on most layouts; numpad "+" also arrives as "+"
 			event.preventDefault();
@@ -456,6 +484,41 @@
 		selection.set({ nodes: [], link: null });
 	}
 
+	// Copy / paste
+	// -----------------------------------------------------------------------------------
+	// where the last paste went; pasting again without moving the mouse steps one grid
+	// square further down-right each time, so the copies don't hide each other
+	let lastPaste: { at: Point; count: number } | null = null;
+
+	function copySelectedNodes(): void {
+		const clip = copyNodes($graph, $selection.nodes);
+		nodeClipboard.set(clip);
+		lastPaste = null;
+		const count = clip.nodes.length;
+		notify(`Copied ${count} node${count === 1 ? '' : 's'}${clip.links.length ? ` and ${clip.links.length} link${clip.links.length === 1 ? '' : 's'}` : ''}`);
+	}
+
+	// pastes the clipboard with its top-left corner at the mouse, snapped like a dragged node
+	// (unless snapping is off), and selects the pasted nodes
+	function pasteAtMouse(): void {
+		const clip = $nodeClipboard!;
+		const step = snapStep($camera.zoom);
+		const snap = (v: number): number => ($snapToGrid ? Math.round(v / step) * step : v);
+		const mouse = mouseWorld();
+		const at = { x: snap(mouse.x), y: snap(mouse.y) };
+		const same = lastPaste !== null && lastPaste.at.x === at.x && lastPaste.at.y === at.y;
+		const count = same ? lastPaste!.count + 1 : 0;
+		lastPaste = { at, count };
+		const shift = count * gridSpacing($camera.zoom);
+		let nodeIds: string[] = [];
+		graph.update((g) => {
+			const result = pasteNodes(g, clip, { x: at.x + shift, y: at.y - shift });
+			nodeIds = result.nodeIds;
+			return result.graph;
+		});
+		selection.set({ nodes: nodeIds, link: null });
+	}
+
 	function linkSelectedNodes(): void {
 		const ids = $selection.nodes;
 		if (ids.length !== 2) return notify('Select two nodes (Shift+click), then press F');
@@ -470,6 +533,7 @@
 		const stopTracking = trackViewport();
 		const stopChangeTracking = trackChanges();
 		const stopOverride = persistViewSettings();
+		const stopHistory = trackHistory();
 		pageMenu.set({
 			title: 'Graph editor',
 			tabs: [
@@ -493,6 +557,7 @@
 			stopTracking();
 			stopChangeTracking();
 			stopOverride();
+			stopHistory();
 			clearTimeout(messageTimer);
 			pageMenu.set(null);
 			menuOpen.set(false);

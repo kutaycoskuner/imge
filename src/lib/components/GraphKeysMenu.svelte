@@ -17,6 +17,8 @@
 			section: 'Graph',
 			rows: [
 				[['Shift+N'], 'New empty graph (asks first if there are unsaved changes)'],
+				[['Ctrl+Z'], 'Undo the last change (a whole drag is one step)'],
+				[['Ctrl+Y', 'Ctrl+Shift+Z'], 'Redo'],
 				[['Ctrl+S'], 'Save to the graph’s file; without a file, opens the menu'],
 				[['Ctrl+Shift+S'], 'Download the graph as a .json file'],
 				[['Esc'], 'Cancel a link drag or a name edit; otherwise open / close this menu']
@@ -26,6 +28,8 @@
 			section: 'Nodes',
 			rows: [
 				[['Shift+A'], 'New node at the mouse'],
+				[['Ctrl+C'], 'Copy the selected nodes and the links between them'],
+				[['Ctrl+V'], 'Paste the copied nodes at the mouse (again: one grid square further)'],
 				[['F2'], 'Edit the selected node’s name (or the selected link’s)'],
 				[['Delete', 'Backspace'], 'Remove the selected nodes with their links, or the selected link'],
 				[['F'], 'Link two selected nodes']

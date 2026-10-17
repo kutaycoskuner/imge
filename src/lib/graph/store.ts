@@ -22,6 +22,9 @@
 // layout with it. The display overrides
 // draw all links one way without changing the data; setAll* write one value into all.
 //
+// Copy / paste: copyNodes() takes the selected nodes and the links between them into
+// `nodeClipboard`, pasteNodes() adds them again with new ids at another place.
+//
 // Used by: routes/+page.svelte, GraphNode, GraphLinks, GraphEditorMenu, UI_GraphEditor,
 // file-access.ts. Details: docs/graph-editing.md, docs/graph-format.md
 // -----------------------------------------------------------------------------------------
@@ -69,6 +72,13 @@ export const graph = writable<Graph>(emptyGraph());
 export const selection = writable<Selection>({ nodes: [], link: null });
 export const editingNodeId = writable<string | null>(null); // node whose name is being edited
 export const editingLinkId = writable<string | null>(null); // link whose name is being edited
+
+/** Copied nodes (Ctrl+C) and the links between them, kept in memory for this tab. */
+export interface NodeClipboard {
+	nodes: GraphNode[];
+	links: Link[];
+}
+export const nodeClipboard = writable<NodeClipboard | null>(null);
 
 // -----------------------------------------------------------------------------------------
 // display settings: change only how links are drawn, never the graph; kept in this browser
@@ -204,6 +214,59 @@ export function removeNodes(g: Graph, nodeIds: string[]): Graph {
 			nodes: g.data.nodes.filter((n) => !ids.has(n.id)),
 			links: g.data.links.filter((l) => !ids.has(l.source.node) && !ids.has(l.target.node))
 		}
+	};
+}
+
+// -----------------------------------------------------------------------------------------
+// copy / paste
+// -----------------------------------------------------------------------------------------
+/**
+ * Copies nodes (Ctrl+C): deep copies of them, in graph order, plus the links whose both
+ * ends are among them (links to nodes left out are not copied). Doesn't change the graph.
+ */
+export function copyNodes(g: Graph, nodeIds: string[]): NodeClipboard {
+	const ids = new Set(nodeIds);
+	return structuredClone({
+		nodes: g.data.nodes.filter((n) => ids.has(n.id)),
+		links: g.data.links.filter((l) => ids.has(l.source.node) && ids.has(l.target.node))
+	});
+}
+
+/**
+ * Pastes copied nodes (Ctrl+V) as new nodes with new ids, keeping their layout and the links
+ * between them (also with new ids; names, ports and looks are kept).
+ *
+ * Args:
+ *     clip: what copyNodes returned; it may come from an earlier version of the graph.
+ *     at: world point for the top-left corner of the pasted group (the box around the nodes'
+ *         top-left corners).
+ *
+ * Returns:
+ *     The new graph and the new node ids, in the clipboard's order.
+ */
+export function pasteNodes(g: Graph, clip: NodeClipboard, at: Point): { graph: Graph; nodeIds: string[] } {
+	if (clip.nodes.length === 0) return { graph: g, nodeIds: [] };
+	const dx = at.x - Math.min(...clip.nodes.map((n) => n.position.x));
+	const dy = at.y - Math.max(...clip.nodes.map((n) => n.position.y)); // y up: top = highest
+	const newId = new Map<string, string>();
+	const nodes: GraphNode[] = [];
+	for (const node of structuredClone(clip.nodes)) {
+		const id = nextId([...g.data.nodes, ...nodes], 'n');
+		newId.set(node.id, id);
+		nodes.push({ ...node, id, position: { x: node.position.x + dx, y: node.position.y + dy } });
+	}
+	const links: Link[] = [];
+	for (const link of structuredClone(clip.links)) {
+		links.push({
+			...link,
+			id: nextId([...g.data.links, ...links], 'l'),
+			source: { ...link.source, node: newId.get(link.source.node)! },
+			target: { ...link.target, node: newId.get(link.target.node)! }
+		});
+	}
+	return {
+		graph: { ...g, data: { ...g.data, nodes: [...g.data.nodes, ...nodes], links: [...g.data.links, ...links] } },
+		nodeIds: nodes.map((n) => n.id)
 	};
 }
 
