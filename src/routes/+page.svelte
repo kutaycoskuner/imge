@@ -2,14 +2,15 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-16
+	//   last update     : 2026-10-17
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Graph editor, the site's home page (/; /graph_editor redirects here): loads the base
 	// graph (upgraded to the current format version by $lib/graph/migrations.ts) into the
 	// graph store and turns mouse and keyboard input into camera moves and graph edits:
-	//   mouse  drag empty space = pan, wheel = zoom to cursor, click/Shift+click = select,
+	//   mouse  drag empty space = pan, Shift+drag empty space = box select (adds every node the
+	//          box touches), wheel = zoom to cursor, click/Shift+click = select,
 	//          drag node = move (all selected; snaps to half grid squares unless the toolbar
 	//          turned snapping off, Alt = free), drag from a port = link, drag a linked
 	//          input's end away = detach
@@ -17,7 +18,8 @@
 	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
 	//          link, F2 or double-click renames a link (drag a selected
 	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
-	//          Ctrl+Shift+S download, Esc cancel a link drag (otherwise it opens the menu)
+	//          Ctrl+Shift+S download, Esc cancel a link drag or box selection (otherwise it opens
+	//          the menu)
 	// It also puts GraphEditorMenu into the Esc menu (open/save on the computer) and tracks
 	// unsaved changes for it. Graph operations and link rules live in $lib/graph/store.ts,
 	// files in $lib/graph/file-access.ts, world <-> screen math in $lib/camera.ts; see
@@ -67,6 +69,7 @@
 		linksInto,
 		quickLink,
 		selectNode,
+		selectBox,
 		createNodeAt,
 		cycleLinkShape,
 		cycleLinkArrow,
@@ -78,7 +81,8 @@
 		linkShapeOverride,
 		linkArrowOverride,
 		editingLinkId,
-		type LinkOutcome
+		type LinkOutcome,
+		type Selection
 	} from '$lib/graph/store';
 	import type { Link, LinkEnd } from '$lib/graph/types';
 	import { assistanceMsg, menuOpen, menuTab, pageMenu } from '../stores/imge_main';
@@ -88,6 +92,11 @@
 	const MESSAGE_DURATION_MS = 2500;
 
 	let isPanningSpace = false;
+	// box selection (Shift+drag on empty space): where it started and where the mouse is now,
+	// both in screen px, and the selection it adds to
+	let boxDrag: { start: Point; end: Point; base: Selection } | null = null;
+	// a box smaller than this (screen px) is a Shift+click on empty space: it keeps the selection
+	const BOX_MIN_SIZE = 4;
 	// node drag: the grabbed node and where it and the mouse started (world coords); its
 	// top-left corner follows the mouse snapped to half grid squares, the rest of the
 	// selection moves by the same amount so their layout is kept
@@ -179,7 +188,12 @@
 			return;
 		}
 
-		if (!event.shiftKey) selection.set({ nodes: [], link: null });
+		if (event.shiftKey) {
+			const start = { x: event.clientX, y: event.clientY };
+			boxDrag = { start, end: start, base: $selection };
+			return;
+		}
+		selection.set({ nodes: [], link: null });
 		isPanningSpace = true;
 	}
 
@@ -199,6 +213,9 @@
 				const bend = ((drag.axis === 'x' ? mouse.x : mouse.y) - drag.from) / span;
 				graph.update((g) => setLinkBend(g, drag.linkId, bend));
 			}
+		} else if (boxDrag) {
+			boxDrag = { ...boxDrag, end: { x: event.clientX, y: event.clientY } };
+			updateBoxSelection(boxDrag);
 		} else if (isPanningSpace) {
 			panBy(dx, dy);
 		} else if (nodeDrag) {
@@ -211,6 +228,7 @@
 		isPanningSpace = false;
 		nodeDrag = null;
 		bendDrag = null;
+		boxDrag = null;
 	}
 
 	// double-click on a link: edit its name (node names handle their own double-click)
@@ -242,6 +260,32 @@
 		if (!current || (current.x === target.x && current.y === target.y)) return;
 		const ids = $selection.nodes;
 		graph.update((g) => moveNodes(g, ids, target.x - current.x, target.y - current.y));
+	}
+
+	// Box selection
+	// -----------------------------------------------------------------------------------
+	// the box as a screen rectangle, whichever way it was dragged
+	function boxRect(box: NonNullable<typeof boxDrag>) {
+		const left = Math.min(box.start.x, box.end.x);
+		const top = Math.min(box.start.y, box.end.y);
+		return { left, top, width: Math.abs(box.end.x - box.start.x), height: Math.abs(box.end.y - box.start.y) };
+	}
+
+	// Selects the nodes that were selected when the drag began plus every node the box touches
+	// (partly inside is enough). Nodes are measured on screen, so pan, zoom and the title's
+	// length are already in their rectangles.
+	function updateBoxSelection(box: NonNullable<typeof boxDrag>): void {
+		window.getSelection()?.removeAllRanges(); // Shift+drag would otherwise also select page text
+		const rect = boxRect(box);
+		if (rect.width < BOX_MIN_SIZE && rect.height < BOX_MIN_SIZE) return selection.set(box.base);
+		const right = rect.left + rect.width;
+		const bottom = rect.top + rect.height;
+		const hits: string[] = [];
+		for (const el of document.querySelectorAll<HTMLElement>('.world .node')) {
+			const r = el.getBoundingClientRect();
+			if (r.left <= right && r.right >= rect.left && r.top <= bottom && r.bottom >= rect.top) hits.push(el.dataset.id!);
+		}
+		selection.set(selectBox(box.base, hits));
 	}
 
 	// Link dragging
@@ -354,6 +398,10 @@
 		} else if (key === 'escape' && linkDrag) {
 			event.preventDefault(); // cancel the drag only; without a drag Esc opens the menu
 			linkDrag = null;
+		} else if (key === 'escape' && boxDrag) {
+			event.preventDefault(); // cancel the box: back to the selection it started from
+			selection.set(boxDrag.base);
+			boxDrag = null;
 		}
 	}
 
@@ -528,6 +576,14 @@
 	</div>
 </div>
 
+{#if boxDrag}
+	{@const rect = boxRect(boxDrag)}
+	<div
+		class="select-box"
+		style="left: {rect.left}px; top: {rect.top}px; width: {rect.width}px; height: {rect.height}px;"
+	></div>
+{/if}
+
 <UI_GraphEditor on:requestExport={downloadGraph} on:requestFit={fitGraphInView} />
 <CoordTracker />
 <AssistanceMsg />
@@ -538,6 +594,15 @@
 {/if}
 
 <style>
+	/* box selection (Shift+drag on empty space), drawn in screen px above the graph */
+	.select-box {
+		position: fixed;
+		z-index: 20;
+		pointer-events: none;
+		border: 1px solid var(--col-selected);
+		background: color-mix(in srgb, var(--col-selected) 12%, transparent);
+		border-radius: 2px;
+	}
 	/* .centered {
 			position: absolute;
 			top: 50%;

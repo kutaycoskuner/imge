@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-16
+	//   last update     : 2026-10-17
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -53,6 +53,7 @@
 		['Click', 'Select a node or link'],
 		['Shift+click', 'Add a node to the selection, or remove it'],
 		['Drag empty space', 'Pan'],
+		['Shift+drag empty space', 'Draw a box: adds every node it touches to the selection (Esc cancels)'],
 		['Wheel', 'Zoom toward the cursor'],
 		['Drag a node', 'Move it with every selected node, snapped to half grid squares'],
 		['Alt+drag a node', 'Move it without snapping (snapping can be turned off in the toolbar)'],

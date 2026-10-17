@@ -29,6 +29,7 @@ State as of 2026-10-16.
 | Click node / link | Select it (selected items turn orange). |
 | Shift+click node | Add it to the selection, or remove it. |
 | Click empty space | Clear the selection (and start panning). |
+| Shift+drag empty space | Box selection: draws a rectangle and adds every node it touches (partly inside is enough) to the selection; the selection updates while you drag, and nodes the box leaves again drop out. Esc cancels and restores the selection from before. A Shift+click without dragging keeps the selection. |
 | Drag node | Move it, and every other selected node with it. Its top-left corner snaps to half grid squares (the dots and the midpoints between them); hold **Alt** to move freely, or turn snapping off with the toolbar's snap button. |
 | Toolbar "Add Node" | New node at the screen center. |
 | **Shift+A** | New node centered on the mouse. |
@@ -211,6 +212,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 | Function | Does | Returns |
 |---|---|---|
+| `selectBox(base, hitIds)` | Box selection: the nodes of `base` (selected when the drag began) followed by the `hitIds` the box touches now, without duplicates. Clears a selected link. The page measures which nodes the box touches (screen rectangles of the rendered nodes). | `Selection` |
 | `selectNode(sel, nodeId, additive)` | With `additive` (Shift+click): toggles the node in the selection. Without: selects only this node, unless it's already selected, in which case the selection is kept so a group can be dragged. Always clears a selected link. | `Selection` |
 
 ## How it fits together
@@ -242,6 +244,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-17 — box selection: Shift+drag on empty space selects every node the box touches; new function `selectBox`
 - 2026-10-16 — dragged nodes snap to half grid squares (Alt = free move); toolbar button turns snapping on / off
 - 2026-10-16 — the Esc menu's Keybindings tab lists the shortcuts as key caps
 - 2026-10-16 — "orientation" renamed to "direction" (`metadata.direction`, `setDirection`); the toolbar button and its action are called Transpose

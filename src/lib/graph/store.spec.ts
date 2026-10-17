@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-15
+//   last update     : 2026-10-17
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -25,6 +25,7 @@ import {
 	removeNodes,
 	renameNode,
 	selectNode,
+	selectBox,
 	cycleLinkShape,
 	setAllLinkShapes,
 	setLinkBend,
@@ -376,5 +377,21 @@ describe('selectNode', () => {
 		sel = selectNode(sel, 'n1', true);
 		expect(sel.nodes).toEqual(['n2']);
 		expect(selectNode({ nodes: [], link: 'l1' }, 'n1', false).link).toBeNull();
+	});
+});
+
+describe('selectBox', () => {
+	it('adds the boxed nodes after the ones selected before, without duplicates', () => {
+		expect(selectBox({ nodes: ['n2'], link: null }, ['n1', 'n2', 'n3']).nodes).toEqual(['n2', 'n1', 'n3']);
+	});
+
+	it('drops nodes the box no longer touches, but keeps the earlier selection', () => {
+		const base = { nodes: ['n1'], link: null };
+		expect(selectBox(base, ['n1', 'n4']).nodes).toEqual(['n1', 'n4']);
+		expect(selectBox(base, []).nodes).toEqual(['n1']);
+	});
+
+	it('clears a selected link', () => {
+		expect(selectBox({ nodes: [], link: 'l1' }, ['n1'])).toEqual({ nodes: ['n1'], link: null });
 	});
 });

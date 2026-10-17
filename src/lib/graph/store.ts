@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-16
+//   last update     : 2026-10-17
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -490,6 +490,15 @@ export function selectNode(sel: Selection, nodeId: string, additive: boolean): S
 		};
 	}
 	return selected ? { ...sel, link: null } : { nodes: [nodeId], link: null };
+}
+
+/**
+ * Box selection (Shift+drag on empty space): the nodes that were selected when the drag
+ * began, plus the nodes the box touches now, in that order. Recomputed from `base` on
+ * every mouse move, so nodes the box leaves again drop out. Always clears a selected link.
+ */
+export function selectBox(base: Selection, hitIds: string[]): Selection {
+	return { nodes: [...base.nodes, ...hitIds.filter((id) => !base.nodes.includes(id))], link: null };
 }
 
 // -----------------------------------------------------------------------------------------

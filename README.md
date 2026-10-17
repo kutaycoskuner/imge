@@ -67,7 +67,7 @@ npm run test:unit -- --run
 - [x] coordinates tracker (world coordinates, x right, y up)
 - [x] node rendering
 - [x] rendering from json content
-- [x] node movement (multi-select with Shift+click moves together)
+- [x] node movement (multi-select with Shift+click or a Shift+drag box moves together)
 - [x] add / delete nodes (toolbar button or Shift+A, Delete)
 - [x] new empty graph (Shift+N or the Esc menu; asks first if there are unsaved changes)
 - [x] node name editing (double-click or F2)
