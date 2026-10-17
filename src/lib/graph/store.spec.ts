@@ -28,6 +28,9 @@ import {
 	selectBox,
 	copyNodes,
 	pasteNodes,
+	setNodePosition,
+	setNodeType,
+	setLinkStyle,
 	cycleLinkShape,
 	setAllLinkShapes,
 	setLinkBend,
@@ -441,5 +444,30 @@ describe('copy / paste', () => {
 	it('pastes nothing from an empty clipboard', () => {
 		const g = threeNodes();
 		expect(pasteNodes(g, { nodes: [], links: [] }, { x: 0, y: 0 }).graph).toBe(g);
+	});
+});
+
+describe('properties panel edits', () => {
+	it('places a node at a point, and returns the same graph when it is already there', () => {
+		const g = threeNodes();
+		const moved = setNodePosition(g, 'n2', { x: 40, y: -20 });
+		expect(moved.data.nodes[1].position).toEqual({ x: 40, y: -20 });
+		expect(moved.data.nodes[0]).toBe(g.data.nodes[0]);
+		expect(setNodePosition(moved, 'n2', { x: 40, y: -20 })).toBe(moved);
+	});
+
+	it('sets a node type, and returns the same graph when it already has it', () => {
+		const g = threeNodes();
+		const typed = setNodeType(g, 'n1', 'note');
+		expect(typed.data.nodes[0].type).toBe('note');
+		expect(setNodeType(typed, 'n1', 'note')).toBe(typed);
+	});
+
+	it('sets a link style, and returns the same graph when nothing changes', () => {
+		const g = link(threeNodes(), 'n1', 'n2');
+		const styled = setLinkStyle(g, 'l1', { shape: 'manhattan', arrow: 'both' });
+		expect(styled.data.links[0]).toMatchObject({ shape: 'manhattan', arrow: 'both', route: 'above' });
+		expect(setLinkStyle(styled, 'l1', { shape: 'manhattan' })).toBe(styled);
+		expect(setLinkStyle(g, 'missing', { shape: 'line' })).toBe(g);
 	});
 });

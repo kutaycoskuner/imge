@@ -88,6 +88,7 @@ export const linkArrowOverride = writable<LinkArrow | null>(null); // null = eac
 export const showChevrons = writable<boolean>(false); // direction chevrons in the middle of links
 export const showDotGrid = writable<boolean>(true); // the background dot grid
 export const snapToGrid = writable<boolean>(true); // dragged nodes snap to half grid squares
+export const showPropertiesPanel = writable<boolean>(true); // the docked Properties panel (N)
 
 /** Restores the display settings from this browser and keeps them there. Call once (onMount). */
 export function persistViewSettings(): () => void {
@@ -101,7 +102,8 @@ export function persistViewSettings(): () => void {
 		persist(showChevrons, 'imge.graphEditor.showChevrons', (v) => v === 'true'),
 		// stored only when hidden ("false"); the default (shown) leaves nothing behind
 		persistHidden(showDotGrid, 'imge.graphEditor.hideDotGrid'),
-		persistHidden(snapToGrid, 'imge.graphEditor.noSnap')
+		persistHidden(snapToGrid, 'imge.graphEditor.noSnap'),
+		persistHidden(showPropertiesPanel, 'imge.graphEditor.hidePropertiesPanel')
 	];
 	return () => stops.forEach((stop) => stop());
 }
@@ -191,6 +193,23 @@ export function renameNode(g: Graph, nodeId: string, name: string): Graph {
 		g,
 		g.data.nodes.map((n) => (n.id === nodeId ? { ...n, name: trimmed } : n))
 	);
+}
+
+/** Places one node's top-left corner at a world point (Properties panel); same graph if unchanged. */
+export function setNodePosition(g: Graph, nodeId: string, at: Point): Graph {
+	const node = g.data.nodes.find((n) => n.id === nodeId);
+	if (!node || (node.position.x === at.x && node.position.y === at.y)) return g;
+	return withNodes(
+		g,
+		g.data.nodes.map((n) => (n.id === nodeId ? { ...n, position: { x: at.x, y: at.y } } : n))
+	);
+}
+
+/** Sets a node's `type` (Properties panel); same graph if unchanged. */
+export function setNodeType(g: Graph, nodeId: string, type: string): Graph {
+	const node = g.data.nodes.find((n) => n.id === nodeId);
+	if (!node || node.type === type) return g;
+	return withNodes(g, g.data.nodes.map((n) => (n.id === nodeId ? { ...n, type } : n)));
 }
 
 /** Moves the given nodes by a world-space delta. */
@@ -348,6 +367,20 @@ export function cycleLinkShape(g: Graph, linkId: string): Graph {
 			? { ...l, shape: LINK_SHAPES[(LINK_SHAPES.indexOf(l.shape) + 1) % LINK_SHAPES.length] }
 			: l
 	);
+}
+
+/**
+ * Sets how one link is drawn (Properties panel): any of shape, arrow and route. Returns the
+ * same graph when nothing changes, so it doesn't make an undo step.
+ */
+export function setLinkStyle(
+	g: Graph,
+	linkId: string,
+	style: Partial<Pick<Link, 'shape' | 'arrow' | 'route'>>
+): Graph {
+	const link = g.data.links.find((l) => l.id === linkId);
+	if (!link || Object.entries(style).every(([key, value]) => link[key as keyof Link] === value)) return g;
+	return withLinks(g, (l) => (l.id === linkId ? { ...l, ...style } : l));
 }
 
 /** Sets every link's shape ("apply to all links"); bends are kept for when they are manhattan again. */

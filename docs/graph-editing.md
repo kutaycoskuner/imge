@@ -52,6 +52,7 @@ State as of 2026-10-17.
 | Drag a selected manhattan link's middle segment | Move its corner (the highlighted grab area); saved as the link's `bend`. |
 | **+** / **=** and **-** | Zoom in / out by ×1.2 toward the screen center (the mouse wheel zooms toward the cursor). |
 | **Home** | Fit the whole graph in the window (same as the toolbar's corner-brackets button). |
+| **N** | Show or hide the Properties panel: the selection's details, all edited there; see [graph-properties-panel.md](graph-properties-panel.md). |
 | **Ctrl+S** (Cmd+S) | Save the graph to its file; a graph without a file yet opens the menu (see [graph-saving.md](graph-saving.md)). Replaces the browser's "save page". |
 | **Ctrl+Shift+S** (Cmd+Shift+S) | Download the graph as a `.json` file (same as the toolbar's export button). |
 | **Esc** | Cancel a link drag; otherwise open the menu (open / save graphs, see [graph-saving.md](graph-saving.md)). |
@@ -180,6 +181,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `editingLinkId` | Id of the link whose name is being edited, or `null`. `GraphLinks` shows the text field in the middle of that link. |
 | `linkShapeOverride` / `linkArrowOverride` | Display-only shape / arrow for all links, or `null` for each link's own; never written into the graph. |
 | `showChevrons` | Display-only: direction chevrons in the middle of links. |
+| `showDotGrid` / `snapToGrid` / `showPropertiesPanel` | Display settings: dot grid, snapping, and the Properties panel shown or hidden. |
 
 `persistViewSettings()` (called by the page on mount) restores the three display settings from this browser and saves every change there.
 
@@ -192,6 +194,8 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `nextLinkId(g)` | `l` + highest `l<number>` link id + 1; never reused either. | `string` |
 | `addNode(g, at, name = 'Node')` | Adds a node with one input (`i1`) and one output (`o1`), roughly centered on `at`. Its position (top-left corner) is rounded to whole units. | `{ graph, node }` |
 | `renameNode(g, nodeId, name)` | Sets the name, trimmed. A blank name keeps the old one. | `Graph` |
+| `setNodeType(g, nodeId, type)` | Sets a node's `type` (Properties panel's Type dropdown); the same graph back when unchanged. | `Graph` |
+| `setNodePosition(g, nodeId, at)` | Puts one node's top-left corner at a world point (Properties panel); the same graph back when it is already there. | `Graph` |
 | `moveNodes(g, nodeIds, dx, dy)` | Moves the given nodes by a world-space delta. | `Graph` |
 | `removeNodes(g, nodeIds)` | Removes the nodes and every link that starts or ends at them. | `Graph` |
 | `createNodeAt(at)` | Store action: adds a node to the open graph centered on `at` and selects only it. Used by Shift+A and the toolbar. | the new `GraphNode` |
@@ -204,6 +208,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `removeLink(g, linkId)` | Removes one link by its id. | `Graph` |
 | `cycleLinkShape(g, linkId)` | Next shape for one link: spline → line → manhattan → spline. | `Graph` |
 | `setAllLinkShapes(g, shape)` | Writes one shape into every link ("Apply shape to all links"); bends are kept. | `Graph` |
+| `setLinkStyle(g, linkId, style)` | Sets any of `shape`, `arrow`, `route` of one link (Properties panel); the same graph back when nothing changes, so no undo step. | `Graph` |
 | `setLinkBend(g, linkId, bend)` | Sets a link's `bend`, clamped to 0..1 (a manhattan corner, or the lane distance of a link going around). | `Graph` |
 | `cycleLinkArrow(g, linkId)` | Next arrow for one link: forward → both → backward → none → forward. | `Graph` |
 | `setAllLinkArrows(g, arrow)` | Writes one arrow into every link ("Apply arrow to all links"). | `Graph` |
@@ -264,6 +269,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-17 — Properties panel (N): the selection's details and editing, see graph-properties-panel.md; new functions `setNodePosition`, `setLinkStyle`; shortcuts also pause while a dropdown has the keyboard
 - 2026-10-17 — undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z), one step per edit or mouse gesture; undoing back to the saved graph clears the unsaved marker; new `history.ts`
 - 2026-10-17 — Ctrl+C / Ctrl+V copy and paste nodes with the links between them; new functions `copyNodes`, `pasteNodes`, store `nodeClipboard`
 - 2026-10-17 — box selection: Shift+drag on empty space selects every node the box touches; new function `selectBox`

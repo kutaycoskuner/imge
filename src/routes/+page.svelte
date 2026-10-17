@@ -17,12 +17,14 @@
 	//   keys   Shift+N new graph, Shift+A add node at mouse, Delete/Backspace delete selection, F2 rename,
 	//          Ctrl+C copy the selected nodes (with the links between them), Ctrl+V paste them at
 	//          the mouse, Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo (a whole drag is one step),
+	//          N Properties panel on / off (docked right; shows and edits the selection),
 	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
 	//          link, F2 or double-click renames a link (drag a selected
 	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
 	//          Ctrl+Shift+S download, Esc cancel a link drag or box selection (otherwise it opens
 	//          the menu)
-	// It also puts GraphEditorMenu into the Esc menu (open/save on the computer) and tracks
+	// It also shows the Properties panel (GraphPropertiesPanel, the selection's details) and
+	// puts GraphEditorMenu into the Esc menu (open/save on the computer) and tracks
 	// unsaved changes for it. Graph operations and link rules live in $lib/graph/store.ts,
 	// files in $lib/graph/file-access.ts, world <-> screen math in $lib/camera.ts; see
 	// docs/graph-editor-canvas.md, docs/graph-editing.md, docs/graph-saving.md.
@@ -36,6 +38,7 @@
 	import GraphEditorMenu from '$lib/components/GraphEditorMenu.svelte';
 	import GraphExamplesMenu from '$lib/components/GraphExamplesMenu.svelte';
 	import GraphKeysMenu from '$lib/components/GraphKeysMenu.svelte';
+	import GraphPropertiesPanel from '$lib/components/properties/GraphPropertiesPanel.svelte';
 	import { onMount, tick } from 'svelte';
 	import { dev } from '$app/environment';
 	import {
@@ -83,6 +86,7 @@
 		findBackLinks,
 		setLinkBend,
 		snapToGrid,
+		showPropertiesPanel,
 		persistViewSettings,
 		linkShapeOverride,
 		linkArrowOverride,
@@ -365,7 +369,8 @@
 
 		if ($menuOpen) return; // the menu has the keyboard; Esc closes it
 		const target = event.target as HTMLElement;
-		if (target.closest('input, textarea, [contenteditable="true"]')) return;
+		// typing in a field, or choosing in a dropdown (Properties panel): its keys are its own
+		if (target.closest('input, textarea, select, [contenteditable="true"]')) return;
 		const key = event.key.toLowerCase();
 		// Ctrl+C / Ctrl+V (Cmd on a Mac): only when there is something to copy / paste, so the
 		// browser's own copy keeps working otherwise; Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo
@@ -397,6 +402,10 @@
 		} else if (key === 'home') {
 			event.preventDefault();
 			fitGraphInView();
+		} else if (key === 'n' && !event.shiftKey) {
+			// N: Properties panel on / off, like Blender's sidebar
+			event.preventDefault();
+			showPropertiesPanel.update((shown) => !shown);
 		} else if (key === 'n' && event.shiftKey) {
 			// Shift+N: Ctrl+Shift+N belongs to the browser (private / closed window) and never arrives
 			event.preventDefault();
@@ -649,6 +658,7 @@
 	></div>
 {/if}
 
+<GraphPropertiesPanel />
 <UI_GraphEditor on:requestExport={downloadGraph} on:requestFit={fitGraphInView} />
 <CoordTracker />
 <AssistanceMsg />

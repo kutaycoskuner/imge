@@ -917,6 +917,30 @@
                         "label": "Output"
                     }
                 ]
+            },
+            {
+                "id": "n39",
+                "name": "Properties panel (N)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": 200
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
             }
         ],
         "links": [
@@ -1520,6 +1544,21 @@
                 },
                 "target": {
                     "node": "n38",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l41",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n39",
                     "port": "i1"
                 }
             }

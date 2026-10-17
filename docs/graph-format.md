@@ -12,7 +12,7 @@ Current version: **5**
 | `src/lib/graph/migrations.ts` | `CURRENT_GRAPH_VERSION`, the adapters and `migrateGraph()`. |
 | `src/lib/graph/migrations.spec.ts` | Tests: every version sample upgrades to exactly the current sample; bad files are refused. |
 | `static/data/samples/graph-v<n>.json` | The same tiny graph (2 nodes, 1 link) saved in each format version, to compare versions side by side; also the test fixtures. |
-| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data; 35 nodes, 37 links), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
+| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data; 39 nodes, 41 links), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
 
 ## Structure (version 5)
 
@@ -159,6 +159,7 @@ Do this for every change to the file structure or to what a field means, however
 
 ## Changes
 
+- 2026-10-17 — base graph gets Box select, Copy / paste, Undo / redo and Properties panel nodes (39 nodes, 41 links)
 - 2026-10-16 — feature map: "Snap to grid" node added; all nodes moved onto the half grid (columns 300, rows 100 apart)
 
 - 2026-10-16 — format version 5: `metadata.direction` (left-to-right / top-to-bottom), `4 → 5` adapter, sample graph-v5.json; base graph stored as v5

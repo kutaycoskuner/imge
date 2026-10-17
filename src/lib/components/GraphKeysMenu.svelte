@@ -48,7 +48,8 @@
 			rows: [
 				[['+', '='], 'Zoom in toward the screen centre'],
 				[['-'], 'Zoom out'],
-				[['Home'], 'Fit the whole graph in the window']
+				[['Home'], 'Fit the whole graph in the window'],
+				[['N'], 'Show or hide the Properties panel (details and editing of the selection)']
 			]
 		}
 	];

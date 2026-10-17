@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-16
+	//   last update     : 2026-10-17
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -57,13 +57,8 @@
 		graph.update((g) => setDirection(g, direction, sizes));
 	}
 
-	// what the arrow choices look like in the selects
-	const ARROW_LABELS: Record<LinkArrow, string> = {
-		forward: '→ forward',
-		both: '↔ both',
-		backward: '← backward',
-		none: 'none'
-	};
+	// what the arrow choices look like in the selects (shared with the Properties panel)
+	import { LINK_ARROW_LABELS as ARROW_LABELS } from './properties/sections';
 
 	let applyArrow: LinkArrow = 'forward';
 	$: if ($linkArrowOverride) applyArrow = $linkArrowOverride;

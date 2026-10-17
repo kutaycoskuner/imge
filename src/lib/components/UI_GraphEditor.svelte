@@ -2,13 +2,14 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-16
+	//   last update     : 2026-10-17
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, fit graph,
 	// transpose (switch the direction left-to-right / top-to-bottom and turn the layout; the icon's
 	// strong arrow is the current direction), dot grid on / off, snap to grid on / off,
+	// Properties panel on / off,
 	// add node at the screen center, open graph (opens the Esc menu), export (download) and a
 	// test pan button. Hover hints show each button's key in [brackets], drawn as key caps
 	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
@@ -19,7 +20,15 @@
 
 	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen, menuTab } from '../../stores/imge_main';
 	import { ZOOM_STEP, camera, panBy, zoomAt } from '$lib/camera';
-	import { createNodeAt, graph, setDirection, measureNodeSizes, showDotGrid, snapToGrid } from '$lib/graph/store';
+	import {
+		createNodeAt,
+		graph,
+		setDirection,
+		measureNodeSizes,
+		showDotGrid,
+		snapToGrid,
+		showPropertiesPanel
+	} from '$lib/graph/store';
 
 	// dot grid on / off (a display setting, remembered in this browser)
 	const toggleDotGrid = () => {
@@ -31,6 +40,11 @@
 		snapToGrid.update((on) => !on);
 		handleMouseOver($snapToGrid ? 'Snapping on' : 'Snapping off');
 	};
+	// Properties panel on / off (also N and the panel's own chevron; remembered in this browser)
+	const toggleProperties = () => {
+		showPropertiesPanel.update((shown) => !shown);
+		handleMouseOver($showPropertiesPanel ? 'Properties panel shown [N]' : 'Properties panel hidden [N]');
+	};
 	import type { Direction } from '$lib/graph/types';
 	import IconPlus from '$lib/icons/icon-plus.svelte';
 	import IconMinus from '$lib/icons/icon-minus.svelte';
@@ -39,6 +53,7 @@
 	import IconTranspose from '$lib/icons/icon-transpose.svelte';
 	import IconDotGrid from '$lib/icons/icon-dot-grid.svelte';
 	import IconSnap from '$lib/icons/icon-snap.svelte';
+	import IconSidebarRight from '$lib/icons/icon-sidebar-right.svelte';
 	import IconChevronUp from '$lib/icons/icon-chevron-up.svelte';
 	import IconChevronDown from '$lib/icons/icon-chevron-down.svelte';
 
@@ -138,6 +153,13 @@
 			iconProps: { on: $snapToGrid },
 			hint: $snapToGrid ? 'Turn Snapping Off' : 'Turn Snapping On',
 			action: toggleSnap
+		},
+		{
+			id: 'properties',
+			icon: IconSidebarRight,
+			iconProps: { on: $showPropertiesPanel },
+			hint: $showPropertiesPanel ? 'Hide Properties [N]' : 'Show Properties [N]',
+			action: toggleProperties
 		},
 		{ id: 'open', icon: IconChevronUp, hint: 'Open Graph [Esc]', action: openGraphMenu },
 		{ id: 'download', icon: IconChevronDown, hint: 'Download Graph [Ctrl+Shift+S]', action: exportGraph },
