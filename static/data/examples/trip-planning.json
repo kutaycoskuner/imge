@@ -1,0 +1,624 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 5,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "name": "Trip to Lisbon",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": 30
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n2",
+                "name": "Budget",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 290,
+                    "y": 430
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n3",
+                "name": "Transport",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 290,
+                    "y": 230
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n4",
+                "name": "Stay",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 290,
+                    "y": 80
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n5",
+                "name": "Food",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 290,
+                    "y": -70
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n6",
+                "name": "Things to do",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 290,
+                    "y": -320
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n7",
+                "name": "Flights ~200 €",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": 480
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n8",
+                "name": "Daily ~60 €",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": 380
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n9",
+                "name": "Metro pass",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": 280
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n10",
+                "name": "Tram 28",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": 180
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n11",
+                "name": "Flat in Alfama",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": 80
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n12",
+                "name": "Pastéis de nata",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": -20
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n13",
+                "name": "Seafood",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": -120
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n14",
+                "name": "Belém tower",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": -220
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n15",
+                "name": "Fado night",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": -320
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n16",
+                "name": "Sintra day trip",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 580,
+                    "y": -420
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n2",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n3",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l9",
+                "type": "basic",
+                "name": "scenic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n10",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l10",
+                "type": "basic",
+                "name": "booked",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n11",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l11",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n12",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l12",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n13",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l13",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n14",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l14",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n15",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l15",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n16",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

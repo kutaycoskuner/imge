@@ -1,0 +1,31 @@
+{
+    "metadata": { "format": "imge-graph", "version": 2 },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "name": "First Node",
+                "type": "basic",
+                "position": { "x": 0, "y": -140 },
+                "inputs": [],
+                "outputs": [{ "id": "o1", "type": "basic", "label": "Output A" }]
+            },
+            {
+                "id": "n2",
+                "name": "Second Node",
+                "type": "basic",
+                "position": { "x": 300, "y": -40 },
+                "inputs": [{ "id": "i1", "type": "basic", "label": "Input A" }],
+                "outputs": []
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "source": { "node": "n1", "port": "o1" },
+                "target": { "node": "n2", "port": "i1" }
+            }
+        ]
+    }
+}

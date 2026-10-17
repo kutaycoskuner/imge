@@ -6,12 +6,18 @@ _documentation/prompts/
 _documentation/
 _documentation
 imge_/
-docs/
+
 build/
 
 
 test-results
 node_modules
+
+.agents/
+.claude/
+
+input/
+_temp/
 
 
 # ----------------------------------------------------------------------------------------

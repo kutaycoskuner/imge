@@ -1,4 +1,14 @@
+// -----------------------------------------------------------------------------------------
+//   author          : Kutay Coskuner
+//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
+//   last update     : 2026-10-16
+//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+//                     Check outputs before relying on them.
+// -----------------------------------------------------------------------------------------
+// imge_main.ts -- app-wide UI state (screen size, color mode, assistance message, the
+// Esc menu). The graph editor's camera (pan + zoom) lives in $lib/camera.ts.
 import { writable } from 'svelte/store';
+import type { Component } from 'svelte';
 
 // State (Writable Stores)
 export const screenSize         = writable<number>(1920);
@@ -8,14 +18,12 @@ export const screenSizeIndex    = writable<number>(2);     // 2 = pc, 1 = tablet
 export const colorMode          = writable<string>("dark");
 export const assistanceMsg      = writable<string>("");
 
-export const zoomLevel          = writable<number>(1);
-export const coordsBaseXOffset  = writable<number>(0);      // base offset based on screen size
-export const coordsBaseYOffset  = writable<number>(0);      // set once and dont change
-export const coordsStateXOffset = writable<number>(0);      // offset from origin on current state
-export const coordsStateYOffset = writable<number>(0);      // ! mouse position calculated directly in page
-export const tempDragStartX     = writable<number>(0);
-export const tempDragStartY     = writable<number>(0);
-
-// Single store for both x and y offsets
-// export const coordBaseOffset  = writable<{ x: number; y: number }>({ x: 0, y: 0 });
-// export const coordsStateOffset = writable<{ x: number; y: number }>({ x: 0, y: 0 });
+// Esc menu (SettingsOverlay): open state, and the menu the current page puts into it.
+// A page sets pageMenu on mount and clears it on destroy; null shows the default menu.
+// A menu is one component, or tabs shown by a switch in its header (menuTab: the open
+// tab's id, remembered per page; null or an unknown id opens the first tab).
+export interface PageMenuTab    { id: string; label: string; component: Component<any>; }
+export interface PageMenu       { title: string; component?: Component<any>; tabs?: PageMenuTab[]; }
+export const menuOpen           = writable<boolean>(false);
+export const pageMenu           = writable<PageMenu | null>(null);
+export const menuTab            = writable<string | null>(null);

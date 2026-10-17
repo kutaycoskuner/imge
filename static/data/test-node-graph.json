@@ -1,52 +1,1527 @@
 {
-    "metadata": {},
+    "metadata": {
+        "format": "imge-graph",
+        "version": 5,
+        "direction": "left-to-right"
+    },
     "data": {
         "nodes": [
             {
-                "_id": 0,
+                "id": "n1",
+                "name": "Camera (pan + zoom)",
                 "type": "basic",
+                "color": null,
                 "position": {
-                    "x": 0,
-                    "y": 140
+                    "x": -1200,
+                    "y": 1000
                 },
-                "data": {
-                    "title": "First Node",
-                    "inputs": [],
-                    "outputs": [
-                        {
-                            "id": "output_0",
-                            "type": "basic",
-                            "label": "Output A"
-                        }
-                    ]
-                }
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
             },
             {
-                "_id": 1,
+                "id": "n2",
+                "name": "Coordinate system (y up)",
                 "type": "basic",
+                "color": null,
                 "position": {
-                    "x": 400,
-                    "y": 40
+                    "x": -900,
+                    "y": 1160
                 },
-                "data": {
-                    "title": "Second Node",
-                    "inputs": [
-                        {
-                            "id": "input_0",
-                            "type": "basic",
-                            "label": "Input A"
-                        }
-                    ],
-                    "outputs": []
-                }
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n3",
+                "name": "Pan (drag empty space)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -900,
+                    "y": 1060
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n4",
+                "name": "Zoom (wheel, + / -)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -900,
+                    "y": 960
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n5",
+                "name": "Fit graph (Home)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -900,
+                    "y": 860
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n6",
+                "name": "Dot grid (adaptive)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -600,
+                    "y": 1260
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n7",
+                "name": "Origin marker (dev only)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -600,
+                    "y": 1160
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n8",
+                "name": "Coordinate tracker",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -600,
+                    "y": 1060
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n9",
+                "name": "Graph format v5",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -1200,
+                    "y": 440
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n10",
+                "name": "Format adapters (v0 to v5)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -900,
+                    "y": 540
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n11",
+                "name": "Version samples",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -600,
+                    "y": 540
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n12",
+                "name": "Graph store",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -900,
+                    "y": 340
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n13",
+                "name": "Node CRUD",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -600,
+                    "y": 340
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n14",
+                "name": "Link CRUD",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -600,
+                    "y": -60
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n15",
+                "name": "Name editing (F2)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": 500
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n16",
+                "name": "Selection (Shift+click)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": 400
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n17",
+                "name": "New graph (Shift+N)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": 300
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n18",
+                "name": "Node color (planned)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": 200
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n19",
+                "name": "Drag to link",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": 100
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n20",
+                "name": "F quick link",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": 0
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n21",
+                "name": "Detach / re-route",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": -100
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n22",
+                "name": "Link shapes (L)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": -200
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n23",
+                "name": "Spline",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": -100
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n24",
+                "name": "Line",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": -200
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n25",
+                "name": "Manhattan corner",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": -300
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n26",
+                "name": "Cycles & arrows (D, R)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": -300
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n27",
+                "name": "Esc menu (per page)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": 1000
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n28",
+                "name": "Graph folder",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 300,
+                    "y": 1100
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n29",
+                "name": "Download (Ctrl+Shift+S)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 300,
+                    "y": 1000
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n30",
+                "name": "Display override (links)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 300,
+                    "y": 900
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n31",
+                "name": "Save / Save as (Ctrl+S)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 600,
+                    "y": 1200
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n32",
+                "name": "Autosave",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 600,
+                    "y": 1100
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n33",
+                "name": "Read-only folder (Firefox)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 600,
+                    "y": 1000
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n34",
+                "name": "Shortcuts & key caps",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 900,
+                    "y": 440
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n35",
+                "name": "Snap to grid (Alt = free)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": 1260
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n36",
+                "name": "Box select (Shift+drag)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": 400
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n37",
+                "name": "Copy / paste (Ctrl+C, V)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
+                    "y": 300
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n38",
+                "name": "Undo / redo (Ctrl+Z, Y)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -600,
+                    "y": 140
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
             }
         ],
         "links": [
             {
-                "sourceNodeId": 0,
-                "sourceOutputId": "output_0",
-                "targetNodeId": 1,
-                "targetInputId": "input_0"
+                "id": "l1",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n2",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n3",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n9",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n10",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l9",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n10",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n11",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l10",
+                "type": "basic",
+                "name": "read / write",
+                "shape": "manhattan",
+                "arrow": "both",
+                "route": "above",
+                "source": {
+                    "node": "n9",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n12",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l11",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n13",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l12",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n14",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l13",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n15",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l14",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n16",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l15",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n17",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l16",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n18",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l17",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n19",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l18",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n20",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l19",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n21",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l20",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n22",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l21",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n26",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l22",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n23",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l23",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n24",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l24",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n25",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l25",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n27",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n28",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l26",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n27",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n29",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l27",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n27",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n30",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l28",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n28",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n31",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l29",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n28",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n32",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l30",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n28",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n33",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l31",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n15",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l32",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n20",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l33",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l34",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n31",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l35",
+                "type": "basic",
+                "name": "specify",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n11",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l36",
+                "type": "basic",
+                "name": "after each change",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n32",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n32",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l37",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n35",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l38",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n36",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l39",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n37",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l40",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n38",
+                    "port": "i1"
+                }
             }
         ]
     }

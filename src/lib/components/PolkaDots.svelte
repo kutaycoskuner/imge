@@ -1,35 +1,40 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { zoomLevel, coordsStateXOffset, coordsStateYOffset } from '../../stores/imge_main';
+	// -----------------------------------------------------------------------------------------
+	//   author          : Kutay Coskuner
+	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
+	//   last update     : 2026-10-16
+	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+	//                     Check outputs before relying on them.
+	// -----------------------------------------------------------------------------------------
+	// Endless dot grid behind the graph editor: one fixed full-screen layer whose repeating
+	// background follows the camera, so it never runs out and lines up with the nodes.
+	// Dots sit on world multiples of the spacing; when zoomed out so far that they would
+	// crowd together, the spacing doubles instead of the grid disappearing.
+	// Hidden with the toolbar's dot grid button (showDotGrid, a display setting).
+	import { camera, viewport, gridSpacing } from '$lib/camera';
+	import { showDotGrid } from '$lib/graph/store';
 
-	// Reactive store values
-	$: _zoomLevel = $zoomLevel;
-	$: panOffsetX = $coordsStateXOffset;
-	$: panOffsetY = $coordsStateYOffset;
-	$: isVisible = _zoomLevel >= 0.4;
+	const DOT_OPACITY = 0.32; // the grid is a hint of space, it should stay in the background
 
-	interface Offset {
-		x: number;
-		y: number;
-	}
+	// spacing (and its doubling when zoomed out) lives in camera.ts, shared with node snapping
+	$: worldSpacing = gridSpacing($camera.zoom);
+	$: tile = worldSpacing * $camera.zoom;
 
-	const bgMaxOffset: number = 41;
-	let bgOffset: Offset = { x: 0, y: 0 };
+	// screen position of world (0, 0); the gradient draws each dot at its tile's center,
+	// so the tiles start half a tile earlier to put a dot exactly on the origin
+	$: originX = $viewport.width / 2 - $camera.x * $camera.zoom;
+	$: originY = $viewport.height / 2 + $camera.y * $camera.zoom; // world y is up
 
-	$: bgOffset = (() => {
-		const newX = Math.abs(panOffsetX) % bgMaxOffset;
-		const newY = Math.abs(panOffsetY) % bgMaxOffset;
-		return { x: newX, y: newY };
-	})();
-
-	// Lifecycle hooks
-	onMount(() => {});
-
-	onDestroy(() => {});
+	// dots grow a little with zoom but stay readable at both ends
+	$: dotRadius = Math.min(1.2, Math.max(0.6, 0.8 * $camera.zoom));
 </script>
 
-<!-- Apply the background offset and zoom level to the polka-dots div -->
+{#if $showDotGrid}
 <div
 	class="polka-dots"
-	style={`transform: translate(${bgOffset.x}px, ${bgOffset.y}px) scale(${_zoomLevel}); visibility: ${isVisible};`}
+	style={`background-image: radial-gradient(circle, var(--col-transparent) ${dotRadius}px, transparent ${dotRadius + 0.8}px);` +
+		` background-size: ${tile}px ${tile}px;` +
+		` background-position: ${originX - tile / 2}px ${originY - tile / 2}px;` +
+		` opacity: ${DOT_OPACITY};`}
 ></div>
+{/if}

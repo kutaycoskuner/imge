@@ -1,28 +1,63 @@
 <script lang="ts">
+	// -----------------------------------------------------------------------------------------
+	//   author          : Kutay Coskuner
+	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
+	//   last update     : 2026-10-16
+	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+	//                     Check outputs before relying on them.
+	// -----------------------------------------------------------------------------------------
+	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, fit graph,
+	// transpose (switch the direction left-to-right / top-to-bottom and turn the layout; the icon's
+	// strong arrow is the current direction), dot grid on / off, snap to grid on / off,
+	// add node at the screen center, open graph (opens the Esc menu), export (download) and a
+	// test pan button. Hover hints show each button's key in [brackets], drawn as key caps
+	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
+	// the page. The buttons are a data list (`buttons`); their icons live in $lib/icons.
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { createEventDispatcher } from 'svelte';
 
-	
-	import {
-		screenSizeIndex,
-		zoomLevel,
-		assistanceMsg,
-		colorMode,
-		coordsStateXOffset,
-		coordsStateYOffset
-	} from '../../stores/imge_main';
+	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen, menuTab } from '../../stores/imge_main';
+	import { ZOOM_STEP, camera, panBy, zoomAt } from '$lib/camera';
+	import { createNodeAt, graph, setDirection, measureNodeSizes, showDotGrid, snapToGrid } from '$lib/graph/store';
+
+	// dot grid on / off (a display setting, remembered in this browser)
+	const toggleDotGrid = () => {
+		showDotGrid.update((shown) => !shown);
+		handleMouseOver($showDotGrid ? 'Dot grid shown' : 'Dot grid hidden');
+	};
+	// snap to grid on / off (a display setting like the dot grid; Alt+drag moves freely either way)
+	const toggleSnap = () => {
+		snapToGrid.update((on) => !on);
+		handleMouseOver($snapToGrid ? 'Snapping on' : 'Snapping off');
+	};
+	import type { Direction } from '$lib/graph/types';
+	import IconPlus from '$lib/icons/icon-plus.svelte';
+	import IconMinus from '$lib/icons/icon-minus.svelte';
+	import IconAddNode from '$lib/icons/icon-add-node.svelte';
+	import IconFit from '$lib/icons/icon-fit.svelte';
+	import IconTranspose from '$lib/icons/icon-transpose.svelte';
+	import IconDotGrid from '$lib/icons/icon-dot-grid.svelte';
+	import IconSnap from '$lib/icons/icon-snap.svelte';
+	import IconChevronUp from '$lib/icons/icon-chevron-up.svelte';
+	import IconChevronDown from '$lib/icons/icon-chevron-down.svelte';
+
+	// transpose: switch between left-to-right and top-to-bottom; the layout turns around node centres
+	$: direction = $graph.metadata.direction;
+	let nextDirection: Direction;
+	$: nextDirection = direction === 'top-to-bottom' ? 'left-to-right' : 'top-to-bottom';
+	const transpose = () => {
+		const target = nextDirection;
+		const sizes = measureNodeSizes();
+		graph.update((g) => setDirection(g, target, sizes));
+		handleMouseOver(`Direction: ${target}`);
+	};
 
 	const dispatch = createEventDispatcher();
 	// Access store variables
 	$: _screenSizeIndex = $screenSizeIndex;
-	$: _zoomLevel = $zoomLevel;
 	$: _assistanceMsg = $assistanceMsg;
 	$: _colorMode = $colorMode;
-
-	// Define min and max zoom levels
-	const MIN_ZOOM_LEVEL = 0.04;
-	const MAX_ZOOM_LEVEL = 4;
 
 	// Lifecycle hooks
 	onMount(() => {
@@ -48,217 +83,87 @@
 	};
 
 	// Zoom functions
-	const zoomIn = () => {
-		zoomLevel.update((level) => {
-			const newLevel = level + 0.1;
-			return newLevel > MAX_ZOOM_LEVEL ? MAX_ZOOM_LEVEL : newLevel;
-		});
-	};
+	const zoomIn = () => zoomAt(ZOOM_STEP);
 
-	const zoomOut = () => {
-		zoomLevel.update((level) => {
-			const newLevel = level - 0.1;
-			return newLevel < MIN_ZOOM_LEVEL ? MIN_ZOOM_LEVEL : newLevel;
-		});
-	};
+	const zoomOut = () => zoomAt(1 / ZOOM_STEP);
 
 	const exportGraph = () => {
 		dispatch('requestExport');
 	};
 
-	const test = () => {
-		coordsStateXOffset.update((n: number) => n - 10);
+	// opening graphs (folder or upload) lives in the Esc menu's Config tab, see GraphEditorMenu.svelte
+	const openGraphMenu = () => {
+		menuTab.set('config');
+		menuOpen.set(true);
 	};
+
+	// moves the canvas 10 px to the right
+	const test = () => panBy(10, 0);
 
 	// Emit events (fitToScreen and addNode)
 
-	const fitToScreen = () => {
-		coordsStateXOffset.update((n: number) => 0);
-		coordsStateYOffset.update((n: number) => 0);
-		zoomLevel.update((n: number) => 1);
-	};
+	// fitting needs the rendered node sizes, so the page does it
+	const fitToScreen = () => dispatch('requestFit');
 
-	const addNode = () => {
-		//   dispatch('addNode');
+	// the camera's x/y is the world point at the screen center
+	const addNode = () => createNodeAt({ x: $camera.x, y: $camera.y });
+
+	// Toolbar entries, top to bottom: data only (icon, hover hint, action); the template
+	// renders them all the same way. Stateful icons get their state through iconProps.
+	type ToolbarButton = {
+		id: string;
+		hint: string;
+		action: () => void;
+		icon?: typeof IconPlus;
+		iconProps?: Record<string, unknown>;
+		text?: string; // shown instead of an icon
 	};
+	let buttons: ToolbarButton[];
+	$: buttons = [
+		{ id: 'zoom-in', icon: IconPlus, hint: 'Zoom In [+]', action: zoomIn },
+		{ id: 'zoom-out', icon: IconMinus, hint: 'Zoom Out [-]', action: zoomOut },
+		{ id: 'add-node', icon: IconAddNode, hint: 'Add Node [Shift+A] at mouse', action: addNode },
+		{ id: 'fit', icon: IconFit, hint: 'Fit Graph [Home]', action: fitToScreen },
+		{ id: 'transpose', icon: IconTranspose, iconProps: { direction }, hint: `Transpose to ${nextDirection}`, action: transpose },
+		{
+			id: 'dot-grid',
+			icon: IconDotGrid,
+			iconProps: { on: $showDotGrid },
+			hint: $showDotGrid ? 'Hide Dot Grid' : 'Show Dot Grid',
+			action: toggleDotGrid
+		},
+		{
+			id: 'snap',
+			icon: IconSnap,
+			iconProps: { on: $snapToGrid },
+			hint: $snapToGrid ? 'Turn Snapping Off' : 'Turn Snapping On',
+			action: toggleSnap
+		},
+		{ id: 'open', icon: IconChevronUp, hint: 'Open Graph [Esc]', action: openGraphMenu },
+		{ id: 'download', icon: IconChevronDown, hint: 'Download Graph [Ctrl+Shift+S]', action: exportGraph },
+		{ id: 'test', text: 'T', hint: 'test button', action: test }
+	];
 </script>
 
-<!-- Template -->
+<!-- Template: one button per toolbar entry -->
 <div class="access-wrapper">
-	<!-- Zoom In -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={zoomIn}
-		on:keydown={(event) => event.key === 'Enter' && zoomIn()}
-		on:mouseenter={() => handleMouseOver('Zoom In')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			class="w-6 h-6 text-gray-800 dark:text-white"
-			aria-hidden="true"
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			fill="none"
-			viewBox="0 0 24 24"
+	{#each buttons as button (button.id)}
+		<div
+			class="access-function"
+			role="button"
+			tabindex="0"
+			on:click={button.action}
+			on:keydown={(event) => event.key === 'Enter' && button.action()}
+			on:mouseenter={() => handleMouseOver(button.hint)}
+			on:mouseleave={handleMouseLeave}
 		>
-			<path
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M5 12h14m-7 7V5"
-			/>
-		</svg>
-	</div>
-
-	<!-- Zoom Out -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={zoomOut}
-		on:keydown={(event) => event.key === 'Enter' && zoomOut()}
-		on:mouseenter={() => handleMouseOver('Zoom Out')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			class="w-6 h-6 text-gray-800 dark:text-white"
-			aria-hidden="true"
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<path
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="2"
-				d="M5 12h14"
-			/>
-		</svg>
-	</div>
-
-	<!-- Add Node -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={addNode}
-		on:keydown={(event) => event.key === 'Enter' && addNode()}
-		on:mouseenter={() => handleMouseOver('Add Node')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			class="w-6 h-6 text-gray-800 dark:text-white"
-			aria-hidden="true"
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<path
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-width="2"
-				d="M7.926 10.898 15 7.727m-7.074 5.39L15 16.29M8 12a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm12 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm0-11a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"
-			/>
-		</svg>
-	</div>
-
-	<!-- Fit to Screen -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={fitToScreen}
-		on:keydown={(event) => event.key === 'Enter' && fitToScreen()}
-		on:mouseenter={() => handleMouseOver('Reset View')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path
-				d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
-			/>
-		</svg>
-	</div>
-
-	<!-- Import Graph -->
-	<div
-		class="access-function not-selected"
-		role="button"
-		tabindex="0"
-		on:keydown={(event) => event.key === 'Enter' && handleMouseOver('Import Graph')}
-		on:mouseenter={() => handleMouseOver('Import Graph')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path d="M18 15l-6-6-6 6" />
-		</svg>
-	</div>
-
-	<!-- Export Graph -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={exportGraph}
-		on:keydown={(event) => event.key === 'Enter' && exportGraph()}
-		on:mouseenter={() => handleMouseOver('Export Graph')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-		>
-			<path d="M6 9l6 6 6-6" />
-		</svg>
-	</div>
-
-	<!-- Test -->
-	<div
-		class="access-function"
-		role="button"
-		tabindex="0"
-		on:click={test}
-		on:keydown={(event) => event.key === 'Enter' && fitToScreen()}
-		on:mouseenter={() => handleMouseOver('test button')}
-		on:mouseleave={handleMouseLeave}
-	>
-		<div>T</div>
-	</div>
+			{#if button.icon}
+				<svelte:component this={button.icon} {...button.iconProps} />
+			{:else}
+				<div>{button.text}</div>
+			{/if}
+		</div>
+	{/each}
 </div>
 
 <!-- Styles -->
@@ -288,7 +193,8 @@
 		cursor: pointer;
 	}
 
-	.access-function svg {
+	/* the icons are their own components (src/lib/icons), so their svg is styled globally */
+	.access-function :global(svg) {
 		width: 100%;
 		height: 100%;
 		opacity: 0.8;
