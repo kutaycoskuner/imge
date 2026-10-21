@@ -1,394 +1,442 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 5,
+        "version": 6,
         "direction": "left-to-right"
     },
     "data": {
         "nodes": [
             {
                 "id": "n1",
-                "name": "Trip to Lisbon",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": 30
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Trip to Lisbon",
+                    "color": null
+                }
             },
             {
                 "id": "n2",
-                "name": "Budget",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 290,
                     "y": 430
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Budget",
+                    "color": null
+                }
             },
             {
                 "id": "n3",
-                "name": "Transport",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 290,
                     "y": 230
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Transport",
+                    "color": null
+                }
             },
             {
                 "id": "n4",
-                "name": "Stay",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 290,
                     "y": 80
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Stay",
+                    "color": null
+                }
             },
             {
                 "id": "n5",
-                "name": "Food",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 290,
                     "y": -70
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Food",
+                    "color": null
+                }
             },
             {
                 "id": "n6",
-                "name": "Things to do",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 290,
                     "y": -320
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Things to do",
+                    "color": null
+                }
             },
             {
                 "id": "n7",
-                "name": "Flights ~200 €",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": 480
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Flights ~200 €",
+                    "color": null
+                }
             },
             {
                 "id": "n8",
-                "name": "Daily ~60 €",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": 380
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Daily ~60 €",
+                    "color": null
+                }
             },
             {
                 "id": "n9",
-                "name": "Metro pass",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": 280
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Metro pass",
+                    "color": null
+                }
             },
             {
                 "id": "n10",
-                "name": "Tram 28",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": 180
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Tram 28",
+                    "color": null
+                }
             },
             {
                 "id": "n11",
-                "name": "Flat in Alfama",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": 80
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Flat in Alfama",
+                    "color": null
+                }
             },
             {
                 "id": "n12",
-                "name": "Pastéis de nata",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": -20
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Pastéis de nata",
+                    "color": null
+                }
             },
             {
                 "id": "n13",
-                "name": "Seafood",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": -120
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Seafood",
+                    "color": null
+                }
             },
             {
                 "id": "n14",
-                "name": "Belém tower",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": -220
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Belém tower",
+                    "color": null
+                }
             },
             {
                 "id": "n15",
-                "name": "Fado night",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": -320
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Fado night",
+                    "color": null
+                }
             },
             {
                 "id": "n16",
-                "name": "Sintra day trip",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": -420
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Sintra day trip",
+                    "color": null
+                }
             }
         ],
         "links": [

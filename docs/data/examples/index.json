@@ -43,10 +43,73 @@
             "description": "Steps in order; review and test loop back to development, drawn above and below."
         },
         {
-            "name": "Shapes (UML-ish)",
-            "kind": "UML (partly)",
+            "name": "Shapes (UML classes)",
+            "kind": "UML class diagram",
             "file": "examples/shapes-uml.json",
-            "description": "Classes and inheritance; arrows point to the parent class (no UML arrow heads yet)."
+            "description": "UML classes with attributes and methods; arrows point to the parent class (no UML arrow heads yet)."
+        },
+        {
+            "name": "Quadratic a·x² + b·x + c",
+            "kind": "math calculation nodes",
+            "file": "examples/math-quadratic.json",
+            "description": "Constants flow through operations into a result; the values are written in the names.",
+            "sketch": true
+        },
+        {
+            "name": "Marble texture",
+            "kind": "textures (shader-like)",
+            "file": "examples/texture-marble.json",
+            "description": "Coordinates, noise and bands mixed into a marble pattern.",
+            "sketch": true
+        },
+        {
+            "name": "Half adder",
+            "kind": "circuit (digital)",
+            "file": "examples/circuit-half-adder.json",
+            "description": "Two bits in; sum (XOR) and carry (AND) out.",
+            "sketch": true
+        },
+        {
+            "name": "Voltage divider",
+            "kind": "circuit (analog)",
+            "file": "examples/circuit-voltage-divider.json",
+            "description": "Source, two resistors and ground in a loop; the meter reads the middle.",
+            "sketch": true
+        },
+        {
+            "name": "ALU (4-bit, sketch)",
+            "kind": "ALU / processor mapping",
+            "file": "examples/alu-sketch.json",
+            "description": "Registers feed an adder, an AND and an OR unit; a multiplexer picks one by opcode.",
+            "sketch": true
+        },
+        {
+            "name": "Login sequence",
+            "kind": "sequence diagram",
+            "file": "examples/sequence-login.json",
+            "description": "Participants as coloured columns, messages numbered in time order, replies as backward arrows.",
+            "sketch": true
+        },
+        {
+            "name": "Package dependencies",
+            "kind": "big data relation graph",
+            "file": "examples/big-data-packages.json",
+            "description": "29 packages in four layers (ui → core → data → utils), placed by hand.",
+            "sketch": true
+        },
+        {
+            "name": "Lecture notes",
+            "kind": "blackboard note taking",
+            "file": "examples/blackboard-notes.json",
+            "description": "Colour-coded notes scattered like on a blackboard, a group for definitions.",
+            "sketch": true
+        },
+        {
+            "name": "Function f: A → B",
+            "kind": "set visualization / function projection",
+            "file": "examples/set-function.json",
+            "description": "Two sets as groups; f maps both elements of A to x: not one-to-one, not onto.",
+            "sketch": true
         }
     ]
 }

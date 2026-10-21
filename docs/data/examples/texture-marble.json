@@ -1,0 +1,322 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 6,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -900,
+                    "y": 160
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Vector"
+                    }
+                ],
+                "content": {
+                    "name": "Texture coordinates",
+                    "color": "#8e4ec6"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -600,
+                    "y": 260
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Vector"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Value"
+                    }
+                ],
+                "content": {
+                    "name": "Noise (scale 5, detail 3)",
+                    "color": "#8e4ec6"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": 200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Vector"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Distortion"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Value"
+                    }
+                ],
+                "content": {
+                    "name": "Wave bands (distorted by noise)",
+                    "color": "#8e4ec6"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": -20
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Vector"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Colour"
+                    }
+                ],
+                "content": {
+                    "name": "Checker (scale 8)",
+                    "color": "#8e4ec6"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Factor"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Colour"
+                    }
+                ],
+                "content": {
+                    "name": "Colour ramp (white → grey)",
+                    "color": "#8e4ec6"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 300,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "A"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "B"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Colour"
+                    }
+                ],
+                "content": {
+                    "name": "Mix (factor 0.15)",
+                    "color": "#8e4ec6"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 600,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Colour"
+                    }
+                ],
+                "content": {
+                    "name": "Output (marble)",
+                    "color": "#46a758"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n2",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n3",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n3",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

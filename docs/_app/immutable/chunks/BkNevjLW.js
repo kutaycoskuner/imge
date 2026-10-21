@@ -1,1 +1,0 @@
-import{h as c}from"./ChAgZXs1.js";function r(s,a,e){var i=s.__className,t=l(a,e);c&&s.className===t?s.__className=t:(i!==t||c&&s.className!==t)&&(s.className=t,s.__className=t)}function l(s,a){return(s??"")+(" "+a)}function _(s,a,e){if(e){if(s.classList.contains(a))return;s.classList.add(a)}else{if(!s.classList.contains(a))return;s.classList.remove(a)}}export{r as s,_ as t};

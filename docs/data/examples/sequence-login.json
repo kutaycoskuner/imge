@@ -1,0 +1,254 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 6,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -600,
+                    "y": 420
+                },
+                "ports": [],
+                "content": {
+                    "name": "Browser",
+                    "color": "#2a9fd6"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": 420
+                },
+                "ports": [],
+                "content": {
+                    "name": "Server",
+                    "color": "#8e4ec6"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 420
+                },
+                "ports": [],
+                "content": {
+                    "name": "Database",
+                    "color": "#12a594"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -600,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Browser: submit login form",
+                    "color": "#2a9fd6"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Server: check login",
+                    "color": "#8e4ec6"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Database: find user",
+                    "color": "#12a594"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -600,
+                    "y": 160
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Browser: show dashboard",
+                    "color": "#2a9fd6"
+                }
+            },
+            {
+                "id": "n8",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": 160
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Server: verify password, create token",
+                    "color": "#8e4ec6"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "name": "1. POST /login",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "name": "2. SELECT user",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "name": "3. user row",
+                "shape": "spline",
+                "arrow": "backward",
+                "route": "above",
+                "source": {
+                    "node": "n8",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "name": "4. 200 OK + token",
+                "shape": "spline",
+                "arrow": "backward",
+                "route": "above",
+                "source": {
+                    "node": "n7",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

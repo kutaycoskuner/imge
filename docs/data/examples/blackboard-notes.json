@@ -1,0 +1,241 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 6,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -600,
+                    "y": 400
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Topic: graphs",
+                    "color": "#f76b15"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "group",
+                "typeVersion": 1,
+                "position": {
+                    "x": -360,
+                    "y": 300
+                },
+                "ports": [],
+                "content": {
+                    "name": "Definitions",
+                    "color": "#ffc53d"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": 260
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Vertex: a point",
+                    "color": "#ffc53d"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": 180
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Edge: joins two vertices",
+                    "color": "#ffc53d"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 140,
+                    "y": 340
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Example: a road map",
+                    "color": "#46a758"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 160,
+                    "y": 120
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "content": {
+                    "name": "Question: is every tree a graph?",
+                    "color": "#d6409f"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -680,
+                    "y": 60
+                },
+                "ports": [],
+                "content": {
+                    "name": "Remember: exam on Friday",
+                    "color": "#e5484d"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n3",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "name": "e.g.",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "name": "e.g.",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "none",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}
