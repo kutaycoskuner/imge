@@ -2,7 +2,7 @@
 
 How to create, edit and delete nodes and links in the graph editor, the rules links follow, and a reference for the functions behind it.
 
-State as of 2026-10-17.
+State as of 2026-10-21.
 
 - [Using it](#using-it)
     - [Mouse and keys](#mouse-and-keys)
@@ -102,6 +102,7 @@ Every link stores its own `arrow`, relative to its direction (output → input):
 | `both` | ↔ arrowheads at both ends. |
 | `none` | no arrowhead (graphs from before v4 open this way, so they look as before). |
 
+- **Splines and arrowheads:** a spline leaves and enters its ports with a short straight piece (17 units, as long as an arrowhead reaches), and curves only in between. An arrowhead is drawn straight along the end of its line, so this keeps it on the line however the nodes are placed.
 - **One link:** select it and press <kbd>D</kbd>.
 - **All links**, in the Esc menu's **Links** section, the same way as shapes:
     - **Show all arrows as …**: display only, not saved (`localStorage` key `imge.graphEditor.linkArrowOverride`)
@@ -269,6 +270,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-21 — spline arrowheads stay on their line: splines start and end with a short straight piece the arrowhead lies on
 - 2026-10-17 — Properties panel (N): the selection's details and editing, see graph-properties-panel.md; new functions `setNodePosition`, `setLinkStyle`; shortcuts also pause while a dropdown has the keyboard
 - 2026-10-17 — undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z), one step per edit or mouse gesture; undoing back to the saved graph clears the unsaved marker; new `history.ts`
 - 2026-10-17 — Ctrl+C / Ctrl+V copy and paste nodes with the links between them; new functions `copyNodes`, `pasteNodes`, store `nodeClipboard`

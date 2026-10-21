@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-16
+	//   last update     : 2026-10-21
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -11,7 +11,8 @@
 	// scaled by the layer's own transform.
 	//
 	// Shape (link.shape, or linkShapeOverride for display only):
-	//   spline     curve with horizontal tangents
+	//   spline     curve with horizontal tangents, entered and left by a short straight piece
+	//              (ARROW_ROOM) so an arrowhead always lies on its own line
 	//   line       straight line
 	//   manhattan  right angles; the vertical segment sits at `bend` (0 = output, 1 = input)
 	//              of the horizontal gap; an input left of its output gets stubs in and out
@@ -57,6 +58,10 @@
 	const LANE_MIN = 15; // lane distance from the nodes at bend 0
 	const LANE_RANGE = 120; // extra lane distance at bend 1
 	const LANE_STEP = 18; // gap between stacked lanes
+	// straight piece at both ends of a spline, as long as an arrowhead reaches back from the
+	// port (the arrow marker's refX below): a marker is drawn straight along the path's end
+	// direction, so on a curve that still bends there the line would leave the arrowhead
+	const ARROW_ROOM = 17;
 
 	interface Size {
 		w: number;
@@ -175,12 +180,15 @@
 				bend: { axis: 'y', from: from.y, to: to.y, d: polyline([a, b]), vertical: false }
 			};
 		}
-		const c = Math.max(40, Math.abs(to.x - from.x) * 0.5);
-		const c1 = { x: from.x + c, y: from.y };
-		const c2 = { x: to.x - c, y: to.y };
+		// the curve runs between the two straight end pieces
+		const start = { x: from.x + ARROW_ROOM, y: from.y };
+		const end = { x: to.x - ARROW_ROOM, y: to.y };
+		const c = Math.max(40, Math.abs(end.x - start.x) * 0.5);
+		const c1 = { x: start.x + c, y: start.y };
+		const c2 = { x: end.x - c, y: end.y };
 		return {
-			d: `M ${xy(from)} C ${xy(c1)}, ${xy(c2)}, ${xy(to)}`,
-			pts: cubic(from, c1, c2, to)
+			d: `M ${xy(from)} L ${xy(start)} C ${xy(c1)}, ${xy(c2)}, ${xy(end)} L ${xy(to)}`,
+			pts: [from, ...cubic(start, c1, c2, end), to]
 		};
 	}
 
@@ -203,14 +211,17 @@
 			const pts = [from, out, into, to];
 			return { d: polyline(pts), pts, bend: grab };
 		}
+		// straight end pieces like a direct spline, so arrowheads stay on the line
+		const start = { x: from.x + ARROW_ROOM, y: from.y };
+		const end = { x: to.x - ARROW_ROOM, y: to.y };
 		const mid = { x: (out.x + into.x) / 2, y: laneY };
 		const a1 = { x: from.x + SPLINE_PULL, y: from.y };
 		const a2 = { x: from.x + SPLINE_PULL, y: laneY };
 		const b1 = { x: to.x - SPLINE_PULL, y: laneY };
 		const b2 = { x: to.x - SPLINE_PULL, y: to.y };
 		return {
-			d: `M ${xy(from)} C ${xy(a1)}, ${xy(a2)}, ${xy(mid)} C ${xy(b1)}, ${xy(b2)}, ${xy(to)}`,
-			pts: [...cubic(from, a1, a2, mid), ...cubic(mid, b1, b2, to).slice(1)],
+			d: `M ${xy(from)} L ${xy(start)} C ${xy(a1)}, ${xy(a2)}, ${xy(mid)} C ${xy(b1)}, ${xy(b2)}, ${xy(end)} L ${xy(to)}`,
+			pts: [from, ...cubic(start, a1, a2, mid), ...cubic(mid, b1, b2, end).slice(1), to],
 			bend: grab
 		};
 	}
@@ -369,7 +380,8 @@
 <svg class="links-layer" aria-hidden="true">
 	<defs>
 		<!-- orient auto-start-reverse: used at the start of a path it points backwards;
-		     refX past the tip ends the arrow just outside the port square instead of under it -->
+		     refX past the tip ends the arrow just outside the port square instead of under it;
+		     refX = ARROW_ROOM, the straight end piece of splines the arrow lies on -->
 		<marker id="imge-arrow" viewBox="0 0 10 10" refX="17" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
 			<path class="link-arrow" d="M 0 1 L 9 5 L 0 9 z" />
 		</marker>
