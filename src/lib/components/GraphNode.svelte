@@ -12,14 +12,19 @@
 	// selected highlight, and inline title editing (double-click or F2 via
 	// `editingNodeId`; Enter or clicking away saves, Esc cancels).
 	// A group (type "group") is drawn as a frame (a <fieldset>) with its name in a gap of the
-	// top edge (the <legend>), no ports; only the name takes the mouse, so clicks inside the
+	// top edge (the <legend>), no ports, sized by its content's width / height (groupSize);
+	// only the name takes the mouse, so clicks inside the
 	// frame reach the canvas and the nodes on top of it (styles: .node.group in imge.css).
+	// A UML class (type "uml-class") is drawn as three stacked compartments: class name,
+	// attributes, methods; every member line is highlighted by its parts (uml.ts) and a line
+	// that doesn't follow the notation is underlined in red, its error as a tooltip.
 	// Mouse down for select/drag/link is handled by the page through the data-* attributes;
 	// ports carry `data-port-key` ("<node id>:<port id>") so GraphLinks can find and measure them,
 	// and `data-port-kind` (in / out / any) for the link rules.
 	import { graph, editingNodeId, renameNode, isGroup } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
-	import { nodeName, nodeColor, portSide } from '$lib/graph/node-types';
+	import { nodeName, nodeColor, portSide, umlMembers, groupSize } from '$lib/graph/node-types';
+	import { parseAttribute, parseMethod } from '$lib/graph/uml';
 	import { parseHexColor, dimColor } from '$lib/graph/color';
 
 	export let node: GraphNode;
@@ -32,6 +37,16 @@
 	$: startPorts = node.ports.filter((p) => portSide(p) === 'start');
 	$: endPorts = node.ports.filter((p) => portSide(p) === 'end');
 	$: group = isGroup(node);
+	// a group's frame size (content width / height, or the default); set inline over the CSS
+	$: frame = group ? groupSize(node) : null;
+	$: uml = node.type === 'uml-class';
+	// the two member compartments, as data for one template: parsed lines (tokens + error)
+	$: compartments = uml
+		? [
+				{ label: 'Attributes', lines: umlMembers(node, 'attributes').map(parseAttribute) },
+				{ label: 'Methods', lines: umlMembers(node, 'methods').map(parseMethod) }
+			]
+		: [];
 
 	let draft = '';
 	$: editing = $editingNodeId === node.id;
@@ -69,10 +84,11 @@
 	class:selected
 	class:colored={!!color}
 	class:group
+	class:uml
 	data-id={node.id}
 	style="transform: translate({node.position.x}px, {-node.position.y}px);{color
 		? ` --node-col: ${color}; --node-fill: ${dimColor(color)};`
-		: ''}"
+		: ''}{frame ? ` width: ${frame.w}px; height: ${frame.h}px;` : ''}"
 >
 	{#if group}
 		<fieldset class="group-frame">
@@ -104,6 +120,14 @@
 			{name}
 		</div>
 	{/if}
+
+	{#each compartments as compartment (compartment.label)}
+		<ul class="uml-compartment" aria-label={compartment.label}>
+			{#each compartment.lines as line}
+				<li class="uml-line" class:invalid={!!line.error} title={line.error ?? undefined}>{#each line.tokens as token}<span class="uml-{token.kind}">{token.text}</span>{/each}</li>
+			{/each}
+		</ul>
+	{/each}
 
 	<div class="inputs">
 		{#each startPorts as port (port.id)}

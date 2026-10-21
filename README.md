@@ -15,15 +15,15 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.21.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.22.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-    <img alt="Graph editor showing the feature map with a violet group frame around the node types; the selected, blue Node color node is shown in the Properties panel with its Node, Content and Ports and links sections" src="_display/0.21-graph_editor.png" />
+    <img alt="Graph editor in the light theme showing the feature map; the violet group Types v1 frames the node types Basic, Group and the selected UML class UmlClass, whose attributes and methods are shown highlighted in the Properties panel" src="_display/0.22-graph_editor.png" />
     <br>
-    <sub><i>v0.21.0 graph editor: the feature map (graph format v6) with a group, a coloured node and its Content in the Properties panel (N)</i></sub>
+    <sub><i>v0.22.0 graph editor (light theme): the feature map, the node types in a group with a UML class, its members in the Properties panel (N)</i></sub>
 </p>
 
 # Installation and Use
@@ -57,6 +57,7 @@ npm run test:unit -- --run
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
 - [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
 - [Properties panel](docs/graph-properties-panel.md): the docked panel for the selection, what it shows, how to add a section (e.g. for a node type)
+- [UML class nodes](docs/graph-uml.md): the three-compartment class node, member notation, highlighting and format check
 - [Simulation layer (planned)](docs/graph-simulation.md): how graphs could later run: math nodes, textures, digital and analog circuits
 - [Graph types](docs/graph-types.md): kinds of graphs imge could draw, which are possible today and what each still needs
 
@@ -84,7 +85,8 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] add / delete nodes (toolbar button or Shift+A, Delete)
 - [x] copy / paste nodes with the links between them (Ctrl+C, Ctrl+V at the mouse)
 - [x] undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z; a whole drag is one step)
-- [x] groups (node type Group): a frame behind other nodes with its name in the top edge, grabbed by its name; fixed size for now
+- [x] UML class nodes (node type UML class): class name, attributes and methods in three compartments, member lines highlighted and checked against the UML notation, edited in the Properties panel
+- [x] groups (node type Group): a frame behind other nodes with its name in the top edge, grabbed by its name; width and height set in the Properties panel
 - [x] node colours: border in the colour, dim fill of it; set in the Properties panel with a colour picker (saturation / brightness square, hue bar, tints and shades, presets; live on the canvas) or as hex, for one or several nodes
 - [x] Properties panel docked on the right (N or toolbar, hideable, like Blender's sidebar): shows and edits the selected node, nodes or link (name, position, links, shape, arrow, route, corner) so nodes on the canvas stay minimal
 - [x] new empty graph (Shift+N or the Esc menu; asks first if there are unsaved changes)

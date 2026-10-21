@@ -43,10 +43,10 @@
             "description": "Steps in order; review and test loop back to development, drawn above and below."
         },
         {
-            "name": "Shapes (UML-ish)",
-            "kind": "UML (partly)",
+            "name": "Shapes (UML classes)",
+            "kind": "UML class diagram",
             "file": "examples/shapes-uml.json",
-            "description": "Classes and inheritance; arrows point to the parent class (no UML arrow heads yet)."
+            "description": "UML classes with attributes and methods; arrows point to the parent class (no UML arrow heads yet)."
         },
         {
             "name": "Quadratic a·x² + b·x + c",

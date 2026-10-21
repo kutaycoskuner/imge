@@ -8,7 +8,7 @@
         "nodes": [
             {
                 "id": "n1",
-                "type": "basic",
+                "type": "uml-class",
                 "typeVersion": 1,
                 "position": {
                     "x": 0,
@@ -30,16 +30,25 @@
                 ],
                 "content": {
                     "name": "Shape (abstract)",
-                    "color": null
+                    "color": null,
+                    "attributes": [
+                        "# name: String",
+                        "# color: Color = BLACK"
+                    ],
+                    "methods": [
+                        "+ area(): double",
+                        "+ perimeter(): double",
+                        "+ draw(canvas: Canvas): void"
+                    ]
                 }
             },
             {
                 "id": "n2",
-                "type": "basic",
+                "type": "uml-class",
                 "typeVersion": 1,
                 "position": {
-                    "x": -320,
-                    "y": -170
+                    "x": -340,
+                    "y": -260
                 },
                 "ports": [
                     {
@@ -57,16 +66,23 @@
                 ],
                 "content": {
                     "name": "Circle",
-                    "color": null
+                    "color": null,
+                    "attributes": [
+                        "- radius: double"
+                    ],
+                    "methods": [
+                        "+ area(): double",
+                        "+ perimeter(): double"
+                    ]
                 }
             },
             {
                 "id": "n3",
-                "type": "basic",
+                "type": "uml-class",
                 "typeVersion": 1,
                 "position": {
                     "x": 0,
-                    "y": -170
+                    "y": -260
                 },
                 "ports": [
                     {
@@ -84,16 +100,24 @@
                 ],
                 "content": {
                     "name": "Rectangle",
-                    "color": null
+                    "color": null,
+                    "attributes": [
+                        "- width: double",
+                        "- height: double"
+                    ],
+                    "methods": [
+                        "+ area(): double",
+                        "+ perimeter(): double"
+                    ]
                 }
             },
             {
                 "id": "n4",
-                "type": "basic",
+                "type": "uml-class",
                 "typeVersion": 1,
                 "position": {
-                    "x": 320,
-                    "y": -170
+                    "x": 340,
+                    "y": -260
                 },
                 "ports": [
                     {
@@ -111,16 +135,25 @@
                 ],
                 "content": {
                     "name": "Triangle",
-                    "color": null
+                    "color": null,
+                    "attributes": [
+                        "- a: double",
+                        "- b: double",
+                        "- c: double"
+                    ],
+                    "methods": [
+                        "+ area(): double",
+                        "+ isRight(): boolean"
+                    ]
                 }
             },
             {
                 "id": "n5",
-                "type": "basic",
+                "type": "uml-class",
                 "typeVersion": 1,
                 "position": {
                     "x": 0,
-                    "y": -340
+                    "y": -520
                 },
                 "ports": [
                     {
@@ -138,7 +171,13 @@
                 ],
                 "content": {
                     "name": "Square",
-                    "color": null
+                    "color": null,
+                    "attributes": [
+                        "- side: double"
+                    ],
+                    "methods": [
+                        "+ Square(side: double)"
+                    ]
                 }
             }
         ],

@@ -51,6 +51,7 @@ import {
 	type Direction,
 	type Port,
 	type PortKind,
+	type NodeContent,
 	PORT_KINDS
 } from './types';
 import { nodeType } from './node-types';
@@ -273,6 +274,17 @@ export function setNodeColor(g: Graph, nodeIds: string[], color: string | null):
 	const ids = new Set(g.data.nodes.filter((n) => nodeIds.includes(n.id) && 'color' in n.content).map((n) => n.id));
 	if (!g.data.nodes.some((n) => ids.has(n.id) && n.content.color !== color)) return g;
 	return withNodes(g, g.data.nodes.map((n) => (ids.has(n.id) ? { ...n, content: { ...n.content, color } } : n)));
+}
+
+/**
+ * Sets keys of a node's `content` (a type's own Properties section, e.g. a UML class's
+ * attributes and methods); other keys stay. Returns the same graph when every given value is
+ * already there (compared as JSON, so lists count as equal by their items), so no undo step.
+ */
+export function setNodeContent(g: Graph, nodeId: string, patch: NodeContent): Graph {
+	const node = g.data.nodes.find((n) => n.id === nodeId);
+	if (!node || Object.entries(patch).every(([k, v]) => JSON.stringify(node.content[k]) === JSON.stringify(v))) return g;
+	return withNodes(g, g.data.nodes.map((n) => (n.id === nodeId ? { ...n, content: { ...n.content, ...structuredClone(patch) } } : n)));
 }
 
 /** Moves the given nodes by a world-space delta. */

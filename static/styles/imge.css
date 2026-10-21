@@ -237,6 +237,58 @@ kbd {
     cursor: text;
 }
 
+/* UML class (node type "uml-class"): class name on top, then the attributes and the methods
+   compartments, each a list of member lines (GraphNode, parsed by $lib/graph/uml.ts) */
+.node.uml {
+    width: auto;
+    min-width: 10em;
+    max-width: 28em;
+    padding: 0;
+    text-align: left;
+    border-radius: 3px; /* UML classes are drawn as rectangles: barely rounded */
+}
+
+.node.uml .node-title,
+.node.uml .node-title-input {
+    padding: 0.6em 1em;
+    text-align: center;
+    font-weight: 600;
+}
+
+.uml-compartment {
+    list-style: none;
+    margin: 0;
+    padding: 0.35em 0.9em;
+    min-height: 0.8em; /* an empty compartment still shows as a band */
+    border-top: 1px solid var(--col-border);
+    font-family: monospace;
+    font-size: 0.85em;
+}
+
+.node.uml.colored .uml-compartment {
+    border-top-color: var(--node-col);
+}
+
+.uml-line {
+    white-space: pre;
+    line-height: 1.5;
+}
+
+/* syntax highlighting of member lines */
+.uml-visibility { color: #d6409f; font-weight: 600; }
+.uml-modifier { color: #8e4ec6; }
+.uml-type { color: #2a9fd6; }
+.uml-default { color: #46a758; }
+.uml-param { font-style: italic; }
+.uml-punct { opacity: 0.6; }
+
+/* format check: a line that doesn't follow the notation (its error is the tooltip) */
+.uml-line.invalid {
+    text-decoration: underline wavy #d9534f;
+    text-decoration-skip-ink: none;
+    text-underline-offset: 3px;
+}
+
 .node-title-input {
     width: 100%;
     box-sizing: border-box;

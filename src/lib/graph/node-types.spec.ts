@@ -14,7 +14,7 @@
 // -----------------------------------------------------------------------------------------
 
 import { describe, it, expect } from 'vitest';
-import { NODE_TYPES, nodeType, nodeLabel } from './node-types';
+import { NODE_TYPES, nodeType, nodeLabel, groupSize, GROUP_SIZE } from './node-types';
 import { addNode, emptyGraph, setNodeType } from './store';
 import { migrateGraph, CURRENT_GRAPH_VERSION } from './migrations';
 import { GRAPH_FORMAT, type GraphNode } from './types';
@@ -91,8 +91,12 @@ describe('nodes take the shape of their type', () => {
 			const { content: _c, ...changed } = shape(setNodeType(start, 'n1', t.id).data.nodes[0]);
 			const { content: _s, ...sample } = shape(current(sampleOf(t.id, t.version!)!));
 			expect(changed, t.id).toEqual(sample);
-			const back = setNodeType(setNodeType(start, 'n1', t.id), 'n1', 'basic').data.nodes[0];
-			expect(shape(back)).toEqual(shape(current(sampleOf('basic', nodeType('basic')!.version!)!)));
+			// back to basic: the basic shape again; content keeps what the other type added
+			// (e.g. a UML class's members), so switching back to it brings them back
+			const back = shape(setNodeType(setNodeType(start, 'n1', t.id), 'n1', 'basic').data.nodes[0]);
+			const basic = shape(current(sampleOf('basic', nodeType('basic')!.version!)!));
+			expect({ ...back, content: undefined }).toEqual({ ...basic, content: undefined });
+			expect(back.content).toMatchObject({ name: 'Node', color: null });
 		}
 	});
 });
@@ -108,5 +112,16 @@ describe('labels for generic UI', () => {
 	it('a type without a label (unknown) falls back to "<type> (<id>)"', () => {
 		const { node } = addNode(emptyGraph(), { x: 0, y: 0 });
 		expect(nodeLabel({ ...node, type: 'and-gate', content: {} })).toBe('and-gate (n1)');
+	});
+});
+
+describe('group size', () => {
+	it('comes from the content, or the default; too small or not a number falls back', () => {
+		const { node } = addNode(emptyGraph(), { x: 0, y: 0 });
+		const group = setNodeType(addNode(emptyGraph(), { x: 0, y: 0 }).graph, 'n1', 'group').data.nodes[0];
+		expect(groupSize(group)).toEqual(GROUP_SIZE);
+		expect(groupSize({ ...group, content: { ...group.content, width: 440, height: 400 } })).toEqual({ w: 440, h: 400 });
+		expect(groupSize({ ...group, content: { ...group.content, width: 20, height: 'x' } })).toEqual(GROUP_SIZE);
+		expect(node.type).toBe('basic');
 	});
 });

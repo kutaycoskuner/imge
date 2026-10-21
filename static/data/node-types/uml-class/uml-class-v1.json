@@ -1,0 +1,14 @@
+{
+    "metadata": { "format": "imge-node-type", "type": "uml-class", "version": 1, "graphFormat": 6 },
+    "node": {
+        "id": "n1",
+        "type": "uml-class",
+        "typeVersion": 1,
+        "position": { "x": 0, "y": 0 },
+        "ports": [
+            { "id": "i1", "kind": "in", "type": "basic", "label": "Input" },
+            { "id": "o1", "kind": "out", "type": "basic", "label": "Output" }
+        ],
+        "content": { "name": "Class", "color": null, "attributes": [], "methods": [] }
+    }
+}

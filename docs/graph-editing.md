@@ -197,6 +197,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `addNode(g, at, name?)` | Adds a basic node built from the basic template (`node-types.ts`): ports `i1` (in) and `o1` (out), `content` `{ name: "Node", color: null }` (`name` replaces the default), `typeVersion` of the template; roughly centered on `at`, its position (top-left corner) rounded to whole units. | `{ graph, node }` |
 | `renameNode(g, nodeId, name)` | Sets `content.name`, trimmed, for a node whose content has a name. A blank name keeps the old one. | `Graph` |
 | `setNodeColor(g, nodeIds, color)` | Sets `content.color` of the given nodes whose content has a colour (`"#rrggbb"`, or `null` for the default look); the same graph back when all already have it. | `Graph` |
+| `setNodeContent(g, nodeId, patch)` | Sets keys of a node's `content` (a type's own Properties section, e.g. a UML class's `attributes` / `methods`); other keys stay; the same graph back when every value is already there. | `Graph` |
 | `setNodeType(g, nodeId, type)` | Sets a node's `type` (Properties panel's Type dropdown) and reshapes it to the type's template, port kind by port kind: a kind the type has no ports of is removed with its links, a kind the node lacks comes from the template; `content` gets the template's missing keys (existing ones kept); `typeVersion` follows the type. The same graph back when unchanged; one undo restores everything. | `Graph` |
 | `isGroup(node)` / `hasLinks(g, nodeId)` | Whether a node is a group (frame without ports; `addLink` and `quickLink` never use it) / whether any link starts or ends at it. | `boolean` |
 | `setNodePosition(g, nodeId, at)` | Puts one node's top-left corner at a world point (Properties panel); the same graph back when it is already there. | `Graph` |
@@ -275,6 +276,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-21 — new function `setNodeContent` (UML class members)
 - 2026-10-21 — graph format v6: nodes keep name and colour in `content` and their ports in one list with `kind`; `addNode` builds from the basic template, `setNodeType` reshapes by port kind and fills `content`; one link rule `CAN_LINK`, `addLink` takes the ends in either order (a drag from an input works) and stores giving → taking; new `portOf`
 - 2026-10-21 — groups: no links to or from a group (`addLink` outcome `unknown-port`, F skips it), a box takes a group only when it is fully inside; new `isGroup`, `hasLinks`
 - 2026-10-21 — node colours (Properties panel); new function `setNodeColor`

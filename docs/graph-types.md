@@ -20,7 +20,7 @@ Every type has an example graph: open it from the Esc menu's **Examples** tab; t
 | ↳ [Textures (shader-like)](#textures-shader-like) | not yet | as math nodes, plus per-pixel values and previews |
 | [Circuit](#circuit) (later) | not yet | circuit symbols, two-way terminals, bit / signal values, the simulation layer |
 | ↳ [ALU / processor mapping](#alu--processor-mapping) | not yet | as digital circuit, plus composite parts and stepping |
-| [UML (software architecture)](#uml-software-architecture) | partly | class compartments, UML arrow heads |
+| [UML (software architecture)](#uml-software-architecture) | partly | UML arrow heads, dashed dependencies (class compartments: done) |
 | [Sequence diagram](#sequence-diagram) | not yet | lifelines, messages ordered in time |
 | [Loose architecture / process map](#loose-architecture--process-map) (rough software architecture) | possible | resizable groups that carry their nodes |
 | [Number / decision tree](#number--decision-tree) | possible | automatic tree layout |
@@ -91,9 +91,9 @@ Mapping how an ALU or processor works: units (adders, registers, multiplexers) a
 Class, component or sequence diagrams for software architecture.
 
 - **Status:** partly
-- **Works today:** classes / components as nodes, relations as links with names, arrows.
-- **Missing:** node compartments (name / attributes / methods), UML arrow heads (hollow triangle for inheritance, diamonds for aggregation / composition), dashed links for dependencies, link types that set these.
-- **Example:** Shapes (UML-ish) (`shapes-uml.json`)
+- **Works today:** UML class nodes with three compartments (class name, attributes, methods), member lines highlighted and checked against the UML notation (see [graph-uml.md](graph-uml.md)); relations as links with names and arrows.
+- **Missing:** relation kinds with their UML look (triangles, diamonds, dashed lines), multiplicities and roles at link ends, relations attaching anywhere on a class box, stereotypes, packages; component diagrams. Planned for later, in this order: [graph-uml.md, roadmap](graph-uml.md#roadmap-a-functional-class-diagram-later).
+- **Example:** Shapes (UML classes) (`shapes-uml.json`)
 
 ### Sequence diagram
 
@@ -109,7 +109,7 @@ Less strict diagrams that describe a system or a process at a glance (like the h
 
 - **Status:** possible
 - **Works today:** nodes, links with shapes, arrows and names, both directions.
-- **Works today:** groups as frames behind related nodes (fixed size for now).
+- **Works today:** groups as frames behind related nodes, sized in the Properties panel.
 - **Missing:** resizable groups that carry their nodes, free text labels not attached to a node.
 - **Example:** Web app architecture (`web-app-architecture.json`)
 
@@ -170,9 +170,9 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 |---|---|
 | Add / remove ports, named ports | flowchart decisions, parametric graphs, UML |
 | Node shapes (diamond, circle, point) | flowchart, lattice, decision trees |
-| Groups / containers (started: frames, fixed size) | loose architecture maps, set visualization, UML packages |
+| Groups / containers (started: frames with a size; no drag handle, don't carry their nodes yet) | loose architecture maps, set visualization, UML packages |
 | Node colours drawn (done) | mind maps, architecture maps |
-| Node content (text, compartments) | UML, mind maps, notes |
+| Node content (text, compartments; started: UML class compartments) | UML, mind maps, notes |
 | Automatic layout (tree, layered, force) | trees, lattices, big data |
 | Link types with their own look (dashed, UML heads) | UML, process planning |
 | Simulation layer ([graph-simulation.md](graph-simulation.md)): value-typed ports, `evaluate` per type, engine | math nodes, textures, circuits, ALU mapping |
@@ -182,6 +182,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 
 ## Changes
 
+- 2026-10-21 — UML: class nodes with compartments, highlighting and format check (graph-uml.md); the example uses them
 - 2026-10-21 — every type has an example now: sketches for the *not yet* types (math, texture, two circuits, ALU, sequence, package dependencies, lecture notes, set function)
 - 2026-10-21 — new types: circuit (digital / analog, with the ALU mapping under it), sequence diagram; parametric graph is now "math calculation nodes" with textures under it; rough software architecture named under the loose architecture map; running graphs planned in [graph-simulation.md](graph-simulation.md)
 - 2026-10-21 — graph format v6: node types keep their own data in `content`, ports in one list with `kind` (in / out / two-way `any`); this prepares UML classes, circuit symbols and notes (see [graph-format.md](graph-format.md#why-nodes-look-like-this))

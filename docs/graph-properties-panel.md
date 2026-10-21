@@ -44,6 +44,7 @@ The panel shows the sections whose condition matches the selection, top to botto
 | Nothing | Graph | File name (or "not saved yet") with the unsaved marker, direction (changes it like the Esc menu and the transpose button), number of nodes and links. |
 | One node | Node | What every node has (graph format v6 top level): id, type (dropdown, see below), position of the top-left corner X and Y (world units, y up; editable), Delete node. |
 | One node of a type with a name and a colour (basic, group) | Content | Name (editable) and colour (see below): the type's own `content`. Other node types will bring their own content sections. |
+| One UML class | Attributes and methods | One field per compartment, one member per line in UML notation, highlighted while typing, with the lines that don't follow the notation listed under the field; leaving a field saves it (see [graph-uml.md](graph-uml.md)). |
 | One node with ports | Ports and links | Its ports by kind (inputs, outputs, and two-way ports when it has any), by label; links coming in and going out, by the node at the other end (and the link's name); a click selects the link. |
 | Several nodes | Selection | How many nodes and how many links between them; one colour for all of them whose type has a colour (empty with "mixed" when they differ; × resets all); their labels (a click selects only that one); Delete all of them. |
 | One link | Link | Name (editable; empty removes it), id, From and To as node label · port label (a click selects the node), Delete link. |
@@ -67,7 +68,7 @@ Node names in lists and link ends come from the node's type (`nodeLabel(node)` i
 
 ### Node types
 
-The Type dropdown lists `NODE_TYPES` from `src/lib/graph/node-types.ts`: `id`, `title` (the dropdown text), hover `description`, `ready`; for ready types also the template: `version`, the `ports` a new node gets (one list, each with a `kind`), its `content` with default values (basic / group: `name`, `color`) and `label(node)` for generic UI. **Basic** and **Group** are drawn and can be chosen; **Note**, **UML class** and **Decision** are listed greyed out with "(later)" to show what is planned.
+The Type dropdown lists `NODE_TYPES` from `src/lib/graph/node-types.ts`: `id`, `title` (the dropdown text), hover `description`, `ready`; for ready types also the template: `version`, the `ports` a new node gets (one list, each with a `kind`), its `content` with default values (basic / group: `name`, `color`) and `label(node)` for generic UI. **Basic**, **Group** and **UML class** ([graph-uml.md](graph-uml.md)) are drawn and can be chosen; **Note** and **Decision** are listed greyed out with "(later)" to show what is planned.
 
 - **Changing the type reshapes the node** to the new type's template, port kind by port kind: a kind the type has no ports of is removed from the node with the links on those ports; a kind it has keeps the node's own ports, or gets the template's when the node has none (Group → Basic gets a fresh input and output). `content` gets the template's keys it lacks and keeps what it has, so a name and colour survive Basic → Group → Basic; `typeVersion` follows the type. When links would go, the panel asks first; one Ctrl+Z restores everything.
 - **Versions and samples:** every ready type has a sample node per version in `static/data/node-types/<type>/<type>-v<n>.json` (like the graph format samples): a header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`) and the node as it appears in a graph file of that format; a sample written in an older graph format is upgraded before it is compared (the v1 samples of basic and group are written in graph format 5; their template didn't change with graph format 6, so they stay version 1). `node-types.spec.ts` checks that each version has its sample, the newest matches the template, new nodes and type changes produce exactly that shape, and every sample loads as part of a graph. Changing a type's template means a new `version` and a new sample file.
@@ -75,7 +76,7 @@ The Type dropdown lists `NODE_TYPES` from `src/lib/graph/node-types.ts`: `id`, `
     - Only the name takes the mouse: click it to select, drag it to move, double-click it to rename. Clicks inside the frame reach the canvas and the nodes on top of it (panning, box selection and clicking nodes work there as usual).
     - A box selection takes a group only when the whole group is inside the box, so a box drawn inside a group selects the nodes in it.
     - Groups have no ports, so links never start or end at one (dragging, F). A group's panel has no "Ports and links" section.
-    - For now every group has the same size (20 × 12 em), and moving a group doesn't move the nodes in it; resizing and moving the contents along come next (they need a size in the file format).
+    - **Size:** a group's frame is 320 × 192 world units (20 × 12 em) unless its content has `width` / `height`; the **Content** section shows **Width** and **Height** for groups (steps of 20, at least 100). There is no drag handle yet, and moving a group doesn't move the nodes in it; both come later.
 
 A node whose `type` isn't in the list (e.g. from a newer file) shows that type as an extra option. A type becomes choosable (`ready: true`) once the canvas can draw it and it has its own panel section.
 
@@ -105,6 +106,7 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 | `src/lib/components/properties/ColorPicker.svelte` | The colour picker: saturation / brightness square, hue bar, tints and shades, presets; mouse, touch and arrow keys. |
 | `src/lib/graph/color.ts` | `parseHexColor` (typed hex to `#rrggbb`), `dimColor` and `NODE_FILL_SHARE` (the fill), `hexToHsv` / `hsvToHex`, `mixHex` / `tintsAndShades`, `NODE_COLOR_PRESETS`. Tests in `color.spec.ts`. |
 | `src/lib/graph/node-types.ts` | `NODE_TYPES`: the Type dropdown's list, and for ready types their template (version, ports, content, label); `nodeType(id)`, `nodeLabel(node)`, `nodeName`, `nodeColor`, `hasNamedContent`, `portSide`. |
+| `src/lib/components/properties/PropsUmlMembers.svelte`, `PropUmlLines.svelte` | The Attributes and methods section of UML classes; a member field with highlighting and format check. |
 | `src/lib/components/properties/PropsContent.svelte` | The Content section of basic / group nodes: name and colour. |
 | `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per ready type and version (basic-v1, group-v1); checked by `src/lib/graph/node-types.spec.ts`. |
 | `src/lib/icons/icon-sidebar-right.svelte`, `icon-chevron-left.svelte`, `icon-chevron-right.svelte` | The toolbar button's icon and the hide / show chevrons. |
@@ -114,11 +116,13 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 - The panel floats over the right side of the canvas; fitting the graph (Home) doesn't leave room for it, so the rightmost nodes can sit under it. Hide it with <kbd>N</kbd> to see them.
 - Fixed width (17em); it can't be dragged wider yet, and it docks only on the right.
 - On a phone-sized window it covers about half of the canvas; hide it there.
-- Ports can't be added, removed or renamed from the panel yet; only the Basic and Group node types can be chosen.
+- Ports can't be added, removed or renamed from the panel yet; the Basic, Group and UML class node types can be chosen.
 - Groups can't be resized yet and don't carry their contents when moved.
 
 ## Changes
 
+- 2026-10-21 — groups get a size: Width and Height in the Content section (content `width` / `height`, default 320 × 192)
+- 2026-10-21 — UML class type: Attributes and methods section (highlighting while typing, format check)
 - 2026-10-21 — graph format v6: Node section keeps what every node has (id, type, position); name and colour moved to a new Content section shown for types that have them; Ports and links lists ports by kind; labels come from the node's type (`nodeLabel`); the duplicated sentence in Node types fixed
 - 2026-10-21 — node types carry a version, default name and ports template; changing the type reshapes the node's ports (asks when links would go); versioned samples per type in `static/data/node-types/`; a group's name takes its frame's colour
 - 2026-10-21 — node type Group (frame behind other nodes, name in the top edge, no ports); Ports and links section hidden for groups; a linked node can become a group (asks, removes its links, one undo step); title reads "Properties (N)" instead of a separate key cap

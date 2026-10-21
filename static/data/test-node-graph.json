@@ -1205,7 +1205,45 @@
                 "ports": [],
                 "content": {
                     "name": "Types v1",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "width": 380,
+                    "height": 380
+                }
+            },
+            {
+                "id": "n46",
+                "type": "uml-class",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": -620
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "UmlClass",
+                    "color": null,
+                    "attributes": [
+                        "- name: String",
+                        "- attributes: List<String>",
+                        "- methods: List<String>"
+                    ],
+                    "methods": [
+                        "+ parseAttribute(line: String): UmlLine",
+                        "+ parseMethod(line: String): UmlLine"
+                    ]
                 }
             }
         ],
@@ -1915,6 +1953,36 @@
                 },
                 "target": {
                     "node": "n44",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l48",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n46",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l49",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n46",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n43",
                     "port": "i1"
                 }
             }

@@ -31,6 +31,7 @@ import {
 	setNodePosition,
 	setNodeType,
 	setNodeColor,
+	setNodeContent,
 	isGroup,
 	CAN_LINK,
 	setLinkStyle,
@@ -474,6 +475,15 @@ describe('properties panel edits', () => {
 		expect(coloured.data.nodes.map((n) => n.content.color)).toEqual(['#2a9fd6', null, '#2a9fd6']);
 		expect(setNodeColor(coloured, ['n1', 'n3'], '#2a9fd6')).toBe(coloured);
 		expect(setNodeColor(coloured, ['n1'], null).data.nodes[0].content.color).toBeNull();
+	});
+
+	it('sets content keys, keeps the others, and returns the same graph when nothing changes', () => {
+		const g = setNodeType(threeNodes(), 'n1', 'uml-class');
+		expect(g.data.nodes[0].content).toEqual({ name: 'Node', color: null, attributes: [], methods: [] });
+		const set = setNodeContent(g, 'n1', { attributes: ['- radius: double'] });
+		expect(set.data.nodes[0].content).toEqual({ name: 'Node', color: null, attributes: ['- radius: double'], methods: [] });
+		expect(setNodeContent(set, 'n1', { attributes: ['- radius: double'] })).toBe(set);
+		expect(setNodeContent(set, 'missing', { attributes: [] })).toBe(set);
 	});
 
 	it('changing the type keeps the name and colour, and brings the template ports back', () => {
