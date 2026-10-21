@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-17
+//   last update     : 2026-10-21
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -210,6 +210,16 @@ export function setNodeType(g: Graph, nodeId: string, type: string): Graph {
 	const node = g.data.nodes.find((n) => n.id === nodeId);
 	if (!node || node.type === type) return g;
 	return withNodes(g, g.data.nodes.map((n) => (n.id === nodeId ? { ...n, type } : n)));
+}
+
+/**
+ * Sets the colour of the given nodes (Properties panel): "#rrggbb", or null for the theme's
+ * default look. Returns the same graph when every node already has it (no undo step).
+ */
+export function setNodeColor(g: Graph, nodeIds: string[], color: string | null): Graph {
+	const ids = new Set(nodeIds);
+	if (!g.data.nodes.some((n) => ids.has(n.id) && n.color !== color)) return g;
+	return withNodes(g, g.data.nodes.map((n) => (ids.has(n.id) ? { ...n, color } : n)));
 }
 
 /** Moves the given nodes by a world-space delta. */

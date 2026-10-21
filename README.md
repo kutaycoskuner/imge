@@ -15,15 +15,15 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.18.1-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.19.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-    <img alt="Graph editor showing the feature map, with a selected node shown in the Properties panel on the right" src="_display/0.18-graph_editor.png" />
+    <img alt="Graph editor showing the feature map; the selected, blue Node color node is shown with its colour in the Properties panel on the right" src="_display/0.19-graph_editor.png" />
     <br>
-    <sub><i>v0.18.0 graph editor: the feature map, with the selected node in the Properties panel (N)</i></sub>
+    <sub><i>v0.19.0 graph editor: the feature map, a coloured node and its colour in the Properties panel (N)</i></sub>
 </p>
 
 # Installation and Use
@@ -83,6 +83,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] add / delete nodes (toolbar button or Shift+A, Delete)
 - [x] copy / paste nodes with the links between them (Ctrl+C, Ctrl+V at the mouse)
 - [x] undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z; a whole drag is one step)
+- [x] node colours: border in the colour, dim fill of it; set in the Properties panel with a colour picker (saturation / brightness square, hue bar, tints and shades, presets; live on the canvas) or as hex, for one or several nodes
 - [x] Properties panel docked on the right (N or toolbar, hideable, like Blender's sidebar): shows and edits the selected node, nodes or link (name, position, links, shape, arrow, route, corner) so nodes on the canvas stay minimal
 - [x] new empty graph (Shift+N or the Esc menu; asks first if there are unsaved changes)
 - [x] node name editing (double-click or F2)
@@ -97,7 +98,6 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
 - [x] versioned graph format (now v5), older files upgraded on load; a sample per version in static/data/samples
 - [x] example graphs in the Esc menu (mind map, flowchart, search tree, lattice, architecture map, release process, UML-ish), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)
-- [ ] node colors (stored in the file since v3, not drawn yet)
 - [ ] vertical / horizontal frameworks
 - [ ] node content editing
 - [ ] add / remove ports

@@ -35,7 +35,8 @@ Ideas as nodes, relations as links; no strict direction.
 
 - **Status:** possible
 - **Works today:** nodes and names, links in any direction, arrows `none` or `both` for undirected relations, link names for the kind of relation, cycles.
-- **Missing:** node colours drawn (the `color` field is stored, not shown), notes or text inside nodes, a radial layout around a central idea.
+- **Works today:** node colours (border and dim fill), set in the Properties panel.
+- **Missing:** notes or text inside nodes, a radial layout around a central idea.
 - **Example:** Trip planning (`trip-planning.json`); the Feature map (the start graph) is a relation map
 
 ### Flowchart / algorithm
@@ -77,7 +78,7 @@ Less strict diagrams that describe a system or a process at a glance (like the h
 
 - **Status:** possible
 - **Works today:** nodes, links with shapes, arrows and names, both directions.
-- **Missing:** groups / containers (a box around related nodes), node colours drawn, free text labels not attached to a node.
+- **Missing:** groups / containers (a box around related nodes), free text labels not attached to a node.
 - **Example:** Web app architecture (`web-app-architecture.json`)
 
 ### Number / decision tree
@@ -135,7 +136,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 | Add / remove ports, named ports | flowchart decisions, parametric graphs, UML |
 | Node shapes (diamond, circle, point) | flowchart, lattice, decision trees |
 | Groups / containers | loose architecture maps, set visualization, UML packages |
-| Node colours drawn | mind maps, architecture maps |
+| Node colours drawn (done) | mind maps, architecture maps |
 | Node content (text, compartments) | UML, mind maps, notes |
 | Automatic layout (tree, layered, force) | trees, lattices, big data |
 | Link types with their own look (dashed, UML heads) | UML, process planning |
@@ -144,5 +145,6 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 
 ## Changes
 
+- 2026-10-21 — node colours are drawn: removed from the missing lists of relation and architecture maps
 - 2026-10-16 — an example graph for each possible / partly possible type, opened from the Esc menu
 - 2026-10-16 — first version: twelve graph types with status (possible / partly / not yet) and what each needs; building blocks that unlock several types

@@ -2,7 +2,7 @@
 
 How the graph editor's endless canvas works: the camera, the two coordinate spaces, zoom, the dot grid and node rendering. Editing nodes and links: [graph-editing.md](graph-editing.md).
 
-State as of 2026-10-17.
+State as of 2026-10-21.
 
 ## Current feature set
 
@@ -16,7 +16,7 @@ State as of 2026-10-17.
 | Dot grid | Endless, faint background; 40-unit spacing that doubles when zoomed out; stays lined up with the nodes. Shown or hidden with the toolbar's dot grid button. |
 | Origin marker | Development only: red/green L at (0, 0) pointing toward +x and +y, Blender axis colors, fixed 40 px size. |
 | Coordinate tracker | Bottom right; whole world coordinates under the mouse. |
-| Nodes | Loaded from `static/data/test-node-graph.json`: title, input points (left), output points (right). |
+| Nodes | Loaded from `static/data/test-node-graph.json`: title, input points (left), output points (right); a node with a colour gets a border in it and a dim fill of it (`.node.colored` in `imge.css`). |
 | Node and link editing | Select, add, rename, move, delete, link, detach: see [graph-editing.md](graph-editing.md). |
 | Properties panel | Docked on the right (N, toolbar button): shows and edits the selection; see [graph-properties-panel.md](graph-properties-panel.md). |
 | Export | Downloads the graph as `graph_data.json`. |
@@ -151,6 +151,7 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Changes
 
+- 2026-10-21 — coloured nodes drawn (border in the colour, dim fill)
 - 2026-10-17 — Properties panel docked on the right, toolbar button to show / hide it
 - 2026-10-17 — undo is wired up (see graph-editing.md)
 - 2026-10-16 — toolbar icons moved to `src/lib/icons/`, toolbar buttons kept as a data list

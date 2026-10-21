@@ -12,7 +12,7 @@ Current version: **5**
 | `src/lib/graph/migrations.ts` | `CURRENT_GRAPH_VERSION`, the adapters and `migrateGraph()`. |
 | `src/lib/graph/migrations.spec.ts` | Tests: every version sample upgrades to exactly the current sample; bad files are refused. |
 | `static/data/samples/graph-v<n>.json` | The same tiny graph (2 nodes, 1 link) saved in each format version, to compare versions side by side; also the test fixtures. |
-| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data; 39 nodes, 41 links), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
+| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data; 39 nodes, 41 links; the Node color node is coloured), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
 
 ## Structure (version 5)
 
@@ -60,7 +60,7 @@ Current version: **5**
     - `id`: string, unique within the graph: `n1`, `n2` ...; the editor never reuses an id
     - `name`: text shown on the node
     - `type`: node kind, currently always `"basic"`
-    - `color`: CSS color text such as `"#4a90d9"`, or `null` for the theme's default; stored only for now, not drawn yet
+    - `color`: a hex colour `"#rrggbb"` such as `"#4a90d9"`, or `null` for the theme's default; drawn as the node's border, with a dim version of it as the fill, and set in the Properties panel. Other text (e.g. a colour name written by hand) is kept but drawn as the default
     - `position`: world coordinates of the node's top-left corner; x right, **y up** (see [graph-editor-canvas.md](graph-editor-canvas.md))
     - `inputs[]` / `outputs[]`: ports
         - `id`: unique **within its node only**: inputs `i1`, `i2` ..., outputs `o1`, `o2` ...
@@ -155,10 +155,10 @@ Do this for every change to the file structure or to what a field means, however
 
 - Ports can't be added or removed in the editor yet; new nodes have one input and one output.
 - Link `type` and `name` can't be edited in the editor yet; they are kept (with `shape` and `bend`) when a link is re-routed.
-- Node `color` is stored but not drawn or editable yet.
 
 ## Changes
 
+- 2026-10-21 — node `color` is drawn and editable (hex `#rrggbb`); the base graph's Node color node is coloured
 - 2026-10-17 — base graph gets Box select, Copy / paste, Undo / redo and Properties panel nodes (39 nodes, 41 links)
 - 2026-10-16 — feature map: "Snap to grid" node added; all nodes moved onto the half grid (columns 300, rows 100 apart)
 

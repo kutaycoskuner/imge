@@ -234,6 +234,12 @@
 		text-align: right;
 	}
 
+	/* a label next to a tall value (e.g. the open colour picker) stays at the top of its row */
+	.properties-panel :global(.props dt.prop-top) {
+		align-self: start;
+		padding-top: 0.3em;
+	}
+
 	.properties-panel :global(.props dd) {
 		margin: 0;
 		min-width: 0;

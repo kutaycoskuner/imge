@@ -2,20 +2,25 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-14
+	//   last update     : 2026-10-21
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// One graph node inside the world layer: name (title), input points (left), output points
-	// (right), selected highlight, and inline title editing (double-click or F2 via
+	// (right), its colour (border in the colour, fill a dim version of it; see $lib/graph/color.ts),
+	// selected highlight, and inline title editing (double-click or F2 via
 	// `editingNodeId`; Enter or clicking away saves, Esc cancels).
 	// Mouse down for select/drag/link is handled by the page through the data-* attributes;
 	// ports carry `data-port-key` so GraphLinks can find and measure them.
 	import { graph, editingNodeId, renameNode } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
+	import { parseHexColor, dimColor } from '$lib/graph/color';
 
 	export let node: GraphNode;
 	export let selected = false;
+
+	// only a hex colour is drawn; anything else in the file is kept but shown as the default
+	$: color = node.color ? parseHexColor(node.color) : null;
 
 	let draft = '';
 	$: editing = $editingNodeId === node.id;
@@ -51,8 +56,11 @@
 <div
 	class="node"
 	class:selected
+	class:colored={!!color}
 	data-id={node.id}
-	style="transform: translate({node.position.x}px, {-node.position.y}px);"
+	style="transform: translate({node.position.x}px, {-node.position.y}px);{color
+		? ` --node-col: ${color}; --node-fill: ${dimColor(color)};`
+		: ''}"
 >
 	{#if editing}
 		<input

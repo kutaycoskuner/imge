@@ -30,6 +30,7 @@ import {
 	pasteNodes,
 	setNodePosition,
 	setNodeType,
+	setNodeColor,
 	setLinkStyle,
 	cycleLinkShape,
 	setAllLinkShapes,
@@ -461,6 +462,14 @@ describe('properties panel edits', () => {
 		const typed = setNodeType(g, 'n1', 'note');
 		expect(typed.data.nodes[0].type).toBe('note');
 		expect(setNodeType(typed, 'n1', 'note')).toBe(typed);
+	});
+
+	it('colours several nodes at once, and clears the colour with null', () => {
+		const g = threeNodes();
+		const coloured = setNodeColor(g, ['n1', 'n3'], '#2a9fd6');
+		expect(coloured.data.nodes.map((n) => n.color)).toEqual(['#2a9fd6', null, '#2a9fd6']);
+		expect(setNodeColor(coloured, ['n1', 'n3'], '#2a9fd6')).toBe(coloured);
+		expect(setNodeColor(coloured, ['n1'], null).data.nodes[0].color).toBeNull();
 	});
 
 	it('sets a link style, and returns the same graph when nothing changes', () => {

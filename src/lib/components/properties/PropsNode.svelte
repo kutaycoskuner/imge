@@ -2,15 +2,25 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-17
+	//   last update     : 2026-10-21
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Properties panel section for one selected node: name (editable), id, type (dropdown from
-	// $lib/graph/node-types.ts; planned types are listed but not choosable yet), position
+	// $lib/graph/node-types.ts; planned types are listed but not choosable yet), colour (hex
+	// with a preview, PropColor), position
 	// of its top-left corner in world coordinates (editable, y up) and a delete button.
 	import PropText from './PropText.svelte';
-	import { graph, selection, renameNode, setNodePosition, setNodeType, removeNodes } from '$lib/graph/store';
+	import PropColor from './PropColor.svelte';
+	import {
+		graph,
+		selection,
+		renameNode,
+		setNodePosition,
+		setNodeType,
+		setNodeColor,
+		removeNodes
+	} from '$lib/graph/store';
 	import { NODE_TYPES } from '$lib/graph/node-types';
 	import type { PanelContext } from './sections';
 
@@ -59,6 +69,11 @@
 			{/each}
 			{#if !knownType}<option value={node.type}>{node.type}</option>{/if}
 		</select>
+	</dd>
+
+	<dt class="prop-top">Color</dt>
+	<dd>
+		<PropColor value={node.color} onCommit={(color) => graph.update((g) => setNodeColor(g, [node.id], color))} />
 	</dd>
 
 	<dt>X</dt>

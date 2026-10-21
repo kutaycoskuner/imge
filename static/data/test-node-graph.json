@@ -416,9 +416,9 @@
             },
             {
                 "id": "n18",
-                "name": "Node color (planned)",
+                "name": "Node color",
                 "type": "basic",
-                "color": null,
+                "color": "#2a9fd6",
                 "position": {
                     "x": -300,
                     "y": 200

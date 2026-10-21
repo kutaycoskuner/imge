@@ -195,6 +195,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `nextLinkId(g)` | `l` + highest `l<number>` link id + 1; never reused either. | `string` |
 | `addNode(g, at, name = 'Node')` | Adds a node with one input (`i1`) and one output (`o1`), roughly centered on `at`. Its position (top-left corner) is rounded to whole units. | `{ graph, node }` |
 | `renameNode(g, nodeId, name)` | Sets the name, trimmed. A blank name keeps the old one. | `Graph` |
+| `setNodeColor(g, nodeIds, color)` | Sets the colour of the given nodes (`"#rrggbb"`, or `null` for the default look); the same graph back when all already have it. | `Graph` |
 | `setNodeType(g, nodeId, type)` | Sets a node's `type` (Properties panel's Type dropdown); the same graph back when unchanged. | `Graph` |
 | `setNodePosition(g, nodeId, at)` | Puts one node's top-left corner at a world point (Properties panel); the same graph back when it is already there. | `Graph` |
 | `moveNodes(g, nodeIds, dx, dy)` | Moves the given nodes by a world-space delta. | `Graph` |
@@ -270,6 +271,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-21 — node colours (Properties panel); new function `setNodeColor`
 - 2026-10-21 — spline arrowheads stay on their line: splines start and end with a short straight piece the arrowhead lies on
 - 2026-10-17 — Properties panel (N): the selection's details and editing, see graph-properties-panel.md; new functions `setNodePosition`, `setLinkStyle`; shortcuts also pause while a dropdown has the keyboard
 - 2026-10-17 — undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z), one step per edit or mouse gesture; undoing back to the saved graph clears the unsaved marker; new `history.ts`

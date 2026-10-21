@@ -2,7 +2,7 @@
 
 The graph editor's docked panel on the right that shows and edits whatever is selected, like Blender's sidebar (<kbd>N</kbd>).
 
-State as of 2026-10-17.
+State as of 2026-10-21.
 
 - [Why a panel](#why-a-panel)
 - [Using it](#using-it)
@@ -15,7 +15,7 @@ State as of 2026-10-17.
 ## Why a panel
 
 - A graph is for seeing the big picture. Every option drawn on the node itself (fields, dropdowns, buttons) makes nodes bigger and the graph harder to read.
-- So nodes keep only what is needed to read and wire them: their name and their ports. Everything else (exact position, link look, later node colour and type-specific content) is shown and edited in one place, the Properties panel, for the current selection.
+- So nodes keep only what is needed to read and wire them: their name and their ports. Everything else (colour, exact position, link look, later type-specific content) is shown and edited in one place, the Properties panel, for the current selection.
 - Node types to come (e.g. a UML class with its three blocks: name, attributes, operations) bring their own sections to the panel instead of their own editing controls on the canvas.
 
 ## Using it
@@ -42,11 +42,25 @@ The panel shows the sections whose condition matches the selection, top to botto
 | Selection | Section | Contents |
 |---|---|---|
 | Nothing | Graph | File name (or "not saved yet") with the unsaved marker, direction (changes it like the Esc menu and the transpose button), number of nodes and links. |
-| One node | Node | Name (editable), id, type (dropdown, see below), position of the top-left corner X and Y (world units, y up; editable), Delete node. |
+| One node | Node | Name (editable), id, type (dropdown, see below), colour (see below), position of the top-left corner X and Y (world units, y up; editable), Delete node. |
 | One node | Ports and links | Input and output ports by label; links coming in and going out, by the node at the other end (and the link's name); a click selects the link. |
-| Several nodes | Selection | How many nodes and how many links between them; their names (a click selects only that one); Delete all of them. |
+| Several nodes | Selection | How many nodes and how many links between them; one colour for all of them (empty with "mixed" when they differ; × resets all); their names (a click selects only that one); Delete all of them. |
 | One link | Link | Name (editable; empty removes it), id, From and To as node · port (a click selects the node), Delete link. |
 | One link | Look | Shape, arrow and route (the same values as <kbd>L</kbd>, <kbd>D</kbd>, <kbd>R</kbd>); the corner (manhattan) or lane (link going around its nodes) position from 0 to 1, the same as dragging the highlighted segment. When the Esc menu's display override hides a link's own shape or arrow, the panel says so; route says when it isn't used. |
+
+### Node colour
+
+- **Look on the canvas:** the border in the colour itself (vibrant), the fill a dim version of it (20 % colour mixed into the theme background, so the name stays readable in light and dark). A selected node still gets the orange selection border.
+- **The Color row:** a preview swatch drawn like the node, a hex field and **×** (back to the default look). A click on the swatch opens the colour picker under the row (click again or Esc to close it).
+    - Type `#abc`, `abc`, `#aabbcc` or `aabbcc` (any case); it is stored as `#aabbcc`. The swatch follows what you type right away; Enter or leaving the field applies it.
+    - While the text isn't a hex colour the field turns red and the swatch is crossed out; leaving the field then puts the old value back. An empty field means the default look.
+    - One edit is one undo step.
+- **The colour picker** (in the style of htmlcolorcodes.com, drawn with CSS gradients, no library):
+    - a square: saturation from left (grey) to right (full colour), brightness from bottom (black) to top, in the current hue; drag the round handle, or use the arrow keys when it is focused (Shift = bigger steps)
+    - a hue bar (the rainbow) under it; drag it, or arrow keys
+    - a row of tints and shades of the current colour (three toward white, the colour, three toward black) and a row of preset colours (`NODE_COLOR_PRESETS`, data in `color.ts`); a click picks one
+    - the node on the canvas follows live while you drag; the whole drag is one undo step (`holdHistory` / `releaseHistory`, like a node drag)
+- Stored in the node's `color` (graph format v3+, see [graph-format.md](graph-format.md)); `null` = default look. Reading typed hex and the fill share live in `src/lib/graph/color.ts`.
 
 ### Node types
 
@@ -73,7 +87,10 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 | `src/lib/components/properties/sections.ts` | `PANEL_SECTIONS` (which sections, when), `PanelContext`, and `LINK_ARROW_LABELS` (shared with the Esc menu). |
 | `src/lib/components/properties/PropText.svelte` | Text / number field that applies on Enter or blur, Esc cancels; follows the value while not focused (so undo shows up). |
 | `src/lib/components/properties/PropsGraph.svelte`, `PropsNode.svelte`, `PropsNodeLinks.svelte`, `PropsNodes.svelte`, `PropsLink.svelte`, `PropsLinkStyle.svelte` | The sections in the table above. |
-| `src/lib/graph/store.ts` | `showPropertiesPanel`, and the operations the panel uses, among them `setNodePosition`, `setNodeType` and `setLinkStyle`. |
+| `src/lib/graph/store.ts` | `showPropertiesPanel`, and the operations the panel uses, among them `setNodePosition`, `setNodeType`, `setNodeColor` and `setLinkStyle`. |
+| `src/lib/components/properties/PropColor.svelte` | The colour field: preview swatch (opens the picker), hex text field, reset; makes a picker drag one undo step. |
+| `src/lib/components/properties/ColorPicker.svelte` | The colour picker: saturation / brightness square, hue bar, tints and shades, presets; mouse, touch and arrow keys. |
+| `src/lib/graph/color.ts` | `parseHexColor` (typed hex to `#rrggbb`), `dimColor` and `NODE_FILL_SHARE` (the fill), `hexToHsv` / `hsvToHex`, `mixHex` / `tintsAndShades`, `NODE_COLOR_PRESETS`. Tests in `color.spec.ts`. |
 | `src/lib/graph/node-types.ts` | `NODE_TYPES`: the Type dropdown's list (placeholder; only `basic` is ready). |
 | `src/lib/icons/icon-sidebar-right.svelte`, `icon-chevron-left.svelte`, `icon-chevron-right.svelte` | The toolbar button's icon and the hide / show chevrons. |
 
@@ -82,10 +99,11 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 - The panel floats over the right side of the canvas; fitting the graph (Home) doesn't leave room for it, so the rightmost nodes can sit under it. Hide it with <kbd>N</kbd> to see them.
 - Fixed width (17em); it can't be dragged wider yet, and it docks only on the right.
 - On a phone-sized window it covers about half of the canvas; hide it there.
-- Ports can't be added, removed or renamed from the panel yet; node colour isn't editable yet (or drawn); only the Basic node type can be chosen.
+- Ports can't be added, removed or renamed from the panel yet; only the Basic node type can be chosen.
 
 ## Changes
 
+- 2026-10-21 — node colour: Color row (preview swatch, hex field, reset) with a colour picker in the style of htmlcolorcodes.com (saturation / brightness square, hue bar, tints and shades, presets; live on the canvas, one undo step per drag), for one node and for several; new function `setNodeColor`
 - 2026-10-17 — node Type dropdown (placeholder list in `node-types.ts`: Basic choosable, Note / UML class / Decision planned); new function `setNodeType`
 - 2026-10-17 — no sideways scroll bar (Firefox): fields shrink to the panel, long names wrap, rows include their padding in their width
 - 2026-10-17 — first version: Graph, Node, Ports and links, Selection, Link and Look sections; N, toolbar button, hide chevron and edge tab; folding remembered; new store functions `setNodePosition`, `setLinkStyle`

@@ -63,6 +63,14 @@
     box-shadow: 0 2px 4px var(--col-transparent-1);
 }
 
+/* a node with a colour (GraphNode sets --node-col and --node-fill, see $lib/graph/color.ts):
+   border in the colour itself, fill a dim version of it; defined before .node.selected so
+   the orange selection border still shows on a coloured node */
+.node.colored {
+    border-color: var(--node-col);
+    background-color: var(--node-fill);
+}
+
 
 
 /* ---------------------------------------------------------------------------------------
