@@ -78,7 +78,8 @@ Less strict diagrams that describe a system or a process at a glance (like the h
 
 - **Status:** possible
 - **Works today:** nodes, links with shapes, arrows and names, both directions.
-- **Missing:** groups / containers (a box around related nodes), free text labels not attached to a node.
+- **Works today:** groups as frames behind related nodes (fixed size for now).
+- **Missing:** resizable groups that carry their nodes, free text labels not attached to a node.
 - **Example:** Web app architecture (`web-app-architecture.json`)
 
 ### Number / decision tree
@@ -135,7 +136,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 |---|---|
 | Add / remove ports, named ports | flowchart decisions, parametric graphs, UML |
 | Node shapes (diamond, circle, point) | flowchart, lattice, decision trees |
-| Groups / containers | loose architecture maps, set visualization, UML packages |
+| Groups / containers (started: frames, fixed size) | loose architecture maps, set visualization, UML packages |
 | Node colours drawn (done) | mind maps, architecture maps |
 | Node content (text, compartments) | UML, mind maps, notes |
 | Automatic layout (tree, layered, force) | trees, lattices, big data |
@@ -145,6 +146,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 
 ## Changes
 
+- 2026-10-21 — groups started: frames behind nodes (fixed size)
 - 2026-10-21 — node colours are drawn: removed from the missing lists of relation and architecture maps
 - 2026-10-16 — an example graph for each possible / partly possible type, opened from the Esc menu
 - 2026-10-16 — first version: twelve graph types with status (possible / partly / not yet) and what each needs; building blocks that unlock several types

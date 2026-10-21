@@ -10,9 +10,12 @@
 	// (right), its colour (border in the colour, fill a dim version of it; see $lib/graph/color.ts),
 	// selected highlight, and inline title editing (double-click or F2 via
 	// `editingNodeId`; Enter or clicking away saves, Esc cancels).
+	// A group (type "group") is drawn as a frame (a <fieldset>) with its name in a gap of the
+	// top edge (the <legend>), no ports; only the name takes the mouse, so clicks inside the
+	// frame reach the canvas and the nodes on top of it (styles: .node.group in imge.css).
 	// Mouse down for select/drag/link is handled by the page through the data-* attributes;
 	// ports carry `data-port-key` so GraphLinks can find and measure them.
-	import { graph, editingNodeId, renameNode } from '$lib/graph/store';
+	import { graph, editingNodeId, renameNode, isGroup } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
 	import { parseHexColor, dimColor } from '$lib/graph/color';
 
@@ -21,6 +24,7 @@
 
 	// only a hex colour is drawn; anything else in the file is kept but shown as the default
 	$: color = node.color ? parseHexColor(node.color) : null;
+	$: group = isGroup(node);
 
 	let draft = '';
 	$: editing = $editingNodeId === node.id;
@@ -57,11 +61,29 @@
 	class="node"
 	class:selected
 	class:colored={!!color}
+	class:group
 	data-id={node.id}
 	style="transform: translate({node.position.x}px, {-node.position.y}px);{color
 		? ` --node-col: ${color}; --node-fill: ${dimColor(color)};`
 		: ''}"
 >
+	{#if group}
+		<fieldset class="group-frame">
+			<legend class="group-title">
+				{#if editing}
+					<input
+						class="node-title-input"
+						bind:value={draft}
+						use:focusSelect
+						on:keydown|stopPropagation={handleKey}
+						on:blur={commit}
+					/>
+				{:else}
+					<span class="node-title" role="presentation" on:dblclick={() => editingNodeId.set(node.id)}>{node.name}</span>
+				{/if}
+			</legend>
+		</fieldset>
+	{:else}
 	{#if editing}
 		<input
 			class="node-title-input"
@@ -105,4 +127,5 @@
 	<div class="content">
 		<div class="add-content hover-visible"></div>
 	</div>
+	{/if}
 </div>

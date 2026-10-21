@@ -7,7 +7,8 @@
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Properties panel section for one selected node: name (editable), id, type (dropdown from
-	// $lib/graph/node-types.ts; planned types are listed but not choosable yet), colour (hex
+	// $lib/graph/node-types.ts; planned types are listed but not choosable yet; a change reshapes
+	// the node's ports and asks first when links would go), colour (hex
 	// with a preview, PropColor), position
 	// of its top-left corner in world coordinates (editable, y up) and a delete button.
 	import PropText from './PropText.svelte';
@@ -38,8 +39,17 @@
 	$: knownType = NODE_TYPES.some((t) => t.id === node.type);
 
 	function chooseType(event: Event): void {
-		const type = (event.currentTarget as HTMLSelectElement).value;
+		const select = event.currentTarget as HTMLSelectElement;
+		const type = select.value;
 		const id = node.id;
+		// the new type may have no inputs / outputs (e.g. a group): its links on them go too,
+		// counted from what setNodeType itself would do; asked first
+		const n = ctx.graph.data.links.length - setNodeType(ctx.graph, id, type).data.links.length;
+		const label = NODE_TYPES.find((t) => t.id === type)?.label ?? type;
+		if (n > 0 && !confirm(`${label} has no ports for this node's ${n} link${n === 1 ? '' : 's'}: ${n === 1 ? 'it' : 'they'} will be removed (Ctrl+Z brings ${n === 1 ? 'it' : 'them'} back). Change the type?`)) {
+			select.value = node.type; // kept: show the old type again
+			return;
+		}
 		graph.update((g) => setNodeType(g, id, type));
 	}
 

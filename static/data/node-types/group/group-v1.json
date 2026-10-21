@@ -1,0 +1,12 @@
+{
+    "metadata": { "format": "imge-node-type", "type": "group", "version": 1, "graphFormat": 5 },
+    "node": {
+        "id": "n1",
+        "name": "Group",
+        "type": "group",
+        "color": null,
+        "position": { "x": 0, "y": 0 },
+        "inputs": [],
+        "outputs": []
+    }
+}

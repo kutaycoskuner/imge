@@ -31,6 +31,7 @@ import {
 	setNodePosition,
 	setNodeType,
 	setNodeColor,
+	isGroup,
 	setLinkStyle,
 	cycleLinkShape,
 	setAllLinkShapes,
@@ -470,6 +471,21 @@ describe('properties panel edits', () => {
 		expect(coloured.data.nodes.map((n) => n.color)).toEqual(['#2a9fd6', null, '#2a9fd6']);
 		expect(setNodeColor(coloured, ['n1', 'n3'], '#2a9fd6')).toBe(coloured);
 		expect(setNodeColor(coloured, ['n1'], null).data.nodes[0].color).toBeNull();
+	});
+
+	it('makes a node a group, removing its links in the same step', () => {
+		const g = link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n3');
+		const grouped = setNodeType(g, 'n1', 'group');
+		expect(isGroup(grouped.data.nodes[0])).toBe(true);
+		expect(grouped.data.links.map((l) => l.id)).toEqual(['l2']); // n2 -> n3 stays
+		expect(isGroup(setNodeType(g, 'n3', 'group').data.nodes[2])).toBe(true);
+	});
+
+	it('never links to or from a group (drag or F)', () => {
+		const g = setNodeType(threeNodes(), 'n2', 'group');
+		expect(addLink(g, ends('n1', 'n2')).outcome).toBe('unknown-port');
+		expect(addLink(g, ends('n2', 'n3')).outcome).toBe('unknown-port');
+		expect(quickLink(g, 'n1', 'n2')).toBeNull();
 	});
 
 	it('sets a link style, and returns the same graph when nothing changes', () => {

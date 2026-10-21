@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-17
+	//   last update     : 2026-10-21
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -76,6 +76,7 @@
 		quickLink,
 		selectNode,
 		selectBox,
+		isGroup,
 		copyNodes,
 		pasteNodes,
 		nodeClipboard,
@@ -286,7 +287,8 @@
 	}
 
 	// Selects the nodes that were selected when the drag began plus every node the box touches
-	// (partly inside is enough). Nodes are measured on screen, so pan, zoom and the title's
+	// (partly inside is enough; a group only when it is completely inside, so a box drawn
+	// within a group selects the nodes in it, not the group). Nodes are measured on screen, so pan, zoom and the title's
 	// length are already in their rectangles.
 	function updateBoxSelection(box: NonNullable<typeof boxDrag>): void {
 		window.getSelection()?.removeAllRanges(); // Shift+drag would otherwise also select page text
@@ -297,7 +299,10 @@
 		const hits: string[] = [];
 		for (const el of document.querySelectorAll<HTMLElement>('.world .node')) {
 			const r = el.getBoundingClientRect();
-			if (r.left <= right && r.right >= rect.left && r.top <= bottom && r.bottom >= rect.top) hits.push(el.dataset.id!);
+			const hit = el.classList.contains('group')
+				? r.left >= rect.left && r.right <= right && r.top >= rect.top && r.bottom <= bottom
+				: r.left <= right && r.right >= rect.left && r.top <= bottom && r.bottom >= rect.top;
+			if (hit) hits.push(el.dataset.id!);
 		}
 		selection.set(selectBox(box.base, hits));
 	}
@@ -575,6 +580,10 @@
 
 	// world origin on screen; the world layer is scaled around its top-left corner (0, 0).
 	// Inside it CSS y grows down, so nodes are placed at (x, -y) to make world y grow up.
+	// drawing order: groups (frames) behind links and the other nodes
+	$: groups = $graph.data.nodes.filter(isGroup);
+	$: others = $graph.data.nodes.filter((n) => !isGroup(n));
+
 	$: worldTranslateX = $viewport.width / 2 - $camera.x * $camera.zoom;
 	$: worldTranslateY = $viewport.height / 2 + $camera.y * $camera.zoom;
 
@@ -642,8 +651,12 @@
 			class:top-to-bottom={direction === 'top-to-bottom'}
 			style="transform: translate({worldTranslateX}px, {worldTranslateY}px) scale({$camera.zoom});"
 		>
+			<!-- groups first (frames behind everything), then links, then the other nodes -->
+			{#each groups as node (node.id)}
+				<GraphNode {node} selected={$selection.nodes.includes(node.id)} />
+			{/each}
 			<GraphLinks drag={linkDrag} />
-			{#each $graph.data.nodes as node (node.id)}
+			{#each others as node (node.id)}
 				<GraphNode {node} selected={$selection.nodes.includes(node.id)} />
 			{/each}
 		</div>

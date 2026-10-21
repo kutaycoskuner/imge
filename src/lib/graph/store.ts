@@ -22,6 +22,11 @@
 // layout with it. The display overrides
 // draw all links one way without changing the data; setAll* write one value into all.
 //
+// Node types (node-types.ts) give a node its ports: setNodeType reshapes a node to its new
+// type (a type without inputs / outputs removes them, and the links that used them, in the
+// same step). Groups (type "group") are frames drawn behind other nodes, with no ports; links
+// never start or end at a group (hasPort, quickLink).
+//
 // Copy / paste: copyNodes() takes the selected nodes and the links between them into
 // `nodeClipboard`, pasteNodes() adds them again with new ids at another place.
 //
@@ -41,8 +46,10 @@ import {
 	type LinkEnd,
 	type LinkRoute,
 	type LinkShape,
-	type Direction
+	type Direction,
+	type Port
 } from './types';
+import { nodeType } from './node-types';
 
 export interface Point {
 	x: number;
@@ -171,16 +178,16 @@ function nextId(items: { id: string }[], prefix: string): string {
 // -----------------------------------------------------------------------------------------
 // nodes
 // -----------------------------------------------------------------------------------------
-/** Adds a node with one input and one output, roughly centered on `at` (world coords). */
-export function addNode(g: Graph, at: Point, name = 'Node'): { graph: Graph; node: GraphNode } {
+/** Adds a basic node (ports from the basic type's template), roughly centered on `at` (world coords). */
+export function addNode(g: Graph, at: Point, name?: string): { graph: Graph; node: GraphNode } {
+	const basic = nodeType('basic')!;
 	const node: GraphNode = {
 		id: nextNodeId(g),
-		name,
+		name: name ?? basic.defaultName!,
 		type: 'basic',
 		color: null,
 		position: { x: Math.round(at.x + NEW_NODE_OFFSET.x), y: Math.round(at.y + NEW_NODE_OFFSET.y) },
-		inputs: [{ id: 'i1', type: 'basic', label: 'Input' }],
-		outputs: [{ id: 'o1', type: 'basic', label: 'Output' }]
+		...structuredClone(basic.ports!)
 	};
 	return { graph: withNodes(g, [...g.data.nodes, node]), node };
 }
@@ -205,11 +212,39 @@ export function setNodePosition(g: Graph, nodeId: string, at: Point): Graph {
 	);
 }
 
-/** Sets a node's `type` (Properties panel); same graph if unchanged. */
+/** A group: a frame around other nodes, drawn behind them, without ports or links. */
+export const isGroup = (node: GraphNode): boolean => node.type === 'group';
+
+/** Whether any link starts or ends at the node. */
+export const hasLinks = (g: Graph, nodeId: string): boolean =>
+	g.data.links.some((l) => l.source.node === nodeId || l.target.node === nodeId);
+
+/**
+ * Sets a node's `type` (Properties panel) and reshapes it to that type's ports
+ * (node-types.ts): a type without inputs (outputs) removes the node's inputs (outputs) and
+ * the links that used them; a type with them keeps the node's own, or gives it the
+ * template's when it has none. An unknown type keeps the ports. All in one step, so one
+ * undo restores everything. Same graph if the type is unchanged.
+ */
 export function setNodeType(g: Graph, nodeId: string, type: string): Graph {
 	const node = g.data.nodes.find((n) => n.id === nodeId);
 	if (!node || node.type === type) return g;
-	return withNodes(g, g.data.nodes.map((n) => (n.id === nodeId ? { ...n, type } : n)));
+	const template = nodeType(type)?.ports;
+	const ports = (own: Port[], wanted: Port[] | undefined): Port[] =>
+		!wanted ? own : wanted.length === 0 ? [] : own.length ? own : structuredClone(wanted);
+	const shaped: GraphNode = {
+		...node,
+		type,
+		inputs: ports(node.inputs, template?.inputs),
+		outputs: ports(node.outputs, template?.outputs)
+	};
+	const keeps = (l: Link) =>
+		(l.source.node !== nodeId || shaped.outputs.some((p) => p.id === l.source.port)) &&
+		(l.target.node !== nodeId || shaped.inputs.some((p) => p.id === l.target.port));
+	return {
+		...g,
+		data: { ...g.data, nodes: g.data.nodes.map((n) => (n.id === nodeId ? shaped : n)), links: g.data.links.filter(keeps) }
+	};
 }
 
 /**
@@ -302,8 +337,9 @@ export function pasteNodes(g: Graph, clip: NodeClipboard, at: Point): { graph: G
 // -----------------------------------------------------------------------------------------
 // links
 // -----------------------------------------------------------------------------------------
+// groups keep their ports in the data but don't offer them: no link can use them
 const hasPort = (g: Graph, end: LinkEnd, kind: 'inputs' | 'outputs') =>
-	g.data.nodes.some((n) => n.id === end.node && n[kind].some((p) => p.id === end.port));
+	g.data.nodes.some((n) => n.id === end.node && !isGroup(n) && n[kind].some((p) => p.id === end.port));
 
 const sameEnd = (a: LinkEnd, b: LinkEnd) => a.node === b.node && a.port === b.port;
 
@@ -502,7 +538,7 @@ export function quickLink(
 ): { source: LinkEnd; target: LinkEnd } | null {
 	const a = g.data.nodes.find((n) => n.id === nodeIdA);
 	const b = g.data.nodes.find((n) => n.id === nodeIdB);
-	if (!a || !b || a === b) return null;
+	if (!a || !b || a === b || isGroup(a) || isGroup(b)) return null;
 	const [first, second] = along(g, a) <= along(g, b) ? [a, b] : [b, a];
 	return linkBetween(g, first, second) ?? linkBetween(g, second, first);
 }

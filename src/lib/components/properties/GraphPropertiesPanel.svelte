@@ -2,11 +2,12 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-17
+	//   last update     : 2026-10-21
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// The graph editor's Properties panel, docked on the right like Blender's sidebar (N):
+	// The graph editor's Properties panel, docked on the right like Blender's sidebar (N; the
+	// title says "Properties (N)"):
 	// shows and edits whatever is selected, so nodes on the canvas can stay small and the
 	// graph readable as a whole. Which sections appear is data (sections.ts); each section
 	// is folded / unfolded by its header (remembered in this browser). Hidden with the
@@ -18,7 +19,6 @@
 	import { onMount } from 'svelte';
 	import { graph, selection, showPropertiesPanel } from '$lib/graph/store';
 	import { PANEL_SECTIONS, type PanelContext } from './sections';
-	import Kbd from '../Kbd.svelte';
 	import IconChevronRight from '$lib/icons/icon-chevron-right.svelte';
 	import IconChevronLeft from '$lib/icons/icon-chevron-left.svelte';
 	import IconChevronDown from '$lib/icons/icon-chevron-down.svelte';
@@ -59,8 +59,7 @@
 {#if $showPropertiesPanel}
 	<aside class="properties-panel" aria-label="Properties">
 		<header class="panel-header">
-			<span class="panel-title">Properties</span>
-			<Kbd keys="N" />
+			<span class="panel-title">Properties (N)</span>
 			<button class="panel-icon" title="Hide the panel [N]" on:click={() => showPropertiesPanel.set(false)}>
 				<IconChevronRight />
 			</button>

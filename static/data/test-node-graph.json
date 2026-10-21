@@ -925,6 +925,126 @@
                 "color": null,
                 "position": {
                     "x": 0,
+                    "y": 100
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n40",
+                "name": "Node types (templates)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -600,
+                    "y": -480
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n41",
+                "name": "Basic (ports)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": -460
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n42",
+                "name": "Group (no ports)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": -300,
+                    "y": -540
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n43",
+                "name": "Type samples (v1)",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 100,
+                    "y": -480
+                },
+                "inputs": [
+                    {
+                        "id": "i1",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "o1",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ]
+            },
+            {
+                "id": "n44",
+                "name": "Colour picker",
+                "type": "basic",
+                "color": null,
+                "position": {
+                    "x": 0,
                     "y": 200
                 },
                 "inputs": [
@@ -941,6 +1061,18 @@
                         "label": "Output"
                     }
                 ]
+            },
+            {
+                "id": "n45",
+                "name": "Types v1",
+                "type": "group",
+                "color": "#8e4ec6",
+                "position": {
+                    "x": -360,
+                    "y": -420
+                },
+                "inputs": [],
+                "outputs": []
             }
         ],
         "links": [
@@ -1559,6 +1691,96 @@
                 },
                 "target": {
                     "node": "n39",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l42",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n40",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l43",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n41",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l44",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n42",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l45",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n41",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n43",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l46",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n42",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n43",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l47",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n18",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n44",
                     "port": "i1"
                 }
             }

@@ -18,7 +18,7 @@
 
 import type { Component } from 'svelte';
 import type { Graph, GraphNode, Link, LinkArrow } from '$lib/graph/types';
-import type { Selection } from '$lib/graph/store';
+import { isGroup, type Selection } from '$lib/graph/store';
 import PropsGraph from './PropsGraph.svelte';
 import PropsNode from './PropsNode.svelte';
 import PropsNodeLinks from './PropsNodeLinks.svelte';
@@ -43,13 +43,14 @@ export interface PanelSection {
 
 const nothingSelected = (ctx: PanelContext) => !ctx.link && ctx.nodes.length === 0;
 const oneNode = (ctx: PanelContext) => ctx.nodes.length === 1;
+const oneNodeWithPorts = (ctx: PanelContext) => oneNode(ctx) && !isGroup(ctx.nodes[0]); // groups have none
 const someNodes = (ctx: PanelContext) => ctx.nodes.length > 1;
 const aLink = (ctx: PanelContext) => !!ctx.link;
 
 export const PANEL_SECTIONS: PanelSection[] = [
 	{ id: 'graph', title: 'Graph', component: PropsGraph, show: nothingSelected },
 	{ id: 'node', title: 'Node', component: PropsNode, show: oneNode },
-	{ id: 'node-links', title: 'Ports and links', component: PropsNodeLinks, show: oneNode },
+	{ id: 'node-links', title: 'Ports and links', component: PropsNodeLinks, show: oneNodeWithPorts },
 	{ id: 'nodes', title: 'Selection', component: PropsNodes, show: someNodes },
 	{ id: 'link', title: 'Link', component: PropsLink, show: aLink },
 	{ id: 'link-style', title: 'Look', component: PropsLinkStyle, show: aLink }

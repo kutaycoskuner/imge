@@ -64,7 +64,17 @@ The panel shows the sections whose condition matches the selection, top to botto
 
 ### Node types
 
-The Type dropdown lists `NODE_TYPES` from `src/lib/graph/node-types.ts` (id, label, hover description, `ready`). For now it is a placeholder: only **Basic** is drawn and can be chosen; **Note**, **UML class** and **Decision** are listed greyed out with "(later)" to show what is planned. A node whose `type` isn't in the list (e.g. from a newer file) shows that type as an extra option. A type becomes choosable (`ready: true`) once the canvas can draw it and it has its own panel section.
+The Type dropdown lists `NODE_TYPES` from `src/lib/graph/node-types.ts` (id, label, hover description, `ready`; for ready types also a `version`, the `defaultName` of a new node and its `ports` template). **Basic** and **Group** are drawn and can be chosen; **Note**, **UML class** and **Decision** are listed greyed out with "(later)" to show what is planned.
+
+- **Changing the type reshapes the node** to the new type's ports: a type without inputs (outputs) removes the node's inputs (outputs) and the links on them; a type with them keeps the node's own ports, or gives it the template's when it has none (Group → Basic gets a fresh input and output). When links would go, the panel asks first; one Ctrl+Z restores type, ports and links.
+- **Versions and samples:** every ready type has a sample node per version in `static/data/node-types/<type>/<type>-v<n>.json` (like the graph format samples): a header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`) and the node as it appears in a graph file. `node-types.spec.ts` checks that each version has its sample, the newest matches the template, new nodes and type changes produce exactly that shape, and every sample loads as part of a graph. Changing a type's template means a new `version` and a new sample file.
+- **Group:** a frame drawn behind the other nodes and the links, its name centred in a gap of the top edge in the frame's colour, no ports. A colour tints the frame, the name and, lightly, the inside.
+    - Only the name takes the mouse: click it to select, drag it to move, double-click it to rename. Clicks inside the frame reach the canvas and the nodes on top of it (panning, box selection and clicking nodes work there as usual).
+    - A box selection takes a group only when the whole group is inside the box, so a box drawn inside a group selects the nodes in it.
+    - Groups have no ports, so links never start or end at one (dragging, F). A group's panel has no "Ports and links" section.
+    - For now every group has the same size (20 × 12 em), and moving a group doesn't move the nodes in it; resizing and moving the contents along come next (they need a size in the file format).
+
+A node whose `type` isn't in the list A node whose `type` isn't in the list (e.g. from a newer file) shows that type as an extra option. A type becomes choosable (`ready: true`) once the canvas can draw it and it has its own panel section.
 
 ## Adding a section
 
@@ -83,7 +93,7 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 
 | File | Role |
 |---|---|
-| `src/lib/components/properties/GraphPropertiesPanel.svelte` | The dock: header (title, N key cap, hide chevron), the folding section headers, the tab while hidden, and the shared styles of all sections. |
+| `src/lib/components/properties/GraphPropertiesPanel.svelte` | The dock: header (title "Properties (N)", hide chevron), the folding section headers, the tab while hidden, and the shared styles of all sections. |
 | `src/lib/components/properties/sections.ts` | `PANEL_SECTIONS` (which sections, when), `PanelContext`, and `LINK_ARROW_LABELS` (shared with the Esc menu). |
 | `src/lib/components/properties/PropText.svelte` | Text / number field that applies on Enter or blur, Esc cancels; follows the value while not focused (so undo shows up). |
 | `src/lib/components/properties/PropsGraph.svelte`, `PropsNode.svelte`, `PropsNodeLinks.svelte`, `PropsNodes.svelte`, `PropsLink.svelte`, `PropsLinkStyle.svelte` | The sections in the table above. |
@@ -91,7 +101,8 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 | `src/lib/components/properties/PropColor.svelte` | The colour field: preview swatch (opens the picker), hex text field, reset; makes a picker drag one undo step. |
 | `src/lib/components/properties/ColorPicker.svelte` | The colour picker: saturation / brightness square, hue bar, tints and shades, presets; mouse, touch and arrow keys. |
 | `src/lib/graph/color.ts` | `parseHexColor` (typed hex to `#rrggbb`), `dimColor` and `NODE_FILL_SHARE` (the fill), `hexToHsv` / `hsvToHex`, `mixHex` / `tintsAndShades`, `NODE_COLOR_PRESETS`. Tests in `color.spec.ts`. |
-| `src/lib/graph/node-types.ts` | `NODE_TYPES`: the Type dropdown's list (placeholder; only `basic` is ready). |
+| `src/lib/graph/node-types.ts` | `NODE_TYPES`: the Type dropdown's list, and for ready types their version, default name and ports template; `nodeType(id)`. |
+| `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per ready type and version (basic-v1, group-v1); checked by `src/lib/graph/node-types.spec.ts`. |
 | `src/lib/icons/icon-sidebar-right.svelte`, `icon-chevron-left.svelte`, `icon-chevron-right.svelte` | The toolbar button's icon and the hide / show chevrons. |
 
 ## Known limits
@@ -99,10 +110,13 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 - The panel floats over the right side of the canvas; fitting the graph (Home) doesn't leave room for it, so the rightmost nodes can sit under it. Hide it with <kbd>N</kbd> to see them.
 - Fixed width (17em); it can't be dragged wider yet, and it docks only on the right.
 - On a phone-sized window it covers about half of the canvas; hide it there.
-- Ports can't be added, removed or renamed from the panel yet; only the Basic node type can be chosen.
+- Ports can't be added, removed or renamed from the panel yet; only the Basic and Group node types can be chosen.
+- Groups can't be resized yet and don't carry their contents when moved.
 
 ## Changes
 
+- 2026-10-21 — node types carry a version, default name and ports template; changing the type reshapes the node's ports (asks when links would go); versioned samples per type in `static/data/node-types/`; a group's name takes its frame's colour
+- 2026-10-21 — node type Group (frame behind other nodes, name in the top edge, no ports); Ports and links section hidden for groups; a linked node can become a group (asks, removes its links, one undo step); title reads "Properties (N)" instead of a separate key cap
 - 2026-10-21 — node colour: Color row (preview swatch, hex field, reset) with a colour picker in the style of htmlcolorcodes.com (saturation / brightness square, hue bar, tints and shades, presets; live on the canvas, one undo step per drag), for one node and for several; new function `setNodeColor`
 - 2026-10-17 — node Type dropdown (placeholder list in `node-types.ts`: Basic choosable, Note / UML class / Decision planned); new function `setNodeType`
 - 2026-10-17 — no sideways scroll bar (Firefox): fields shrink to the panel, long names wrap, rows include their padding in their width

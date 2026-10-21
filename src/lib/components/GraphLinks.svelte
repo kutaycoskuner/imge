@@ -41,7 +41,8 @@
 		linkArrowOverride,
 		showChevrons,
 		findBackLinks,
-		renameLink
+		renameLink,
+		isGroup
 	} from '$lib/graph/store';
 	import type { Point } from '$lib/graph/store';
 	import type { GraphNode, Link, LinkArrow, LinkShape } from '$lib/graph/types';
@@ -290,7 +291,8 @@
 			if (goesAround) {
 				const x0 = Math.min(from.x, to.x) - STUB;
 				const x1 = Math.max(from.x, to.x) + STUB;
-				const inSpan = nodes.map(box).filter((b) => b.right >= x0 && b.left <= x1);
+				// group frames are background: a lane goes around the nodes, not around frames
+				const inSpan = nodes.filter((n) => !isGroup(n)).map(box).filter((b) => b.right >= x0 && b.left <= x1);
 				const ends = nodes.filter((n) => n.id === link.source.node || n.id === link.target.node).map(box);
 				const stacked = lanes.filter((l) => l.route === link.route && l.x0 <= x1 && l.x1 >= x0).length;
 				lanes.push({ route: link.route, x0, x1 });

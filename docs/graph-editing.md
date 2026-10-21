@@ -30,7 +30,7 @@ State as of 2026-10-21.
 | Click node / link | Select it (selected items turn orange). |
 | Shift+click node | Add it to the selection, or remove it. |
 | Click empty space | Clear the selection (and start panning). |
-| Shift+drag empty space | Box selection: draws a rectangle and adds every node it touches (partly inside is enough) to the selection; the selection updates while you drag, and nodes the box leaves again drop out. Esc cancels and restores the selection from before. A Shift+click without dragging keeps the selection. |
+| Shift+drag empty space | Box selection: draws a rectangle and adds every node it touches (partly inside is enough; a group only when it is completely inside) to the selection; the selection updates while you drag, and nodes the box leaves again drop out. Esc cancels and restores the selection from before. A Shift+click without dragging keeps the selection. |
 | Drag node | Move it, and every other selected node with it. Its top-left corner snaps to half grid squares (the dots and the midpoints between them); hold **Alt** to move freely, or turn snapping off with the toolbar's snap button. |
 | Toolbar "Add Node" | New node at the screen center. |
 | **Shift+A** | New node centered on the mouse. |
@@ -196,7 +196,8 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `addNode(g, at, name = 'Node')` | Adds a node with one input (`i1`) and one output (`o1`), roughly centered on `at`. Its position (top-left corner) is rounded to whole units. | `{ graph, node }` |
 | `renameNode(g, nodeId, name)` | Sets the name, trimmed. A blank name keeps the old one. | `Graph` |
 | `setNodeColor(g, nodeIds, color)` | Sets the colour of the given nodes (`"#rrggbb"`, or `null` for the default look); the same graph back when all already have it. | `Graph` |
-| `setNodeType(g, nodeId, type)` | Sets a node's `type` (Properties panel's Type dropdown); the same graph back when unchanged. | `Graph` |
+| `setNodeType(g, nodeId, type)` | Sets a node's `type` (Properties panel's Type dropdown) and reshapes it to the type's ports template (`node-types.ts`): ports the type doesn't have are removed with their links, missing ones come from the template. The same graph back when unchanged; one undo restores everything. | `Graph` |
+| `isGroup(node)` / `hasLinks(g, nodeId)` | Whether a node is a group (frame without ports; `addLink` and `quickLink` never use it) / whether any link starts or ends at it. | `boolean` |
 | `setNodePosition(g, nodeId, at)` | Puts one node's top-left corner at a world point (Properties panel); the same graph back when it is already there. | `Graph` |
 | `moveNodes(g, nodeIds, dx, dy)` | Moves the given nodes by a world-space delta. | `Graph` |
 | `removeNodes(g, nodeIds)` | Removes the nodes and every link that starts or ends at them. | `Graph` |
@@ -271,6 +272,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-21 — groups: no links to or from a group (`addLink` outcome `unknown-port`, F skips it), a box takes a group only when it is fully inside; new `isGroup`, `hasLinks`
 - 2026-10-21 — node colours (Properties panel); new function `setNodeColor`
 - 2026-10-21 — spline arrowheads stay on their line: splines start and end with a short straight piece the arrowhead lies on
 - 2026-10-17 — Properties panel (N): the selection's details and editing, see graph-properties-panel.md; new functions `setNodePosition`, `setLinkStyle`; shortcuts also pause while a dropdown has the keyboard
