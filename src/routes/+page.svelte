@@ -95,7 +95,7 @@
 		type LinkOutcome,
 		type Selection
 	} from '$lib/graph/store';
-	import type { Link, LinkEnd } from '$lib/graph/types';
+	import type { Link, LinkEnd, PortKind } from '$lib/graph/types';
 	import { trackHistory, holdHistory, releaseHistory, undo, redo } from '$lib/graph/history';
 	import { assistanceMsg, menuOpen, menuTab, pageMenu } from '../stores/imge_main';
 
@@ -123,7 +123,7 @@
 	// is the link picked up from a connected input (re-routed links keep their id and name)
 	let linkDrag: {
 		nodeId: string;
-		kind: 'input' | 'output';
+		kind: PortKind; // of the port the drag started at
 		portId: string;
 		to: Point;
 		carried?: Link;
@@ -311,16 +311,16 @@
 	// -----------------------------------------------------------------------------------
 	function startLinkDrag(port: HTMLElement): void {
 		const nodeId = port.dataset.nodeId!;
-		const kind = port.dataset.portKind as 'input' | 'output';
+		const kind = port.dataset.portKind as PortKind;
 		const portId = port.dataset.portId!;
 		const to = toLayer(mouseWorld());
 
-		// grabbing a connected input picks up its most recent link and carries it from its output,
-		// so it can be dropped on another input or released on empty space to delete it
-		const existing = kind === 'input' ? linksInto($graph, { node: nodeId, port: portId }).at(-1) : undefined;
+		// grabbing a connected input picks up its most recent link and carries it from its giving
+		// end, so it can be dropped on another input or released on empty space to delete it
+		const existing = kind === 'in' ? linksInto($graph, { node: nodeId, port: portId }).at(-1) : undefined;
 		if (existing) {
 			graph.update((g) => removeLink(g, existing.id));
-			linkDrag = { nodeId: existing.source.node, kind: 'output', portId: existing.source.port, to, carried: existing };
+			linkDrag = { nodeId: existing.source.node, kind: 'out', portId: existing.source.port, to, carried: existing };
 		} else {
 			linkDrag = { nodeId, kind, portId, to };
 		}
@@ -332,30 +332,25 @@
 		const port = dropTarget?.closest<HTMLElement>('.port');
 		if (!port) return; // released on empty space: no link
 
+		// addLink checks the two kinds (CAN_LINK) and stores the link from the giving to the
+		// taking end, whichever end the drag started at; a refusal shows its message
 		const nodeId = port.dataset.nodeId!;
-		const kind = port.dataset.portKind;
 		const portId = port.dataset.portId!;
-		if (kind === drag.kind) {
-			notify('Links go from an output (right) to an input (left)');
-		} else if (drag.kind === 'output') {
-			connect({
-				...(drag.carried
-					? {
-							id: drag.carried.id,
-							type: drag.carried.type,
-							name: drag.carried.name,
-							shape: drag.carried.shape,
-							bend: drag.carried.bend,
-							arrow: drag.carried.arrow,
-							route: drag.carried.route
-						}
-					: {}),
-				source: { node: drag.nodeId, port: drag.portId },
-				target: { node: nodeId, port: portId }
-			});
-		} else {
-			connect({ source: { node: nodeId, port: portId }, target: { node: drag.nodeId, port: drag.portId } });
-		}
+		connect({
+			...(drag.carried
+				? {
+						id: drag.carried.id,
+						type: drag.carried.type,
+						name: drag.carried.name,
+						shape: drag.carried.shape,
+						bend: drag.carried.bend,
+						arrow: drag.carried.arrow,
+						route: drag.carried.route
+					}
+				: {}),
+			source: { node: drag.nodeId, port: drag.portId },
+			target: { node: nodeId, port: portId }
+		});
 	}
 
 	// Keyboard

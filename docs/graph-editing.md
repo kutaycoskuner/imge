@@ -62,11 +62,12 @@ State as of 2026-10-21.
 - Shortcuts are paused while the Esc menu is open, except Ctrl+S and Ctrl+Shift+S, which work everywhere.
 - The toolbar's hover hints and the menu's buttons show their key as key caps, e.g. <kbd>Shift</kbd>+<kbd>A</kbd>: a hint text puts keys in square brackets (`"Add Node [Shift+A]"`) and `AssistanceMsg` draws them with `Kbd.svelte`.
 - Other Ctrl / Cmd / Alt combinations are left to the browser.
-- A new node is named "Node" and has one input and one output.
+- A new node is built from the Basic type's template: named "Node", with one input and one output.
 
 ### Link rules
 
-- A link always goes from an output (right side of a node) to an input (left side).
+- A link connects a port that gives links to one that takes them: an output (right side of a node) to an input (left side). Which port kinds may be linked is decided in one place, `CAN_LINK` (out → in, and two-way `any` ports with everything; no node type has `any` ports yet).
+- A drag may start at either end: dragging from an input without links to an output makes the same link, stored from the output to the input.
 - Cycles are allowed (1 → 2 → 1), and so is a link from a node to itself (a self-loop); see [Cycles and self-loops](#cycles-and-self-loops).
 - Any number of links may meet at a port, in both directions (many-to-many): linking into a connected input adds a link.
 - No exact duplicates: one link per output-port → input-port pair.
@@ -160,7 +161,7 @@ When an action is refused or changes something you might not expect, a short mes
 | Situation | Message |
 |---|---|
 | The same output-to-input link already exists | That link already exists |
-| Output dropped on an output, or input on an input | Links go from an output (right) to an input (left) |
+| Output dropped on an output, or input on an input (kinds `CAN_LINK` doesn't allow) | Links go from an output (right) to an input (left) |
 | F with fewer or more than two nodes selected | Select two nodes (Shift+click), then press F |
 | F when both directions are already linked (or a node has no output / input) | These nodes are already linked (or have no output / input) |
 | Ctrl+Z / Ctrl+Y with nothing left | Nothing to undo / Nothing to redo |
@@ -193,10 +194,10 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `emptyGraph()` | A graph with no nodes or links, stamped with the current format. | `Graph` |
 | `nextNodeId(g)` | `n` + highest `n<number>` id + 1 (ids in another form are ignored), so ids are never reused after a delete in the middle. | `string` |
 | `nextLinkId(g)` | `l` + highest `l<number>` link id + 1; never reused either. | `string` |
-| `addNode(g, at, name = 'Node')` | Adds a node with one input (`i1`) and one output (`o1`), roughly centered on `at`. Its position (top-left corner) is rounded to whole units. | `{ graph, node }` |
-| `renameNode(g, nodeId, name)` | Sets the name, trimmed. A blank name keeps the old one. | `Graph` |
-| `setNodeColor(g, nodeIds, color)` | Sets the colour of the given nodes (`"#rrggbb"`, or `null` for the default look); the same graph back when all already have it. | `Graph` |
-| `setNodeType(g, nodeId, type)` | Sets a node's `type` (Properties panel's Type dropdown) and reshapes it to the type's ports template (`node-types.ts`): ports the type doesn't have are removed with their links, missing ones come from the template. The same graph back when unchanged; one undo restores everything. | `Graph` |
+| `addNode(g, at, name?)` | Adds a basic node built from the basic template (`node-types.ts`): ports `i1` (in) and `o1` (out), `content` `{ name: "Node", color: null }` (`name` replaces the default), `typeVersion` of the template; roughly centered on `at`, its position (top-left corner) rounded to whole units. | `{ graph, node }` |
+| `renameNode(g, nodeId, name)` | Sets `content.name`, trimmed, for a node whose content has a name. A blank name keeps the old one. | `Graph` |
+| `setNodeColor(g, nodeIds, color)` | Sets `content.color` of the given nodes whose content has a colour (`"#rrggbb"`, or `null` for the default look); the same graph back when all already have it. | `Graph` |
+| `setNodeType(g, nodeId, type)` | Sets a node's `type` (Properties panel's Type dropdown) and reshapes it to the type's template, port kind by port kind: a kind the type has no ports of is removed with its links, a kind the node lacks comes from the template; `content` gets the template's missing keys (existing ones kept); `typeVersion` follows the type. The same graph back when unchanged; one undo restores everything. | `Graph` |
 | `isGroup(node)` / `hasLinks(g, nodeId)` | Whether a node is a group (frame without ports; `addLink` and `quickLink` never use it) / whether any link starts or ends at it. | `boolean` |
 | `setNodePosition(g, nodeId, at)` | Puts one node's top-left corner at a world point (Properties panel); the same graph back when it is already there. | `Graph` |
 | `moveNodes(g, nodeIds, dx, dy)` | Moves the given nodes by a world-space delta. | `Graph` |
@@ -207,7 +208,9 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 | Function | Does | Returns |
 |---|---|---|
-| `addLink(g, { source, target, type?, name?, shape?, bend?, arrow?, route?, id? })` | Connects an output (`source`) to an input (`target`), following the [link rules](#link-rules); source and target may be the same node. Defaults: shape `spline`, arrow `forward`, route `above`. Gets the next id, or the given `id` when re-routing (if no other link uses it); re-routing also passes the old shape, bend, arrow and route. | `{ graph, outcome, link? }`, see below |
+| `CAN_LINK` | Which port kinds may be linked: `{ out: [in, any], in: [out, any], any: [in, out, any] }`. The only place this is decided. | constant |
+| `portOf(g, end)` | The port a link end points at; `undefined` for a missing node / port or a group's. | `Port \| undefined` |
+| `addLink(g, { source, target, type?, name?, shape?, bend?, arrow?, route?, id? })` | Connects two ports whose kinds `CAN_LINK` allows, following the [link rules](#link-rules); the ends may come in either order and the link is stored from the giving end (out / any) to the taking end (in / any); source and target may be the same node. Defaults: shape `spline`, arrow `forward`, route `above`. Gets the next id, or the given `id` when re-routing (if no other link uses it); re-routing also passes the old shape, bend, arrow and route. | `{ graph, outcome, link? }`, see below |
 | `removeLink(g, linkId)` | Removes one link by its id. | `Graph` |
 | `cycleLinkShape(g, linkId)` | Next shape for one link: spline → line → manhattan → spline. | `Graph` |
 | `setAllLinkShapes(g, shape)` | Writes one shape into every link ("Apply shape to all links"); bends are kept. | `Graph` |
@@ -272,6 +275,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-21 — graph format v6: nodes keep name and colour in `content` and their ports in one list with `kind`; `addNode` builds from the basic template, `setNodeType` reshapes by port kind and fills `content`; one link rule `CAN_LINK`, `addLink` takes the ends in either order (a drag from an input works) and stores giving → taking; new `portOf`
 - 2026-10-21 — groups: no links to or from a group (`addLink` outcome `unknown-port`, F skips it), a box takes a group only when it is fully inside; new `isGroup`, `hasLinks`
 - 2026-10-21 — node colours (Properties panel); new function `setNodeColor`
 - 2026-10-21 — spline arrowheads stay on their line: splines start and end with a short straight piece the arrowhead lies on

@@ -1,178 +1,199 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 5,
+        "version": 6,
         "direction": "left-to-right"
     },
     "data": {
         "nodes": [
             {
                 "id": "n1",
-                "name": "Plan",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Plan",
+                    "color": null
+                }
             },
             {
                 "id": "n2",
-                "name": "Develop",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 290,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Develop",
+                    "color": null
+                }
             },
             {
                 "id": "n3",
-                "name": "Code review",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Code review",
+                    "color": null
+                }
             },
             {
                 "id": "n4",
-                "name": "Test",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 870,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Test",
+                    "color": null
+                }
             },
             {
                 "id": "n5",
-                "name": "Deploy to staging",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 1160,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Deploy to staging",
+                    "color": null
+                }
             },
             {
                 "id": "n6",
-                "name": "Release",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 1450,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Release",
+                    "color": null
+                }
             },
             {
                 "id": "n7",
-                "name": "Monitor",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 1740,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Monitor",
+                    "color": null
+                }
             }
         ],
         "links": [

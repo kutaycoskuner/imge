@@ -6,29 +6,36 @@
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// One graph node inside the world layer: name (title), input points (left), output points
-	// (right), its colour (border in the colour, fill a dim version of it; see $lib/graph/color.ts),
+	// One graph node inside the world layer: name (title, from content.name), its ports as
+	// points on the start edge (left; in and two-way ports) and the end edge (right; out ports),
+	// placed by each port's side (node-types.ts portSide), its colour (border in the colour, fill a dim version of it; see $lib/graph/color.ts),
 	// selected highlight, and inline title editing (double-click or F2 via
 	// `editingNodeId`; Enter or clicking away saves, Esc cancels).
 	// A group (type "group") is drawn as a frame (a <fieldset>) with its name in a gap of the
 	// top edge (the <legend>), no ports; only the name takes the mouse, so clicks inside the
 	// frame reach the canvas and the nodes on top of it (styles: .node.group in imge.css).
 	// Mouse down for select/drag/link is handled by the page through the data-* attributes;
-	// ports carry `data-port-key` so GraphLinks can find and measure them.
+	// ports carry `data-port-key` ("<node id>:<port id>") so GraphLinks can find and measure them,
+	// and `data-port-kind` (in / out / any) for the link rules.
 	import { graph, editingNodeId, renameNode, isGroup } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
+	import { nodeName, nodeColor, portSide } from '$lib/graph/node-types';
 	import { parseHexColor, dimColor } from '$lib/graph/color';
 
 	export let node: GraphNode;
 	export let selected = false;
 
 	// only a hex colour is drawn; anything else in the file is kept but shown as the default
-	$: color = node.color ? parseHexColor(node.color) : null;
+	$: name = nodeName(node);
+	$: color = nodeColor(node) ? parseHexColor(nodeColor(node)!) : null;
+	// the two port columns; ports on the edges across the flow (above / below) aren't drawn yet
+	$: startPorts = node.ports.filter((p) => portSide(p) === 'start');
+	$: endPorts = node.ports.filter((p) => portSide(p) === 'end');
 	$: group = isGroup(node);
 
 	let draft = '';
 	$: editing = $editingNodeId === node.id;
-	$: if (editing) draft = node.name;
+	$: if (editing) draft = name;
 
 	function commit(): void {
 		// the store, not `editing`: the field's blur can fire after Esc already ended editing
@@ -79,7 +86,7 @@
 						on:blur={commit}
 					/>
 				{:else}
-					<span class="node-title" role="presentation" on:dblclick={() => editingNodeId.set(node.id)}>{node.name}</span>
+					<span class="node-title" role="presentation" on:dblclick={() => editingNodeId.set(node.id)}>{name}</span>
 				{/if}
 			</legend>
 		</fieldset>
@@ -94,32 +101,32 @@
 		/>
 	{:else}
 		<div class="node-title" role="presentation" on:dblclick={() => editingNodeId.set(node.id)}>
-			{node.name}
+			{name}
 		</div>
 	{/if}
 
 	<div class="inputs">
-		{#each node.inputs ?? [] as input}
+		{#each startPorts as port (port.id)}
 			<div
 				class="port node-input"
-				title={input.label}
-				data-port-key="{node.id}:input:{input.id}"
+				title={port.label}
+				data-port-key="{node.id}:{port.id}"
 				data-node-id={node.id}
-				data-port-kind="input"
-				data-port-id={input.id}
+				data-port-kind={port.kind}
+				data-port-id={port.id}
 			></div>
 		{/each}
 	</div>
 
 	<div class="outputs">
-		{#each node.outputs ?? [] as output}
+		{#each endPorts as port (port.id)}
 			<div
 				class="port node-output"
-				title={output.label}
-				data-port-key="{node.id}:output:{output.id}"
+				title={port.label}
+				data-port-key="{node.id}:{port.id}"
 				data-node-id={node.id}
-				data-port-kind="output"
-				data-port-id={output.id}
+				data-port-kind={port.kind}
+				data-port-id={port.id}
 			></div>
 		{/each}
 	</div>

@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-16
+//   last update     : 2026-10-21
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -27,6 +27,7 @@ import sampleV2 from '../../../static/data/samples/graph-v2.json';
 import sampleV3 from '../../../static/data/samples/graph-v3.json';
 import sampleV4 from '../../../static/data/samples/graph-v4.json';
 import sampleV5 from '../../../static/data/samples/graph-v5.json';
+import sampleV6 from '../../../static/data/samples/graph-v6.json';
 
 // one sample per format version, oldest first; copies so no test can change another's input
 const SAMPLES: Record<number, () => any> = {
@@ -35,7 +36,8 @@ const SAMPLES: Record<number, () => any> = {
 	2: () => structuredClone(sampleV2),
 	3: () => structuredClone(sampleV3),
 	4: () => structuredClone(sampleV4),
-	5: () => structuredClone(sampleV5)
+	5: () => structuredClone(sampleV5),
+	6: () => structuredClone(sampleV6)
 };
 const current = SAMPLES[CURRENT_GRAPH_VERSION];
 
@@ -71,7 +73,8 @@ describe('adapter details', () => {
 		v1.data.nodes[0].color = 'red';
 		v1.data.links.push({ ...v1.data.links[0] });
 		const { graph } = migrateGraph(v1);
-		expect((graph.data.nodes[0] as any).color).toBe('red');
+		// a color kept as an extra key since v1 ends up in content (5 -> 6)
+		expect(graph.data.nodes[0].content.color).toBe('red');
 		expect(graph.data.links.map((l) => l.id)).toEqual(['l1', 'l2']);
 	});
 
@@ -95,7 +98,9 @@ describe('adapter details', () => {
 			}
 		};
 		const { graph } = migrateGraph(v1);
-		expect(graph.data.nodes.map((n) => [n.id, n.inputs.map((p) => p.id), n.outputs.map((p) => p.id)])).toEqual([
+		// read in the current shape: ports by kind (5 -> 6 keeps the ids)
+		const ids = (n: (typeof graph.data.nodes)[number], kind: string) => n.ports.filter((p) => p.kind === kind).map((p) => p.id);
+		expect(graph.data.nodes.map((n) => [n.id, ids(n, 'in'), ids(n, 'out')])).toEqual([
 			['n1', ['i1', 'i2'], ['o1']],
 			['n2', ['i1'], ['o1', 'o2']]
 		]);
@@ -111,7 +116,7 @@ describe('adapter 2 -> 3', () => {
 		const v2 = SAMPLES[2]();
 		v2.data.nodes[1].color = '#ff0000';
 		const { graph } = migrateGraph(v2);
-		expect(graph.data.nodes.map((n) => n.color)).toEqual([null, '#ff0000']);
+		expect(graph.data.nodes.map((n) => n.content.color)).toEqual([null, '#ff0000']); // in content since v6
 		expect(graph.data.links.map((l) => l.shape)).toEqual(['spline']);
 	});
 });
@@ -135,6 +140,44 @@ describe('adapter 4 -> 5', () => {
 		const v4 = SAMPLES[4]();
 		v4.metadata.direction = 'top-to-bottom';
 		expect(migrateGraph(v4).graph.metadata.direction).toBe('top-to-bottom');
+	});
+});
+
+describe('adapter 5 -> 6', () => {
+	it('moves name and color into content and merges inputs and outputs into ports with kind', () => {
+		const v5 = SAMPLES[5]();
+		v5.data.nodes[0].color = '#2a9fd6';
+		v5.data.nodes[0].inputs = [{ id: 'i1', type: 'basic', label: 'In' }];
+		const node = migrateGraph(v5).graph.data.nodes[0];
+		expect(node.content).toEqual({ name: 'First Node', color: '#2a9fd6' });
+		expect(node.ports).toEqual([
+			{ id: 'i1', type: 'basic', label: 'In', kind: 'in' },
+			{ id: 'o1', type: 'basic', label: 'Output A', kind: 'out' }
+		]);
+		expect(node.typeVersion).toBe(1);
+		for (const gone of ['name', 'color', 'inputs', 'outputs']) expect(node).not.toHaveProperty(gone);
+	});
+
+	it('keeps port ids, so every link still points at its ports', () => {
+		const { graph } = migrateGraph(SAMPLES[5]());
+		expect(graph.data.links).toEqual(SAMPLES[5]().data.links);
+	});
+
+	it('turns a group (no ports) into a node with an empty ports list', () => {
+		const v5 = SAMPLES[5]();
+		v5.data.nodes[0] = { ...v5.data.nodes[0], type: 'group', name: 'Frame', inputs: [], outputs: [] };
+		v5.data.links = [];
+		const node = migrateGraph(v5).graph.data.nodes[0];
+		expect(node).toMatchObject({ type: 'group', ports: [], content: { name: 'Frame', color: null } });
+	});
+
+	it('keeps extra node keys, and a typeVersion or content a file already carried', () => {
+		const v5 = SAMPLES[5]();
+		Object.assign(v5.data.nodes[0], { note: 'kept', typeVersion: 2, content: { extra: 1 } });
+		const node: any = migrateGraph(v5).graph.data.nodes[0];
+		expect(node.note).toBe('kept');
+		expect(node.typeVersion).toBe(2);
+		expect(node.content).toEqual({ extra: 1, name: 'First Node', color: null });
 	});
 });
 
@@ -165,10 +208,11 @@ describe('example graphs', () => {
 			const nodeIds = nodes.map((n: any) => n.id);
 			expect(new Set(nodeIds).size, example.file).toBe(nodeIds.length);
 			expect(new Set(links.map((l: any) => l.id)).size, example.file).toBe(links.length);
-			const has = (end: any, kind: 'inputs' | 'outputs') =>
-				nodes.some((n: any) => n.id === end.node && n[kind].some((p: any) => p.id === end.port));
+			// a link starts at a port that gives (out / any) and ends at one that takes (in / any)
+			const has = (end: any, kinds: string[]) =>
+				nodes.some((n: any) => n.id === end.node && n.ports.some((p: any) => p.id === end.port && kinds.includes(p.kind)));
 			for (const l of links) {
-				expect(has(l.source, 'outputs') && has(l.target, 'inputs'), `${example.file} ${l.id}`).toBe(true);
+				expect(has(l.source, ['out', 'any']) && has(l.target, ['in', 'any']), `${example.file} ${l.id}`).toBe(true);
 			}
 		}
 	});

@@ -7,14 +7,14 @@
 // -----------------------------------------------------------------------------------------
 // node-types.spec.ts -- checks the node types against their version samples in
 // static/data/node-types/<type>/<type>-v<n>.json (like the graph format samples): every
-// ready type has a sample for each of its versions, the newest one matches the type's
-// template, new nodes and type changes produce exactly that shape, and every sample is a
-// valid node of a graph file.
+// ready type has a sample for each of its versions, the newest one (upgraded to the current
+// graph format) matches the type's template, new nodes and type changes produce exactly that
+// shape, every sample is a valid node of a graph file, and generic UI gets readable labels.
 // Run: npm run test:unit -- --run
 // -----------------------------------------------------------------------------------------
 
 import { describe, it, expect } from 'vitest';
-import { NODE_TYPES, nodeType } from './node-types';
+import { NODE_TYPES, nodeType, nodeLabel } from './node-types';
 import { addNode, emptyGraph, setNodeType } from './store';
 import { migrateGraph, CURRENT_GRAPH_VERSION } from './migrations';
 import { GRAPH_FORMAT, type GraphNode } from './types';
@@ -28,15 +28,23 @@ const samples = Object.entries(FILES).map(([path, sample]) => ({ file: path.spli
 const sampleOf = (type: string, version: number) => samples.find((s) => s.metadata.type === type && s.metadata.version === version);
 const READY = NODE_TYPES.filter((t) => t.ready);
 
-// a node's shape: what a type decides (type and ports), without id, name, position, colour
-const shape = (n: GraphNode) => ({ type: n.type, inputs: n.inputs, outputs: n.outputs });
+// a sample's node in the current graph format (samples may be written in an older one)
+const current = (s: (typeof samples)[number]): GraphNode =>
+	migrateGraph({
+		metadata: { format: GRAPH_FORMAT, version: s.metadata.graphFormat, direction: 'left-to-right' },
+		data: { nodes: [structuredClone(s.node)], links: [] }
+	}).graph.data.nodes[0];
+
+// what a type decides about a node: type, template version, ports, content (not id or position)
+const shape = (n: GraphNode) => ({ type: n.type, typeVersion: n.typeVersion, ports: n.ports, content: n.content });
 
 describe('node type samples', () => {
 	it('every ready type has a version, a template and a sample for each version', () => {
 		for (const t of READY) {
 			expect(t.version, t.id).toBeGreaterThanOrEqual(1);
 			expect(t.ports, t.id).toBeDefined();
-			expect(t.defaultName, t.id).toBeTruthy();
+			expect(t.content, t.id).toBeDefined();
+			expect(t.label, t.id).toBeDefined();
 			for (let v = 1; v <= t.version!; v++) expect(sampleOf(t.id, v), `${t.id}-v${v}`).toBeDefined();
 		}
 	});
@@ -50,11 +58,10 @@ describe('node type samples', () => {
 		}
 	});
 
-	it('the newest sample of each type matches its template', () => {
+	it('the newest sample of each type, upgraded to the current format, matches its template', () => {
 		for (const t of READY) {
-			const newest = sampleOf(t.id, t.version!)!;
-			expect(shape(newest.node)).toEqual({ type: t.id, ...t.ports });
-			expect(newest.node.name).toBe(t.defaultName);
+			const newest = current(sampleOf(t.id, t.version!)!);
+			expect(shape(newest), t.id).toEqual({ type: t.id, typeVersion: t.version, ports: t.ports, content: t.content });
 		}
 	});
 
@@ -74,18 +81,32 @@ describe('node type samples', () => {
 describe('nodes take the shape of their type', () => {
 	it('a new node is the newest basic sample', () => {
 		const { node } = addNode(emptyGraph(), { x: 0, y: 0 });
-		const basic = sampleOf('basic', nodeType('basic')!.version!)!;
-		expect(shape(node)).toEqual(shape(basic.node));
-		expect(node.name).toBe(basic.node.name);
+		expect(shape(node)).toEqual(shape(current(sampleOf('basic', nodeType('basic')!.version!)!)));
 	});
 
 	it('changing the type gives the newest sample of each ready type, there and back', () => {
 		const start = addNode(emptyGraph(), { x: 0, y: 0 }).graph;
 		for (const t of READY) {
-			const changed = setNodeType(start, 'n1', t.id).data.nodes[0];
-			expect(shape(changed)).toEqual(shape(sampleOf(t.id, t.version!)!.node));
+			// the new node's content (name "Node") is kept, so compare everything but content
+			const { content: _c, ...changed } = shape(setNodeType(start, 'n1', t.id).data.nodes[0]);
+			const { content: _s, ...sample } = shape(current(sampleOf(t.id, t.version!)!));
+			expect(changed, t.id).toEqual(sample);
 			const back = setNodeType(setNodeType(start, 'n1', t.id), 'n1', 'basic').data.nodes[0];
-			expect(shape(back)).toEqual(shape(sampleOf('basic', nodeType('basic')!.version!)!.node));
+			expect(shape(back)).toEqual(shape(current(sampleOf('basic', nodeType('basic')!.version!)!)));
 		}
+	});
+});
+
+describe('labels for generic UI', () => {
+	it('basic and group show their name, or the type when the name is empty', () => {
+		const { node } = addNode(emptyGraph(), { x: 0, y: 0 }, 'Mixer');
+		expect(nodeLabel(node)).toBe('Mixer');
+		expect(nodeLabel({ ...node, content: { ...node.content, name: '  ' } })).toBe('Basic');
+		expect(nodeLabel({ ...node, type: 'group', content: { name: '' } })).toBe('Group');
+	});
+
+	it('a type without a label (unknown) falls back to "<type> (<id>)"', () => {
+		const { node } = addNode(emptyGraph(), { x: 0, y: 0 });
+		expect(nodeLabel({ ...node, type: 'and-gate', content: {} })).toBe('and-gate (n1)');
 	});
 });

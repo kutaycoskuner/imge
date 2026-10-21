@@ -2,19 +2,31 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-17
+	//   last update     : 2026-10-21
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// Properties panel section for one selected node: its ports, and the links coming in and
-	// going out; clicking a link selects it (and the panel shows that link).
+	// Properties panel section for one selected node: its ports by kind (in, out, two-way), and
+	// the links coming in and going out; clicking a link selects it (and the panel shows it).
 	import { selection } from '$lib/graph/store';
+	import { nodeLabel } from '$lib/graph/node-types';
 	import type { Link } from '$lib/graph/types';
 	import type { PanelContext } from './sections';
 
 	export let ctx: PanelContext;
 	$: node = ctx.nodes[0];
-	$: nameOf = (id: string) => ctx.graph.data.nodes.find((n) => n.id === id)?.name ?? id;
+	$: nameOf = (id: string) => {
+		const other = ctx.graph.data.nodes.find((n) => n.id === id);
+		return other ? nodeLabel(other) : id;
+	};
+	// port labels per kind, as data for one template; a kind the node has no ports of is left out
+	$: portRows = [
+		{ title: 'Inputs', kind: 'in' },
+		{ title: 'Outputs', kind: 'out' },
+		{ title: 'Two-way', kind: 'any' }
+	]
+		.map((row) => ({ ...row, labels: node.ports.filter((p) => p.kind === row.kind).map((p) => p.label) }))
+		.filter((row) => row.labels.length || row.kind !== 'any');
 	$: incoming = ctx.graph.data.links.filter((l) => l.target.node === node.id);
 	$: outgoing = ctx.graph.data.links.filter((l) => l.source.node === node.id);
 
@@ -29,10 +41,10 @@
 </script>
 
 <dl class="props">
-	<dt>Inputs</dt>
-	<dd>{node.inputs.map((p) => p.label).join(', ') || 'none'}</dd>
-	<dt>Outputs</dt>
-	<dd>{node.outputs.map((p) => p.label).join(', ') || 'none'}</dd>
+	{#each portRows as row (row.kind)}
+		<dt>{row.title}</dt>
+		<dd>{row.labels.join(', ') || 'none'}</dd>
+	{/each}
 </dl>
 
 {#each groups as group}

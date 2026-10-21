@@ -19,8 +19,10 @@
 import type { Component } from 'svelte';
 import type { Graph, GraphNode, Link, LinkArrow } from '$lib/graph/types';
 import { isGroup, type Selection } from '$lib/graph/store';
+import { hasNamedContent } from '$lib/graph/node-types';
 import PropsGraph from './PropsGraph.svelte';
 import PropsNode from './PropsNode.svelte';
+import PropsContent from './PropsContent.svelte';
 import PropsNodeLinks from './PropsNodeLinks.svelte';
 import PropsNodes from './PropsNodes.svelte';
 import PropsLink from './PropsLink.svelte';
@@ -44,12 +46,15 @@ export interface PanelSection {
 const nothingSelected = (ctx: PanelContext) => !ctx.link && ctx.nodes.length === 0;
 const oneNode = (ctx: PanelContext) => ctx.nodes.length === 1;
 const oneNodeWithPorts = (ctx: PanelContext) => oneNode(ctx) && !isGroup(ctx.nodes[0]); // groups have none
+// a type that keeps a name and a colour in its content (basic, group); other types add their own
+const oneNamedNode = (ctx: PanelContext) => oneNode(ctx) && hasNamedContent(ctx.nodes[0]);
 const someNodes = (ctx: PanelContext) => ctx.nodes.length > 1;
 const aLink = (ctx: PanelContext) => !!ctx.link;
 
 export const PANEL_SECTIONS: PanelSection[] = [
 	{ id: 'graph', title: 'Graph', component: PropsGraph, show: nothingSelected },
 	{ id: 'node', title: 'Node', component: PropsNode, show: oneNode },
+	{ id: 'node-content', title: 'Content', component: PropsContent, show: oneNamedNode },
 	{ id: 'node-links', title: 'Ports and links', component: PropsNodeLinks, show: oneNodeWithPorts },
 	{ id: 'nodes', title: 'Selection', component: PropsNodes, show: someNodes },
 	{ id: 'link', title: 'Link', component: PropsLink, show: aLink },

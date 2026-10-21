@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-14
+//   last update     : 2026-10-21
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -26,10 +26,12 @@ import {
 	type GraphV3,
 	type GraphV4,
 	type GraphV5,
+	type GraphV6,
+	type NodeV6,
 	type PortV1
 } from './types';
 
-export const CURRENT_GRAPH_VERSION = 5;
+export const CURRENT_GRAPH_VERSION = 6;
 
 export class GraphFormatError extends Error {
 	constructor(message: string) {
@@ -158,6 +160,32 @@ const MIGRATIONS: Migration[] = [
 				version: 5,
 				// a direction a file already carried as an extra key is kept
 				direction: (graph.metadata as any).direction ?? 'left-to-right'
+			}
+		})
+	},
+	{
+		from: 5,
+		to: 6,
+		description:
+			'nodes: name and color move into content, inputs and outputs become one ports list with kind (in / out), typeVersion 1',
+		migrate: (graph: GraphV5): GraphV6 => ({
+			...graph,
+			metadata: { ...graph.metadata, format: GRAPH_FORMAT, version: 6 },
+			data: {
+				...graph.data,
+				// port ids stay (i1 ..., o1 ...), so links need no change; extra node keys are kept
+				nodes: graph.data.nodes.map((node): NodeV6 => {
+					const { name, color, inputs, outputs, ...rest } = node;
+					return {
+						...rest,
+						typeVersion: (node as any).typeVersion ?? 1,
+						ports: [
+							...inputs.map((port) => ({ ...port, kind: 'in' as const })),
+							...outputs.map((port) => ({ ...port, kind: 'out' as const }))
+						],
+						content: { ...(node as any).content, name, color }
+					};
+				})
 			}
 		})
 	}

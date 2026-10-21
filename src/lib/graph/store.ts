@@ -6,7 +6,7 @@
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
 // store.ts -- the open graph, the selection, display settings, and every create/update/
-// delete operation on nodes and links (graph format v4, see docs/graph-format.md).
+// delete operation on nodes and links (graph format v6, see docs/graph-format.md).
 //
 // Operations are pure functions (graph in, new graph out) so they are easy to test and
 // never half-apply; components call them through `graph.update(g => op(g, ...))`.
@@ -22,10 +22,12 @@
 // layout with it. The display overrides
 // draw all links one way without changing the data; setAll* write one value into all.
 //
-// Node types (node-types.ts) give a node its ports: setNodeType reshapes a node to its new
-// type (a type without inputs / outputs removes them, and the links that used them, in the
-// same step). Groups (type "group") are frames drawn behind other nodes, with no ports; links
-// never start or end at a group (hasPort, quickLink).
+// Nodes (v6): id, type, typeVersion, position, ports (one list, each port with a kind) and
+// content (whatever the type defines; basic / group: name, color). Node types (node-types.ts)
+// give a node its ports and content: addNode / setNodeType build and reshape nodes from them.
+// Links: which port kinds may connect is decided in one place, CAN_LINK; a stored link always
+// runs from the giving end (out / any) to the taking end (in / any). Groups (type "group")
+// are frames drawn behind other nodes, with no ports; links never start or end at a group.
 //
 // Copy / paste: copyNodes() takes the selected nodes and the links between them into
 // `nodeClipboard`, pasteNodes() adds them again with new ids at another place.
@@ -47,7 +49,9 @@ import {
 	type LinkRoute,
 	type LinkShape,
 	type Direction,
-	type Port
+	type Port,
+	type PortKind,
+	PORT_KINDS
 } from './types';
 import { nodeType } from './node-types';
 
@@ -70,7 +74,7 @@ const NEW_NODE_OFFSET: Point = { x: -96, y: 40 };
 
 export function emptyGraph(): Graph {
 	return {
-		metadata: { format: GRAPH_FORMAT, version: 5, direction: 'left-to-right' },
+		metadata: { format: GRAPH_FORMAT, version: 6, direction: 'left-to-right' },
 		data: { nodes: [], links: [] }
 	};
 }
@@ -178,27 +182,34 @@ function nextId(items: { id: string }[], prefix: string): string {
 // -----------------------------------------------------------------------------------------
 // nodes
 // -----------------------------------------------------------------------------------------
-/** Adds a basic node (ports from the basic type's template), roughly centered on `at` (world coords). */
+/**
+ * Adds a basic node built from the basic type's template (ports, content), roughly centered on
+ * `at` (world coords); `name` replaces the template's default name.
+ */
 export function addNode(g: Graph, at: Point, name?: string): { graph: Graph; node: GraphNode } {
 	const basic = nodeType('basic')!;
 	const node: GraphNode = {
 		id: nextNodeId(g),
-		name: name ?? basic.defaultName!,
 		type: 'basic',
-		color: null,
+		typeVersion: basic.version!,
 		position: { x: Math.round(at.x + NEW_NODE_OFFSET.x), y: Math.round(at.y + NEW_NODE_OFFSET.y) },
-		...structuredClone(basic.ports!)
+		ports: structuredClone(basic.ports!),
+		content: { ...structuredClone(basic.content!), ...(name !== undefined ? { name } : {}) }
 	};
 	return { graph: withNodes(g, [...g.data.nodes, node]), node };
 }
 
-/** Sets a node's name; an empty or blank name keeps the old one. */
+/**
+ * Sets a node's name (`content.name`, for types whose content has one); an empty or blank
+ * name keeps the old one. A node whose content has no name is left as it is.
+ */
 export function renameNode(g: Graph, nodeId: string, name: string): Graph {
 	const trimmed = name.trim();
-	if (!trimmed) return g;
+	const node = g.data.nodes.find((n) => n.id === nodeId);
+	if (!trimmed || !node || !('name' in node.content)) return g;
 	return withNodes(
 		g,
-		g.data.nodes.map((n) => (n.id === nodeId ? { ...n, name: trimmed } : n))
+		g.data.nodes.map((n) => (n.id === nodeId ? { ...n, content: { ...n.content, name: trimmed } } : n))
 	);
 }
 
@@ -220,27 +231,33 @@ export const hasLinks = (g: Graph, nodeId: string): boolean =>
 	g.data.links.some((l) => l.source.node === nodeId || l.target.node === nodeId);
 
 /**
- * Sets a node's `type` (Properties panel) and reshapes it to that type's ports
- * (node-types.ts): a type without inputs (outputs) removes the node's inputs (outputs) and
- * the links that used them; a type with them keeps the node's own, or gives it the
- * template's when it has none. An unknown type keeps the ports. All in one step, so one
- * undo restores everything. Same graph if the type is unchanged.
+ * Sets a node's `type` (Properties panel) and reshapes it to that type's template
+ * (node-types.ts), port kind by port kind: a kind the type has no ports of is removed from
+ * the node (with the links on those ports); a kind it has keeps the node's own ports, or gets
+ * the template's when the node has none. `content` gets the template's keys it lacks (what it
+ * has is kept, so a name survives basic -> group -> basic); `typeVersion` follows the type.
+ * An unknown type keeps ports and content. All in one step, so one undo restores everything.
+ * Same graph if the type is unchanged.
  */
 export function setNodeType(g: Graph, nodeId: string, type: string): Graph {
 	const node = g.data.nodes.find((n) => n.id === nodeId);
 	if (!node || node.type === type) return g;
-	const template = nodeType(type)?.ports;
-	const ports = (own: Port[], wanted: Port[] | undefined): Port[] =>
-		!wanted ? own : wanted.length === 0 ? [] : own.length ? own : structuredClone(wanted);
+	const template = nodeType(type);
+	const reshape = (wanted: Port[]): Port[] =>
+		PORT_KINDS.flatMap((kind) => {
+			const own = node.ports.filter((p) => p.kind === kind);
+			const theirs = wanted.filter((p) => p.kind === kind);
+			return theirs.length === 0 ? [] : own.length ? own : structuredClone(theirs);
+		});
 	const shaped: GraphNode = {
 		...node,
 		type,
-		inputs: ports(node.inputs, template?.inputs),
-		outputs: ports(node.outputs, template?.outputs)
+		typeVersion: template?.version ?? node.typeVersion,
+		ports: template?.ports ? reshape(template.ports) : node.ports,
+		content: template?.content ? { ...structuredClone(template.content), ...node.content } : node.content
 	};
-	const keeps = (l: Link) =>
-		(l.source.node !== nodeId || shaped.outputs.some((p) => p.id === l.source.port)) &&
-		(l.target.node !== nodeId || shaped.inputs.some((p) => p.id === l.target.port));
+	const has = (port: string) => shaped.ports.some((p) => p.id === port);
+	const keeps = (l: Link) => (l.source.node !== nodeId || has(l.source.port)) && (l.target.node !== nodeId || has(l.target.port));
 	return {
 		...g,
 		data: { ...g.data, nodes: g.data.nodes.map((n) => (n.id === nodeId ? shaped : n)), links: g.data.links.filter(keeps) }
@@ -252,9 +269,10 @@ export function setNodeType(g: Graph, nodeId: string, type: string): Graph {
  * default look. Returns the same graph when every node already has it (no undo step).
  */
 export function setNodeColor(g: Graph, nodeIds: string[], color: string | null): Graph {
-	const ids = new Set(nodeIds);
-	if (!g.data.nodes.some((n) => ids.has(n.id) && n.color !== color)) return g;
-	return withNodes(g, g.data.nodes.map((n) => (ids.has(n.id) ? { ...n, color } : n)));
+	// only nodes whose type keeps a colour (content has `color`) are coloured
+	const ids = new Set(g.data.nodes.filter((n) => nodeIds.includes(n.id) && 'color' in n.content).map((n) => n.id));
+	if (!g.data.nodes.some((n) => ids.has(n.id) && n.content.color !== color)) return g;
+	return withNodes(g, g.data.nodes.map((n) => (ids.has(n.id) ? { ...n, content: { ...n.content, color } } : n)));
 }
 
 /** Moves the given nodes by a world-space delta. */
@@ -337,14 +355,28 @@ export function pasteNodes(g: Graph, clip: NodeClipboard, at: Point): { graph: G
 // -----------------------------------------------------------------------------------------
 // links
 // -----------------------------------------------------------------------------------------
-// groups keep their ports in the data but don't offer them: no link can use them
-const hasPort = (g: Graph, end: LinkEnd, kind: 'inputs' | 'outputs') =>
-	g.data.nodes.some((n) => n.id === end.node && !isGroup(n) && n[kind].some((p) => p.id === end.port));
+/**
+ * Which port kinds may be linked, the only place this is decided: an output links to an
+ * input, an input to an output, a two-way port (any) to everything.
+ */
+export const CAN_LINK: Record<PortKind, PortKind[]> = {
+	out: ['in', 'any'],
+	in: ['out', 'any'],
+	any: ['in', 'out', 'any']
+};
+
+/** The port a link end points at; undefined for a missing node / port, or a group's. */
+export function portOf(g: Graph, end: LinkEnd): Port | undefined {
+	const node = g.data.nodes.find((n) => n.id === end.node);
+	return node && !isGroup(node) ? node.ports.find((p) => p.id === end.port) : undefined;
+}
 
 const sameEnd = (a: LinkEnd, b: LinkEnd) => a.node === b.node && a.port === b.port;
 
 /**
- * Connects an output port (`source`) to an input port (`target`), following the link rules.
+ * Connects two ports, following the link rules: the two ends' kinds must be allowed by
+ * CAN_LINK. The ends may come in either order (e.g. a drag that started at an input): the
+ * stored link always runs from the giving end (out, or any) to the taking end (in, or any).
  * Source and target may be the same node (a self-loop).
  *
  * Args:
@@ -356,7 +388,7 @@ const sameEnd = (a: LinkEnd, b: LinkEnd) => a.node === b.node && a.port === b.po
  * Returns:
  *     The new graph, what happened, and the new link when one was added. With any outcome
  *     other than 'added' the graph is unchanged: 'exists' (this exact link is there) or
- *     'unknown-port' (missing node/port, or an input used as source).
+ *     'unknown-port' (missing node / port, a group's port, or kinds CAN_LINK doesn't allow).
  */
 export function addLink(
 	g: Graph,
@@ -372,8 +404,12 @@ export function addLink(
 		route?: LinkRoute;
 	}
 ): { graph: Graph; outcome: LinkOutcome; link?: Link } {
-	if (!hasPort(g, link.source, 'outputs') || !hasPort(g, link.target, 'inputs')) {
-		return { graph: g, outcome: 'unknown-port' };
+	const from = portOf(g, link.source);
+	const to = portOf(g, link.target);
+	if (!from || !to || !CAN_LINK[from.kind].includes(to.kind)) return { graph: g, outcome: 'unknown-port' };
+	// stored from the giving to the taking end, so arrows and drawing read it one way
+	if (from.kind === 'in' || (from.kind === 'any' && to.kind === 'out')) {
+		link = { ...link, source: link.target, target: link.source };
 	}
 	if (findLink(g, link.source, link.target)) return { graph: g, outcome: 'exists' };
 
@@ -609,8 +645,9 @@ function linkBetween(
 	from: GraphNode,
 	to: GraphNode
 ): { source: LinkEnd; target: LinkEnd } | null {
-	const output = from.outputs[0];
-	const input = to.inputs[0];
+	// the first port that gives links on one node, the first that takes them on the other
+	const output = from.ports.find((p) => p.kind === 'out' || p.kind === 'any');
+	const input = to.ports.find((p) => p.kind === 'in' || p.kind === 'any');
 	if (!output || !input) return null;
 	const ends = { source: { node: from.id, port: output.id }, target: { node: to.id, port: input.id } };
 	return findLink(g, ends.source, ends.target) ? null : ends;

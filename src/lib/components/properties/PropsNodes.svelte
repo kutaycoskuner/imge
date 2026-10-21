@@ -6,10 +6,12 @@
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// Properties panel section for several selected nodes: how many, their names (a click
-	// selects only that one), one colour for all of them, and deleting them all.
+	// Properties panel section for several selected nodes: how many, their labels (a click
+	// selects only that one), one colour for all of them whose type has a colour, and deleting
+	// them all.
 	import PropColor from './PropColor.svelte';
 	import { graph, selection, removeNodes, setNodeColor } from '$lib/graph/store';
+	import { nodeLabel, nodeColor, hasNamedContent } from '$lib/graph/node-types';
 	import type { PanelContext } from './sections';
 
 	export let ctx: PanelContext;
@@ -18,12 +20,13 @@
 		(l) => ctx.selection.nodes.includes(l.source.node) && ctx.selection.nodes.includes(l.target.node)
 	).length;
 
-	// the colour they share, or null with "mixed" shown when they differ
-	$: colors = new Set(ctx.nodes.map((n) => n.color));
+	// the colour the colourable ones share, or null with "mixed" shown when they differ
+	$: colourable = ctx.nodes.filter(hasNamedContent);
+	$: colors = new Set(colourable.map(nodeColor));
 	$: shared = colors.size === 1 ? [...colors][0] : null;
 
 	function colorAll(color: string | null): void {
-		const ids = ctx.nodes.map((n) => n.id);
+		const ids = colourable.map((n) => n.id);
 		graph.update((g) => setNodeColor(g, ids, color));
 	}
 
@@ -35,15 +38,17 @@
 </script>
 
 <p class="prop-note">{ctx.nodes.length} nodes selected, {linksBetween} links between them.</p>
-<dl class="props">
-	<dt class="prop-top">Color</dt>
-	<dd><PropColor value={shared} mixed={colors.size > 1} onCommit={colorAll} /></dd>
-</dl>
+{#if colourable.length}
+	<dl class="props">
+		<dt class="prop-top">Color</dt>
+		<dd><PropColor value={shared} mixed={colors.size > 1} onCommit={colorAll} /></dd>
+	</dl>
+{/if}
 <ul class="prop-list">
 	{#each ctx.nodes as node (node.id)}
 		<li>
 			<button class="prop-row" on:click={() => selection.set({ nodes: [node.id], link: null })} title="Select only this node">
-				<span>{node.name}</span><span class="prop-faint prop-mono">{node.id}</span>
+				<span>{nodeLabel(node)}</span><span class="prop-faint prop-mono">{node.id}</span>
 			</button>
 		</li>
 	{/each}

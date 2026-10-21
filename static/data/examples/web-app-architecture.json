@@ -1,226 +1,253 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 5,
+        "version": 6,
         "direction": "left-to-right"
     },
     "data": {
         "nodes": [
             {
                 "id": "n1",
-                "name": "Browser",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Browser",
+                    "color": null
+                }
             },
             {
                 "id": "n2",
-                "name": "CDN (static files)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 290,
                     "y": 120
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "CDN (static files)",
+                    "color": null
+                }
             },
             {
                 "id": "n3",
-                "name": "API server",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 290,
                     "y": -60
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "API server",
+                    "color": null
+                }
             },
             {
                 "id": "n4",
-                "name": "Auth service",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": 60
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Auth service",
+                    "color": null
+                }
             },
             {
                 "id": "n5",
-                "name": "Database",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": -60
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Database",
+                    "color": null
+                }
             },
             {
                 "id": "n6",
-                "name": "Job queue",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 580,
                     "y": -180
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Job queue",
+                    "color": null
+                }
             },
             {
                 "id": "n7",
-                "name": "Worker",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 870,
                     "y": -180
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Worker",
+                    "color": null
+                }
             },
             {
                 "id": "n8",
-                "name": "Email service",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 1160,
                     "y": -120
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Email service",
+                    "color": null
+                }
             },
             {
                 "id": "n9",
-                "name": "Object storage",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 1160,
                     "y": -240
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Object storage",
+                    "color": null
+                }
             }
         ],
         "links": [

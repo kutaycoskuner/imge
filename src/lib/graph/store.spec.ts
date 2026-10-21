@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-17
+//   last update     : 2026-10-21
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -32,6 +32,7 @@ import {
 	setNodeType,
 	setNodeColor,
 	isGroup,
+	CAN_LINK,
 	setLinkStyle,
 	cycleLinkShape,
 	setAllLinkShapes,
@@ -63,12 +64,14 @@ const ends = (from: string, to: string) => ({
 const link = (g: Graph, from: string, to: string) => addLink(g, ends(from, to)).graph;
 
 describe('nodes', () => {
-	it('adds nodes n1, n2 ... with a name, input i1 and output o1', () => {
+	it('adds nodes n1, n2 ... built from the basic template: name in content, ports i1 (in) and o1 (out)', () => {
 		const g = threeNodes();
 		expect(g.data.nodes.map((n) => n.id)).toEqual(['n1', 'n2', 'n3']);
-		expect(g.data.nodes[0].name).toBe('Node');
-		expect(g.data.nodes[0].inputs.map((p) => p.id)).toEqual(['i1']);
-		expect(g.data.nodes[0].outputs.map((p) => p.id)).toEqual(['o1']);
+		expect(g.data.nodes[0]).toMatchObject({ type: 'basic', typeVersion: 1, content: { name: 'Node', color: null } });
+		expect(g.data.nodes[0].ports.map((p) => [p.id, p.kind])).toEqual([
+			['i1', 'in'],
+			['o1', 'out']
+		]);
 		expect(nextNodeId(g)).toBe('n4');
 	});
 
@@ -84,9 +87,9 @@ describe('nodes', () => {
 
 	it('renames, and keeps the old name for a blank one', () => {
 		let g = renameNode(threeNodes(), 'n2', '  Mixer  ');
-		expect(g.data.nodes[1].name).toBe('Mixer');
+		expect(g.data.nodes[1].content.name).toBe('Mixer');
 		g = renameNode(g, 'n2', '   ');
-		expect(g.data.nodes[1].name).toBe('Mixer');
+		expect(g.data.nodes[1].content.name).toBe('Mixer');
 	});
 
 	it('moves only the given nodes', () => {
@@ -234,7 +237,7 @@ describe('link shapes', () => {
 	});
 
 	it('new nodes have no color', () => {
-		expect(threeNodes().data.nodes.every((n) => n.color === null)).toBe(true);
+		expect(threeNodes().data.nodes.every((n) => n.content.color === null)).toBe(true);
 	});
 });
 
@@ -425,7 +428,7 @@ describe('copy / paste', () => {
 		const [a, b] = nodeIds.map((id) => pasted.data.nodes.find((n) => n.id === id)!);
 		expect(a.position).toEqual({ x: 1000, y: -500 });
 		expect(b.position.x - a.position.x).toBe(300);
-		expect(a.name).toBe('Start');
+		expect(a.content.name).toBe('Start');
 		const copy = pasted.data.links.find((l) => l.id === 'l3')!;
 		expect(copy.source.node).toBe('n4');
 		expect(copy.target.node).toBe('n5');
@@ -468,9 +471,21 @@ describe('properties panel edits', () => {
 	it('colours several nodes at once, and clears the colour with null', () => {
 		const g = threeNodes();
 		const coloured = setNodeColor(g, ['n1', 'n3'], '#2a9fd6');
-		expect(coloured.data.nodes.map((n) => n.color)).toEqual(['#2a9fd6', null, '#2a9fd6']);
+		expect(coloured.data.nodes.map((n) => n.content.color)).toEqual(['#2a9fd6', null, '#2a9fd6']);
 		expect(setNodeColor(coloured, ['n1', 'n3'], '#2a9fd6')).toBe(coloured);
-		expect(setNodeColor(coloured, ['n1'], null).data.nodes[0].color).toBeNull();
+		expect(setNodeColor(coloured, ['n1'], null).data.nodes[0].content.color).toBeNull();
+	});
+
+	it('changing the type keeps the name and colour, and brings the template ports back', () => {
+		let g = setNodeColor(renameNode(threeNodes(), 'n1', 'Frame'), ['n1'], '#46a758');
+		g = setNodeType(g, 'n1', 'group');
+		expect(g.data.nodes[0]).toMatchObject({ type: 'group', ports: [], content: { name: 'Frame', color: '#46a758' } });
+		g = setNodeType(g, 'n1', 'basic');
+		expect(g.data.nodes[0].ports.map((p) => [p.id, p.kind])).toEqual([
+			['i1', 'in'],
+			['o1', 'out']
+		]);
+		expect(g.data.nodes[0].content).toEqual({ name: 'Frame', color: '#46a758' });
 	});
 
 	it('makes a node a group, removing its links in the same step', () => {
@@ -479,6 +494,29 @@ describe('properties panel edits', () => {
 		expect(isGroup(grouped.data.nodes[0])).toBe(true);
 		expect(grouped.data.links.map((l) => l.id)).toEqual(['l2']); // n2 -> n3 stays
 		expect(isGroup(setNodeType(g, 'n3', 'group').data.nodes[2])).toBe(true);
+	});
+
+	it('links only the kinds CAN_LINK allows, stored from the giving to the taking end', () => {
+		const g = threeNodes();
+		// a drag that started at an input: stored the other way round
+		const fromInput = addLink(g, { source: { node: 'n2', port: 'i1' }, target: { node: 'n1', port: 'o1' } });
+		expect(fromInput.outcome).toBe('added');
+		expect(fromInput.link).toMatchObject(ends('n1', 'n2'));
+		// out -> out and in -> in are refused
+		expect(addLink(g, { source: { node: 'n1', port: 'o1' }, target: { node: 'n2', port: 'o1' } }).outcome).toBe('unknown-port');
+		expect(addLink(g, { source: { node: 'n1', port: 'i1' }, target: { node: 'n2', port: 'i1' } }).outcome).toBe('unknown-port');
+		expect(CAN_LINK).toEqual({ out: ['in', 'any'], in: ['out', 'any'], any: ['in', 'out', 'any'] });
+	});
+
+	it('a two-way (any) port links to inputs, outputs and other two-way ports', () => {
+		let g = threeNodes();
+		const anyPort = { id: 'p1', kind: 'any' as const, type: 'basic', label: 'Terminal' };
+		g = { ...g, data: { ...g.data, nodes: g.data.nodes.map((n) => (n.id === 'n2' ? { ...n, ports: [anyPort] } : n)) } };
+		const toInput = addLink(g, { source: { node: 'n2', port: 'p1' }, target: { node: 'n3', port: 'i1' } });
+		expect(toInput.link).toMatchObject({ source: { node: 'n2', port: 'p1' }, target: { node: 'n3', port: 'i1' } });
+		const fromOutput = addLink(g, { source: { node: 'n2', port: 'p1' }, target: { node: 'n1', port: 'o1' } });
+		expect(fromOutput.link).toMatchObject({ source: { node: 'n1', port: 'o1' }, target: { node: 'n2', port: 'p1' } });
+		expect(addLink(g, { source: { node: 'n2', port: 'p1' }, target: { node: 'n2', port: 'p1' } }).outcome).toBe('added');
 	});
 
 	it('never links to or from a group (drag or F)', () => {

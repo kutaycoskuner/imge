@@ -1,1078 +1,1212 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 5,
+        "version": 6,
         "direction": "left-to-right"
     },
     "data": {
         "nodes": [
             {
                 "id": "n1",
-                "name": "Camera (pan + zoom)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -1200,
                     "y": 1000
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Camera (pan + zoom)",
+                    "color": null
+                }
             },
             {
                 "id": "n2",
-                "name": "Coordinate system (y up)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -900,
                     "y": 1160
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Coordinate system (y up)",
+                    "color": null
+                }
             },
             {
                 "id": "n3",
-                "name": "Pan (drag empty space)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -900,
                     "y": 1060
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Pan (drag empty space)",
+                    "color": null
+                }
             },
             {
                 "id": "n4",
-                "name": "Zoom (wheel, + / -)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -900,
                     "y": 960
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Zoom (wheel, + / -)",
+                    "color": null
+                }
             },
             {
                 "id": "n5",
-                "name": "Fit graph (Home)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -900,
                     "y": 860
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Fit graph (Home)",
+                    "color": null
+                }
             },
             {
                 "id": "n6",
-                "name": "Dot grid (adaptive)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -600,
                     "y": 1260
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Dot grid (adaptive)",
+                    "color": null
+                }
             },
             {
                 "id": "n7",
-                "name": "Origin marker (dev only)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -600,
                     "y": 1160
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Origin marker (dev only)",
+                    "color": null
+                }
             },
             {
                 "id": "n8",
-                "name": "Coordinate tracker",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -600,
                     "y": 1060
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Coordinate tracker",
+                    "color": null
+                }
             },
             {
                 "id": "n9",
-                "name": "Graph format v5",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -1200,
                     "y": 440
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Graph format v6",
+                    "color": null
+                }
             },
             {
                 "id": "n10",
-                "name": "Format adapters (v0 to v5)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -900,
                     "y": 540
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Format adapters (v0 to v6)",
+                    "color": null
+                }
             },
             {
                 "id": "n11",
-                "name": "Version samples",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -600,
                     "y": 540
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Version samples",
+                    "color": null
+                }
             },
             {
                 "id": "n12",
-                "name": "Graph store",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -900,
                     "y": 340
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Graph store",
+                    "color": null
+                }
             },
             {
                 "id": "n13",
-                "name": "Node CRUD",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -600,
                     "y": 340
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Node CRUD",
+                    "color": null
+                }
             },
             {
                 "id": "n14",
-                "name": "Link CRUD",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -600,
                     "y": -60
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Link CRUD",
+                    "color": null
+                }
             },
             {
                 "id": "n15",
-                "name": "Name editing (F2)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": 500
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Name editing (F2)",
+                    "color": null
+                }
             },
             {
                 "id": "n16",
-                "name": "Selection (Shift+click)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": 400
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Selection (Shift+click)",
+                    "color": null
+                }
             },
             {
                 "id": "n17",
-                "name": "New graph (Shift+N)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": 300
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "New graph (Shift+N)",
+                    "color": null
+                }
             },
             {
                 "id": "n18",
-                "name": "Node color",
                 "type": "basic",
-                "color": "#2a9fd6",
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": 200
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Node color",
+                    "color": "#2a9fd6"
+                }
             },
             {
                 "id": "n19",
-                "name": "Drag to link",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": 100
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Drag to link",
+                    "color": null
+                }
             },
             {
                 "id": "n20",
-                "name": "F quick link",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "F quick link",
+                    "color": null
+                }
             },
             {
                 "id": "n21",
-                "name": "Detach / re-route",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": -100
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Detach / re-route",
+                    "color": null
+                }
             },
             {
                 "id": "n22",
-                "name": "Link shapes (L)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": -200
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Link shapes (L)",
+                    "color": null
+                }
             },
             {
                 "id": "n23",
-                "name": "Spline",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": -100
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Spline",
+                    "color": null
+                }
             },
             {
                 "id": "n24",
-                "name": "Line",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": -200
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Line",
+                    "color": null
+                }
             },
             {
                 "id": "n25",
-                "name": "Manhattan corner",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": -300
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Manhattan corner",
+                    "color": null
+                }
             },
             {
                 "id": "n26",
-                "name": "Cycles & arrows (D, R)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": -300
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Cycles & arrows (D, R)",
+                    "color": null
+                }
             },
             {
                 "id": "n27",
-                "name": "Esc menu (per page)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": 1000
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Esc menu (per page)",
+                    "color": null
+                }
             },
             {
                 "id": "n28",
-                "name": "Graph folder",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 300,
                     "y": 1100
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Graph folder",
+                    "color": null
+                }
             },
             {
                 "id": "n29",
-                "name": "Download (Ctrl+Shift+S)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 300,
                     "y": 1000
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Download (Ctrl+Shift+S)",
+                    "color": null
+                }
             },
             {
                 "id": "n30",
-                "name": "Display override (links)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 300,
                     "y": 900
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Display override (links)",
+                    "color": null
+                }
             },
             {
                 "id": "n31",
-                "name": "Save / Save as (Ctrl+S)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 600,
                     "y": 1200
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Save / Save as (Ctrl+S)",
+                    "color": null
+                }
             },
             {
                 "id": "n32",
-                "name": "Autosave",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 600,
                     "y": 1100
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Autosave",
+                    "color": null
+                }
             },
             {
                 "id": "n33",
-                "name": "Read-only folder (Firefox)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 600,
                     "y": 1000
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Read-only folder (Firefox)",
+                    "color": null
+                }
             },
             {
                 "id": "n34",
-                "name": "Shortcuts & key caps",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 900,
                     "y": 440
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Shortcuts & key caps",
+                    "color": null
+                }
             },
             {
                 "id": "n35",
-                "name": "Snap to grid (Alt = free)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": 1260
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Snap to grid (Alt = free)",
+                    "color": null
+                }
             },
             {
                 "id": "n36",
-                "name": "Box select (Shift+drag)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": 400
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Box select (Shift+drag)",
+                    "color": null
+                }
             },
             {
                 "id": "n37",
-                "name": "Copy / paste (Ctrl+C, V)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": 300
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Copy / paste (Ctrl+C, V)",
+                    "color": null
+                }
             },
             {
                 "id": "n38",
-                "name": "Undo / redo (Ctrl+Z, Y)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -600,
                     "y": 140
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Undo / redo (Ctrl+Z, Y)",
+                    "color": null
+                }
             },
             {
                 "id": "n39",
-                "name": "Properties panel (N)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": 100
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Properties panel (N)",
+                    "color": null
+                }
             },
             {
                 "id": "n40",
-                "name": "Node types (templates)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -600,
                     "y": -480
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Node types (templates)",
+                    "color": null
+                }
             },
             {
                 "id": "n41",
-                "name": "Basic (ports)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": -460
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Basic (ports)",
+                    "color": null
+                }
             },
             {
                 "id": "n42",
-                "name": "Group (no ports)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -300,
                     "y": -540
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Group (no ports)",
+                    "color": null
+                }
             },
             {
                 "id": "n43",
-                "name": "Type samples (v1)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 100,
                     "y": -480
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Type samples (v1)",
+                    "color": null
+                }
             },
             {
                 "id": "n44",
-                "name": "Colour picker",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": 200
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Colour picker",
+                    "color": null
+                }
             },
             {
                 "id": "n45",
-                "name": "Types v1",
                 "type": "group",
-                "color": "#8e4ec6",
+                "typeVersion": 1,
                 "position": {
                     "x": -360,
                     "y": -420
                 },
-                "inputs": [],
-                "outputs": []
+                "ports": [],
+                "content": {
+                    "name": "Types v1",
+                    "color": "#8e4ec6"
+                }
             }
         ],
         "links": [

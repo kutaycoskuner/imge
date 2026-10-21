@@ -1,130 +1,145 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 5,
+        "version": 6,
         "direction": "top-to-bottom"
     },
     "data": {
         "nodes": [
             {
                 "id": "n1",
-                "name": "Shape (abstract)",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Shape (abstract)",
+                    "color": null
+                }
             },
             {
                 "id": "n2",
-                "name": "Circle",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": -320,
                     "y": -170
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Circle",
+                    "color": null
+                }
             },
             {
                 "id": "n3",
-                "name": "Rectangle",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": -170
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Rectangle",
+                    "color": null
+                }
             },
             {
                 "id": "n4",
-                "name": "Triangle",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 320,
                     "y": -170
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Triangle",
+                    "color": null
+                }
             },
             {
                 "id": "n5",
-                "name": "Square",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 1,
                 "position": {
                     "x": 0,
                     "y": -340
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Square",
+                    "color": null
+                }
             }
         ],
         "links": [

@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-17
+	//   last update     : 2026-10-21
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -11,22 +11,23 @@
 	import PropText from './PropText.svelte';
 	import { graph, selection, renameLink, removeLink } from '$lib/graph/store';
 	import type { LinkEnd } from '$lib/graph/types';
+	import { nodeLabel } from '$lib/graph/node-types';
 	import type { PanelContext } from './sections';
 
 	export let ctx: PanelContext;
 	$: link = ctx.link!;
 
-	// "Node name · port label" for one end of the link
-	function describe(end: LinkEnd, kind: 'inputs' | 'outputs'): string {
+	// "node label · port label" for one end of the link
+	function describe(end: LinkEnd): string {
 		const node = ctx.graph.data.nodes.find((n) => n.id === end.node);
-		const port = node?.[kind].find((p) => p.id === end.port);
-		return `${node?.name ?? end.node} · ${port?.label ?? end.port}`;
+		const port = node?.ports.find((p) => p.id === end.port);
+		return `${node ? nodeLabel(node) : end.node} · ${port?.label ?? end.port}`;
 	}
 
 	// the two ends, as data for one template
 	$: ends = [
-		{ title: 'From', end: link.source, text: describe(link.source, 'outputs') },
-		{ title: 'To', end: link.target, text: describe(link.target, 'inputs') }
+		{ title: 'From', end: link.source, text: describe(link.source) },
+		{ title: 'To', end: link.target, text: describe(link.target) }
 	];
 
 	function remove(): void {

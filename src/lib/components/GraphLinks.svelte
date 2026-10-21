@@ -45,11 +45,11 @@
 		isGroup
 	} from '$lib/graph/store';
 	import type { Point } from '$lib/graph/store';
-	import type { GraphNode, Link, LinkArrow, LinkShape } from '$lib/graph/types';
+	import type { GraphNode, Link, LinkArrow, LinkShape, PortKind } from '$lib/graph/types';
 
 	export let drag: {
 		nodeId: string;
-		kind: 'input' | 'output';
+		kind: PortKind; // the kind of the port the drag started at
 		portId: string;
 		to: Point; // mouse, world layer CSS coords
 	} | null = null;
@@ -69,7 +69,7 @@
 		h: number;
 	}
 
-	// port center relative to its node's top-left corner, keyed by data-port-key
+	// port center relative to its node's top-left corner, keyed by data-port-key ("<node>:<port>")
 	let portOffsets: Record<string, Point> = {};
 	let nodeSizes: Record<string, Size> = {};
 
@@ -105,11 +105,10 @@
 		nodes: GraphNode[],
 		offsets: Record<string, Point>,
 		nodeId: string,
-		kind: string,
 		portId: string
 	): Point | null {
 		const node = nodes.find((n) => n.id === nodeId);
-		const offset = offsets[`${nodeId}:${kind}:${portId}`];
+		const offset = offsets[`${nodeId}:${portId}`];
 		if (!node || !offset) return null;
 		return { x: node.position.x + offset.x, y: -node.position.y + offset.y };
 	}
@@ -279,8 +278,8 @@
 		const result: Placed[] = [];
 
 		for (const link of $graph.data.links) {
-			const fromLayer = portPosition(nodes, portOffsets, link.source.node, 'output', link.source.port);
-			const toLayerPt = portPosition(nodes, portOffsets, link.target.node, 'input', link.target.port);
+			const fromLayer = portPosition(nodes, portOffsets, link.source.node, link.source.port);
+			const toLayerPt = portPosition(nodes, portOffsets, link.target.node, link.target.port);
 			if (!fromLayer || !toLayerPt) continue;
 			const from = flow(fromLayer);
 			const to = flow(toLayerPt);
@@ -337,13 +336,13 @@
 	$: preview = (() => {
 		if (!drag) return null;
 		swap = $graph.metadata.direction === 'top-to-bottom';
-		const portLayer = portPosition($graph.data.nodes, portOffsets, drag.nodeId, drag.kind, drag.portId);
+		const portLayer = portPosition($graph.data.nodes, portOffsets, drag.nodeId, drag.portId);
 		if (!portLayer) return null;
 		const port = flow(portLayer);
 		const mouse = flow(drag.to);
-		// a drag always reads output -> input, whichever end it started from
+		// a drag always reads giving -> taking end: from an input it is drawn from the mouse
 		const shape = $linkShapeOverride ?? 'spline';
-		return drag.kind === 'output' ? direct(shape, port, mouse).d : direct(shape, mouse, port).d;
+		return drag.kind === 'in' ? direct(shape, mouse, port).d : direct(shape, port, mouse).d;
 	})();
 
 	const markerEnd = (arrow: LinkArrow, selected: boolean) =>

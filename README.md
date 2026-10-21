@@ -15,15 +15,15 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.20.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.21.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-    <img alt="Graph editor showing the feature map with a violet group frame around the node types, and the selected, blue Node color node in the Properties panel on the right" src="_display/0.20-graph_editor.png" />
+    <img alt="Graph editor showing the feature map with a violet group frame around the node types; the selected, blue Node color node is shown in the Properties panel with its Node, Content and Ports and links sections" src="_display/0.21-graph_editor.png" />
     <br>
-    <sub><i>v0.20.0 graph editor: the feature map with a group (Types v1), a coloured node and the Properties panel (N)</i></sub>
+    <sub><i>v0.21.0 graph editor: the feature map (graph format v6) with a group, a coloured node and its Content in the Properties panel (N)</i></sub>
 </p>
 
 # Installation and Use
@@ -57,6 +57,7 @@ npm run test:unit -- --run
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
 - [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
 - [Properties panel](docs/graph-properties-panel.md): the docked panel for the selection, what it shows, how to add a section (e.g. for a node type)
+- [Simulation layer (planned)](docs/graph-simulation.md): how graphs could later run: math nodes, textures, digital and analog circuits
 - [Graph types](docs/graph-types.md): kinds of graphs imge could draw, which are possible today and what each still needs
 
 The live site counts visits with a self-hosted analytics script (archrium); local runs (`npm run dev`, preview) are not counted.
@@ -97,7 +98,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] export data as json (default name imgegraph-<date>-<NN>.json)
 - [x] point the editor at a folder on your computer: its imge graphs are listed by name and open with a click; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
-- [x] versioned graph format (now v5), older files upgraded on load; a sample per version in static/data/samples
+- [x] versioned graph format (now v6: nodes are id, type, typeVersion, position, ports with a kind, and content defined by their type), older files upgraded on load; a sample per version in static/data/samples, a sample node per node type version in static/data/node-types
 - [x] example graphs in the Esc menu (mind map, flowchart, search tree, lattice, architecture map, release process, UML-ish), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)
 - [ ] vertical / horizontal frameworks
 - [ ] node content editing

@@ -1,0 +1,427 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 6,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -900,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "x = 3",
+                    "color": "#ffc53d"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -900,
+                    "y": 160
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "a = 2",
+                    "color": "#ffc53d"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -900,
+                    "y": 20
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "b = -4",
+                    "color": "#ffc53d"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -900,
+                    "y": -120
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "c = 1",
+                    "color": "#ffc53d"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -600,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Value"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Square (x² = 9)",
+                    "color": "#2a9fd6"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": 240
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "A"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "B"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Multiply (a·x² = 18)",
+                    "color": "#2a9fd6"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": 60
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "A"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "B"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Multiply (b·x = -12)",
+                    "color": "#2a9fd6"
+                }
+            },
+            {
+                "id": "n8",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 160
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "A"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "B"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Add (= 6)",
+                    "color": "#2a9fd6"
+                }
+            },
+            {
+                "id": "n9",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 300,
+                    "y": 40
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "A"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "B"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Add c (= 7)",
+                    "color": "#2a9fd6"
+                }
+            },
+            {
+                "id": "n10",
+                "type": "basic",
+                "typeVersion": 1,
+                "position": {
+                    "x": 600,
+                    "y": 40
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "content": {
+                    "name": "Result = 7",
+                    "color": "#46a758"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n7",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n8",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l9",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l10",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n9",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n10",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}
