@@ -1197,7 +1197,7 @@
             {
                 "id": "n45",
                 "type": "group",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -360,
                     "y": -420
@@ -1206,8 +1206,11 @@
                 "content": {
                     "name": "Types v1",
                     "color": "#8e4ec6",
-                    "width": 380,
-                    "height": 380
+                    "children": [
+                        "n41",
+                        "n42",
+                        "n46"
+                    ]
                 }
             },
             {

@@ -18,6 +18,12 @@
 	//          Ctrl+C copy the selected nodes (with the links between them), Ctrl+V paste them at
 	//          the mouse, Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo (a whole drag is one step),
 	//          N Properties panel on / off (docked right; shows and edits the selection),
+	//          Ctrl+G group the selected nodes (or add them to the one selected group),
+	//          Ctrl+Shift+G ungroup (dissolve a selected group,
+	//          or take selected nodes out of their group),
+	//          a node dropped, made (Shift+A) or pasted inside a group joins it; Ctrl+drop takes it out (or into the
+	//          group it is dropped in); dragging a group moves what it holds; drag a group's
+	//          corner handle to resize it (never smaller than its children),
 	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
 	//          link, F2 or double-click renames a link (drag a selected
 	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
@@ -72,6 +78,8 @@
 		removeLink,
 		removeNodes,
 		moveNodes,
+		groupNodes,
+		ungroupNodes,
 		linksInto,
 		quickLink,
 		selectNode,
@@ -88,6 +96,8 @@
 		setLinkBend,
 		snapToGrid,
 		showPropertiesPanel,
+		frames,
+		nodeSizes,
 		persistViewSettings,
 		linkShapeOverride,
 		linkArrowOverride,
@@ -97,6 +107,7 @@
 	} from '$lib/graph/store';
 	import type { Link, LinkEnd, PortKind } from '$lib/graph/types';
 	import { trackHistory, holdHistory, releaseHistory, undo, redo } from '$lib/graph/history';
+	import { withDescendants, parentOf, groupAt, setGroupMembership, resizeGroup, UNMEASURED } from '$lib/graph/groups';
 	import { assistanceMsg, menuOpen, menuTab, pageMenu } from '../stores/imge_main';
 
 	// exp() turns wheel delta into a smooth factor for both mouse wheels and trackpads
@@ -112,7 +123,10 @@
 	// node drag: the grabbed node and where it and the mouse started (world coords); its
 	// top-left corner follows the mouse snapped to half grid squares, the rest of the
 	// selection moves by the same amount so their layout is kept
-	let nodeDrag: { nodeId: string; start: Point; mouseStart: Point } | null = null;
+	let nodeDrag: { nodeId: string; start: Point; mouseStart: Point; moved?: boolean } | null = null;
+
+	// a group's corner handle being dragged: the frame's size and the mouse when it began (world)
+	let resizeDrag: { groupId: string; start: { w: number; h: number }; mouseStart: Point } | null = null;
 
 	// corner of a selected manhattan link (or the lane of a link going around its nodes) being
 	// dragged: the bend maps `from` (0) .. `to` (1)
@@ -179,6 +193,15 @@
 		const port = target.closest<HTMLElement>('.port');
 		if (port) return startLinkDrag(port);
 
+		const handle = target.closest<HTMLElement>('.group-resize');
+		if (handle) {
+			const groupId = handle.dataset.groupId!;
+			const frame = $frames[groupId];
+			if (frame) resizeDrag = { groupId, start: { w: frame.w, h: frame.h }, mouseStart: mouseWorld() };
+			selection.set({ nodes: [groupId], link: null });
+			return;
+		}
+
 		const bendHandle = target.closest<SVGElement>('.link-bend');
 		if (bendHandle) {
 			const { linkId, axis, from, to } = bendHandle.dataset;
@@ -227,6 +250,8 @@
 				const bend = ((drag.axis === 'x' ? mouse.x : mouse.y) - drag.from) / span;
 				graph.update((g) => setLinkBend(g, drag.linkId, bend));
 			}
+		} else if (resizeDrag) {
+			resizeByHandle(resizeDrag, event.altKey || !$snapToGrid);
 		} else if (boxDrag) {
 			boxDrag = { ...boxDrag, end: { x: event.clientX, y: event.clientY } };
 			updateBoxSelection(boxDrag);
@@ -239,10 +264,13 @@
 
 	function handleMouseUp(event: MouseEvent): void {
 		if (linkDrag) finishLinkDrag(event.target as HTMLElement);
+		// still inside the same history hold, so moving and joining / leaving is one undo step
+		if (nodeDrag?.moved) updateMembership(event.ctrlKey || event.metaKey);
 		isPanningSpace = false;
 		nodeDrag = null;
 		bendDrag = null;
 		boxDrag = null;
+		resizeDrag = null;
 		releaseHistory();
 	}
 
@@ -273,8 +301,79 @@
 		};
 		const current = $graph.data.nodes.find((n) => n.id === drag.nodeId)?.position;
 		if (!current || (current.x === target.x && current.y === target.y)) return;
-		const ids = $selection.nodes;
+		// a selected group carries what it holds (nested groups included)
+		const ids = withDescendants($graph, $selection.nodes);
 		graph.update((g) => moveNodes(g, ids, target.x - current.x, target.y - current.y));
+		drag.moved = true;
+	}
+
+	// Groups
+	// -----------------------------------------------------------------------------------
+	// Ctrl+G: the selected nodes go into a new group, which becomes the selection; with one
+	// group among the selected nodes, the others join that group instead
+	function groupSelection(): void {
+		const ids = $selection.nodes;
+		if (!ids.length) return notify('Select nodes, then press [Ctrl+G] to group them');
+		let groupId: string | null = null;
+		let added = false;
+		graph.update((g) => {
+			const result = groupNodes(g, ids);
+			groupId = result.groupId;
+			added = result.added;
+			return result.graph;
+		});
+		if (groupId) selection.set({ nodes: [groupId], link: null });
+		const n = added ? ids.length - 1 : ids.length;
+		notify(added ? `Added ${n} node${n === 1 ? '' : 's'} to the group` : `Grouped ${n} node${n === 1 ? '' : 's'}`);
+	}
+
+	// Ctrl+Shift+G: dissolve the selected groups / take the selected nodes out of their group
+	function ungroupSelection(): void {
+		const ids = $selection.nodes;
+		let freed: string[] = [];
+		graph.update((g) => {
+			const result = ungroupNodes(g, ids);
+			freed = result.freed;
+			return result.graph;
+		});
+		if (!freed.length) return notify('Select a group, or nodes in a group, then press [Ctrl+Shift+G]');
+		selection.set({ nodes: freed, link: null });
+		notify('Ungrouped');
+	}
+
+	// After dragging nodes: a node that isn't in a group joins the innermost group it was
+	// dropped in (its centre inside the frame). With Ctrl (Cmd) a node leaves its group, and
+	// joins the group it was dropped in if that is another one. Without Ctrl a node stays in its
+	// group: the frame has grown around it.
+	function updateMembership(leave: boolean): void {
+		const dragged = withDescendants($graph, $selection.nodes);
+		for (const id of $selection.nodes) {
+			const node = $graph.data.nodes.find((n) => n.id === id);
+			if (!node) continue;
+			const parent = parentOf($graph, id);
+			if (parent && !leave) continue;
+			const frame = $frames[id];
+			const size = $nodeSizes[id] ?? UNMEASURED;
+			const box = frame ?? { x: node.position.x, y: node.position.y, w: size.w, h: size.h };
+			const centre = { x: box.x + box.w / 2, y: box.y - box.h / 2 };
+			const into = groupAt($graph, $frames, centre, [...dragged, ...(parent ? [parent.id] : [])]);
+			if (into || parent) graph.update((g) => setGroupMembership(g, [id], into?.id ?? null));
+		}
+	}
+
+	// Dragging a group's corner handle: the frame follows the mouse (snapped to half grid squares
+	// unless Alt is held or snapping is off), never smaller than what it holds (resizeGroup).
+	function resizeByHandle(drag: NonNullable<typeof resizeDrag>, free: boolean): void {
+		const mouse = mouseWorld();
+		const step = snapStep($camera.zoom);
+		const snap = (v: number): number => (free ? v : Math.round(v / step) * step);
+		const size = {
+			w: snap(drag.start.w + mouse.x - drag.mouseStart.x),
+			h: snap(drag.start.h - (mouse.y - drag.mouseStart.y)) // y up: dragging down makes it taller
+		};
+		const id = drag.groupId;
+		const sizes = $nodeSizes;
+		graph.update((g) => resizeGroup(g, id, size, sizes));
 	}
 
 	// Box selection
@@ -373,9 +472,14 @@
 		if (target.closest('input, textarea, select, [contenteditable="true"]')) return;
 		const key = event.key.toLowerCase();
 		// Ctrl+C / Ctrl+V (Cmd on a Mac): only when there is something to copy / paste, so the
-		// browser's own copy keeps working otherwise; Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo
+		// browser's own copy keeps working otherwise; Ctrl+Z undo, Ctrl+Y / Ctrl+Shift+Z redo;
+		// Ctrl+G group, Ctrl+Shift+G ungroup (instead of the browser's find next / previous)
 		if ((event.ctrlKey || event.metaKey) && !event.altKey) {
-			if (key === 'z' || key === 'y') {
+			if (key === 'g') {
+				event.preventDefault();
+				if (event.shiftKey) ungroupSelection();
+				else groupSelection();
+			} else if (key === 'z' || key === 'y') {
 				event.preventDefault();
 				const redoing = key === 'y' || event.shiftKey;
 				if (!(redoing ? redo() : undo())) notify(redoing ? 'Nothing to redo' : 'Nothing to undo');
@@ -520,10 +624,14 @@
 		lastPaste = { at, count };
 		const shift = count * gridSpacing($camera.zoom);
 		let nodeIds: string[] = [];
+		// pasted inside a group's frame: the pasted nodes join it (pasted groups keep their own)
+		const into = groupAt($graph, $frames, mouse, []);
 		graph.update((g) => {
 			const result = pasteNodes(g, clip, { x: at.x + shift, y: at.y - shift });
 			nodeIds = result.nodeIds;
-			return result.graph;
+			if (!into) return result.graph;
+			const top = nodeIds.filter((id) => !parentOf(result.graph, id));
+			return setGroupMembership(result.graph, top, into.id);
 		});
 		selection.set({ nodes: nodeIds, link: null });
 	}
@@ -598,13 +706,17 @@
 			maxY = -Infinity;
 		for (const node of nodes) {
 			const el = document.querySelector<HTMLElement>(`.world .node[data-id="${node.id}"]`);
-			// offsetWidth/Height ignore the zoom transform, so they are world units
-			const width = el?.offsetWidth ?? 0;
-			const height = el?.offsetHeight ?? 0;
-			minX = Math.min(minX, node.position.x);
-			maxX = Math.max(maxX, node.position.x + width);
-			maxY = Math.max(maxY, node.position.y); // position is the top-left corner, y up
-			minY = Math.min(minY, node.position.y - height);
+			// offsetWidth/Height ignore the zoom transform, so they are world units; a group is
+			// drawn at its frame (grown around its children), not at its stored position
+			const frame = $frames[node.id];
+			const x = frame?.x ?? node.position.x;
+			const y = frame?.y ?? node.position.y;
+			const width = frame?.w ?? el?.offsetWidth ?? 0;
+			const height = frame?.h ?? el?.offsetHeight ?? 0;
+			minX = Math.min(minX, x);
+			maxX = Math.max(maxX, x + width);
+			maxY = Math.max(maxY, y); // the top-left corner, y up
+			minY = Math.min(minY, y - height);
 		}
 		fitBounds({ minX, minY, maxX, maxY });
 	}

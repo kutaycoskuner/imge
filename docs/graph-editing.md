@@ -2,7 +2,7 @@
 
 How to create, edit and delete nodes and links in the graph editor, the rules links follow, and a reference for the functions behind it.
 
-State as of 2026-10-21.
+State as of 2026-10-23.
 
 - [Using it](#using-it)
     - [Mouse and keys](#mouse-and-keys)
@@ -31,9 +31,13 @@ State as of 2026-10-21.
 | Shift+click node | Add it to the selection, or remove it. |
 | Click empty space | Clear the selection (and start panning). |
 | Shift+drag empty space | Box selection: draws a rectangle and adds every node it touches (partly inside is enough; a group only when it is completely inside) to the selection; the selection updates while you drag, and nodes the box leaves again drop out. Esc cancels and restores the selection from before. A Shift+click without dragging keeps the selection. |
-| Drag node | Move it, and every other selected node with it. Its top-left corner snaps to half grid squares (the dots and the midpoints between them); hold **Alt** to move freely, or turn snapping off with the toolbar's snap button. |
+| Drag node | Move it, and every other selected node with it (a selected group with everything it holds). Its top-left corner snaps to half grid squares (the dots and the midpoints between them); hold **Alt** to move freely, or turn snapping off with the toolbar's snap button. Dropped inside a group's frame, a node that isn't in a group joins that group. |
+| **Ctrl+G** (Cmd+G) | Group: put the selected nodes in a new group that wraps them; if they were all in one group, the new group goes inside it. With exactly one group among the selected nodes, the others are **added to that group** instead. The group is selected. Replaces the browser's "find next" while the canvas has the keyboard. |
+| **Ctrl+Shift+G** (Cmd+Shift+G) | Ungroup: a selected group is dissolved (removed; what it held goes to the group it was in); selected nodes in a group are taken out of it (to that group's own group, if any). |
+| **Ctrl**+drag node (Cmd) | Take it out of its group: on release it leaves its group, or joins the group it was dropped in. |
+| Drag a group's corner mark | Resize the group (bottom right); never smaller than its children plus a 64-unit margin. |
 | Toolbar "Add Node" | New node at the screen center. |
-| **Shift+A** | New node centered on the mouse. |
+| **Shift+A** | New node centered on the mouse; made inside a group's frame, it joins that group. |
 | Double-click the name, or **F2** | Edit the node's name. Enter or clicking away saves; Esc cancels (without opening the menu); an empty name keeps the old one. |
 | **Delete** / **Backspace** | Remove the selected link, or the selected nodes together with all their links. |
 | **Ctrl+C** (Cmd+C) | Copy the selected nodes and the links between them (links to nodes that aren't selected are left out). Kept in memory for this tab, so it can be pasted into another graph opened in the same tab; a reload forgets it. With no node selected, the browser's own copy runs. |
@@ -197,12 +201,17 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `addNode(g, at, name?)` | Adds a basic node built from the basic template (`node-types.ts`): ports `i1` (in) and `o1` (out), `content` `{ name: "Node", color: null }` (`name` replaces the default), `typeVersion` of the template; roughly centered on `at`, its position (top-left corner) rounded to whole units. | `{ graph, node }` |
 | `renameNode(g, nodeId, name)` | Sets `content.name`, trimmed, for a node whose content has a name. A blank name keeps the old one. | `Graph` |
 | `setNodeColor(g, nodeIds, color)` | Sets `content.color` of the given nodes whose content has a colour (`"#rrggbb"`, or `null` for the default look); the same graph back when all already have it. | `Graph` |
+| `groupFrames(g, sizes)` (`groups.ts`) | Every group's frame: its stored rect grown to wrap its children with `GROUP_MARGIN` (64), nested groups bottom-up; the store `frames` keeps it current from the measured `nodeSizes`. | `Record<id, Rect>` |
+| `groupNodes(g, nodeIds)` / `ungroupNodes(g, nodeIds)` (`store.ts`) | Ctrl+G / Ctrl+Shift+G: a new group around the nodes (inside their shared group, if any) / dissolve groups, take nodes out. | `{ graph, groupId }` / `{ graph, freed }` |
+| `setGroupMembership(g, nodeIds, groupId)` | Moves nodes into a group, or out of every group (`null`); a group never goes into itself or a group it holds. | `Graph` |
+| `resizeGroup(g, groupId, size, sizes)` | Sets a group's size from its frame's top-left corner, never smaller than `minGroupSize` (children + margin, at least 100). | `Graph` |
+| `withDescendants(g, ids)` / `parentOf(g, id)` / `groupAt(g, frames, point, skip)` | The ids plus everything in the groups among them / the group a node is in / the innermost group under a point. | ids / node |
 | `setNodeContent(g, nodeId, patch)` | Sets keys of a node's `content` (a type's own Properties section, e.g. a UML class's `attributes` / `methods`); other keys stay; the same graph back when every value is already there. | `Graph` |
 | `setNodeType(g, nodeId, type)` | Sets a node's `type` (Properties panel's Type dropdown) and reshapes it to the type's template, port kind by port kind: a kind the type has no ports of is removed with its links, a kind the node lacks comes from the template; `content` gets the template's missing keys (existing ones kept); `typeVersion` follows the type. The same graph back when unchanged; one undo restores everything. | `Graph` |
 | `isGroup(node)` / `hasLinks(g, nodeId)` | Whether a node is a group (frame without ports; `addLink` and `quickLink` never use it) / whether any link starts or ends at it. | `boolean` |
 | `setNodePosition(g, nodeId, at)` | Puts one node's top-left corner at a world point (Properties panel); the same graph back when it is already there. | `Graph` |
 | `moveNodes(g, nodeIds, dx, dy)` | Moves the given nodes by a world-space delta. | `Graph` |
-| `removeNodes(g, nodeIds)` | Removes the nodes and every link that starts or ends at them. | `Graph` |
+| `removeNodes(g, nodeIds)` | Removes the nodes and every link that starts or ends at them; they leave their group, and a removed group's children stay. | `Graph` |
 | `createNodeAt(at)` | Store action: adds a node to the open graph centered on `at` and selects only it. Used by Shift+A and the toolbar. | the new `GraphNode` |
 
 ### Links
@@ -276,6 +285,9 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-23 — Ctrl+G adds the selection to the one selected group; nodes made (Shift+A, toolbar) or pasted (Ctrl+V) inside a group's frame join it
+- 2026-10-23 — keys Ctrl+G (group the selection) and Ctrl+Shift+G (ungroup); new functions `groupNodes`, `ungroupNodes`
+- 2026-10-23 — groups hold nodes: drop to join, Ctrl+drag to leave, a group drag moves its children, resize by the corner mark; new module `groups.ts`
 - 2026-10-21 — new function `setNodeContent` (UML class members)
 - 2026-10-21 — graph format v6: nodes keep name and colour in `content` and their ports in one list with `kind`; `addNode` builds from the basic template, `setNodeType` reshapes by port kind and fills `content`; one link rule `CAN_LINK`, `addLink` takes the ends in either order (a drag from an input works) and stores giving → taking; new `portOf`
 - 2026-10-21 — groups: no links to or from a group (`addLink` outcome `unknown-port`, F skips it), a box takes a group only when it is fully inside; new `isGroup`, `hasLinks`

@@ -10,14 +10,25 @@
 	// (graph format v6 top level): id, type (dropdown from $lib/graph/node-types.ts; planned types
 	// are listed but not choosable yet; a change reshapes the node's ports and content and asks
 	// first when links would go), position of its top-left corner in world coordinates (editable,
-	// y up) and a delete button. Name and colour live in the type's own section (PropsContent).
+	// y up), the group it is in (a click selects the group, Leave takes it out) and a delete
+	// button. Name and colour live in the type's own section (PropsContent).
 	import PropText from './PropText.svelte';
 	import { graph, selection, setNodePosition, setNodeType, removeNodes } from '$lib/graph/store';
-	import { NODE_TYPES } from '$lib/graph/node-types';
+	import { NODE_TYPES, nodeLabel } from '$lib/graph/node-types';
+	import { parentOf, setGroupMembership } from '$lib/graph/groups';
 	import type { PanelContext } from './sections';
 
 	export let ctx: PanelContext;
 	$: node = ctx.nodes[0];
+	$: parent = parentOf(ctx.graph, node.id);
+
+	// leaves its group for the group that one is in (or for no group)
+	function leaveGroup(): void {
+		if (!parent) return;
+		const id = node.id;
+		const outer = parentOf(ctx.graph, parent.id)?.id ?? null;
+		graph.update((g) => setGroupMembership(g, [id], outer));
+	}
 
 	function setPosition(axis: 'x' | 'y', typed: string): void {
 		const value = Number(typed);
@@ -67,6 +78,16 @@
 		</select>
 	</dd>
 
+	{#if parent}
+		<dt>Group</dt>
+		<dd class="in-group">
+			<button class="prop-row" title="Select the group" on:click={() => selection.set({ nodes: [parent.id], link: null })}>
+				<span>{nodeLabel(parent)}</span>
+			</button>
+			<button class="prop-button" title="Take it out of the group [Ctrl+drag]" on:click={leaveGroup}>Leave</button>
+		</dd>
+	{/if}
+
 	<dt>X</dt>
 	<dd><PropText type="number" step={20} label="Position x" value={node.position.x} onCommit={(v) => setPosition('x', v)} /></dd>
 
@@ -76,3 +97,11 @@
 <div class="prop-actions">
 	<button class="prop-button danger" on:click={remove}>Delete node</button>
 </div>
+
+<style>
+	.in-group {
+		display: flex;
+		align-items: center;
+		gap: 0.4em;
+	}
+</style>

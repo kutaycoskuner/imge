@@ -36,7 +36,7 @@
 // file-access.ts. Details: docs/graph-editing.md, docs/graph-format.md
 // -----------------------------------------------------------------------------------------
 
-import { writable, type Writable } from 'svelte/store';
+import { writable, derived, get, type Writable } from 'svelte/store';
 import {
 	GRAPH_FORMAT,
 	LINK_ARROWS,
@@ -55,6 +55,18 @@ import {
 	PORT_KINDS
 } from './types';
 import { nodeType } from './node-types';
+import {
+	groupFrames,
+	pruneChildren,
+	withDescendants,
+	groupChildren,
+	parentOf,
+	setGroupMembership,
+	groupAt,
+	type Rect,
+	type Sizes
+} from './groups';
+import { GROUP_MIN } from './node-types';
 
 export interface Point {
 	x: number;
@@ -84,6 +96,11 @@ export const graph = writable<Graph>(emptyGraph());
 export const selection = writable<Selection>({ nodes: [], link: null });
 export const editingNodeId = writable<string | null>(null); // node whose name is being edited
 export const editingLinkId = writable<string | null>(null); // link whose name is being edited
+
+/** Rendered size of every node (world units), measured by GraphLinks after each graph change. */
+export const nodeSizes = writable<Sizes>({});
+/** Every group's frame: its stored rect grown around its children (groups.ts). */
+export const frames = derived([graph, nodeSizes], ([$graph, $sizes]): Record<string, Rect> => groupFrames($graph, $sizes));
 
 /** Copied nodes (Ctrl+C) and the links between them, kept in memory for this tab. */
 export interface NodeClipboard {
@@ -298,17 +315,89 @@ export function moveNodes(g: Graph, nodeIds: string[], dx: number, dy: number): 
 	);
 }
 
-/** Removes nodes and every link attached to them. */
+/**
+ * Removes nodes and every link attached to them. A removed group's children stay (no longer in
+ * a group); removed nodes leave the group they were in.
+ */
 export function removeNodes(g: Graph, nodeIds: string[]): Graph {
 	const ids = new Set(nodeIds);
-	return {
+	return pruneChildren({
 		...g,
 		data: {
 			...g.data,
 			nodes: g.data.nodes.filter((n) => !ids.has(n.id)),
 			links: g.data.links.filter((l) => !ids.has(l.source.node) && !ids.has(l.target.node))
 		}
+	});
+}
+
+// -----------------------------------------------------------------------------------------
+// group / ungroup (Ctrl+G, Ctrl+Shift+G)
+// -----------------------------------------------------------------------------------------
+/**
+ * Ctrl+G. With exactly one group among several selected nodes, the other nodes join that group
+ * (`added` true). Otherwise the nodes go into a new group, which starts at their top-left
+ * corner with the smallest size, so its frame is just its children plus the margin
+ * (groups.ts); when all the nodes were in the same group, the new group goes into that one.
+ *
+ * Returns:
+ *     The new graph, the group's id (the existing or the new one; null when there is nothing
+ *     to group) and whether the nodes were added to an existing group.
+ */
+export function groupNodes(g: Graph, nodeIds: string[]): { graph: Graph; groupId: string | null; added: boolean } {
+	const nodes = g.data.nodes.filter((n) => nodeIds.includes(n.id));
+	if (!nodes.length) return { graph: g, groupId: null, added: false };
+	const selectedGroups = nodes.filter(isGroup);
+	if (selectedGroups.length === 1 && nodes.length > 1) {
+		const target = selectedGroups[0];
+		const others = nodes.filter((n) => n.id !== target.id).map((n) => n.id);
+		return { graph: setGroupMembership(g, others, target.id), groupId: target.id, added: true };
+	}
+	const parents = new Set(nodes.map((n) => parentOf(g, n.id)?.id ?? null));
+	const shared = parents.size === 1 ? [...parents][0] : null;
+	const left = Math.min(...nodes.map((n) => n.position.x));
+	const top = Math.max(...nodes.map((n) => n.position.y));
+	const template = nodeType('group')!;
+	const group: GraphNode = {
+		id: nextNodeId(g),
+		type: 'group',
+		typeVersion: template.version!,
+		position: { x: left, y: top },
+		ports: [],
+		content: { ...structuredClone(template.content!), width: GROUP_MIN, height: GROUP_MIN }
 	};
+	let next = withNodes(g, [...g.data.nodes, group]);
+	next = setGroupMembership(next, nodes.map((n) => n.id), group.id);
+	if (shared) next = setGroupMembership(next, [group.id], shared);
+	return { graph: next, groupId: group.id, added: false };
+}
+
+/**
+ * Ungroups (Ctrl+Shift+G): a selected group is dissolved (removed; what it held goes to the
+ * group it was in, or out of groups); a selected node in a group leaves it for that group's
+ * own parent. Returns the new graph and the ids that were affected (the freed children and
+ * the nodes taken out), or the same graph when nothing changes.
+ */
+export function ungroupNodes(g: Graph, nodeIds: string[]): { graph: Graph; freed: string[] } {
+	let next = g;
+	const freed: string[] = [];
+	for (const id of nodeIds) {
+		const node = next.data.nodes.find((n) => n.id === id);
+		if (!node) continue;
+		if (node.type === 'group') {
+			const children = groupChildren(next, node);
+			const outer = parentOf(next, id)?.id ?? null;
+			next = setGroupMembership(next, children, outer);
+			next = removeNodes(next, [id]);
+			freed.push(...children);
+		} else {
+			const parent = parentOf(next, id);
+			if (!parent) continue;
+			next = setGroupMembership(next, [id], parentOf(next, parent.id)?.id ?? null);
+			freed.push(id);
+		}
+	}
+	return { graph: next, freed };
 }
 
 // -----------------------------------------------------------------------------------------
@@ -319,7 +408,8 @@ export function removeNodes(g: Graph, nodeIds: string[]): Graph {
  * ends are among them (links to nodes left out are not copied). Doesn't change the graph.
  */
 export function copyNodes(g: Graph, nodeIds: string[]): NodeClipboard {
-	const ids = new Set(nodeIds);
+	// a copied group takes what it holds along
+	const ids = new Set(withDescendants(g, nodeIds));
 	return structuredClone({
 		nodes: g.data.nodes.filter((n) => ids.has(n.id)),
 		links: g.data.links.filter((l) => ids.has(l.source.node) && ids.has(l.target.node))
@@ -348,6 +438,12 @@ export function pasteNodes(g: Graph, clip: NodeClipboard, at: Point): { graph: G
 		const id = nextId([...g.data.nodes, ...nodes], 'n');
 		newId.set(node.id, id);
 		nodes.push({ ...node, id, position: { x: node.position.x + dx, y: node.position.y + dy } });
+	}
+	// a pasted group holds the pasted copies of its children (children not copied are dropped)
+	for (const node of nodes) {
+		if (Array.isArray(node.content.children)) {
+			node.content.children = (node.content.children as string[]).map((id) => newId.get(id)).filter((id): id is string => !!id);
+		}
 	}
 	const links: Link[] = [];
 	for (const link of structuredClone(clip.links)) {
@@ -695,13 +791,15 @@ export function selectBox(base: Selection, hitIds: string[]): Selection {
 // -----------------------------------------------------------------------------------------
 // store actions (used by the page and the toolbar)
 // -----------------------------------------------------------------------------------------
-/** Adds a node centered on a world point to the open graph and selects only it. */
+/** Adds a node centered on a world point to the open graph (it joins the group it is made in) and selects only it. */
 export function createNodeAt(at: Point): GraphNode {
 	let created!: GraphNode;
+	// made inside a group's frame: it joins that group (the innermost one), in the same step
+	const into = groupAt(get(graph), get(frames), at, []);
 	graph.update((g) => {
 		const result = addNode(g, at);
 		created = result.node;
-		return result.graph;
+		return into ? setGroupMembership(result.graph, [created.id], into.id) : result.graph;
 	});
 	selection.set({ nodes: [created.id], link: null });
 	return created;

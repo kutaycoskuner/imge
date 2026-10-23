@@ -495,7 +495,8 @@ describe('properties panel edits', () => {
 			['i1', 'in'],
 			['o1', 'out']
 		]);
-		expect(g.data.nodes[0].content).toEqual({ name: 'Frame', color: '#46a758' });
+		// content keeps what the group added (an empty children list), as for every type change
+		expect(g.data.nodes[0].content).toEqual({ name: 'Frame', color: '#46a758', children: [] });
 	});
 
 	it('makes a node a group, removing its links in the same step', () => {

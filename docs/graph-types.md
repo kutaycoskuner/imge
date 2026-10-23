@@ -2,7 +2,7 @@
 
 Kinds of graphs imge could draw, checked one by one as the editor grows. For each: what it is, whether it's possible today, and what's missing. Not all of them have established names; the descriptions say what is meant. Graphs that should also *run* (math nodes, textures, circuits) need the planned simulation layer: [graph-simulation.md](graph-simulation.md).
 
-State as of 2026-10-21 (graph format v6).
+State as of 2026-10-23 (graph format v6).
 
 - **possible**: can be drawn today with the existing features, in a basic form
 - **partly**: the core works, but something that defines the type is missing
@@ -109,8 +109,8 @@ Less strict diagrams that describe a system or a process at a glance (like the h
 
 - **Status:** possible
 - **Works today:** nodes, links with shapes, arrows and names, both directions.
-- **Works today:** groups as frames behind related nodes, sized in the Properties panel.
-- **Missing:** resizable groups that carry their nodes, free text labels not attached to a node.
+- **Works today:** groups that hold related nodes: the frame wraps them, moves them and can be resized.
+- **Missing:** free text labels not attached to a node.
 - **Example:** Web app architecture (`web-app-architecture.json`)
 
 ### Number / decision tree
@@ -170,7 +170,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 |---|---|
 | Add / remove ports, named ports | flowchart decisions, parametric graphs, UML |
 | Node shapes (diamond, circle, point) | flowchart, lattice, decision trees |
-| Groups / containers (started: frames with a size; no drag handle, don't carry their nodes yet) | loose architecture maps, set visualization, UML packages |
+| Groups / containers (done: hold, wrap and move their nodes, resizable; nested) | loose architecture maps, set visualization, UML packages |
 | Node colours drawn (done) | mind maps, architecture maps |
 | Node content (text, compartments; started: UML class compartments) | UML, mind maps, notes |
 | Automatic layout (tree, layered, force) | trees, lattices, big data |
@@ -182,6 +182,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 
 ## Changes
 
+- 2026-10-23 — groups hold, wrap and move their nodes and can be resized
 - 2026-10-21 — UML: class nodes with compartments, highlighting and format check (graph-uml.md); the example uses them
 - 2026-10-21 — every type has an example now: sketches for the *not yet* types (math, texture, two circuits, ALU, sequence, package dependencies, lecture notes, set function)
 - 2026-10-21 — new types: circuit (digital / analog, with the ALU mapping under it), sequence diagram; parametric graph is now "math calculation nodes" with textures under it; rough software architecture named under the loose architecture map; running graphs planned in [graph-simulation.md](graph-simulation.md)

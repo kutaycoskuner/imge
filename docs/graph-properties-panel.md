@@ -2,7 +2,7 @@
 
 The graph editor's docked panel on the right that shows and edits whatever is selected, like Blender's sidebar (<kbd>N</kbd>).
 
-State as of 2026-10-21.
+State as of 2026-10-23.
 
 - [Why a panel](#why-a-panel)
 - [Using it](#using-it)
@@ -42,9 +42,10 @@ The panel shows the sections whose condition matches the selection, top to botto
 | Selection | Section | Contents |
 |---|---|---|
 | Nothing | Graph | File name (or "not saved yet") with the unsaved marker, direction (changes it like the Esc menu and the transpose button), number of nodes and links. |
-| One node | Node | What every node has (graph format v6 top level): id, type (dropdown, see below), position of the top-left corner X and Y (world units, y up; editable), Delete node. |
+| One node | Node | What every node has (graph format v6 top level): id, type (dropdown, see below), position of the top-left corner X and Y (world units, y up; editable), the **group** it is in (a click selects the group, **Leave** takes it out), Delete node. |
 | One node of a type with a name and a colour (basic, group) | Content | Name (editable) and colour (see below): the type's own `content`. Other node types will bring their own content sections. |
 | One UML class | Attributes and methods | One field per compartment, one member per line in UML notation, highlighted while typing, with the lines that don't follow the notation listed under the field; leaving a field saves it (see [graph-uml.md](graph-uml.md)). |
+| One group | Contents | The nodes it holds, by label and id (a click selects one, × takes it out of the group), how to add nodes, and **Ungroup** (removes the group; what it held stays). |
 | One node with ports | Ports and links | Its ports by kind (inputs, outputs, and two-way ports when it has any), by label; links coming in and going out, by the node at the other end (and the link's name); a click selects the link. |
 | Several nodes | Selection | How many nodes and how many links between them; one colour for all of them whose type has a colour (empty with "mixed" when they differ; × resets all); their labels (a click selects only that one); Delete all of them. |
 | One link | Link | Name (editable; empty removes it), id, From and To as node label · port label (a click selects the node), Delete link. |
@@ -73,10 +74,14 @@ The Type dropdown lists `NODE_TYPES` from `src/lib/graph/node-types.ts`: `id`, `
 - **Changing the type reshapes the node** to the new type's template, port kind by port kind: a kind the type has no ports of is removed from the node with the links on those ports; a kind it has keeps the node's own ports, or gets the template's when the node has none (Group → Basic gets a fresh input and output). `content` gets the template's keys it lacks and keeps what it has, so a name and colour survive Basic → Group → Basic; `typeVersion` follows the type. When links would go, the panel asks first; one Ctrl+Z restores everything.
 - **Versions and samples:** every ready type has a sample node per version in `static/data/node-types/<type>/<type>-v<n>.json` (like the graph format samples): a header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`) and the node as it appears in a graph file of that format; a sample written in an older graph format is upgraded before it is compared (the v1 samples of basic and group are written in graph format 5; their template didn't change with graph format 6, so they stay version 1). `node-types.spec.ts` checks that each version has its sample, the newest matches the template, new nodes and type changes produce exactly that shape, and every sample loads as part of a graph. Changing a type's template means a new `version` and a new sample file.
 - **Group:** a frame drawn behind the other nodes and the links, its name centred in a gap of the top edge in the frame's colour, no ports. A colour tints the frame, the name and, lightly, the inside.
-    - Only the name takes the mouse: click it to select, drag it to move, double-click it to rename. Clicks inside the frame reach the canvas and the nodes on top of it (panning, box selection and clicking nodes work there as usual).
+    - Only the name and the corner mark take the mouse: click the name to select, drag it to move, double-click it to rename. Clicks inside the frame reach the canvas and the nodes on top of it (panning, box selection and clicking nodes work there as usual).
     - A box selection takes a group only when the whole group is inside the box, so a box drawn inside a group selects the nodes in it.
     - Groups have no ports, so links never start or end at one (dragging, F). A group's panel has no "Ports and links" section.
-    - **Size:** a group's frame is 320 × 192 world units (20 × 12 em) unless its content has `width` / `height`; the **Content** section shows **Width** and **Height** for groups (steps of 20, at least 100). There is no drag handle yet, and moving a group doesn't move the nodes in it; both come later.
+    - **Holds nodes:** a group is the parent of the nodes in it (its content's `children`, group type version 2). Its frame always wraps them with a **64-unit margin** (4rem at zoom 1): when a child is dragged outwards the frame grows with it, so the frame is never smaller than what it holds.
+    - **Keys:** **Ctrl+G** puts the selected nodes in a new group, or, when exactly one group is among them, adds the others to that group; **Ctrl+Shift+G** ungroups (dissolves a selected group, or takes selected nodes out of their group).
+    - **Adding nodes to an existing group:** drop them inside its frame; make them there (Shift+A at the mouse, the toolbar's Add Node at the screen centre) or paste them there (Ctrl+V at the mouse; a pasted group keeps its own contents); or select them together with the group and press Ctrl+G. The group's **Contents** section lists what it holds.
+    - **Joining and leaving:** drop a node inside a group's frame and it joins that group (the innermost one, when groups are nested). A node in a group stays in it when dragged; drag it with **Ctrl** (Cmd) held to take it out: on release it leaves its group, or joins the group it was dropped in. Moving a group moves everything it holds, nested groups included; deleting a group keeps its children; copying a group copies what it holds.
+    - **Size:** drag the small corner mark at the frame's bottom right (snapped to half grid squares; Alt = free), or set **Width** and **Height** in the **Content** section. Both stop at the children plus the margin (an empty group at 100 × 100). The size is stored in the group's content (`width`, `height`); without it a group is 320 × 192 (20 × 12 em), grown around its children.
 
 A node whose `type` isn't in the list (e.g. from a newer file) shows that type as an extra option. A type becomes choosable (`ready: true`) once the canvas can draw it and it has its own panel section.
 
@@ -106,6 +111,7 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 | `src/lib/components/properties/ColorPicker.svelte` | The colour picker: saturation / brightness square, hue bar, tints and shades, presets; mouse, touch and arrow keys. |
 | `src/lib/graph/color.ts` | `parseHexColor` (typed hex to `#rrggbb`), `dimColor` and `NODE_FILL_SHARE` (the fill), `hexToHsv` / `hsvToHex`, `mixHex` / `tintsAndShades`, `NODE_COLOR_PRESETS`. Tests in `color.spec.ts`. |
 | `src/lib/graph/node-types.ts` | `NODE_TYPES`: the Type dropdown's list, and for ready types their template (version, ports, content, label); `nodeType(id)`, `nodeLabel(node)`, `nodeName`, `nodeColor`, `hasNamedContent`, `portSide`. |
+| `src/lib/components/properties/PropsGroupContents.svelte` | The Contents section of groups: children (select, take out), how to add, Ungroup. |
 | `src/lib/components/properties/PropsUmlMembers.svelte`, `PropUmlLines.svelte` | The Attributes and methods section of UML classes; a member field with highlighting and format check. |
 | `src/lib/components/properties/PropsContent.svelte` | The Content section of basic / group nodes: name and colour. |
 | `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per ready type and version (basic-v1, group-v1); checked by `src/lib/graph/node-types.spec.ts`. |
@@ -121,6 +127,8 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 
 ## Changes
 
+- 2026-10-23 — groups: Contents section (children, take out, Ungroup); the Node section shows the group a node is in (Leave); nodes made or pasted inside a frame join it; Ctrl+G adds to the one selected group
+- 2026-10-23 — groups hold their nodes: the frame wraps its children with a 64-unit margin, a dropped node joins, Ctrl+drag takes it out, moving a group moves its children; resize by the corner mark or Width / Height, never smaller than the children
 - 2026-10-21 — groups get a size: Width and Height in the Content section (content `width` / `height`, default 320 × 192)
 - 2026-10-21 — UML class type: Attributes and methods section (highlighting while typing, format check)
 - 2026-10-21 — graph format v6: Node section keeps what every node has (id, type, position); name and colour moved to a new Content section shown for types that have them; Ports and links lists ports by kind; labels come from the node's type (`nodeLabel`); the duplicated sentence in Node types fixed

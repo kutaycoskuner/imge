@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "group",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -660,
                     "y": 300
@@ -17,7 +17,11 @@
                 "ports": [],
                 "content": {
                     "name": "Set A",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "children": [
+                        "n2",
+                        "n3"
+                    ]
                 }
             },
             {
@@ -65,7 +69,7 @@
             {
                 "id": "n4",
                 "type": "group",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -60,
                     "y": 300
@@ -73,7 +77,11 @@
                 "ports": [],
                 "content": {
                     "name": "Set B",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "children": [
+                        "n5",
+                        "n6"
+                    ]
                 }
             },
             {

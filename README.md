@@ -15,15 +15,15 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.22.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.23.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-    <img alt="Graph editor in the light theme showing the feature map; the violet group Types v1 frames the node types Basic, Group and the selected UML class UmlClass, whose attributes and methods are shown highlighted in the Properties panel" src="_display/0.22-graph_editor.png" />
+    <img alt="Graph editor in the light theme showing the feature map; the violet group Types v1 frames the node types Basic, Group and the selected UML class UmlClass, whose attributes and methods are shown highlighted in the Properties panel" src="_display/0.23-graph_editor.png" />
     <br>
-    <sub><i>v0.22.0 graph editor (light theme): the feature map, the node types in a group with a UML class, its members in the Properties panel (N)</i></sub>
+    <sub><i>v0.23.0 graph editor (light theme): the feature map; the group Types v1 holds and wraps the node types, among them a UML class shown in the Properties panel (N)</i></sub>
 </p>
 
 # Installation and Use
@@ -86,7 +86,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] copy / paste nodes with the links between them (Ctrl+C, Ctrl+V at the mouse)
 - [x] undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z; a whole drag is one step)
 - [x] UML class nodes (node type UML class): class name, attributes and methods in three compartments, member lines highlighted and checked against the UML notation, edited in the Properties panel
-- [x] groups (node type Group): a frame behind other nodes with its name in the top edge, grabbed by its name; width and height set in the Properties panel
+- [x] groups (node type Group): hold the nodes dropped into them (Ctrl+drag takes one out); nodes made or pasted inside a frame join it; Ctrl+G groups the selection (or adds it to the one selected group), Ctrl+Shift+G ungroups; the Properties panel lists a group's contents, the frame wraps its children with a margin and moves them along; resize by the corner mark or in the Properties panel, never smaller than the children; nested groups
 - [x] node colours: border in the colour, dim fill of it; set in the Properties panel with a colour picker (saturation / brightness square, hue bar, tints and shades, presets; live on the canvas) or as hex, for one or several nodes
 - [x] Properties panel docked on the right (N or toolbar, hideable, like Blender's sidebar): shows and edits the selected node, nodes or link (name, position, links, shape, arrow, route, corner) so nodes on the canvas stay minimal
 - [x] new empty graph (Shift+N or the Esc menu; asks first if there are unsaved changes)
@@ -106,4 +106,4 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [ ] node content editing
 - [ ] add / remove ports
 
-Shortcuts (Shift+N, Shift+A, Ctrl+C, Ctrl+V, Ctrl+Z, Ctrl+Y, N, F2, F, L, D, R, Delete, +/-, Home, Ctrl+S, Ctrl+Shift+S, Esc) and link rules: [docs/graph-editing.md](docs/graph-editing.md#mouse-and-keys); the toolbar hints and menu buttons show their keys as key caps
+Shortcuts (Shift+N, Shift+A, Ctrl+C, Ctrl+V, Ctrl+Z, Ctrl+Y, Ctrl+G, Ctrl+Shift+G, N, F2, F, L, D, R, Delete, +/-, Home, Ctrl+S, Ctrl+Shift+S, Esc) and link rules: [docs/graph-editing.md](docs/graph-editing.md#mouse-and-keys); the toolbar hints and menu buttons show their keys as key caps

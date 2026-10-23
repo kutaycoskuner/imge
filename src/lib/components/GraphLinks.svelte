@@ -42,7 +42,8 @@
 		showChevrons,
 		findBackLinks,
 		renameLink,
-		isGroup
+		isGroup,
+		nodeSizes as measuredSizes
 	} from '$lib/graph/store';
 	import type { Point } from '$lib/graph/store';
 	import type { GraphNode, Link, LinkArrow, LinkShape, PortKind } from '$lib/graph/types';
@@ -99,6 +100,7 @@
 		});
 		portOffsets = ports;
 		nodeSizes = sizes;
+		measuredSizes.set(sizes); // shared: group frames wrap their children by these sizes
 	}
 
 	function portPosition(

@@ -24,6 +24,7 @@ import PropsGraph from './PropsGraph.svelte';
 import PropsNode from './PropsNode.svelte';
 import PropsContent from './PropsContent.svelte';
 import PropsUmlMembers from './PropsUmlMembers.svelte';
+import PropsGroupContents from './PropsGroupContents.svelte';
 import PropsNodeLinks from './PropsNodeLinks.svelte';
 import PropsNodes from './PropsNodes.svelte';
 import PropsLink from './PropsLink.svelte';
@@ -50,6 +51,7 @@ const oneNodeWithPorts = (ctx: PanelContext) => oneNode(ctx) && !isGroup(ctx.nod
 // a type that keeps a name and a colour in its content (basic, group); other types add their own
 const oneNamedNode = (ctx: PanelContext) => oneNode(ctx) && hasNamedContent(ctx.nodes[0]);
 const oneUmlClass = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].type === 'uml-class';
+const oneGroup = (ctx: PanelContext) => oneNode(ctx) && isGroup(ctx.nodes[0]);
 const someNodes = (ctx: PanelContext) => ctx.nodes.length > 1;
 const aLink = (ctx: PanelContext) => !!ctx.link;
 
@@ -58,6 +60,7 @@ export const PANEL_SECTIONS: PanelSection[] = [
 	{ id: 'node', title: 'Node', component: PropsNode, show: oneNode },
 	{ id: 'node-content', title: 'Content', component: PropsContent, show: oneNamedNode },
 	{ id: 'uml-members', title: 'Attributes and methods', component: PropsUmlMembers, show: oneUmlClass },
+	{ id: 'group-contents', title: 'Contents', component: PropsGroupContents, show: oneGroup },
 	{ id: 'node-links', title: 'Ports and links', component: PropsNodeLinks, show: oneNodeWithPorts },
 	{ id: 'nodes', title: 'Selection', component: PropsNodes, show: someNodes },
 	{ id: 'link', title: 'Link', component: PropsLink, show: aLink },

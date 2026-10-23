@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-17
+	//   last update     : 2026-10-23
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -32,7 +32,9 @@
 				[['Ctrl+V'], 'Paste the copied nodes at the mouse (again: one grid square further)'],
 				[['F2'], 'Edit the selected node’s name (or the selected link’s)'],
 				[['Delete', 'Backspace'], 'Remove the selected nodes with their links, or the selected link'],
-				[['F'], 'Link two selected nodes']
+				[['F'], 'Link two selected nodes'],
+				[['Ctrl+G'], 'Group: put the selected nodes in a new group (one group selected: add the others to it)'],
+				[['Ctrl+Shift+G'], 'Ungroup: dissolve the selected group, or take the selected nodes out of their group']
 			]
 		},
 		{
@@ -62,6 +64,9 @@
 		['Wheel', 'Zoom toward the cursor'],
 		['Drag a node', 'Move it with every selected node, snapped to half grid squares'],
 		['Alt+drag a node', 'Move it without snapping (snapping can be turned off in the toolbar)'],
+		['Drop a node in a group', 'It joins the group; the frame wraps it (so do nodes made or pasted there)'],
+		['Ctrl+drag a node', 'Take it out of its group'],
+		['Drag a group’s corner', 'Resize the group (not smaller than what it holds)'],
 		['Drag output → input', 'Link two nodes (also input → output)'],
 		['Drag a linked input', 'Re-route its latest link, or drop on empty space to remove it'],
 		['Double-click a name', 'Edit a node’s or link’s name'],

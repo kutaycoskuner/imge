@@ -30,7 +30,7 @@
             {
                 "id": "n2",
                 "type": "group",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -360,
                     "y": 300
@@ -38,7 +38,11 @@
                 "ports": [],
                 "content": {
                     "name": "Definitions",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "children": [
+                        "n3",
+                        "n4"
+                    ]
                 }
             },
             {

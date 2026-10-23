@@ -2,7 +2,7 @@
 
 The node type **UML class** (`uml-class`): a class drawn the UML way, in three compartments (class name, attributes, methods), with every member line highlighted and checked against the UML notation.
 
-State as of 2026-10-21 (graph format v6, node type `uml-class` version 1).
+State as of 2026-10-23 (graph format v6, node type `uml-class` version 1).
 
 - [Using it](#using-it)
 - [Notation](#notation)
@@ -107,7 +107,7 @@ What exists is the **class box**: name, attributes and methods in compartments, 
 | Relations attaching anywhere on a class box | missing: a class has one input and one output in fixed places, so relations always leave one side and enter the other |
 | Interfaces, abstract classes, enums (`«interface»`, italic name, enum values) | missing |
 | Static (underlined) and abstract (italic) members | missing |
-| Packages around classes | partly: groups exist and can be sized, but have no drag handle and don't carry their contents |
+| Packages around classes | partly: groups hold classes, wrap and carry them and can be resized; no package look (tab) yet |
 | Notes attached to classes | missing (the Note node type is planned) |
 | Checks beyond the notation (duplicate member names, unknown types) | missing |
 
@@ -127,7 +127,7 @@ What exists is the **class box**: name, attributes and methods in compartments, 
 2. **End labels:** multiplicity and role at each end of an association.
 3. **Attach anywhere:** relations connect to the nearest side of a class box instead of fixed input / output ports. To decide then: ports on all four sides (the v6 port `side` exists for this), or borderless anchors just for UML.
 4. **Stereotypes and member markers:** `«interface»` / `«abstract»` / `«enum»` above the name (in `content`), static and abstract members marked in the notation (e.g. `{static}`, `{abstract}`) and drawn underlined / italic.
-5. **Packages:** groups that carry their classes when moved, with a drag handle for the size (the same work as for groups in general; the size already lives in the group's content).
+5. **Packages:** the UML package look (a tab with the name) for groups that hold classes; holding, wrapping, moving and resizing already work.
 6. Notes (the Note node type) and the further checks.
 
 With 1–3 done, class diagrams can be called functional. Other UML diagrams (sequence, use case, state, activity, component) come after that; see [graph-types.md](graph-types.md).

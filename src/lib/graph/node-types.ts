@@ -64,11 +64,12 @@ export const NODE_TYPES: NodeType[] = [
 	{
 		id: 'group',
 		title: 'Group',
-		description: 'A frame drawn behind other nodes, its name on the top edge; no ports',
+		description: 'A frame around the nodes it holds, drawn behind them, its name on the top edge; no ports',
 		ready: true,
-		version: 1,
+		// v2: `children` (the ids it holds, see groups.ts); a v1 group without it holds nothing
+		version: 2,
 		ports: [],
-		content: { name: 'Group', color: null },
+		content: { name: 'Group', color: null, children: [] },
 		label: named('Group')
 	},
 	{
