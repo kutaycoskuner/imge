@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 0
@@ -30,13 +30,14 @@
                 ],
                 "content": {
                     "name": "Start",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -150
@@ -57,13 +58,14 @@
                 ],
                 "content": {
                     "name": "max = a[0], i = 1",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -300
@@ -84,13 +86,14 @@
                 ],
                 "content": {
                     "name": "i < n ?",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -450
@@ -111,13 +114,14 @@
                 ],
                 "content": {
                     "name": "a[i] > max ?",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 320,
                     "y": -450
@@ -138,13 +142,14 @@
                 ],
                 "content": {
                     "name": "return max",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -260,
                     "y": -600
@@ -165,13 +170,14 @@
                 ],
                 "content": {
                     "name": "max = a[i]",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 320,
                     "y": -600
@@ -192,13 +198,14 @@
                 ],
                 "content": {
                     "name": "End",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n8",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -750
@@ -219,7 +226,8 @@
                 ],
                 "content": {
                     "name": "i = i + 1",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             }
         ],

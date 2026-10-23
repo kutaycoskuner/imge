@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "group",
-                "typeVersion": 1,
+                "typeVersion": 3,
                 "position": {
                     "x": -660,
                     "y": 300
@@ -17,16 +17,21 @@
                 "ports": [],
                 "content": {
                     "name": "Set A",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "children": [
+                        "n2",
+                        "n3"
+                    ],
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
-                    "y": 260
+                    "y": 300
                 },
                 "ports": [
                     {
@@ -38,16 +43,17 @@
                 ],
                 "content": {
                     "name": "1",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
-                    "y": 180
+                    "y": 140
                 },
                 "ports": [
                     {
@@ -59,13 +65,14 @@
                 ],
                 "content": {
                     "name": "2",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n4",
                 "type": "group",
-                "typeVersion": 1,
+                "typeVersion": 3,
                 "position": {
                     "x": -60,
                     "y": 300
@@ -73,16 +80,21 @@
                 "ports": [],
                 "content": {
                     "name": "Set B",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "children": [
+                        "n5",
+                        "n6"
+                    ],
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
-                    "y": 260
+                    "y": 300
                 },
                 "ports": [
                     {
@@ -94,16 +106,17 @@
                 ],
                 "content": {
                     "name": "x",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
-                    "y": 180
+                    "y": 140
                 },
                 "ports": [
                     {
@@ -115,7 +128,8 @@
                 ],
                 "content": {
                     "name": "y",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "shape": "circle"
                 }
             }
         ],

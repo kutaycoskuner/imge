@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 400
@@ -24,13 +24,14 @@
                 ],
                 "content": {
                     "name": "Topic: graphs",
-                    "color": "#f76b15"
+                    "color": "#f76b15",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n2",
                 "type": "group",
-                "typeVersion": 1,
+                "typeVersion": 3,
                 "position": {
                     "x": -360,
                     "y": 300
@@ -38,13 +39,18 @@
                 "ports": [],
                 "content": {
                     "name": "Definitions",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "children": [
+                        "n3",
+                        "n4"
+                    ],
+                    "shape": "square"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 260
@@ -65,13 +71,14 @@
                 ],
                 "content": {
                     "name": "Vertex: a point",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 180
@@ -92,13 +99,14 @@
                 ],
                 "content": {
                     "name": "Edge: joins two vertices",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 140,
                     "y": 340
@@ -119,13 +127,14 @@
                 ],
                 "content": {
                     "name": "Example: a road map",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 160,
                     "y": 120
@@ -140,13 +149,14 @@
                 ],
                 "content": {
                     "name": "Question: is every tree a graph?",
-                    "color": "#d6409f"
+                    "color": "#d6409f",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -680,
                     "y": 60
@@ -154,7 +164,8 @@
                 "ports": [],
                 "content": {
                     "name": "Remember: exam on Friday",
-                    "color": "#e5484d"
+                    "color": "#e5484d",
+                    "shape": "square"
                 }
             }
         ],

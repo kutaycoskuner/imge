@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 420
@@ -17,13 +17,14 @@
                 "ports": [],
                 "content": {
                     "name": "Browser",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 420
@@ -31,13 +32,14 @@
                 "ports": [],
                 "content": {
                     "name": "Server",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 420
@@ -45,13 +47,14 @@
                 "ports": [],
                 "content": {
                     "name": "Database",
-                    "color": "#12a594"
+                    "color": "#12a594",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 300
@@ -72,13 +75,14 @@
                 ],
                 "content": {
                     "name": "Browser: submit login form",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 300
@@ -99,13 +103,14 @@
                 ],
                 "content": {
                     "name": "Server: check login",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 300
@@ -126,13 +131,14 @@
                 ],
                 "content": {
                     "name": "Database: find user",
-                    "color": "#12a594"
+                    "color": "#12a594",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 160
@@ -153,13 +159,14 @@
                 ],
                 "content": {
                     "name": "Browser: show dashboard",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n8",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 160
@@ -180,7 +187,8 @@
                 ],
                 "content": {
                     "name": "Server: verify password, create token",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             }
         ],

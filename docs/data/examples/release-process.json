@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 0
@@ -30,13 +30,14 @@
                 ],
                 "content": {
                     "name": "Plan",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 290,
                     "y": 0
@@ -57,13 +58,14 @@
                 ],
                 "content": {
                     "name": "Develop",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 580,
                     "y": 0
@@ -84,13 +86,14 @@
                 ],
                 "content": {
                     "name": "Code review",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 870,
                     "y": 0
@@ -111,13 +114,14 @@
                 ],
                 "content": {
                     "name": "Test",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 1160,
                     "y": 0
@@ -138,13 +142,14 @@
                 ],
                 "content": {
                     "name": "Deploy to staging",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 1450,
                     "y": 0
@@ -165,13 +170,14 @@
                 ],
                 "content": {
                     "name": "Release",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 1740,
                     "y": 0
@@ -192,7 +198,8 @@
                 ],
                 "content": {
                     "name": "Monitor",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             }
         ],

@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 320
@@ -24,13 +24,14 @@
                 ],
                 "content": {
                     "name": "Register A (4 bits)",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 160
@@ -45,13 +46,14 @@
                 ],
                 "content": {
                     "name": "Register B (4 bits)",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": -60
@@ -66,13 +68,14 @@
                 ],
                 "content": {
                     "name": "Opcode (2 bits)",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 380
@@ -105,13 +108,14 @@
                 ],
                 "content": {
                     "name": "Adder",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 240
@@ -138,13 +142,14 @@
                 ],
                 "content": {
                     "name": "AND unit",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 100
@@ -171,13 +176,14 @@
                 ],
                 "content": {
                     "name": "OR unit",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 260
@@ -216,13 +222,14 @@
                 ],
                 "content": {
                     "name": "Multiplexer (picks by opcode)",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n8",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 260
@@ -237,13 +244,14 @@
                 ],
                 "content": {
                     "name": "Result register",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n9",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 100
@@ -258,7 +266,8 @@
                 ],
                 "content": {
                     "name": "Flags (carry, zero)",
-                    "color": "#e5484d"
+                    "color": "#e5484d",
+                    "shape": "square"
                 }
             }
         ],
