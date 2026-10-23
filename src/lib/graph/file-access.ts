@@ -186,6 +186,8 @@ export interface ExampleGraph {
 	description: string;
 	// a graph type the editor can't draw yet, shown with basic nodes (docs/graph-types.md)
 	sketch?: boolean;
+	// heading it is listed under in the Examples tab (index.json lists the categories in order)
+	category?: string;
 }
 
 /** The example graphs offered in the menu; an empty list when the index can't be read. */

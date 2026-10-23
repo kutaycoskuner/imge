@@ -16,6 +16,7 @@
 	// nodes it holds, store `frames`), with a resize handle in the bottom-right corner;
 	// only the name and the handle take the mouse, so clicks inside the
 	// frame reach the canvas and the nodes on top of it (styles: .node.group in imge.css).
+	// Its shape (content `shape`, types that allow it): square (the default) or circle.
 	// A UML class (type "uml-class") is drawn as three stacked compartments: class name,
 	// attributes, methods; every member line is highlighted by its parts (uml.ts) and a line
 	// that doesn't follow the notation is underlined in red, its error as a tooltip.
@@ -24,7 +25,7 @@
 	// and `data-port-kind` (in / out / any) for the link rules.
 	import { graph, editingNodeId, renameNode, isGroup, frames } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
-	import { nodeName, nodeColor, portSide, umlMembers } from '$lib/graph/node-types';
+	import { nodeName, nodeColor, portSide, umlMembers, nodeShape } from '$lib/graph/node-types';
 	import { parseAttribute, parseMethod } from '$lib/graph/uml';
 	import { parseHexColor, dimColor } from '$lib/graph/color';
 
@@ -42,6 +43,8 @@
 	$: frame = group ? ($frames[node.id] ?? null) : null;
 	$: at = frame ? { x: frame.x, y: frame.y } : node.position;
 	$: uml = node.type === 'uml-class';
+	// content shape (basic, group): a circle is drawn round (styles .shape-circle in imge.css)
+	$: circle = nodeShape(node) === 'circle';
 	// the two member compartments, as data for one template: parsed lines (tokens + error)
 	$: compartments = uml
 		? [
@@ -87,6 +90,7 @@
 	class:colored={!!color}
 	class:group
 	class:uml
+	class:shape-circle={circle}
 	data-id={node.id}
 	style="transform: translate({at.x}px, {-at.y}px);{color
 		? ` --node-col: ${color}; --node-fill: ${dimColor(color)};`

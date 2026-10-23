@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 220
@@ -24,13 +24,14 @@
                 ],
                 "content": {
                     "name": "A (switch)",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 40
@@ -45,13 +46,14 @@
                 ],
                 "content": {
                     "name": "B (switch)",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 240
@@ -78,13 +80,14 @@
                 ],
                 "content": {
                     "name": "XOR",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 60
@@ -111,13 +114,14 @@
                 ],
                 "content": {
                     "name": "AND",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 240
@@ -132,13 +136,14 @@
                 ],
                 "content": {
                     "name": "Sum (lamp)",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 60
@@ -153,7 +158,8 @@
                 ],
                 "content": {
                     "name": "Carry (lamp)",
-                    "color": "#e5484d"
+                    "color": "#e5484d",
+                    "shape": "circle"
                 }
             }
         ],

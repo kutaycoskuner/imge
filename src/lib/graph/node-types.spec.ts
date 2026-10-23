@@ -125,3 +125,20 @@ describe('group size', () => {
 		expect(node.type).toBe('basic');
 	});
 });
+
+// the editor's own graphs: the start graph and every example
+const GRAPHS = import.meta.glob('../../../static/data/{test-node-graph,examples/*}.json', { eager: true, import: 'default' }) as Record<string, any>;
+
+describe("the editor's own graphs follow the newest type templates", () => {
+	it("every node has its type's newest version and every key of its template content", () => {
+		for (const [path, doc] of Object.entries(GRAPHS)) {
+			if (!doc.data) continue; // index.json
+			for (const node of doc.data.nodes as GraphNode[]) {
+				const t = nodeType(node.type);
+				expect(t?.ready, `${path} ${node.id}: type ${node.type}`).toBe(true);
+				expect(node.typeVersion, `${path} ${node.id} (${node.type})`).toBe(t!.version);
+				for (const key of Object.keys(t!.content!)) expect(node.content, `${path} ${node.id}`).toHaveProperty(key);
+			}
+		}
+	});
+});

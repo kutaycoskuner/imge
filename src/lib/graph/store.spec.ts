@@ -68,7 +68,7 @@ describe('nodes', () => {
 	it('adds nodes n1, n2 ... built from the basic template: name in content, ports i1 (in) and o1 (out)', () => {
 		const g = threeNodes();
 		expect(g.data.nodes.map((n) => n.id)).toEqual(['n1', 'n2', 'n3']);
-		expect(g.data.nodes[0]).toMatchObject({ type: 'basic', typeVersion: 1, content: { name: 'Node', color: null } });
+		expect(g.data.nodes[0]).toMatchObject({ type: 'basic', typeVersion: 2, content: { name: 'Node', color: null, shape: 'square' } });
 		expect(g.data.nodes[0].ports.map((p) => [p.id, p.kind])).toEqual([
 			['i1', 'in'],
 			['o1', 'out']
@@ -479,9 +479,9 @@ describe('properties panel edits', () => {
 
 	it('sets content keys, keeps the others, and returns the same graph when nothing changes', () => {
 		const g = setNodeType(threeNodes(), 'n1', 'uml-class');
-		expect(g.data.nodes[0].content).toEqual({ name: 'Node', color: null, attributes: [], methods: [] });
+		expect(g.data.nodes[0].content).toEqual({ name: 'Node', color: null, shape: 'square', attributes: [], methods: [] });
 		const set = setNodeContent(g, 'n1', { attributes: ['- radius: double'] });
-		expect(set.data.nodes[0].content).toEqual({ name: 'Node', color: null, attributes: ['- radius: double'], methods: [] });
+		expect(set.data.nodes[0].content).toEqual({ name: 'Node', color: null, shape: 'square', attributes: ['- radius: double'], methods: [] });
 		expect(setNodeContent(set, 'n1', { attributes: ['- radius: double'] })).toBe(set);
 		expect(setNodeContent(set, 'missing', { attributes: [] })).toBe(set);
 	});
@@ -496,7 +496,7 @@ describe('properties panel edits', () => {
 			['o1', 'out']
 		]);
 		// content keeps what the group added (an empty children list), as for every type change
-		expect(g.data.nodes[0].content).toEqual({ name: 'Frame', color: '#46a758', children: [] });
+		expect(g.data.nodes[0].content).toEqual({ name: 'Frame', color: '#46a758', shape: 'square', children: [] });
 	});
 
 	it('makes a node a group, removing its links in the same step', () => {

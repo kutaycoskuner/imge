@@ -43,7 +43,7 @@ The panel shows the sections whose condition matches the selection, top to botto
 |---|---|---|
 | Nothing | Graph | File name (or "not saved yet") with the unsaved marker, direction (changes it like the Esc menu and the transpose button), number of nodes and links. |
 | One node | Node | What every node has (graph format v6 top level): id, type (dropdown, see below), position of the top-left corner X and Y (world units, y up; editable), the **group** it is in (a click selects the group, **Leave** takes it out), Delete node. |
-| One node of a type with a name and a colour (basic, group) | Content | Name (editable) and colour (see below): the type's own `content`. Other node types will bring their own content sections. |
+| One node of a type with a name and a colour (basic, group, UML class) | Content | Name (editable), colour (see below) and, for types that allow it, **Shape** (square / circle; see below): the type's own `content`. For a group also Width and Height. Other node types will bring their own content sections. |
 | One UML class | Attributes and methods | One field per compartment, one member per line in UML notation, highlighted while typing, with the lines that don't follow the notation listed under the field; leaving a field saves it (see [graph-uml.md](graph-uml.md)). |
 | One group | Contents | The nodes it holds, by label and id (a click selects one, × takes it out of the group), how to add nodes, and **Ungroup** (removes the group; what it held stays). |
 | One node with ports | Ports and links | Its ports by kind (inputs, outputs, and two-way ports when it has any), by label; links coming in and going out, by the node at the other end (and the link's name); a click selects the link. |
@@ -52,6 +52,14 @@ The panel shows the sections whose condition matches the selection, top to botto
 
 Node names in lists and link ends come from the node's type (`nodeLabel(node)` in `node-types.ts`: basic and group show their name, a type without one e.g. "AND gate (n4)"), never from reading `content` directly.
 | One link | Look | Shape, arrow and route (the same values as <kbd>L</kbd>, <kbd>D</kbd>, <kbd>R</kbd>); the corner (manhattan) or lane (link going around its nodes) position from 0 to 1, the same as dragging the highlighted segment. When the Esc menu's display override hides a link's own shape or arrow, the panel says so; route says when it isn't used. |
+
+### Node shape
+
+- **Square** (the default: a rectangle with rounded corners) or **Circle**, chosen in the Content section's Shape dropdown; stored in the node's content (`shape`).
+- Which shapes a type allows is part of its template (`shapes` in `node-types.ts`): Basic and Group allow both; a UML class keeps its fixed shape (no dropdown). Images (e.g. circuit symbols as SVG) are planned as more shapes later.
+- A circle **node** has its own size rules: as wide as its name plus a small padding (0.5em), at least 3.5em, at most 9em (longer names wrap), as tall as wide; its name in the middle, its ports on the left and right (top and bottom in top-to-bottom graphs). Good for lattices, trees, set elements, flowchart start / end.
+- A circle **group** is a round frame: the circle through its children's box corners plus a 32-unit margin (half a square group's 64, since the circle already leaves room at the sides), at least as wide as its stored size; Width / Height and the corner mark set one diameter.
+- The list of shapes is data: `NODE_SHAPES` in `node-types.ts`.
 
 ### Node colour
 
@@ -72,7 +80,7 @@ Node names in lists and link ends come from the node's type (`nodeLabel(node)` i
 The Type dropdown lists `NODE_TYPES` from `src/lib/graph/node-types.ts`: `id`, `title` (the dropdown text), hover `description`, `ready`; for ready types also the template: `version`, the `ports` a new node gets (one list, each with a `kind`), its `content` with default values (basic / group: `name`, `color`) and `label(node)` for generic UI. **Basic**, **Group** and **UML class** ([graph-uml.md](graph-uml.md)) are drawn and can be chosen; **Note** and **Decision** are listed greyed out with "(later)" to show what is planned.
 
 - **Changing the type reshapes the node** to the new type's template, port kind by port kind: a kind the type has no ports of is removed from the node with the links on those ports; a kind it has keeps the node's own ports, or gets the template's when the node has none (Group → Basic gets a fresh input and output). `content` gets the template's keys it lacks and keeps what it has, so a name and colour survive Basic → Group → Basic; `typeVersion` follows the type. When links would go, the panel asks first; one Ctrl+Z restores everything.
-- **Versions and samples:** every ready type has a sample node per version in `static/data/node-types/<type>/<type>-v<n>.json` (like the graph format samples): a header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`) and the node as it appears in a graph file of that format; a sample written in an older graph format is upgraded before it is compared (the v1 samples of basic and group are written in graph format 5; their template didn't change with graph format 6, so they stay version 1). `node-types.spec.ts` checks that each version has its sample, the newest matches the template, new nodes and type changes produce exactly that shape, and every sample loads as part of a graph. Changing a type's template means a new `version` and a new sample file.
+- **Versions and samples:** every ready type has a sample node per version in `static/data/node-types/<type>/<type>-v<n>.json` (like the graph format samples): a header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`) and the node as it appears in a graph file of that format; a sample written in an older graph format is upgraded before it is compared (the v1 samples of basic and group are written in graph format 5; their template didn't change with graph format 6, so they stay version 1). `node-types.spec.ts` checks that each version has its sample, the newest matches the template, new nodes and type changes produce exactly that shape, and every sample loads as part of a graph. Changing a type's template means a new `version` and a new sample file, **and bringing the editor's own graphs (the start graph and every example) to that version**: a test checks that every node there has its type's newest version and every key of its template's content.
 - **Group:** a frame drawn behind the other nodes and the links, its name centred in a gap of the top edge in the frame's colour, no ports. A colour tints the frame, the name and, lightly, the inside.
     - Only the name and the corner mark take the mouse: click the name to select, drag it to move, double-click it to rename. Clicks inside the frame reach the canvas and the nodes on top of it (panning, box selection and clicking nodes work there as usual).
     - A box selection takes a group only when the whole group is inside the box, so a box drawn inside a group selects the nodes in it.
@@ -127,6 +135,9 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 
 ## Changes
 
+- 2026-10-23 — the start graph and all examples follow the newest type versions (basic 2, group 3), checked by a test
+- 2026-10-23 — circles have their own size rules: circle nodes fit their name (3.5em to 9em), circle groups use a 32-unit margin around their children's corners
+- 2026-10-23 — node shape: Square / Circle in the Content section (basic, group); circle groups are round frames
 - 2026-10-23 — groups: Contents section (children, take out, Ungroup); the Node section shows the group a node is in (Leave); nodes made or pasted inside a frame join it; Ctrl+G adds to the one selected group
 - 2026-10-23 — groups hold their nodes: the frame wraps its children with a 64-unit margin, a dropped node joins, Ctrl+drag takes it out, moving a group moves its children; resize by the corner mark or Width / Height, never smaller than the children
 - 2026-10-21 — groups get a size: Width and Height in the Content section (content `width` / `height`, default 320 × 192)

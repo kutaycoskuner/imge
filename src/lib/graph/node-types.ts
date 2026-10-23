@@ -41,7 +41,16 @@ export interface NodeType {
 	ports?: Port[]; // the ports a new node gets; [] = the type has no ports
 	content?: NodeContent; // the content keys a new node gets, with their default values
 	label?: (node: GraphNode) => string; // readable text for the node in generic UI (lists, link ends)
+	// shapes a node of this type may take (content `shape`, chosen in the Properties panel);
+	// missing: the type's shape is fixed (e.g. a UML class)
+	shapes?: string[];
 }
+
+/** The node shapes, as data: id (stored in content `shape`) and the name shown in the dropdown. */
+export const NODE_SHAPES: { id: string; title: string }[] = [
+	{ id: 'square', title: 'Square' }, // a rectangle with rounded corners (the default look)
+	{ id: 'circle', title: 'Circle' }
+];
 
 // the name a basic / group node shows, or the fallback when it has none
 const named = (fallback: string) => (node: GraphNode): string =>
@@ -53,13 +62,15 @@ export const NODE_TYPES: NodeType[] = [
 		title: 'Basic',
 		description: 'A name with input and output points',
 		ready: true,
-		version: 1,
+		// v2: content `shape` (square / circle); a v1 node without it is a square
+		version: 2,
 		ports: [
 			{ id: 'i1', kind: 'in', type: 'basic', label: 'Input' },
 			{ id: 'o1', kind: 'out', type: 'basic', label: 'Output' }
 		],
-		content: { name: 'Node', color: null },
-		label: named('Basic')
+		content: { name: 'Node', color: null, shape: 'square' },
+		label: named('Basic'),
+		shapes: ['square', 'circle']
 	},
 	{
 		id: 'group',
@@ -67,10 +78,12 @@ export const NODE_TYPES: NodeType[] = [
 		description: 'A frame around the nodes it holds, drawn behind them, its name on the top edge; no ports',
 		ready: true,
 		// v2: `children` (the ids it holds, see groups.ts); a v1 group without it holds nothing
-		version: 2,
+		// v3: `shape` (square / circle); a group without it is a square
+		version: 3,
 		ports: [],
-		content: { name: 'Group', color: null, children: [] },
-		label: named('Group')
+		content: { name: 'Group', color: null, children: [], shape: 'square' },
+		label: named('Group'),
+		shapes: ['square', 'circle']
 	},
 	{
 		id: 'uml-class',
@@ -132,6 +145,16 @@ export const GROUP_MIN = 100;
 export function groupSize(node: GraphNode): { w: number; h: number } {
 	const num = (v: unknown, fallback: number) => (typeof v === 'number' && Number.isFinite(v) && v >= GROUP_MIN ? v : fallback);
 	return { w: num(node.content.width, GROUP_SIZE.w), h: num(node.content.height, GROUP_SIZE.h) };
+}
+
+/**
+ * The node's shape: its content's `shape` when its type allows it, else the type's first
+ * shape, else "square" (types with a fixed shape, e.g. UML classes, are drawn their own way).
+ */
+export function nodeShape(node: GraphNode): string {
+	const allowed = nodeType(node.type)?.shapes ?? [];
+	const own = node.content.shape;
+	return typeof own === 'string' && allowed.includes(own) ? own : (allowed[0] ?? 'square');
 }
 
 /** The node's colour ("#rrggbb" text as stored, or null). */

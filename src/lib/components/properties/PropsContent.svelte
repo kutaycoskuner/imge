@@ -9,18 +9,28 @@
 	// Properties panel section "Content" for one node whose type keeps a name and a colour in
 	// its content (basic, group; see hasNamedContent in $lib/graph/node-types.ts): the name
 	// (editable, also F2 / double-click on the canvas) and the colour (hex with a preview and
-	// the colour picker, PropColor); for a group also its frame's width and height (world units,
+	// the colour picker, PropColor), the shape (square / circle) for types that allow one; for a
+	// group also its frame's width and height (world units,
 	// steps of 20 = half grid squares; never smaller than what it holds, like the corner handle).
 	// Other node types bring their own content sections.
 	import PropText from './PropText.svelte';
 	import PropColor from './PropColor.svelte';
-	import { graph, renameNode, setNodeColor, isGroup, frames, nodeSizes } from '$lib/graph/store';
-	import { nodeName, nodeColor, GROUP_MIN } from '$lib/graph/node-types';
+	import { graph, renameNode, setNodeColor, setNodeContent, isGroup, frames, nodeSizes } from '$lib/graph/store';
+	import { nodeName, nodeColor, nodeShape, nodeType, NODE_SHAPES, GROUP_MIN } from '$lib/graph/node-types';
 	import { resizeGroup } from '$lib/graph/groups';
 	import type { PanelContext } from './sections';
 
 	export let ctx: PanelContext;
 	$: node = ctx.nodes[0];
+	// the shapes this node's type allows (none: its shape is fixed, e.g. a UML class)
+	$: shapes = NODE_SHAPES.filter((s) => nodeType(node.type)?.shapes?.includes(s.id));
+
+	function chooseShape(event: Event): void {
+		const shape = (event.currentTarget as HTMLSelectElement).value;
+		const id = node.id;
+		graph.update((g) => setNodeContent(g, id, { shape }));
+	}
+
 	// a group's frame as drawn (grown around its children)
 	$: size = isGroup(node) ? ($frames[node.id] ?? null) : null;
 
@@ -52,6 +62,17 @@
 	<dd>
 		<PropColor value={nodeColor(node)} onCommit={(color) => graph.update((g) => setNodeColor(g, [node.id], color))} />
 	</dd>
+
+	{#if shapes.length}
+		<dt><label for="prop-node-shape">Shape</label></dt>
+		<dd>
+			<select id="prop-node-shape" class="prop-input" value={nodeShape(node)} on:change={chooseShape}>
+				{#each shapes as shape (shape.id)}
+					<option value={shape.id}>{shape.title}</option>
+				{/each}
+			</select>
+		</dd>
+	{/if}
 
 	{#if size}
 		{#each SIZE_FIELDS as field (field.key)}

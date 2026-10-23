@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 0
@@ -30,13 +30,14 @@
                 ],
                 "content": {
                     "name": "{a, b, c}",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -320,
                     "y": -170
@@ -57,13 +58,14 @@
                 ],
                 "content": {
                     "name": "{a, b}",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -170
@@ -84,13 +86,14 @@
                 ],
                 "content": {
                     "name": "{a, c}",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 320,
                     "y": -170
@@ -111,13 +114,14 @@
                 ],
                 "content": {
                     "name": "{b, c}",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -320,
                     "y": -340
@@ -138,13 +142,14 @@
                 ],
                 "content": {
                     "name": "{a}",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -340
@@ -165,13 +170,14 @@
                 ],
                 "content": {
                     "name": "{b}",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 320,
                     "y": -340
@@ -192,13 +198,14 @@
                 ],
                 "content": {
                     "name": "{c}",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n8",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -510
@@ -219,7 +226,8 @@
                 ],
                 "content": {
                     "name": "∅",
-                    "color": null
+                    "color": null,
+                    "shape": "circle"
                 }
             }
         ],

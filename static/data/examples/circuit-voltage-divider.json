@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 200
@@ -30,13 +30,14 @@
                 ],
                 "content": {
                     "name": "Source 9 V",
-                    "color": "#f76b15"
+                    "color": "#f76b15",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 200
@@ -57,13 +58,14 @@
                 ],
                 "content": {
                     "name": "R1 = 10 kΩ",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 200
@@ -84,13 +86,14 @@
                 ],
                 "content": {
                     "name": "R2 = 20 kΩ",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 300,
                     "y": 200
@@ -111,13 +114,14 @@
                 ],
                 "content": {
                     "name": "Ground (0 V)",
-                    "color": "#8d8d8d"
+                    "color": "#8d8d8d",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 40
@@ -132,7 +136,8 @@
                 ],
                 "content": {
                     "name": "Vout = 6 V (meter)",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "shape": "square"
                 }
             }
         ],

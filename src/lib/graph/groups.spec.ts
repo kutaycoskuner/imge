@@ -12,7 +12,7 @@
 // -----------------------------------------------------------------------------------------
 
 import { describe, it, expect } from 'vitest';
-import { addNode, emptyGraph, setNodeType, setNodePosition, removeNodes, copyNodes, pasteNodes, groupNodes, ungroupNodes, createNodeAt, graph } from './store';
+import { addNode, emptyGraph, setNodeType, setNodePosition, setNodeContent, removeNodes, copyNodes, pasteNodes, groupNodes, ungroupNodes, createNodeAt, graph } from './store';
 import { get } from 'svelte/store';
 import {
 	groupFrames,
@@ -21,6 +21,7 @@ import {
 	withDescendants,
 	minGroupSize,
 	resizeGroup,
+	CIRCLE_MARGIN,
 	setGroupMembership,
 	groupAt,
 	GROUP_MARGIN
@@ -175,5 +176,25 @@ describe('adding to an existing group', () => {
 		const outside = createNodeAt({ x: 2000, y: 0 });
 		expect(parentOf(get(graph), inside.id)?.id).toBe('n1');
 		expect(parentOf(get(graph), outside.id)).toBeUndefined();
+	});
+});
+
+describe('circle groups', () => {
+	it('a circle group wraps its children: the circle through their box corners plus its margin', () => {
+		const g = setNodeContent(setGroupMembership(setup(), ['n2', 'n3'], 'n1'), 'n1', { shape: 'circle' });
+		// children box: x 100 .. 700, y -100 .. -150
+		const d = Math.hypot(600, 50) + 2 * CIRCLE_MARGIN;
+		const f = groupFrames(g, sizes).n1;
+		expect(f.w).toBeCloseTo(d);
+		expect(f.h).toBeCloseTo(d);
+		expect(f.x + f.w / 2).toBeCloseTo(400); // centred on the children
+		expect(minGroupSize(g, 'n1', sizes).w).toBeCloseTo(d);
+	});
+
+	it('an empty circle group is a circle of its stored size; resizing keeps one diameter', () => {
+		const g = setNodeContent(setup(), 'n1', { shape: 'circle' });
+		expect(groupFrames(g, sizes).n1).toEqual({ x: 0, y: 0, w: 320, h: 320 });
+		const resized = resizeGroup(g, 'n1', { w: 400, h: 250 }, sizes);
+		expect(groupFrames(resized, sizes).n1).toMatchObject({ w: 400, h: 400 });
 	});
 });

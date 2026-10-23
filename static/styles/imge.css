@@ -266,6 +266,31 @@ kbd {
     cursor: text;
 }
 
+/* node shapes (content `shape`, see NODE_SHAPES in $lib/graph/node-types.ts): a circle node is
+   round with its name in the middle, its ports on the left and right (top / bottom in
+   top-to-bottom graphs); a circle group has a round frame (groups.ts makes its rect a square) */
+.node.shape-circle:not(.group) {
+    /* as wide as the name plus a little padding (not the square's 10em and 1em padding),
+       at least 3.5em, at most 9em (longer names wrap); as tall as wide */
+    width: max-content;
+    min-width: 3.5em;
+    max-width: 9em;
+    height: auto;
+    aspect-ratio: 1;
+    padding: 0.5em;
+    box-sizing: border-box;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.node.group.shape-circle .group-frame {
+    border-radius: 50%;
+}
+
 /* UML class (node type "uml-class"): class name on top, then the attributes and the methods
    compartments, each a list of member lines (GraphNode, parsed by $lib/graph/uml.ts) */
 .node.uml {

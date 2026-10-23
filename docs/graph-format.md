@@ -12,8 +12,8 @@ Current version: **6**
 | `src/lib/graph/migrations.ts` | `CURRENT_GRAPH_VERSION`, the adapters and `migrateGraph()`. |
 | `src/lib/graph/migrations.spec.ts` | Tests: every version sample upgrades to exactly the current sample; bad files are refused. |
 | `static/data/samples/graph-v<n>.json` | The same tiny graph (2 nodes, 1 link) saved in each format version, to compare versions side by side; also the test fixtures. |
-| `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per node type and type version (`basic-v1`, `group-v1`, `group-v2`, `uml-class-v1`), with a small header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`); test fixtures for the type templates. |
-| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data, node types; 46 nodes, 49 links; the Node color node is coloured, and a violet group "Types v1" holds the node type templates and wraps them), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
+| `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per node type and type version (`basic-v1`, `basic-v2`, `group-v1` to `group-v3`, `uml-class-v1`), with a small header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`); test fixtures for the type templates. |
+| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data, node types; 48 nodes (one of them a circle), 51 links; the Node color node is coloured, and a violet group "Types v1" holds the node type templates and wraps them), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
 
 ## Structure (version 6)
 
@@ -73,6 +73,7 @@ Current version: **6**
     - `content`: an object whose keys the node's type defines; `{}` when the type has none
         - uml-class: `name`, `color`, and `attributes` / `methods`: lists of member lines in UML notation, stored as typed
         - group (type version 2): also `children` (the ids of the nodes it holds; a node is in at most one group, groups may hold groups) and optional `width` / `height` (world units, at least 100) as its smallest size; missing = 320 × 192. The frame drawn is that rect grown to wrap the children with a 64-unit margin. A version 1 group (no `children`) holds nothing
+        - basic (type version 2) and group (type version 3): also `shape`, `"square"` (the default) or `"circle"`; a node without it is a square
         - basic and group: `name` (text shown on the node or on the group's top edge) and `color` (a hex colour `"#rrggbb"`, or `null` for the theme's default; drawn as the border, with a dim version as the fill; other text is kept but drawn as the default)
         - other keys inside `content` are carried over unchanged
     - other keys are allowed and carried over unchanged
@@ -217,6 +218,8 @@ Do this for every change to the file structure or to what a field means, however
 
 ## Changes
 
+- 2026-10-23 — base graph and examples: every node on its type's newest version (basic 2 with `shape`, group 3), checked by `node-types.spec.ts`
+- 2026-10-23 — content `shape` (square / circle) for basic (type v2) and group (type v3); base graph gets Node shape and Examples (by category), Group / Type samples renamed; examples use circles where they fit
 - 2026-10-23 — group type version 2: content `children`; base graph and the examples' groups list their children (no format change)
 - 2026-10-21 — node type `uml-class` (content `attributes`, `methods`); group content's optional `width` / `height`; no format change
 - 2026-10-21 — base graph: the "Types v1" group (380 × 380) frames Basic, Group and the UML class UmlClass (46 nodes, 49 links)

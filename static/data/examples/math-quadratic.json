@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 300
@@ -24,13 +24,14 @@
                 ],
                 "content": {
                     "name": "x = 3",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 160
@@ -45,13 +46,14 @@
                 ],
                 "content": {
                     "name": "a = 2",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 20
@@ -66,13 +68,14 @@
                 ],
                 "content": {
                     "name": "b = -4",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": -120
@@ -87,13 +90,14 @@
                 ],
                 "content": {
                     "name": "c = 1",
-                    "color": "#ffc53d"
+                    "color": "#ffc53d",
+                    "shape": "circle"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 300
@@ -114,13 +118,14 @@
                 ],
                 "content": {
                     "name": "Square (x² = 9)",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 240
@@ -147,13 +152,14 @@
                 ],
                 "content": {
                     "name": "Multiply (a·x² = 18)",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 60
@@ -180,13 +186,14 @@
                 ],
                 "content": {
                     "name": "Multiply (b·x = -12)",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n8",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 160
@@ -213,13 +220,14 @@
                 ],
                 "content": {
                     "name": "Add (= 6)",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n9",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 300,
                     "y": 40
@@ -246,13 +254,14 @@
                 ],
                 "content": {
                     "name": "Add c (= 7)",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n10",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 600,
                     "y": 40
@@ -267,7 +276,8 @@
                 ],
                 "content": {
                     "name": "Result = 7",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "shape": "circle"
                 }
             }
         ],

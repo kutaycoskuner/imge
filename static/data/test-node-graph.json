@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -1200,
                     "y": 1000
@@ -30,13 +30,14 @@
                 ],
                 "content": {
                     "name": "Camera (pan + zoom)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 1160
@@ -57,13 +58,14 @@
                 ],
                 "content": {
                     "name": "Coordinate system (y up)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 1060
@@ -84,13 +86,14 @@
                 ],
                 "content": {
                     "name": "Pan (drag empty space)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 960
@@ -111,13 +114,14 @@
                 ],
                 "content": {
                     "name": "Zoom (wheel, + / -)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 860
@@ -138,13 +142,14 @@
                 ],
                 "content": {
                     "name": "Fit graph (Home)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 1260
@@ -165,13 +170,14 @@
                 ],
                 "content": {
                     "name": "Dot grid (adaptive)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 1160
@@ -192,13 +198,14 @@
                 ],
                 "content": {
                     "name": "Origin marker (dev only)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n8",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 1060
@@ -219,13 +226,14 @@
                 ],
                 "content": {
                     "name": "Coordinate tracker",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n9",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -1200,
                     "y": 440
@@ -246,13 +254,14 @@
                 ],
                 "content": {
                     "name": "Graph format v6",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n10",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 540
@@ -273,13 +282,14 @@
                 ],
                 "content": {
                     "name": "Format adapters (v0 to v6)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n11",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 540
@@ -300,13 +310,14 @@
                 ],
                 "content": {
                     "name": "Version samples",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n12",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 340
@@ -327,13 +338,14 @@
                 ],
                 "content": {
                     "name": "Graph store",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n13",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 340
@@ -354,13 +366,14 @@
                 ],
                 "content": {
                     "name": "Node CRUD",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n14",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": -60
@@ -381,13 +394,14 @@
                 ],
                 "content": {
                     "name": "Link CRUD",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n15",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 500
@@ -408,13 +422,14 @@
                 ],
                 "content": {
                     "name": "Name editing (F2)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n16",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 400
@@ -435,13 +450,14 @@
                 ],
                 "content": {
                     "name": "Selection (Shift+click)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n17",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 300
@@ -462,13 +478,14 @@
                 ],
                 "content": {
                     "name": "New graph (Shift+N)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n18",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 200
@@ -489,13 +506,14 @@
                 ],
                 "content": {
                     "name": "Node color",
-                    "color": "#2a9fd6"
+                    "color": "#2a9fd6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n19",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 100
@@ -516,13 +534,14 @@
                 ],
                 "content": {
                     "name": "Drag to link",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n20",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 0
@@ -543,13 +562,14 @@
                 ],
                 "content": {
                     "name": "F quick link",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n21",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": -100
@@ -570,13 +590,14 @@
                 ],
                 "content": {
                     "name": "Detach / re-route",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n22",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": -200
@@ -597,13 +618,14 @@
                 ],
                 "content": {
                     "name": "Link shapes (L)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n23",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -100
@@ -624,13 +646,14 @@
                 ],
                 "content": {
                     "name": "Spline",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n24",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -200
@@ -651,13 +674,14 @@
                 ],
                 "content": {
                     "name": "Line",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n25",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -300
@@ -678,13 +702,14 @@
                 ],
                 "content": {
                     "name": "Manhattan corner",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n26",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": -300
@@ -705,13 +730,14 @@
                 ],
                 "content": {
                     "name": "Cycles & arrows (D, R)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n27",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 1000
@@ -732,13 +758,14 @@
                 ],
                 "content": {
                     "name": "Esc menu (per page)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n28",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 300,
                     "y": 1100
@@ -759,13 +786,14 @@
                 ],
                 "content": {
                     "name": "Graph folder",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n29",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 300,
                     "y": 1000
@@ -786,13 +814,14 @@
                 ],
                 "content": {
                     "name": "Download (Ctrl+Shift+S)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n30",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 300,
                     "y": 900
@@ -813,13 +842,14 @@
                 ],
                 "content": {
                     "name": "Display override (links)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n31",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 600,
                     "y": 1200
@@ -840,13 +870,14 @@
                 ],
                 "content": {
                     "name": "Save / Save as (Ctrl+S)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n32",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 600,
                     "y": 1100
@@ -867,13 +898,14 @@
                 ],
                 "content": {
                     "name": "Autosave",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n33",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 600,
                     "y": 1000
@@ -894,13 +926,14 @@
                 ],
                 "content": {
                     "name": "Read-only folder (Firefox)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n34",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 900,
                     "y": 440
@@ -921,13 +954,14 @@
                 ],
                 "content": {
                     "name": "Shortcuts & key caps",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n35",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 1260
@@ -948,13 +982,14 @@
                 ],
                 "content": {
                     "name": "Snap to grid (Alt = free)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n36",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 400
@@ -975,13 +1010,14 @@
                 ],
                 "content": {
                     "name": "Box select (Shift+drag)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n37",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 300
@@ -1002,13 +1038,14 @@
                 ],
                 "content": {
                     "name": "Copy / paste (Ctrl+C, V)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n38",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 140
@@ -1029,13 +1066,14 @@
                 ],
                 "content": {
                     "name": "Undo / redo (Ctrl+Z, Y)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n39",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 100
@@ -1056,13 +1094,14 @@
                 ],
                 "content": {
                     "name": "Properties panel (N)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n40",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": -480
@@ -1083,13 +1122,14 @@
                 ],
                 "content": {
                     "name": "Node types (templates)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n41",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": -460
@@ -1110,13 +1150,14 @@
                 ],
                 "content": {
                     "name": "Basic (ports)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n42",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": -540
@@ -1136,14 +1177,15 @@
                     }
                 ],
                 "content": {
-                    "name": "Group (no ports)",
-                    "color": null
+                    "name": "Group (holds nodes, Ctrl+G)",
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n43",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 100,
                     "y": -480
@@ -1163,14 +1205,15 @@
                     }
                 ],
                 "content": {
-                    "name": "Type samples (v1)",
-                    "color": null
+                    "name": "Type samples (versions)",
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n44",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 200
@@ -1191,13 +1234,14 @@
                 ],
                 "content": {
                     "name": "Colour picker",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n45",
                 "type": "group",
-                "typeVersion": 2,
+                "typeVersion": 3,
                 "position": {
                     "x": -360,
                     "y": -420
@@ -1210,7 +1254,8 @@
                         "n41",
                         "n42",
                         "n46"
-                    ]
+                    ],
+                    "shape": "square"
                 }
             },
             {
@@ -1247,6 +1292,62 @@
                         "+ parseAttribute(line: String): UmlLine",
                         "+ parseMethod(line: String): UmlLine"
                     ]
+                }
+            },
+            {
+                "id": "n47",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 300,
+                    "y": 220
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Node shape",
+                    "color": null,
+                    "shape": "circle"
+                }
+            },
+            {
+                "id": "n48",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 300,
+                    "y": 800
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Examples (by category)",
+                    "color": null,
+                    "shape": "square"
                 }
             }
         ],
@@ -1986,6 +2087,36 @@
                 },
                 "target": {
                     "node": "n43",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l50",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n44",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n47",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l51",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "route": "above",
+                "source": {
+                    "node": "n27",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n48",
                     "port": "i1"
                 }
             }

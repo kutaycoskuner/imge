@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -900,
                     "y": 160
@@ -24,13 +24,14 @@
                 ],
                 "content": {
                     "name": "Texture coordinates",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -600,
                     "y": 260
@@ -51,13 +52,14 @@
                 ],
                 "content": {
                     "name": "Noise (scale 5, detail 3)",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": 200
@@ -84,13 +86,14 @@
                 ],
                 "content": {
                     "name": "Wave bands (distorted by noise)",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": -20
@@ -111,13 +114,14 @@
                 ],
                 "content": {
                     "name": "Checker (scale 8)",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 200
@@ -138,13 +142,14 @@
                 ],
                 "content": {
                     "name": "Colour ramp (white → grey)",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 300,
                     "y": 100
@@ -171,13 +176,14 @@
                 ],
                 "content": {
                     "name": "Mix (factor 0.15)",
-                    "color": "#8e4ec6"
+                    "color": "#8e4ec6",
+                    "shape": "square"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 600,
                     "y": 100
@@ -192,7 +198,8 @@
                 ],
                 "content": {
                     "name": "Output (marble)",
-                    "color": "#46a758"
+                    "color": "#46a758",
+                    "shape": "square"
                 }
             }
         ],

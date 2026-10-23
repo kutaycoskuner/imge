@@ -8,8 +8,9 @@
 	// -----------------------------------------------------------------------------------------
 	// The Examples tab of the graph editor's Esc menu: one example graph per kind of graph
 	// (static/data/examples/index.json, see docs/graph-types.md) as cerulean chips in columns
-	// (as many as fit in 60% of the window; one in narrow windows), each with its description
-	// under it; a sketch (a type
+	// (as many as fit in 60% of the window; one in narrow windows) under category headings
+	// (Mind mapping, Math, Circuits, Software architecture, Other; `category` in the index),
+	// each with its description under it; a sketch (a type
 	// the editor can't draw yet, shown with basic nodes) gets a small "sketch" tag. A click
 	// opens the example without a file name.
 	import { onMount } from 'svelte';
@@ -17,6 +18,14 @@
 	import { menuOpen } from '../../stores/imge_main';
 
 	let examples: ExampleGraph[] = [];
+	// the examples under their category headings, in the index's order; no category: "Other"
+	$: categories = examples.reduce<{ title: string; items: ExampleGraph[] }[]>((list, example) => {
+		const title = example.category ?? 'Other';
+		const found = list.find((c) => c.title === title);
+		if (found) found.items.push(example);
+		else list.push({ title, items: [example] });
+		return list;
+	}, []);
 	onMount(async () => {
 		examples = await listExamples();
 	});
@@ -27,11 +36,16 @@
 </script>
 
 <div class="examples-menu">
+	{#each categories as category (category.title)}
+	<section class="category">
+	<h4 class="category-title">{category.title}</h4>
 	<ul class="examples">
-		{#each examples as example (example.file)}
+		{#each category.items as example (example.file)}
 			<li>
-				<button class="example" title={example.description} on:click={() => pickExample(example)}>
-					{example.name}<span class="example-kind">{example.kind}</span>{#if example.sketch}<span
+				<!-- the kind of graph is in the hover text: the category heading already groups them,
+				     and a chip on one line keeps the whole tab without scrolling -->
+				<button class="example" title="{example.kind}: {example.description}" on:click={() => pickExample(example)}>
+					{example.name}{#if example.sketch}<span
 							class="example-sketch"
 							title="This type isn't drawn by the editor yet: shown with basic nodes (see docs/graph-types.md)">sketch</span
 						>{/if}
@@ -40,6 +54,8 @@
 			</li>
 		{/each}
 	</ul>
+	</section>
+	{/each}
 	<p class="note">Opens without a file name: save it under a name of your own (Config tab).</p>
 
 	{#if $workspace.status}
@@ -52,7 +68,7 @@
 		--col-example: #2a9fd6; /* cerulean, like the menu's open tab */
 		display: flex;
 		flex-direction: column;
-		gap: 0.8em;
+		gap: 0.6em;
 		/* 60% of the window on wide screens, so every example fits without scrolling; up to
 		   1024 px the menu already takes the window's width (SettingsOverlay) */
 		width: 60vw;
@@ -66,15 +82,30 @@
 		}
 	}
 
-	/* as many columns as fit (at least about 16em each), each entry a chip with its
+	/* one block per category: a small heading, then its examples */
+	.category {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25em;
+	}
+
+	.category-title {
+		margin: 0;
+		font-size: 0.72em;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		opacity: 0.6;
+	}
+
+	/* as many columns as fit (at least about 13em each), each entry a chip with its
 	   description under it */
 	.examples {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(16em, 1fr));
-		gap: 0.5em 1.4em;
+		grid-template-columns: repeat(auto-fill, minmax(13em, 1fr));
+		gap: 0.35em 1.4em;
 	}
 
 	.examples li {
@@ -110,12 +141,6 @@
 		background: color-mix(in srgb, var(--col-example) 22%, transparent);
 	}
 
-	.example-kind {
-		margin-left: 0.45em;
-		opacity: 0.65;
-		font-size: 0.85em;
-	}
-
 	/* types the editor can't draw yet: a small outlined tag on the chip */
 	.example-sketch {
 		margin-left: 0.45em;
@@ -132,6 +157,7 @@
 		margin: 0;
 		padding: 0;
 		font-size: 0.75em;
+		line-height: 1.35;
 		opacity: 0.6;
 	}
 

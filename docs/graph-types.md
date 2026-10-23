@@ -119,6 +119,7 @@ Trees from computer science: search trees, heaps, decision trees.
 
 - **Status:** possible
 - **Works today:** top-to-bottom direction, links from a parent to its children, link names for branch conditions.
+- **Works today:** circle nodes, as trees are usually drawn.
 - **Missing:** automatic tree layout (placing children evenly under their parent), ordered children (left / right).
 - **Example:** Binary search tree (`binary-search-tree.json`)
 
@@ -128,6 +129,7 @@ Partial orders drawn as Hasse diagrams: elements ordered bottom to top, each lin
 
 - **Status:** possible
 - **Works today:** top-to-bottom direction, links without arrows, many links per node.
+- **Works today:** circle nodes (Shape: Circle).
 - **Missing:** automatic layering by rank, small point-style nodes with labels next to them.
 - **Example:** Subsets of {a, b, c} (`subset-lattice.json`)
 
@@ -169,7 +171,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 | Feature | Unlocks |
 |---|---|
 | Add / remove ports, named ports | flowchart decisions, parametric graphs, UML |
-| Node shapes (diamond, circle, point) | flowchart, lattice, decision trees |
+| Node shapes (started: square, circle; next: diamond, point, SVG symbols) | flowchart, lattice, decision trees, sets, circuits |
 | Groups / containers (done: hold, wrap and move their nodes, resizable; nested) | loose architecture maps, set visualization, UML packages |
 | Node colours drawn (done) | mind maps, architecture maps |
 | Node content (text, compartments; started: UML class compartments) | UML, mind maps, notes |
@@ -182,6 +184,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 
 ## Changes
 
+- 2026-10-23 — node shapes started (square, circle): lattice, tree and set examples use circles
 - 2026-10-23 — groups hold, wrap and move their nodes and can be resized
 - 2026-10-21 — UML: class nodes with compartments, highlighting and format check (graph-uml.md); the example uses them
 - 2026-10-21 — every type has an example now: sketches for the *not yet* types (math, texture, two circuits, ALU, sequence, package dependencies, lecture notes, set function)

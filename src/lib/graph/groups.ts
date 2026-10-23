@@ -14,6 +14,9 @@
 //   grown to enclose every child with GROUP_MARGIN around it. So the frame never gets smaller
 //   than its children, and it grows while a child is dragged outwards. Nested groups are
 //   resolved bottom-up (an inner group's frame counts as one child of the outer one).
+// - A circle group (content shape "circle") is a round frame: the circle through its children's
+//   box corners plus CIRCLE_MARGIN, at least as wide as its stored size; its rect is that
+//   circle's bounding square.
 // - Moving a group moves its descendants with it (withDescendants); deleting a group keeps
 //   its children (they are just no longer in a group).
 //
@@ -27,10 +30,15 @@
 // -----------------------------------------------------------------------------------------
 
 import type { Graph, GraphNode } from './types';
-import { groupSize, GROUP_MIN } from './node-types';
+import { groupSize, GROUP_MIN, nodeShape } from './node-types';
 
 /** Space between a group's frame and the children inside it (world units; 4rem at zoom 1). */
 export const GROUP_MARGIN = 64;
+/**
+ * The same for a circle group, between the circle and its children's corners: smaller, because
+ * the circle through the corners already leaves room at the sides (2rem at zoom 1).
+ */
+export const CIRCLE_MARGIN = 32;
 /** Size assumed for a node that hasn't been measured yet (a basic node at zoom 1). */
 export const UNMEASURED = { w: 194, h: 60 };
 
@@ -86,6 +94,7 @@ export function groupFrames(g: Graph, sizes: Sizes): Record<string, Rect> {
 
 	function frameOf(group: GraphNode): Rect {
 		if (frames[group.id]) return frames[group.id];
+		if (nodeShape(group) === 'circle') return (frames[group.id] = circleFrame(group));
 		const own = groupSize(group);
 		let left = group.position.x;
 		let top = group.position.y;
@@ -105,6 +114,40 @@ export function groupFrames(g: Graph, sizes: Sizes): Record<string, Rect> {
 			busy.delete(group.id);
 		}
 		return (frames[group.id] = { x: left, y: top, w: right - left, h: top - bottom });
+	}
+
+	// the circle through the children's box corners plus CIRCLE_MARGIN, never smaller than the
+	// stored size; without children the stored size as a circle at the stored top-left corner
+	function circleFrame(group: GraphNode): Rect {
+		const own = groupSize(group);
+		const side = Math.max(own.w, own.h);
+		const box = childrenBox(group, 0);
+		if (!box) return { x: group.position.x, y: group.position.y, w: side, h: side };
+		const d = Math.max(Math.hypot(box.right - box.left, box.top - box.bottom) + 2 * CIRCLE_MARGIN, side);
+		const cx = (box.left + box.right) / 2;
+		const cy = (box.top + box.bottom) / 2;
+		return { x: cx - d / 2, y: cy + d / 2, w: d, h: d };
+	}
+
+	// the box around a group's children, grown by `margin`; null when it holds nothing
+	function childrenBox(group: GraphNode, margin: number): { left: number; right: number; top: number; bottom: number } | null {
+		if (busy.has(group.id)) return null;
+		busy.add(group.id);
+		let left = Infinity;
+		let right = -Infinity;
+		let top = -Infinity;
+		let bottom = Infinity;
+		for (const id of groupChildren(g, group)) {
+			const child = byId.get(id);
+			if (!child || busy.has(id)) continue;
+			const r = rectOf(child);
+			left = Math.min(left, r.x - margin);
+			right = Math.max(right, r.x + r.w + margin);
+			top = Math.max(top, r.y + margin);
+			bottom = Math.min(bottom, r.y - r.h - margin);
+		}
+		busy.delete(group.id);
+		return left === Infinity ? null : { left, right, top, bottom };
 	}
 
 	g.data.nodes.filter(isGroupNode).forEach(frameOf);
@@ -130,6 +173,24 @@ export function minGroupSize(g: Graph, groupId: string, sizes: Sizes): { w: numb
 		bottom = Math.min(bottom, r.y - r.h - GROUP_MARGIN);
 	}
 	if (right === -Infinity) return { w: GROUP_MIN, h: GROUP_MIN };
+	if (nodeShape(group) === 'circle') {
+		// the circle through the children's box corners plus CIRCLE_MARGIN, whatever the stored size
+		let left = Infinity;
+		let top = -Infinity;
+		let r2 = -Infinity;
+		let b2 = Infinity;
+		for (const id of groupChildren(g, group)) {
+			const child = g.data.nodes.find((n) => n.id === id)!;
+			const size = sizes[id] ?? UNMEASURED;
+			const r = frames[id] ?? { x: child.position.x, y: child.position.y, w: size.w, h: size.h };
+			left = Math.min(left, r.x);
+			top = Math.max(top, r.y);
+			r2 = Math.max(r2, r.x + r.w);
+			b2 = Math.min(b2, r.y - r.h);
+		}
+		const d = Math.max(GROUP_MIN, Math.hypot(r2 - left, top - b2) + 2 * CIRCLE_MARGIN);
+		return { w: d, h: d };
+	}
 	return { w: Math.max(GROUP_MIN, right - frame.x), h: Math.max(GROUP_MIN, frame.y - bottom) };
 }
 
@@ -143,8 +204,11 @@ export function resizeGroup(g: Graph, groupId: string, size: { w: number; h: num
 	if (!group || !isGroupNode(group)) return g;
 	const frame = groupFrames(g, sizes)[groupId];
 	const min = minGroupSize(g, groupId, sizes);
-	const w = Math.round(Math.max(min.w, size.w));
-	const h = Math.round(Math.max(min.h, size.h));
+	// a circle keeps one diameter: the larger of the two
+	const circle = nodeShape(group) === 'circle';
+	const wanted = circle ? { w: Math.max(size.w, size.h), h: Math.max(size.w, size.h) } : size;
+	const w = Math.round(Math.max(min.w, wanted.w));
+	const h = Math.round(Math.max(min.h, wanted.h));
 	const own = groupSize(group);
 	if (group.position.x === frame.x && group.position.y === frame.y && own.w === w && own.h === h) return g;
 	return {

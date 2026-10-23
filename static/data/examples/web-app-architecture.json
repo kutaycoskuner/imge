@@ -9,7 +9,7 @@
             {
                 "id": "n1",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 0
@@ -30,13 +30,14 @@
                 ],
                 "content": {
                     "name": "Browser",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n2",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 290,
                     "y": 120
@@ -57,13 +58,14 @@
                 ],
                 "content": {
                     "name": "CDN (static files)",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n3",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 290,
                     "y": -60
@@ -84,13 +86,14 @@
                 ],
                 "content": {
                     "name": "API server",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n4",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 580,
                     "y": 60
@@ -111,13 +114,14 @@
                 ],
                 "content": {
                     "name": "Auth service",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n5",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 580,
                     "y": -60
@@ -138,13 +142,14 @@
                 ],
                 "content": {
                     "name": "Database",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n6",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 580,
                     "y": -180
@@ -165,13 +170,14 @@
                 ],
                 "content": {
                     "name": "Job queue",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n7",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 870,
                     "y": -180
@@ -192,13 +198,14 @@
                 ],
                 "content": {
                     "name": "Worker",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n8",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 1160,
                     "y": -120
@@ -219,13 +226,14 @@
                 ],
                 "content": {
                     "name": "Email service",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             },
             {
                 "id": "n9",
                 "type": "basic",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 1160,
                     "y": -240
@@ -246,7 +254,8 @@
                 ],
                 "content": {
                     "name": "Object storage",
-                    "color": null
+                    "color": null,
+                    "shape": "square"
                 }
             }
         ],
