@@ -33,7 +33,7 @@
                     "color": null,
                     "abstract": true,
                     "attributes": [
-                        "# name: String",
+                        "# name: String {readOnly}",
                         "# color: Color = BLACK",
                         "{static} - count: int = 0"
                     ],

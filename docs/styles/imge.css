@@ -369,6 +369,7 @@ kbd {
 
 /* syntax highlighting of member lines */
 .uml-marker { color: #8e4ec6; font-style: italic; }
+.uml-property { color: #8e4ec6; }
 .uml-visibility { color: #d6409f; font-weight: 600; }
 .uml-modifier { color: #8e4ec6; }
 .uml-type { color: #2a9fd6; }

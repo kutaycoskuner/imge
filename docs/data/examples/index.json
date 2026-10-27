@@ -25,7 +25,7 @@
             "name": "Lecture notes",
             "kind": "blackboard note taking",
             "file": "examples/blackboard-notes.json",
-            "description": "Colour-coded notes scattered like on a blackboard, a group for definitions.",
+            "description": "Colour-coded notes scattered like on a blackboard, a group for definitions; dotted links lead to examples.",
             "sketch": true,
             "category": "Mind mapping"
         },
@@ -71,7 +71,7 @@
             "name": "Voltage divider",
             "kind": "circuit (analog)",
             "file": "examples/circuit-voltage-divider.json",
-            "description": "Source, two resistors and ground in a loop; the meter reads the middle.",
+            "description": "Source, two resistors and ground in a loop; the meter reads the middle (dotted: a probe, not a wire).",
             "sketch": true,
             "category": "Circuits"
         },
@@ -79,7 +79,7 @@
             "name": "ALU (4-bit, sketch)",
             "kind": "ALU / processor mapping",
             "file": "examples/alu-sketch.json",
-            "description": "Registers feed an adder, an AND and an OR unit; a multiplexer picks one by opcode.",
+            "description": "Registers feed an adder, an AND and an OR unit; a multiplexer picks one by opcode (control and status signals dashed).",
             "sketch": true,
             "category": "Circuits"
         },
@@ -87,7 +87,7 @@
             "name": "Web app architecture",
             "kind": "architecture map",
             "file": "examples/web-app-architecture.json",
-            "description": "Services and how requests flow between them; manhattan links with named protocols.",
+            "description": "Services and how requests flow between them; manhattan links with named protocols, asynchronous work dashed with open arrows.",
             "category": "Software architecture"
         },
         {
@@ -101,7 +101,7 @@
             "name": "Login sequence",
             "kind": "sequence diagram",
             "file": "examples/sequence-login.json",
-            "description": "Participants as coloured columns, messages numbered in time order, replies as backward arrows.",
+            "description": "Participants as coloured columns, messages numbered in time order, replies as dashed lines with open arrows (UML).",
             "sketch": true,
             "category": "Software architecture"
         },
@@ -124,7 +124,7 @@
             "name": "Release process",
             "kind": "process planning",
             "file": "examples/release-process.json",
-            "description": "Steps in order; review and test loop back to development, drawn above and below.",
+            "description": "Steps in order; review and test loop back to development (dashed: rework), drawn above and below.",
             "category": "Other"
         },
         {

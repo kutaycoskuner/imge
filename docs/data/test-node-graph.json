@@ -1288,7 +1288,7 @@
                         "- name: String",
                         "- attributes: List<String>",
                         "- methods: List<String>",
-                        "{static} + VERSION: int = 2"
+                        "{static} + VERSION: int = 2 {readOnly}"
                     ],
                     "methods": [
                         "+ parseAttribute(line: String): UmlLine",
@@ -1460,6 +1460,34 @@
                 ],
                 "content": {
                     "name": "Port look (filled, hollow, hidden)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n53",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": 680
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Text view (experimental)",
                     "color": null,
                     "shape": "square"
                 }
@@ -2401,6 +2429,23 @@
                 },
                 "target": {
                     "node": "n52",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l56",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n30",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n53",
                     "port": "i1"
                 }
             }

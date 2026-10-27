@@ -313,7 +313,7 @@
                 "shape": "manhattan",
                 "bend": 0.2,
                 "arrow": "forward",
-                "line": "solid",
+                "line": "dashed",
                 "mark": "arrow",
                 "route": "above",
                 "source": {
@@ -332,7 +332,7 @@
                 "shape": "manhattan",
                 "bend": 0.2,
                 "arrow": "forward",
-                "line": "solid",
+                "line": "dashed",
                 "mark": "arrow",
                 "route": "below",
                 "source": {
