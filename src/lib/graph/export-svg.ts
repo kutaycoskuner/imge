@@ -144,11 +144,17 @@ export function drawGraphSvg(o: DrawOptions): { svg: string; width: number; heig
 	}
 
 	// red wavy line under an element's text (text-decoration: underline wavy; invalid UML lines)
-	function drawWavy(el: Element, cs: CSSStyleDeclaration): void {
+	// an underlined element's line under its text: wavy (UML format check) or straight ({static})
+	function drawUnderline(el: Element, cs: CSSStyleDeclaration): void {
 		const range = document.createRange();
 		range.selectNodeContents(el);
 		const r = box(range.getBoundingClientRect());
 		if (r.w <= 0) return;
+		if (cs.textDecorationStyle !== 'wavy') {
+			const y = num(r.y + r.h - 2);
+			out.push(`<line x1="${num(r.x)}" y1="${y}" x2="${num(r.x + r.w)}" y2="${y}" ${fillAttr(cs.textDecorationColor, 'stroke')} stroke-width="1"/>`);
+			return;
+		}
 		const y = r.y + r.h - 1;
 		let d = `M ${num(r.x)} ${num(y)}`;
 		for (let x = r.x, up = true; x < r.x + r.w; x += 2, up = !up) d += ` L ${num(Math.min(x + 2, r.x + r.w))} ${num(up ? y - 1.5 : y + 0.5)}`;
@@ -291,7 +297,7 @@ export function drawGraphSvg(o: DrawOptions): { svg: string; width: number; heig
 			if (child.nodeType === Node.TEXT_NODE) drawText(child as Text, cs, alpha);
 			else if (child.nodeType === Node.ELEMENT_NODE) walk(child as Element, alpha);
 		}
-		if (cs.textDecorationLine.includes('underline') && cs.textDecorationStyle === 'wavy') drawWavy(el, cs);
+		if (cs.textDecorationLine.includes('underline')) drawUnderline(el, cs);
 	}
 	walk(o.world, 1);
 

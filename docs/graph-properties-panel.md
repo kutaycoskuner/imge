@@ -42,16 +42,16 @@ The panel shows the sections whose condition matches the selection, top to botto
 | Selection | Section | Contents |
 |---|---|---|
 | Nothing | Graph | File name (or "not saved yet") with the unsaved marker, direction (changes it like the Esc menu and the transpose button), number of nodes and links. |
-| One node | Node | What every node has (graph format v6 top level): id, type (dropdown, see below), position of the top-left corner X and Y (world units, y up; editable), the **group** it is in (a click selects the group, **Leave** takes it out), Delete node. |
+| One node | Node | What every node has (the node top level since graph format v6): id, type (dropdown, see below), position of the top-left corner X and Y (world units, y up; editable), the **group** it is in (a click selects the group, **Leave** takes it out), Delete node. |
 | One node of a type with a name and a colour (basic, group, UML class) | Content | Name (editable), colour (see below) and, for types that allow it, **Shape** (square / circle; see below): the type's own `content`. For a group also Width and Height. Other node types will bring their own content sections. |
-| One UML class | Attributes and methods | One field per compartment, one member per line in UML notation, highlighted while typing, with the lines that don't follow the notation listed under the field; leaving a field saves it (see [graph-uml.md](graph-uml.md)). |
+| One UML class | Attributes and methods | The Abstract class checkbox (name in italics; a note when the class has `{abstract}` methods but isn't abstract), then one field per compartment, one member per line in UML notation (`{static}` / `{abstract}` markers included), highlighted while typing, with the lines that don't follow the notation listed under the field; leaving a field saves it (see [graph-uml.md](graph-uml.md)). |
 | One group | Contents | The nodes it holds, by label and id (a click selects one, × takes it out of the group), how to add nodes, and **Ungroup** (removes the group; what it held stays). |
 | One node with ports | Ports and links | Its ports by kind (inputs, outputs, and two-way ports when it has any), by label; links coming in and going out, by the node at the other end (and the link's name); a click selects the link. |
 | Several nodes | Selection | How many nodes and how many links between them; one colour for all of them whose type has a colour (empty with "mixed" when they differ; × resets all); their labels (a click selects only that one); Delete all of them. |
 | One link | Link | Name (editable; empty removes it), id, From and To as node label · port label (a click selects the node), Delete link. |
 
 Node names in lists and link ends come from the node's type (`nodeLabel(node)` in `node-types.ts`: basic and group show their name, a type without one e.g. "AND gate (n4)"), never from reading `content` directly.
-| One link | Look | Shape, arrow and route (the same values as <kbd>L</kbd>, <kbd>D</kbd>, <kbd>R</kbd>); the corner (manhattan) or lane (link going around its nodes) position from 0 to 1, the same as dragging the highlighted segment. When the Esc menu's display override hides a link's own shape or arrow, the panel says so; route says when it isn't used. |
+| One link | Look | Relation (a UML relation: sets line and mark in one step, shows the one the link matches or "custom", see [graph-uml.md](graph-uml.md#relations)); shape, arrow and route (the same values as <kbd>L</kbd>, <kbd>D</kbd>, <kbd>R</kbd>); mark (the shape at the end(s) arrow names) and line (solid, dashed, dotted); the corner (manhattan) or lane (link going around its nodes) position from 0 to 1, the same as dragging the highlighted segment. When the Esc menu's display override hides a link's own shape or arrow, the panel says so; route says when it isn't used. |
 
 ### Node shape
 
@@ -120,7 +120,7 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 | `src/lib/graph/color.ts` | `parseHexColor` (typed hex to `#rrggbb`), `dimColor` and `NODE_FILL_SHARE` (the fill), `hexToHsv` / `hsvToHex`, `mixHex` / `tintsAndShades`, `NODE_COLOR_PRESETS`. Tests in `color.spec.ts`. |
 | `src/lib/graph/node-types.ts` | `NODE_TYPES`: the Type dropdown's list, and for ready types their template (version, ports, content, label); `nodeType(id)`, `nodeLabel(node)`, `nodeName`, `nodeColor`, `hasNamedContent`, `portSide`. |
 | `src/lib/components/properties/PropsGroupContents.svelte` | The Contents section of groups: children (select, take out), how to add, Ungroup. |
-| `src/lib/components/properties/PropsUmlMembers.svelte`, `PropUmlLines.svelte` | The Attributes and methods section of UML classes; a member field with highlighting and format check. |
+| `src/lib/components/properties/PropsUmlMembers.svelte`, `PropUmlLines.svelte` | The Attributes and methods section of UML classes (with the Abstract class checkbox); a member field with highlighting and format check. |
 | `src/lib/components/properties/PropsContent.svelte` | The Content section of basic / group nodes: name and colour. |
 | `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per ready type and version (basic-v1, group-v1); checked by `src/lib/graph/node-types.spec.ts`. |
 | `src/lib/icons/icon-sidebar-right.svelte`, `icon-chevron-left.svelte`, `icon-chevron-right.svelte` | The toolbar button's icon and the hide / show chevrons. |
@@ -137,6 +137,7 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 
 - 2026-10-27 — fix: the Shape dropdown threw "$0 is not defined" when a node was selected (a function call as a select's value); the shape is computed first
 - 2026-10-23 — the start graph and all examples follow the newest type versions (basic 2, group 3), checked by a test
+- 2026-10-27 — Look section: Relation (UML relations), Mark and Line; Attributes and methods: Abstract class checkbox; the member note mentions `{static}` / `{abstract}`
 - 2026-10-23 — circles have their own size rules: circle nodes fit their name (3.5em to 9em), circle groups use a 32-unit margin around their children's corners
 - 2026-10-23 — node shape: Square / Circle in the Content section (basic, group); circle groups are round frames
 - 2026-10-23 — groups: Contents section (children, take out, Ungroup); the Node section shows the group a node is in (Leave); nodes made or pasted inside a frame join it; Ctrl+G adds to the one selected group

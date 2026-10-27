@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-21
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -90,14 +90,17 @@ export const NODE_TYPES: NodeType[] = [
 		title: 'UML class',
 		description: 'Three blocks: class name, attributes, methods (UML notation, checked and highlighted)',
 		ready: true,
-		version: 1,
-		// relations (inheritance, association ...) are links, so a class keeps an input and an output
+		// v2: `abstract` (the class name in italics); a v1 class without it isn't abstract
+		version: 2,
+		// relations (inheritance, association ...) are links (graph format v7: line, mark; see
+		// link-relations.ts), so a class keeps an input and an output
 		ports: [
 			{ id: 'i1', kind: 'in', type: 'basic', label: 'Input' },
 			{ id: 'o1', kind: 'out', type: 'basic', label: 'Output' }
 		],
-		// one member per line, in UML notation (uml.ts): "- count: int = 0", "+ area(): double"
-		content: { name: 'Class', color: null, attributes: [], methods: [] },
+		// one member per line, in UML notation (uml.ts): "- count: int = 0", "+ area(): double",
+		// "{static} + count: int", "+ {abstract} area(): double"
+		content: { name: 'Class', color: null, abstract: false, attributes: [], methods: [] },
 		label: named('UML class')
 	},
 	{ id: 'note', title: 'Note', description: 'A block of text without ports (planned)', ready: false },
@@ -131,6 +134,9 @@ export const umlMembers = (node: GraphNode, key: 'attributes' | 'methods'): stri
 	const lines = node.content[key];
 	return Array.isArray(lines) ? lines.filter((l): l is string => typeof l === 'string') : [];
 };
+
+/** Whether a UML class node is abstract (content `abstract`; missing = no). */
+export const umlAbstract = (node: GraphNode): boolean => node.content.abstract === true;
 
 /** A group's frame size when its content has none (world units; 20 x 12 em at zoom 1). */
 export const GROUP_SIZE = { w: 320, h: 192 };

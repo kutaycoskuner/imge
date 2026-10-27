@@ -1,7 +1,7 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 6,
+        "version": 7,
         "direction": "top-to-bottom"
     },
     "data": {
@@ -237,6 +237,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -252,6 +254,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -267,6 +271,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -282,6 +288,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -297,6 +305,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -312,6 +322,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -327,6 +339,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -342,6 +356,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -357,6 +373,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -372,6 +390,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n5",
@@ -387,6 +407,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n6",
@@ -402,6 +424,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n7",

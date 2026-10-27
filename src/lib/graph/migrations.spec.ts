@@ -28,6 +28,7 @@ import sampleV3 from '../../../static/data/samples/graph-v3.json';
 import sampleV4 from '../../../static/data/samples/graph-v4.json';
 import sampleV5 from '../../../static/data/samples/graph-v5.json';
 import sampleV6 from '../../../static/data/samples/graph-v6.json';
+import sampleV7 from '../../../static/data/samples/graph-v7.json';
 
 // one sample per format version, oldest first; copies so no test can change another's input
 const SAMPLES: Record<number, () => any> = {
@@ -37,7 +38,8 @@ const SAMPLES: Record<number, () => any> = {
 	3: () => structuredClone(sampleV3),
 	4: () => structuredClone(sampleV4),
 	5: () => structuredClone(sampleV5),
-	6: () => structuredClone(sampleV6)
+	6: () => structuredClone(sampleV6),
+	7: () => structuredClone(sampleV7)
 };
 const current = SAMPLES[CURRENT_GRAPH_VERSION];
 
@@ -160,7 +162,8 @@ describe('adapter 5 -> 6', () => {
 
 	it('keeps port ids, so every link still points at its ports', () => {
 		const { graph } = migrateGraph(SAMPLES[5]());
-		expect(graph.data.links).toEqual(SAMPLES[5]().data.links);
+		const ends = (links: any[]) => links.map((l) => [l.source, l.target]);
+		expect(ends(graph.data.links)).toEqual(ends(SAMPLES[5]().data.links));
 	});
 
 	it('turns a group (no ports) into a node with an empty ports list', () => {
@@ -178,6 +181,21 @@ describe('adapter 5 -> 6', () => {
 		expect(node.note).toBe('kept');
 		expect(node.typeVersion).toBe(2);
 		expect(node.content).toEqual({ extra: 1, name: 'First Node', color: null });
+	});
+});
+
+describe('adapter 6 -> 7', () => {
+	it('gives every link line solid and mark arrow, the look links had before', () => {
+		const { graph } = migrateGraph(SAMPLES[6]());
+		expect(graph.data.links.map((l) => [l.line, l.mark])).toEqual([['solid', 'arrow']]);
+	});
+
+	it('keeps a line or mark a link already had, and leaves the nodes as they were', () => {
+		const v6 = SAMPLES[6]();
+		Object.assign(v6.data.links[0], { line: 'dashed', mark: 'triangle' });
+		const { graph } = migrateGraph(v6);
+		expect(graph.data.links[0]).toMatchObject({ line: 'dashed', mark: 'triangle' });
+		expect(graph.data.nodes).toEqual(SAMPLES[6]().data.nodes);
 	});
 });
 

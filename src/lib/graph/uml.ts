@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-21
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -12,10 +12,13 @@
 // rejected: a line with an error is still stored and drawn, just marked.
 //
 // Notation (UML class diagrams):
-//   attribute   [visibility] [/] name [: Type] [= default]        e.g. "- count: int = 0"
-//   method      [visibility] name([param, ...]) [: ReturnType]    e.g. "+ area(scale: double): double"
+//   attribute   [markers] [visibility] [/] name [: Type] [= default]       e.g. "- count: int = 0"
+//   method      [markers] [visibility] name([param, ...]) [: ReturnType]   e.g. "+ area(scale: double): double"
 //   parameter   [in | out | inout] name [: Type] [= default]
 //   visibility  + public, - private, # protected, ~ package;  / = derived attribute
+//   markers     {static} (drawn underlined) and, methods only, {abstract} (drawn in italics),
+//               before or after the visibility: "{static} + count: int", "+ {abstract} area(): double";
+//               the node draws the line's style instead of the marker text
 //   Type        a name, optionally with dots, generics <...>, [] and a trailing ?
 //               (e.g. List<String>, int[], Map<String, List<int>>, Date?)
 //
@@ -23,7 +26,7 @@
 // Details: docs/graph-uml.md
 // -----------------------------------------------------------------------------------------
 
-export type UmlTokenKind = 'visibility' | 'modifier' | 'name' | 'type' | 'default' | 'param' | 'punct' | 'text';
+export type UmlTokenKind = 'visibility' | 'marker' | 'modifier' | 'name' | 'type' | 'default' | 'param' | 'punct' | 'text';
 
 export interface UmlToken {
 	text: string;
@@ -33,7 +36,12 @@ export interface UmlToken {
 export interface UmlLine {
 	tokens: UmlToken[]; // joined, they give back the line exactly
 	error: string | null; // why the line doesn't follow the notation, or null
+	static: boolean; // {static}: a class member, drawn underlined
+	abstract: boolean; // {abstract}: a method without a body here, drawn in italics
 }
+
+/** The member markers: written {static} / {abstract} at the start of a line. */
+export const UML_MARKERS = ['static', 'abstract'] as const;
 
 /** The visibility marks and what they mean. */
 export const VISIBILITY: Record<string, string> = { '+': 'public', '-': 'private', '#': 'protected', '~': 'package' };
@@ -55,6 +63,7 @@ export function isTypeName(text: string): boolean {
 // A small cursor over one line: takes pieces off the front and records them as tokens.
 class Reader {
 	tokens: UmlToken[] = [];
+	markers = new Set<string>(); // the {static} / {abstract} markers read
 	constructor(private rest: string) {}
 	get left(): string {
 		return this.rest;
@@ -79,7 +88,10 @@ class Reader {
 	// the remaining text, unread, marked as plain text (after an error)
 	done(error: string | null): UmlLine {
 		this.take(this.rest.length, 'text');
-		return { tokens: this.tokens, error };
+		return this.line(this.tokens, error);
+	}
+	line(tokens: UmlToken[], error: string | null): UmlLine {
+		return { tokens, error, static: this.markers.has('static'), abstract: this.markers.has('abstract') };
 	}
 }
 
@@ -106,10 +118,42 @@ function readVisibility(r: Reader): void {
 	}
 }
 
+// {static} / {abstract} markers at the cursor, recorded in r.markers; returns an error or null
+function readMarkers(r: Reader): string | null {
+	for (;;) {
+		r.space();
+		const m = /^\{\s*([A-Za-z]*)\s*\}/.exec(r.left);
+		if (!m) return null;
+		if (!(UML_MARKERS as readonly string[]).includes(m[1])) return `unknown marker "${m[0]}": write {static} or {abstract}`;
+		r.take(m[0].length, 'marker');
+		r.markers.add(m[1]);
+	}
+}
+
+// markers, visibility, markers again (both orders are common); returns an error or null
+function readStart(r: Reader): string | null {
+	return readMarkers(r) ?? (readVisibility(r), readMarkers(r));
+}
+
+/**
+ * The tokens a node draws: without the markers and the space after them (the node shows
+ * them as the line's style instead).
+ */
+export function drawnTokens(line: UmlLine): UmlToken[] {
+	const out: UmlToken[] = [];
+	for (let i = 0; i < line.tokens.length; i++) {
+		if (line.tokens[i].kind !== 'marker') out.push(line.tokens[i]);
+		else if (line.tokens[i + 1]?.kind === 'text' && !line.tokens[i + 1].text.trim()) i++;
+	}
+	return out;
+}
+
 /** Reads one attribute line: `[visibility] [/] name [: Type] [= default]`. */
 export function parseAttribute(line: string): UmlLine {
 	const r = new Reader(line);
-	readVisibility(r);
+	const markerError = readStart(r);
+	if (markerError) return r.done(markerError);
+	if (r.markers.has('abstract')) return r.done('only methods (and classes) can be {abstract}');
 	if (r.left.startsWith('/')) {
 		r.take(1, 'modifier');
 		r.space();
@@ -182,7 +226,9 @@ function splitParams(text: string): string[] {
 /** Reads one method line: `[visibility] name([param, ...]) [: ReturnType]`. */
 export function parseMethod(line: string): UmlLine {
 	const r = new Reader(line);
-	readVisibility(r);
+	const markerError = readStart(r);
+	if (markerError) return r.done(markerError);
+	if (r.markers.has('static') && r.markers.has('abstract')) return r.done("a method can't be both {static} and {abstract}");
 	if (!r.match(IDENT, 'name')) {
 		return r.done(r.left ? `"${r.left.trim()}" doesn't start with a name` : 'the name is missing');
 	}
@@ -204,7 +250,7 @@ export function parseMethod(line: string): UmlLine {
 				// the rest of the parameter list and the line as plain text
 				const shown = r.tokens.map((t) => t.text).join('');
 				const rest = line.slice(shown.length);
-				return { tokens: [...r.tokens, ...(rest ? [{ text: rest, kind: 'text' as const }] : [])], error };
+				return r.line([...r.tokens, ...(rest ? [{ text: rest, kind: 'text' as const }] : [])], error);
 			}
 		}
 	} else if (inner) {

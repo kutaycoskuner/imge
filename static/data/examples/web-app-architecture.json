@@ -1,7 +1,7 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 6,
+        "version": 7,
         "direction": "left-to-right"
     },
     "data": {
@@ -266,6 +266,8 @@
                 "name": "HTTPS",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -282,6 +284,8 @@
                 "name": "HTTPS / JSON",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -298,6 +302,8 @@
                 "name": "token check",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -314,6 +320,8 @@
                 "name": "SQL",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -330,6 +338,8 @@
                 "name": "enqueue",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -345,6 +355,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n6",
@@ -360,6 +372,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n7",
@@ -376,6 +390,8 @@
                 "name": "uploads",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n7",

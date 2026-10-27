@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-21
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ describe('nodes', () => {
 });
 
 describe('link rules', () => {
-	it('adds a link l1 with type, shape spline and both ends', () => {
+	it('adds a link l1 with type, shape spline, a solid line with an arrowhead and both ends', () => {
 		const { graph, outcome, link: created } = addLink(threeNodes(), ends('n1', 'n2'));
 		expect(outcome).toBe('added');
 		expect(created).toEqual({
@@ -129,6 +129,8 @@ describe('link rules', () => {
 			shape: 'spline',
 			arrow: 'forward',
 			route: 'above',
+			line: 'solid',
+			mark: 'arrow',
 			...ends('n1', 'n2')
 		});
 		expect(graph.data.links).toEqual([created]);
@@ -479,9 +481,9 @@ describe('properties panel edits', () => {
 
 	it('sets content keys, keeps the others, and returns the same graph when nothing changes', () => {
 		const g = setNodeType(threeNodes(), 'n1', 'uml-class');
-		expect(g.data.nodes[0].content).toEqual({ name: 'Node', color: null, shape: 'square', attributes: [], methods: [] });
+		expect(g.data.nodes[0].content).toEqual({ name: 'Node', color: null, shape: 'square', abstract: false, attributes: [], methods: [] });
 		const set = setNodeContent(g, 'n1', { attributes: ['- radius: double'] });
-		expect(set.data.nodes[0].content).toEqual({ name: 'Node', color: null, shape: 'square', attributes: ['- radius: double'], methods: [] });
+		expect(set.data.nodes[0].content).toEqual({ name: 'Node', color: null, shape: 'square', abstract: false, attributes: ['- radius: double'], methods: [] });
 		expect(setNodeContent(set, 'n1', { attributes: ['- radius: double'] })).toBe(set);
 		expect(setNodeContent(set, 'missing', { attributes: [] })).toBe(set);
 	});
@@ -543,5 +545,13 @@ describe('properties panel edits', () => {
 		expect(styled.data.links[0]).toMatchObject({ shape: 'manhattan', arrow: 'both', route: 'above' });
 		expect(setLinkStyle(styled, 'l1', { shape: 'manhattan' })).toBe(styled);
 		expect(setLinkStyle(g, 'missing', { shape: 'line' })).toBe(g);
+	});
+
+	it('a new link is solid with an arrowhead; line and mark are set like the other styles', () => {
+		const g = link(threeNodes(), 'n1', 'n2');
+		expect(g.data.links[0]).toMatchObject({ line: 'solid', mark: 'arrow' });
+		const styled = setLinkStyle(g, 'l1', { line: 'dashed', mark: 'triangle' });
+		expect(styled.data.links[0]).toMatchObject({ line: 'dashed', mark: 'triangle', arrow: 'forward' });
+		expect(setLinkStyle(styled, 'l1', { line: 'dashed' })).toBe(styled);
 	});
 });

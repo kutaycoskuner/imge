@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-10-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -100,6 +100,7 @@
 		nodeSizes,
 		persistViewSettings,
 		linkShapeOverride,
+		portLook,
 		linkArrowOverride,
 		editingLinkId,
 		type LinkOutcome,
@@ -166,7 +167,7 @@
 	};
 
 	function connect(
-		link: Pick<Link, 'source' | 'target'> & Partial<Pick<Link, 'id' | 'type' | 'name' | 'shape' | 'bend' | 'arrow' | 'route'>>
+		link: Pick<Link, 'source' | 'target'> & Partial<Pick<Link, 'id' | 'type' | 'name' | 'shape' | 'bend' | 'arrow' | 'route' | 'line' | 'mark'>>
 	): void {
 		let outcome: LinkOutcome = 'exists';
 		graph.update((g) => {
@@ -444,7 +445,9 @@
 						shape: drag.carried.shape,
 						bend: drag.carried.bend,
 						arrow: drag.carried.arrow,
-						route: drag.carried.route
+						route: drag.carried.route,
+						line: drag.carried.line,
+						mark: drag.carried.mark
 					}
 				: {}),
 			source: { node: drag.nodeId, port: drag.portId },
@@ -754,7 +757,7 @@
 >
 	<div class="content-wrapper" class:linking={linkDrag}>
 		<div
-			class="world"
+			class="world ports-{$portLook}"
 			class:top-to-bottom={direction === 'top-to-bottom'}
 			style="transform: translate({worldTranslateX}px, {worldTranslateY}px) scale({$camera.zoom});"
 		>

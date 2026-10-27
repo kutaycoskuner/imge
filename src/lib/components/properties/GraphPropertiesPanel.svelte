@@ -277,6 +277,14 @@
 		color: var(--col-selected);
 	}
 
+	/* a checkbox with its text on one line */
+	.properties-panel :global(.prop-check) {
+		display: flex;
+		align-items: center;
+		gap: 0.4em;
+		cursor: pointer;
+	}
+
 	.properties-panel :global(.prop-subtitle) {
 		margin: 0.8em 0 0.3em;
 		font-size: 0.9em;

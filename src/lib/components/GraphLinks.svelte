@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-10-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 	//
 	// Shape (link.shape, or linkShapeOverride for display only):
 	//   spline     curve with horizontal tangents, entered and left by a short straight piece
-	//              (ARROW_ROOM) so an arrowhead always lies on its own line
+	//              (the mark's `room`) so an end mark always lies on its own line
 	//   line       straight line
 	//   manhattan  right angles; the vertical segment sits at `bend` (0 = output, 1 = input)
 	//              of the horizontal gap; an input left of its output gets stubs in and out
@@ -20,8 +20,10 @@
 	// out of the output, along a lane above (route "above", default) or below the nodes they
 	// pass, and back into the input, in the link's shape. `bend` sets the lane's distance
 	// from the nodes; links whose lanes would overlap get stacked lanes.
-	// Arrows (link.arrow or linkArrowOverride): SVG markers at the input (forward), the
-	// output (backward), both or none; showChevrons adds direction chevrons in the middle.
+	// End marks: link.mark (arrow, open arrow, hollow triangle, hollow / filled diamond; MARKS
+	// below) as SVG markers at the input (link.arrow or linkArrowOverride forward), the output
+	// (backward), both or none; link.line draws the line solid, dashed or dotted (CSS classes
+	// line-*); showChevrons adds direction chevrons in the middle.
 	// A link's name is drawn in its middle; editingLinkId shows a text field there instead.
 	// Top-to-bottom graphs use the same geometry with x and y swapped (see `flow`).
 	// A selected link with an adjustable corner or lane gets a `.link-bend` grab area; the
@@ -46,7 +48,7 @@
 		nodeSizes as measuredSizes
 	} from '$lib/graph/store';
 	import type { Point } from '$lib/graph/store';
-	import type { GraphNode, Link, LinkArrow, LinkShape, PortKind } from '$lib/graph/types';
+	import { LINK_MARKS, type GraphNode, type Link, type LinkArrow, type LinkMark, type LinkShape, type PortKind } from '$lib/graph/types';
 
 	export let drag: {
 		nodeId: string;
@@ -64,6 +66,26 @@
 	// port (the arrow marker's refX below): a marker is drawn straight along the path's end
 	// direction, so on a curve that still bends there the line would leave the arrowhead
 	const ARROW_ROOM = 17;
+
+	// End marks, as data: one SVG marker per mark (and a copy for selected links). Every mark
+	// is drawn in a box MARK_BOX high (middle at y 5) at MARK_SCALE px per unit, its tip at
+	// x 9 and refX MARK_REF, so all of them end just outside the port square. `x` / `w` are
+	// the box's left edge and width; `room` the straight spline end piece (px) the whole mark
+	// lies on. Looks: filled (line colour), hollow (background inside, so the line doesn't show
+	// through), open (strokes only). UML's hollow marks are drawn larger than the arrowhead so
+	// triangle and diamond read apart at a glance.
+	const MARK_SCALE = 1.2;
+	const MARK_REF = 17;
+	const MARK_BOX = { y: -3, h: 16 };
+	const MARKS: Record<LinkMark, { x: number; w: number; d: string; look: 'filled' | 'hollow' | 'open'; room: number }> = {
+		arrow: { x: 0, w: 11, d: 'M 0 1 L 9 5 L 0 9 z', look: 'filled', room: ARROW_ROOM },
+		'open-arrow': { x: 0, w: 11, d: 'M 0 0 L 9 5 L 0 10', look: 'open', room: ARROW_ROOM },
+		triangle: { x: -5, w: 16, d: 'M -4 -1.5 L 9 5 L -4 11.5 z', look: 'hollow', room: 24 },
+		diamond: { x: -12, w: 23, d: 'M 9 5 L -1 0 L -11 5 L -1 10 z', look: 'hollow', room: 34 },
+		'filled-diamond': { x: -12, w: 23, d: 'M 9 5 L -1 0 L -11 5 L -1 10 z', look: 'filled', room: 34 }
+	};
+	// the straight spline end piece for the link being drawn (set per link, like `swap`)
+	let room = ARROW_ROOM;
 
 	interface Size {
 		w: number;
@@ -183,8 +205,8 @@
 			};
 		}
 		// the curve runs between the two straight end pieces
-		const start = { x: from.x + ARROW_ROOM, y: from.y };
-		const end = { x: to.x - ARROW_ROOM, y: to.y };
+		const start = { x: from.x + room, y: from.y };
+		const end = { x: to.x - room, y: to.y };
 		const c = Math.max(40, Math.abs(end.x - start.x) * 0.5);
 		const c1 = { x: start.x + c, y: start.y };
 		const c2 = { x: end.x - c, y: end.y };
@@ -214,8 +236,8 @@
 			return { d: polyline(pts), pts, bend: grab };
 		}
 		// straight end pieces like a direct spline, so arrowheads stay on the line
-		const start = { x: from.x + ARROW_ROOM, y: from.y };
-		const end = { x: to.x - ARROW_ROOM, y: to.y };
+		const start = { x: from.x + room, y: from.y };
+		const end = { x: to.x - room, y: to.y };
 		const mid = { x: (out.x + into.x) / 2, y: laneY };
 		const a1 = { x: from.x + SPLINE_PULL, y: from.y };
 		const a2 = { x: from.x + SPLINE_PULL, y: laneY };
@@ -255,6 +277,7 @@
 		d: string;
 		mid: { p: Point; angle: number };
 		arrow: LinkArrow;
+		mark: LinkMark;
 		selected: boolean;
 		bend?: Bend;
 	}
@@ -287,6 +310,9 @@
 			const to = flow(toLayerPt);
 			const shape = $linkShapeOverride ?? link.shape;
 			const goesAround = back.has(link.id) || link.source.node === link.target.node;
+			const arrow = $linkArrowOverride ?? link.arrow;
+			const mark: LinkMark = MARKS[link.mark] ? link.mark : 'arrow'; // an unknown mark: the arrowhead
+			room = arrow === 'none' ? ARROW_ROOM : MARKS[mark].room;
 
 			let drawn: Drawn;
 			if (goesAround) {
@@ -326,7 +352,8 @@
 				link,
 				d: drawn.d,
 				mid: middle(drawn.pts.map(flow)),
-				arrow: $linkArrowOverride ?? link.arrow,
+				arrow,
+				mark,
 				selected,
 				// the grab area only where the bend does something: manhattan corners, lanes
 				bend: selected && (goesAround || shape === 'manhattan') ? toLayer(drawn.bend) : undefined
@@ -344,13 +371,15 @@
 		const mouse = flow(drag.to);
 		// a drag always reads giving -> taking end: from an input it is drawn from the mouse
 		const shape = $linkShapeOverride ?? 'spline';
+		room = ARROW_ROOM;
 		return drag.kind === 'in' ? direct(shape, mouse, port).d : direct(shape, port, mouse).d;
 	})();
 
-	const markerEnd = (arrow: LinkArrow, selected: boolean) =>
-		arrow === 'forward' || arrow === 'both' ? `url(#imge-arrow${selected ? '-selected' : ''})` : undefined;
-	const markerStart = (arrow: LinkArrow, selected: boolean) =>
-		arrow === 'backward' || arrow === 'both' ? `url(#imge-arrow${selected ? '-selected' : ''})` : undefined;
+	const markerId = (mark: LinkMark, selected: boolean) => `imge-mark-${mark}${selected ? '-selected' : ''}`;
+	const markerEnd = (arrow: LinkArrow, mark: LinkMark, selected: boolean) =>
+		arrow === 'forward' || arrow === 'both' ? `url(#${markerId(mark, selected)})` : undefined;
+	const markerStart = (arrow: LinkArrow, mark: LinkMark, selected: boolean) =>
+		arrow === 'backward' || arrow === 'both' ? `url(#${markerId(mark, selected)})` : undefined;
 
 	// -------------------------------------------------------------------------------------
 	// link name editing (F2 or double-click on a selected link)
@@ -382,26 +411,38 @@
 
 <svg class="links-layer" aria-hidden="true">
 	<defs>
-		<!-- orient auto-start-reverse: used at the start of a path it points backwards;
-		     refX past the tip ends the arrow just outside the port square instead of under it;
-		     refX = ARROW_ROOM, the straight end piece of splines the arrow lies on -->
-		<marker id="imge-arrow" viewBox="0 0 10 10" refX="17" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
-			<path class="link-arrow" d="M 0 1 L 9 5 L 0 9 z" />
-		</marker>
-		<marker id="imge-arrow-selected" viewBox="0 0 10 10" refX="17" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
-			<path class="link-arrow selected" d="M 0 1 L 9 5 L 0 9 z" />
-		</marker>
+		<!-- one marker per end mark and selection state (MARKS);
+		     orient auto-start-reverse: used at the start of a path it points backwards;
+		     refX past the tip ends the mark just outside the port square instead of under it -->
+		{#each LINK_MARKS as mark}
+			{#each [false, true] as selected}
+				{@const m = MARKS[mark]}
+				<marker
+					id={markerId(mark, selected)}
+					viewBox="{m.x} {MARK_BOX.y} {m.w} {MARK_BOX.h}"
+					refX={MARK_REF}
+					refY="5"
+					markerWidth={m.w * MARK_SCALE}
+					markerHeight={MARK_BOX.h * MARK_SCALE}
+					markerUnits="userSpaceOnUse"
+					orient="auto-start-reverse"
+				>
+					<path class="link-arrow mark-{m.look}" class:selected d={m.d} />
+				</marker>
+			{/each}
+		{/each}
 	</defs>
 
-	{#each placed as { link, d, mid, arrow, selected, bend } (link.id)}
+	{#each placed as { link, d, mid, arrow, mark, selected, bend } (link.id)}
 		<path
-			class="link"
+			class="link line-{link.line ?? 'solid'}"
 			class:selected
 			{d}
 			data-link-id={link.id}
 			data-arrow={arrow}
-			marker-end={markerEnd(arrow, selected)}
-			marker-start={markerStart(arrow, selected)}
+			data-mark={mark}
+			marker-end={markerEnd(arrow, mark, selected)}
+			marker-start={markerStart(arrow, mark, selected)}
 		/>
 		<path class="link-hit" {d} data-link-id={link.id} />
 
@@ -431,7 +472,7 @@
 	{/each}
 
 	{#if preview}
-		<path class="link link-preview" d={preview} marker-end="url(#imge-arrow)" />
+		<path class="link link-preview" d={preview} marker-end="url(#{markerId('arrow', false)})" />
 	{/if}
 </svg>
 

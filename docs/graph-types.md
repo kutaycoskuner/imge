@@ -2,7 +2,7 @@
 
 Kinds of graphs imge could draw, checked one by one as the editor grows. For each: what it is, whether it's possible today, and what's missing. Not all of them have established names; the descriptions say what is meant. Graphs that should also *run* (math nodes, textures, circuits) need the planned simulation layer: [graph-simulation.md](graph-simulation.md).
 
-State as of 2026-10-23 (graph format v6).
+State as of 2026-10-27 (graph format v7).
 
 - **possible**: can be drawn today with the existing features, in a basic form
 - **partly**: the core works, but something that defines the type is missing
@@ -20,7 +20,7 @@ Every type has an example graph: open it from the Esc menu's **Examples** tab; t
 | ↳ [Textures (shader-like)](#textures-shader-like) | not yet | as math nodes, plus per-pixel values and previews |
 | [Circuit](#circuit) (later) | not yet | circuit symbols, two-way terminals, bit / signal values, the simulation layer |
 | ↳ [ALU / processor mapping](#alu--processor-mapping) | not yet | as digital circuit, plus composite parts and stepping |
-| [UML (software architecture)](#uml-software-architecture) | partly | UML arrow heads, dashed dependencies (class compartments: done) |
+| [UML (software architecture)](#uml-software-architecture) | partly | marks per link end, multiplicities, attach anywhere (class compartments, relation looks, static / abstract: done) |
 | [Sequence diagram](#sequence-diagram) | not yet | lifelines, messages ordered in time |
 | [Loose architecture / process map](#loose-architecture--process-map) (rough software architecture) | possible | resizable groups that carry their nodes |
 | [Number / decision tree](#number--decision-tree) | possible | automatic tree layout |
@@ -90,9 +90,9 @@ Mapping how an ALU or processor works: units (adders, registers, multiplexers) a
 
 Class, component or sequence diagrams for software architecture.
 
-- **Status:** partly
-- **Works today:** UML class nodes with three compartments (class name, attributes, methods), member lines highlighted and checked against the UML notation (see [graph-uml.md](graph-uml.md)); relations as links with names and arrows.
-- **Missing:** relation kinds with their UML look (triangles, diamonds, dashed lines), multiplicities and roles at link ends, relations attaching anywhere on a class box, stereotypes, packages; component diagrams. Planned for later, in this order: [graph-uml.md, roadmap](graph-uml.md#roadmap-a-functional-class-diagram-later).
+- **Status:** partly (class diagrams: the details in [graph-uml.md, Is it full UML?](graph-uml.md#is-it-full-uml))
+- **Works today:** UML class nodes with three compartments (class name, attributes, methods), member lines highlighted and checked against the UML notation, static members underlined and abstract classes and methods in italics (see [graph-uml.md](graph-uml.md)); relations as links with their UML look (dashed lines, hollow triangles, diamonds, open arrows), chosen by name in the Properties panel.
+- **Missing:** different marks at the two ends of a link, multiplicities and roles at link ends, relations attaching anywhere on a class box, stereotypes as a field, packages; component diagrams. Planned for later, in this order: [graph-uml.md, roadmap](graph-uml.md#roadmap-a-functional-class-diagram-later).
 - **Example:** Shapes (UML classes) (`shapes-uml.json`)
 
 ### Sequence diagram
@@ -176,7 +176,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 | Node colours drawn (done) | mind maps, architecture maps |
 | Node content (text, compartments; started: UML class compartments) | UML, mind maps, notes |
 | Automatic layout (tree, layered, force) | trees, lattices, big data |
-| Link types with their own look (dashed, UML heads) | UML, process planning |
+| Link looks: dashed / dotted lines, UML end marks (done 2026-10-27, graph format v7); marks per end and end labels still missing | UML, process planning |
 | Simulation layer ([graph-simulation.md](graph-simulation.md)): value-typed ports, `evaluate` per type, engine | math nodes, textures, circuits, ALU mapping |
 | Circuit symbols, port sides above / below | circuits |
 | Lifelines and time-ordered messages | sequence diagrams |
@@ -184,6 +184,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 
 ## Changes
 
+- 2026-10-27 — link line styles and end marks (graph format v7) and UML relations; UML static / abstract members and abstract classes; the UML row's missing list updated
 - 2026-10-23 — node shapes started (square, circle): lattice, tree and set examples use circles
 - 2026-10-23 — groups hold, wrap and move their nodes and can be resized
 - 2026-10-21 — UML: class nodes with compartments, highlighting and format check (graph-uml.md); the example uses them

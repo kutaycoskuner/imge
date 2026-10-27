@@ -94,7 +94,7 @@
             "name": "Shapes (UML classes)",
             "kind": "UML class diagram",
             "file": "examples/shapes-uml.json",
-            "description": "UML classes with attributes and methods; arrows point to the parent class (no UML arrow heads yet).",
+            "description": "UML classes and their relations: inheritance (hollow triangles at the parent), realization of an interface (dashed), aggregation (diamond), dependency (dashed open arrow); abstract class and methods in italics, static members underlined.",
             "category": "Software architecture"
         },
         {

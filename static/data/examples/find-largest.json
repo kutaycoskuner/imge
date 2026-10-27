@@ -1,7 +1,7 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 6,
+        "version": 7,
         "direction": "top-to-bottom"
     },
     "data": {
@@ -237,6 +237,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -252,6 +254,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -268,6 +272,8 @@
                 "name": "yes",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -284,6 +290,8 @@
                 "name": "no",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -299,6 +307,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n5",
@@ -315,6 +325,8 @@
                 "name": "yes",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -331,6 +343,8 @@
                 "name": "no",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -346,6 +360,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n6",
@@ -362,6 +378,8 @@
                 "name": "loop",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n8",

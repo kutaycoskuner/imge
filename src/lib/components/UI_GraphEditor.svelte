@@ -8,8 +8,8 @@
 	// -----------------------------------------------------------------------------------------
 	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, fit graph,
 	// transpose (switch the direction left-to-right / top-to-bottom and turn the layout; the icon's
-	// strong arrow is the current direction), dot grid on / off, snap to grid on / off,
-	// Properties panel on / off,
+	// strong arrow is the current direction), dot grid on / off, snap to grid on / off, port
+	// look (filled -> hollow -> hidden -> filled), Properties panel on / off,
 	// add node at the screen center, open graph (opens the Esc menu), export (download) and
 	// export as image (a flyout with PNG / JPG / SVG, $lib/graph/export-image.ts). Hover hints show each button's key in [brackets], drawn as key caps
 	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
@@ -28,7 +28,9 @@
 		measureNodeSizes,
 		showDotGrid,
 		snapToGrid,
-		showPropertiesPanel
+		showPropertiesPanel,
+		portLook,
+		PORT_LOOKS
 	} from '$lib/graph/store';
 
 	// dot grid on / off (a display setting, remembered in this browser)
@@ -40,6 +42,12 @@
 	const toggleSnap = () => {
 		snapToGrid.update((on) => !on);
 		handleMouseOver($snapToGrid ? 'Snapping on' : 'Snapping off');
+	};
+	// port look: filled -> hollow -> hidden -> filled (display only, like the Esc menu's Ports choice)
+	$: nextPortLook = PORT_LOOKS[(PORT_LOOKS.indexOf($portLook) + 1) % PORT_LOOKS.length];
+	const cyclePortLook = () => {
+		portLook.set(nextPortLook);
+		handleMouseOver(`Ports ${$portLook}${$portLook === 'hidden' ? ' (shown on hover)' : ''}`);
 	};
 	// Properties panel on / off (also N and the panel's own chevron; remembered in this browser)
 	const toggleProperties = () => {
@@ -54,6 +62,7 @@
 	import IconTranspose from '$lib/icons/icon-transpose.svelte';
 	import IconDotGrid from '$lib/icons/icon-dot-grid.svelte';
 	import IconSnap from '$lib/icons/icon-snap.svelte';
+	import IconNodePorts from '$lib/icons/icon-node-ports.svelte';
 	import IconSidebarRight from '$lib/icons/icon-sidebar-right.svelte';
 	import IconChevronUp from '$lib/icons/icon-chevron-up.svelte';
 	import IconChevronDown from '$lib/icons/icon-chevron-down.svelte';
@@ -177,6 +186,13 @@
 			iconProps: { on: $snapToGrid },
 			hint: $snapToGrid ? 'Turn Snapping Off' : 'Turn Snapping On',
 			action: toggleSnap
+		},
+		{
+			id: 'ports',
+			icon: IconNodePorts,
+			iconProps: { look: $portLook },
+			hint: `Ports ${$portLook}: switch to ${nextPortLook}`,
+			action: cyclePortLook
 		},
 		{
 			id: 'properties',

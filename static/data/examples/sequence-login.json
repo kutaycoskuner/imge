@@ -1,7 +1,7 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 6,
+        "version": 7,
         "direction": "left-to-right"
     },
     "data": {
@@ -199,6 +199,8 @@
                 "name": "1. POST /login",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -215,6 +217,8 @@
                 "name": "2. SELECT user",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n5",
@@ -231,6 +235,8 @@
                 "name": "3. user row",
                 "shape": "spline",
                 "arrow": "backward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n8",
@@ -247,6 +253,8 @@
                 "name": "4. 200 OK + token",
                 "shape": "spline",
                 "arrow": "backward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n7",

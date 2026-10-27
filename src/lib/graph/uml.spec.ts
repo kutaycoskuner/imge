@@ -1,17 +1,18 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-21
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
 // uml.spec.ts -- checks reading UML attribute and method lines: the tokens for highlighting
-// (they always join back to the line), and the format check's error messages.
+// (they always join back to the line), the format check's error messages, and the
+// {static} / {abstract} member markers.
 // Run: npm run test:unit -- --run
 // -----------------------------------------------------------------------------------------
 
 import { describe, it, expect } from 'vitest';
-import { parseAttribute, parseMethod, isTypeName, type UmlLine } from './uml';
+import { parseAttribute, parseMethod, isTypeName, type UmlLine, drawnTokens } from './uml';
 
 // the tokens as "kind:text" without spaces, for short expectations
 const kinds = (l: UmlLine) => l.tokens.filter((t) => t.text.trim()).map((t) => `${t.kind}:${t.text}`);
@@ -90,5 +91,38 @@ describe('methods', () => {
 		for (const line of ['+ area(scale: double): double', 'draw()', '+ area(1scale): x', '+ area(scale: double', ' f( a , b ) : T ']) {
 			expect(joined(parseMethod(line))).toBe(line);
 		}
+	});
+});
+
+describe('member markers', () => {
+	const marked = (line: ReturnType<typeof parseMethod>) => ({ static: line.static, abstract: line.abstract, error: line.error });
+
+	it('reads {static} before or after the visibility, on attributes and methods', () => {
+		expect(marked(parseAttribute('{static} - count: int = 0'))).toEqual({ static: true, abstract: false, error: null });
+		expect(marked(parseAttribute('- {static} count: int'))).toEqual({ static: true, abstract: false, error: null });
+		expect(marked(parseMethod('{static} + create(): Shape'))).toEqual({ static: true, abstract: false, error: null });
+	});
+
+	it('reads {abstract} on methods; a line without markers has neither', () => {
+		expect(marked(parseMethod('+ {abstract} area(): double'))).toEqual({ static: false, abstract: true, error: null });
+		expect(marked(parseMethod('+ area(): double'))).toEqual({ static: false, abstract: false, error: null });
+	});
+
+	it('the marker is its own token, and the tokens still give back the line', () => {
+		const line = parseMethod('{abstract} + area(): double');
+		expect(line.tokens[0]).toEqual({ text: '{abstract}', kind: 'marker' });
+		expect(line.tokens.map((t) => t.text).join('')).toBe('{abstract} + area(): double');
+	});
+
+	it('the node draws the line without the markers and the space after them', () => {
+		const text = (line: string) => drawnTokens(parseMethod(line)).map((t) => t.text).join('');
+		expect(text('{static} + create(): Shape')).toBe('+ create(): Shape');
+		expect(text('+ {abstract} area(): double')).toBe('+ area(): double');
+	});
+
+	it('flags abstract attributes, static and abstract together, and unknown markers', () => {
+		expect(parseAttribute('{abstract} - count: int').error).toMatch(/only methods/);
+		expect(parseMethod('{static} {abstract} f(): void').error).toMatch(/both/);
+		expect(parseMethod('{final} + f(): void').error).toMatch(/unknown marker/);
 	});
 });

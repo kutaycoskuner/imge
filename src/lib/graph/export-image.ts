@@ -11,7 +11,8 @@
 //   JPG  the same with the theme's background colour (JPG has no transparency)
 // Always the whole graph (not only the part in view), at zoom 1 with PADDING around it; the
 // selection is cleared for a moment so no highlight is in the picture, and editing aids
-// (resize marks, link grab areas) are left out.
+// (resize marks, link grab areas) are left out; the world layer gets the class `exporting`
+// meanwhile (hidden ports stay hidden under the mouse).
 //
 // Requires: a browser (DOM, canvas). Used by: UI_GraphEditor.svelte (toolbar).
 // Details: docs/graph-saving.md#exporting-an-image
@@ -68,6 +69,7 @@ export async function graphToSvg(
 	if (!bounds || !world) return null;
 	const kept = get(selection);
 	selection.set({ nodes: [], link: null });
+	world.classList.add('exporting'); // e.g. hidden ports stay hidden under the mouse (imge.css)
 	await tick();
 	try {
 		const result = drawGraphSvg({ world, zoom: get(camera).zoom, bounds, padding: PADDING, background });
@@ -76,6 +78,7 @@ export async function graphToSvg(
 		if (error) throw new Error(`the drawing is not valid SVG (${error.textContent?.trim().slice(0, 120)})`);
 		return result;
 	} finally {
+		world.classList.remove('exporting');
 		selection.set(kept);
 	}
 }

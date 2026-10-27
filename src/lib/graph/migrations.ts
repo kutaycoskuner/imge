@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-21
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -27,11 +27,12 @@ import {
 	type GraphV4,
 	type GraphV5,
 	type GraphV6,
+	type GraphV7,
 	type NodeV6,
 	type PortV1
 } from './types';
 
-export const CURRENT_GRAPH_VERSION = 6;
+export const CURRENT_GRAPH_VERSION = 7;
 
 export class GraphFormatError extends Error {
 	constructor(message: string) {
@@ -186,6 +187,23 @@ const MIGRATIONS: Migration[] = [
 						content: { ...(node as any).content, name, color }
 					};
 				})
+			}
+		})
+	},
+	{
+		from: 6,
+		to: 7,
+		description: 'links: line solid and mark arrow (how every link looked before)',
+		migrate: (graph: GraphV6): GraphV7 => ({
+			...graph,
+			metadata: { ...graph.metadata, format: GRAPH_FORMAT, version: 7 },
+			data: {
+				...graph.data,
+				links: graph.data.links.map((link) => ({
+					...link,
+					line: (link as any).line ?? 'solid',
+					mark: (link as any).mark ?? 'arrow'
+				}))
 			}
 		})
 	}

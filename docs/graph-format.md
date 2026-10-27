@@ -2,7 +2,7 @@
 
 The JSON structure the graph editor loads and exports, its version history with a sample per version, and how to add a new version with an adapter that upgrades older files.
 
-Current version: **6**
+Current version: **7**
 
 ## Files
 
@@ -12,14 +12,14 @@ Current version: **6**
 | `src/lib/graph/migrations.ts` | `CURRENT_GRAPH_VERSION`, the adapters and `migrateGraph()`. |
 | `src/lib/graph/migrations.spec.ts` | Tests: every version sample upgrades to exactly the current sample; bad files are refused. |
 | `static/data/samples/graph-v<n>.json` | The same tiny graph (2 nodes, 1 link) saved in each format version, to compare versions side by side; also the test fixtures. |
-| `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per node type and type version (`basic-v1`, `basic-v2`, `group-v1` to `group-v3`, `uml-class-v1`), with a small header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`); test fixtures for the type templates. |
-| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data, node types; 48 nodes (one of them a circle), 51 links; the Node color node is coloured, and a violet group "Types v1" holds the node type templates and wraps them), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
+| `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per node type and type version (`basic-v1`, `basic-v2`, `group-v1` to `group-v3`, `uml-class-v1`, `uml-class-v2`), with a small header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`); test fixtures for the type templates. |
+| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data, node types; 52 nodes (one of them a circle), 55 links; the Node color node is coloured, and a violet group "Types v1" holds the node type templates and wraps them), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), one link is dashed with a hollow triangle (Link look), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
 
-## Structure (version 6)
+## Structure (version 7)
 
 ```json
 {
-    "metadata": { "format": "imge-graph", "version": 6, "direction": "left-to-right" },
+    "metadata": { "format": "imge-graph", "version": 7, "direction": "left-to-right" },
     "data": {
         "nodes": [
             {
@@ -42,6 +42,8 @@ Current version: **6**
                 "shape": "manhattan",
                 "bend": 0.5,
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": { "node": "n1", "port": "o1" },
                 "target": { "node": "n2", "port": "i1" }
@@ -71,7 +73,7 @@ Current version: **6**
         - `label`: display name (shown as a tooltip on the port)
         - `side`: optional, where the port is drawn, relative to the reading direction: `"start"` / `"end"` (the edges links enter / leave: left / right in left-to-right) or `"above"` / `"below"` (the edges across). Set by the type's template; missing = from `kind`: in → start, out → end, any → start
     - `content`: an object whose keys the node's type defines; `{}` when the type has none
-        - uml-class: `name`, `color`, and `attributes` / `methods`: lists of member lines in UML notation, stored as typed
+        - uml-class: `name`, `color`, `abstract` (type version 2: `true` draws the class name in italics; missing = `false`), and `attributes` / `methods`: lists of member lines in UML notation, stored as typed (markers such as `{static}` included, see [graph-uml.md](graph-uml.md#member-markers))
         - group (type version 2): also `children` (the ids of the nodes it holds; a node is in at most one group, groups may hold groups) and optional `width` / `height` (world units, at least 100) as its smallest size; missing = 320 × 192. The frame drawn is that rect grown to wrap the children with a 64-unit margin. A version 1 group (no `children`) holds nothing
         - basic (type version 2) and group (type version 3): also `shape`, `"square"` (the default) or `"circle"`; a node without it is a square
         - basic and group: `name` (text shown on the node or on the group's top edge) and `color` (a hex colour `"#rrggbb"`, or `null` for the theme's default; drawn as the border, with a dim version as the fill; other text is kept but drawn as the default)
@@ -90,11 +92,20 @@ Current version: **6**
         - for a backward link (input left of its output) the link goes out a short stub, across, and back in; `bend` then places the crossing segment between the two ports' heights
         - kept when the shape changes, so a link switched back to manhattan gets its corner back
         - for a link going around its nodes (see `route`), `bend` sets how far from the nodes its lane runs: `0` close, `1` far
-    - `arrow`: direction marks, relative to the link's own direction (output → input)
-        - `"forward"`: arrowhead at the input end (the default for new links)
-        - `"backward"`: arrowhead at the output end
-        - `"both"`: arrowheads at both ends
-        - `"none"`: no arrowheads
+    - `arrow`: which end(s) get the end mark (`mark`), relative to the link's own direction (output → input)
+        - `"forward"`: mark at the input end (the default for new links)
+        - `"backward"`: mark at the output end
+        - `"both"`: marks at both ends
+        - `"none"`: no marks
+    - `line` (since v7): how the line is drawn: `"solid"` (default), `"dashed"` or `"dotted"`
+    - `mark` (since v7): the shape at the end(s) `arrow` names
+        - `"arrow"`: filled arrowhead (the default; every link before v7 looked like this)
+        - `"open-arrow"`: two strokes, not filled (UML association, dependency)
+        - `"triangle"`: hollow triangle (UML inheritance, realization)
+        - `"diamond"`: hollow diamond (UML aggregation)
+        - `"filled-diamond"`: filled diamond (UML composition)
+        - one shape for every marked end: a link can't have a diamond at one end and an arrow at the other (see Known gaps)
+        - an unknown value is kept and drawn as `"arrow"`
     - `route`: `"above"` (default) or `"below"`; the side a link goes around its nodes when it closes a cycle (1 → 2 → 1: the link pointing back against the reading direction) or loops back to its own node. In top-to-bottom graphs above means left and below means right. Other links ignore it.
     - `source`: `{ node, port }`, the port it starts at: a port of kind `out` (or `any`)
     - `target`: `{ node, port }`, the port it ends at: a port of kind `in` (or `any`)
@@ -142,6 +153,17 @@ Ports that depend on the content still work: e.g. an AND gate whose number of in
 - Which kinds may link is decided in one place (`CAN_LINK`: out → in or any, in ← out or any, any ↔ anything), instead of every piece of link code assuming output → input.
 - `side` places a port relative to the reading direction, so it stays put when the graph is transposed; the default from `kind` makes basic nodes look exactly as before.
 
+### Why links have `line` and `mark` (v7)
+
+UML relations differ only in how the link is drawn: inheritance is a solid line with a hollow triangle, realization the same dashed, composition a solid line with a filled diamond at the whole ... (table in [graph-uml.md](graph-uml.md#relations)). Two ways to store that were possible:
+
+- **The relation's name** (`type: "uml-inheritance"`), with the look derived from it. Every new diagram kind (circuits, sequence diagrams, state machines) would add its own link types, and a look that no relation has (a dotted line in a mind map) would need a type of its own.
+- **The look itself** (`line`, `mark`), chosen per link. Any diagram can use any combination; the UML relations are a list of named looks in the editor (`src/lib/graph/link-relations.ts`) that the Properties panel applies in one step and reads back from a link.
+
+v7 stores the look. A link drawn by hand to match a relation *is* that relation, nothing gets out of sync, and the meaning stays a view on the look. `type` stays free for links whose behaviour differs (later: wires that carry values in a simulation, see [graph-simulation.md](graph-simulation.md)), which is a different question from how they look.
+
+`arrow` is kept as it was and now says where the mark goes, so arrow keys (D), the Esc menu override and old files work unchanged. Which end of a link is the general class or the whole depends on how it was drawn (a link always runs output → input, so in a top-to-bottom diagram the parent above its children is the source), which is why a relation is read back from `line` and `mark` with the mark at either single end.
+
 ### Why `typeVersion` is its own field
 
 `content` and the ports now depend on the type, and types will change: a UML class might get a fourth compartment. With the template version on every node, a type can upgrade its own nodes without a new graph format version. It is a separate number rather than part of the type string (`"uml-class@1"`), so code compares `type` directly and never has to split it.
@@ -165,6 +187,7 @@ The same graph (First Node → Second Node) in every version, so the differences
 | 4 | [graph-v4.json](../static/data/samples/graph-v4.json) |
 | 5 | [graph-v5.json](../static/data/samples/graph-v5.json) |
 | 6 | [graph-v6.json](../static/data/samples/graph-v6.json) |
+| 7 | [graph-v7.json](../static/data/samples/graph-v7.json) |
 
 The tests load every sample and check that it upgrades to **exactly** the newest one, so the samples double as the adapters' specification.
 
@@ -172,8 +195,8 @@ The tests load every sample and check that it upgrades to **exactly** the newest
 
 - **Loading:** the editor passes every file through `migrateGraph()`.
     - the version is read from `metadata.version`; a file with neither `format` nor `version` is version 0
-    - adapters run one after another until the file reaches the current version: `0 → 1 → 2 → 3 → 4 → 5 → 6`
-    - every adapter that ran is logged in the browser console ("graph upgraded from v0 to v6: ..."), so an upgrade never happens silently
+    - adapters run one after another until the file reaches the current version: `0 → 1 → 2 → 3 → 4 → 5 → 6 → 7`
+    - every adapter that ran is logged in the browser console ("graph upgraded from v0 to v7: ..."), so an upgrade never happens silently
     - the original object is not changed
 - **Refused files:** throw `GraphFormatError` instead of being guessed at:
     - no `data.nodes` array (not a graph file)
@@ -193,6 +216,7 @@ The tests load every sample and check that it upgrades to **exactly** the newest
 | 4 | 2026-10-16 | Links get `arrow` (`forward`, `backward`, `both`, `none`) and `route` (`above`, `below`). Cycles and self-loops are allowed; a link that closes a cycle and a self-loop go around their nodes on the `route` side, with `name` drawn in the middle of every link. | `3 → 4`: adds `arrow: "none"` and `route: "above"` to every link (values a link already carried as extra keys are kept), so old graphs look exactly as before. |
 | 5 | 2026-10-16 | The graph gets `metadata.direction` (`left-to-right`, `top-to-bottom`): ports, links, routes and reading order follow it; Transpose in the editor switches it and turns the layout. | `4 → 5`: adds `direction: "left-to-right"` (a value a file already carried is kept), so old graphs look exactly as before. |
 | 6 | 2026-10-21 | Node model for many node types: every node has `id`, `type`, `typeVersion`, `position`, `ports` and `content`. `name` and `color` move into `content`; `inputs` and `outputs` become one `ports` list whose ports have a `kind` (`in`, `out`, later `any`) and an optional `side`. See [Why nodes look like this](#why-nodes-look-like-this). | `5 → 6`: moves `name` / `color` into `content`, turns inputs into ports of kind `in` and outputs into ports of kind `out` (ids kept, so links don't change), sets `typeVersion: 1`; extra keys, and a `typeVersion` or `content` a file already carried, are kept. |
+| 7 | 2026-10-27 | Links get `line` (`solid`, `dashed`, `dotted`) and `mark` (`arrow`, `open-arrow`, `triangle`, `diamond`, `filled-diamond`); `arrow` now says at which end(s) the mark is drawn. For UML relations and any diagram that needs other line styles; see [Why links have `line` and `mark`](#why-links-have-line-and-mark-v7). | `6 → 7`: adds `line: "solid"` and `mark: "arrow"` to every link (values a link already carried are kept), so old graphs look exactly as before. Nodes don't change. |
 
 ## Adding a new version
 
@@ -214,10 +238,12 @@ Do this for every change to the file structure or to what a field means, however
 
 - Ports can't be added or removed in the editor yet; new nodes get their type's ports.
 - Ports of kind `any` and the `side` field are defined but no type uses them yet.
-- Link `type` and `name` can't be edited in the editor yet; they are kept (with `shape` and `bend`) when a link is re-routed.
+- Link `type` can't be edited in the editor yet; it is kept (with `name`, `shape`, `bend`, `line` and `mark`) when a link is re-routed.
+- One `mark` for both ends: UML lets an association have a diamond at one end and an arrow at the other, and labels at each end (roles, multiplicities `1..*`). A later version could split `mark` per end (`marks: { source, target }`) and add end labels.
 
 ## Changes
 
+- 2026-10-27 — format version 7: link `line` and `mark` (UML relations: dashed lines, hollow triangles, diamonds, open arrows); `6 → 7` adapter, sample graph-v7.json; base graph and examples stored as v7; new section "Why links have `line` and `mark`"; uml-class type version 2 (`abstract`); base graph gets Link look, UML class diagram (partly), Image export and Port look (52 nodes, 55 links), its format nodes say v7
 - 2026-10-23 — base graph and examples: every node on its type's newest version (basic 2 with `shape`, group 3), checked by `node-types.spec.ts`
 - 2026-10-23 — content `shape` (square / circle) for basic (type v2) and group (type v3); base graph gets Node shape and Examples (by category), Group / Type samples renamed; examples use circles where they fit
 - 2026-10-23 — group type version 2: content `children`; base graph and the examples' groups list their children (no format change)

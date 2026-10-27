@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-21
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -229,12 +229,46 @@ export interface GraphV6 {
 }
 
 // -----------------------------------------------------------------------------------------
+// v7 -- links get a line style and an end mark, so UML relations (and other diagrams) can be
+// drawn: dashed for realization / dependency, a hollow triangle for inheritance, diamonds for
+// aggregation / composition ...; `arrow` still says at which end(s) the mark is drawn
+// -----------------------------------------------------------------------------------------
+// how the line is drawn
+export const LINK_LINES = ['solid', 'dashed', 'dotted'] as const;
+export type LinkLine = (typeof LINK_LINES)[number];
+// the shape drawn at the end(s) `arrow` names: arrow = filled arrowhead (the look before v7),
+// open-arrow = two strokes, triangle = hollow triangle, diamond = hollow, filled-diamond
+export const LINK_MARKS = ['arrow', 'open-arrow', 'triangle', 'diamond', 'filled-diamond'] as const;
+export type LinkMark = (typeof LINK_MARKS)[number];
+
+export type PortV7 = PortV6;
+export type LinkEndV7 = LinkEndV6;
+export type NodeV7 = NodeV6;
+export type NodeContentV7 = NodeContentV6;
+export type NamedContentV7 = NamedContentV6;
+
+export interface LinkV7 extends LinkV6 {
+	line: LinkLine;
+	mark: LinkMark; // one shape for every marked end; arrow none = no mark at all
+}
+
+export interface GraphV7 {
+	metadata: {
+		format: typeof GRAPH_FORMAT;
+		version: 7;
+		direction: Direction;
+		[key: string]: unknown;
+	};
+	data: { nodes: NodeV7[]; links: LinkV7[] };
+}
+
+// -----------------------------------------------------------------------------------------
 // current version -- the app only works with these
 // -----------------------------------------------------------------------------------------
-export type Port = PortV6;
-export type GraphNode = NodeV6;
-export type NodeContent = NodeContentV6;
-export type NamedContent = NamedContentV6;
-export type LinkEnd = LinkEndV6;
-export type Link = LinkV6;
-export type Graph = GraphV6;
+export type Port = PortV7;
+export type GraphNode = NodeV7;
+export type NodeContent = NodeContentV7;
+export type NamedContent = NamedContentV7;
+export type LinkEnd = LinkEndV7;
+export type Link = LinkV7;
+export type Graph = GraphV7;

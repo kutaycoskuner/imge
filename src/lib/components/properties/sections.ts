@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-17
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -17,7 +17,7 @@
 // -----------------------------------------------------------------------------------------
 
 import type { Component } from 'svelte';
-import type { Graph, GraphNode, Link, LinkArrow } from '$lib/graph/types';
+import type { Graph, GraphNode, Link, LinkArrow, LinkLine, LinkMark } from '$lib/graph/types';
 import { isGroup, type Selection } from '$lib/graph/store';
 import { hasNamedContent } from '$lib/graph/node-types';
 import PropsGraph from './PropsGraph.svelte';
@@ -73,4 +73,20 @@ export const LINK_ARROW_LABELS: Record<LinkArrow, string> = {
 	both: '↔ both',
 	backward: '← backward',
 	none: 'none'
+};
+
+/** How the line styles read in the Look section. */
+export const LINK_LINE_LABELS: Record<LinkLine, string> = {
+	solid: '── solid',
+	dashed: '- - dashed',
+	dotted: '··· dotted'
+};
+
+/** How the end marks read in the Look section (the end is set by Arrow). */
+export const LINK_MARK_LABELS: Record<LinkMark, string> = {
+	arrow: '▶ arrow',
+	'open-arrow': '> open',
+	triangle: '▷ triangle',
+	diamond: '◇ diamond',
+	'filled-diamond': '◆ filled'
 };

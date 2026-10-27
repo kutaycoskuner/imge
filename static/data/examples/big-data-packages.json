@@ -1,7 +1,7 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 6,
+        "version": 7,
         "direction": "left-to-right"
     },
     "data": {
@@ -825,6 +825,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -840,6 +842,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -855,6 +859,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -870,6 +876,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -885,6 +893,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -900,6 +910,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -915,6 +927,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -930,6 +944,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -945,6 +961,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n5",
@@ -960,6 +978,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n5",
@@ -975,6 +995,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n6",
@@ -990,6 +1012,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n6",
@@ -1005,6 +1029,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n7",
@@ -1020,6 +1046,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n7",
@@ -1035,6 +1063,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n8",
@@ -1050,6 +1080,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n9",
@@ -1065,6 +1097,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n9",
@@ -1080,6 +1114,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n10",
@@ -1095,6 +1131,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n10",
@@ -1110,6 +1148,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n11",
@@ -1125,6 +1165,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n11",
@@ -1140,6 +1182,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n12",
@@ -1155,6 +1199,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n12",
@@ -1170,6 +1216,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n13",
@@ -1185,6 +1233,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n13",
@@ -1200,6 +1250,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n14",
@@ -1215,6 +1267,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n15",
@@ -1230,6 +1284,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n16",
@@ -1245,6 +1301,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n16",
@@ -1260,6 +1318,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n17",
@@ -1275,6 +1335,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n17",
@@ -1290,6 +1352,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n18",
@@ -1305,6 +1369,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n18",
@@ -1320,6 +1386,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n19",
@@ -1335,6 +1403,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n19",
@@ -1350,6 +1420,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n20",
@@ -1365,6 +1437,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n20",
@@ -1380,6 +1454,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n21",
@@ -1395,6 +1471,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n21",
@@ -1410,6 +1488,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n22",
@@ -1425,6 +1505,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n22",

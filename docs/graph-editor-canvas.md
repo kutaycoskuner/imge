@@ -16,8 +16,9 @@ State as of 2026-10-27.
 | Dot grid | Endless, faint background; 40-unit spacing that doubles when zoomed out; stays lined up with the nodes. Shown or hidden with the toolbar's dot grid button. |
 | Origin marker | Development only: red/green L at (0, 0) pointing toward +x and +y, Blender axis colors, fixed 40 px size. |
 | Coordinate tracker | Bottom right; whole world coordinates under the mouse. |
-| Nodes | Loaded from `static/data/test-node-graph.json` (graph format v6): title from `content.name`, ports placed by their side (in / two-way on the start edge, out on the end edge, see `portSide`); a node with a colour gets a border in it and a dim fill of it (`.node.colored` in `imge.css`). |
+| Nodes | Loaded from `static/data/test-node-graph.json` (graph format v7): title from `content.name`, ports placed by their side (in / two-way on the start edge, out on the end edge, see `portSide`); a node with a colour gets a border in it and a dim fill of it (`.node.colored` in `imge.css`). |
 | Node and link editing | Select, add, rename, move, delete, link, detach: see [graph-editing.md](graph-editing.md). |
+| Port look | The toolbar's port button (a node box whose ports show the current look) switches filled → hollow → hidden → filled; the same setting as the Esc menu's Ports choice, see [graph-editing.md](graph-editing.md#port-look). |
 | Properties panel | Docked on the right (N, toolbar button): shows and edits the selection; see [graph-properties-panel.md](graph-properties-panel.md). |
 | Export | Downloads the graph as `graph_data.json`. |
 | Assistance message | Toolbar buttons show a hint on hover; refused edits show a short message. |
@@ -36,7 +37,7 @@ State as of 2026-10-27.
 | `src/lib/components/PolkaDots.svelte` | Endless dot grid that follows the camera. |
 | `src/lib/components/OriginAxes.svelte` | Origin marker: red/green L at world (0, 0). |
 | `src/lib/components/CoordTracker.svelte` | Shows the world coordinates under the mouse. |
-| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, transpose, dot grid, snap, Properties panel, open (menu), export. The buttons are a data list (`buttons`: icon, hint, action) rendered by one loop. |
+| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, transpose, dot grid, snap, port look, Properties panel, open (menu), export, export as image. The buttons are a data list (`buttons`: icon, hint, action) rendered by one loop. |
 | `src/lib/components/properties/` | The Properties panel and its sections (see [graph-properties-panel.md](graph-properties-panel.md)). |
 | `src/lib/icons/` | One component per icon, reusable on any page; markup only, state as props (see its README). |
 | `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node`, port, selection and link styles. |
@@ -151,6 +152,7 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Changes
 
+- 2026-10-27 — toolbar button for the port look (filled → hollow → hidden), icon `icon-node-ports`
 - 2026-10-27 — the toolbar's test button is replaced by Export as image (PNG / JPG / SVG)
 - 2026-10-21 — nodes drawn from graph format v6 (content, one ports list with kind)
 - 2026-10-21 — coloured nodes drawn (border in the colour, dim fill)

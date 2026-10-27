@@ -1,12 +1,12 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-21
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
 // store.ts -- the open graph, the selection, display settings, and every create/update/
-// delete operation on nodes and links (graph format v6, see docs/graph-format.md).
+// delete operation on nodes and links (graph format v7, see docs/graph-format.md).
 //
 // Operations are pure functions (graph in, new graph out) so they are easy to test and
 // never half-apply; components call them through `graph.update(g => op(g, ...))`.
@@ -26,7 +26,8 @@
 // content (whatever the type defines; basic / group: name, color). Node types (node-types.ts)
 // give a node its ports and content: addNode / setNodeType build and reshape nodes from them.
 // Links: which port kinds may connect is decided in one place, CAN_LINK; a stored link always
-// runs from the giving end (out / any) to the taking end (in / any). Groups (type "group")
+// runs from the giving end (out / any) to the taking end (in / any), and since v7 has a line
+// style and an end mark (link-relations.ts: UML relations). Groups (type "group")
 // are frames drawn behind other nodes, with no ports; links never start or end at a group.
 //
 // Copy / paste: copyNodes() takes the selected nodes and the links between them into
@@ -45,6 +46,8 @@ import {
 	type GraphNode,
 	type Link,
 	type LinkArrow,
+	type LinkLine,
+	type LinkMark,
 	type LinkEnd,
 	type LinkRoute,
 	type LinkShape,
@@ -87,7 +90,7 @@ const NEW_NODE_OFFSET: Point = { x: -96, y: 40 };
 
 export function emptyGraph(): Graph {
 	return {
-		metadata: { format: GRAPH_FORMAT, version: 6, direction: 'left-to-right' },
+		metadata: { format: GRAPH_FORMAT, version: 7, direction: 'left-to-right' },
 		data: { nodes: [], links: [] }
 	};
 }
@@ -110,11 +113,16 @@ export interface NodeClipboard {
 export const nodeClipboard = writable<NodeClipboard | null>(null);
 
 // -----------------------------------------------------------------------------------------
-// display settings: change only how links are drawn, never the graph; kept in this browser
+// display settings: change only how links and ports are drawn, never the graph; kept in this browser
 // -----------------------------------------------------------------------------------------
+// how ports are drawn: filled squares (the default), hollow (outlined), or hidden until the
+// mouse is over their node (they still take links then)
+export const PORT_LOOKS = ['filled', 'hollow', 'hidden'] as const;
+export type PortLook = (typeof PORT_LOOKS)[number];
 export const linkShapeOverride = writable<LinkShape | null>(null); // null = each link's own
 export const linkArrowOverride = writable<LinkArrow | null>(null); // null = each link's own
 export const showChevrons = writable<boolean>(false); // direction chevrons in the middle of links
+export const portLook = writable<PortLook>('filled'); // class ports-<look> on the world layer
 export const showDotGrid = writable<boolean>(true); // the background dot grid
 export const snapToGrid = writable<boolean>(true); // dragged nodes snap to half grid squares
 export const showPropertiesPanel = writable<boolean>(true); // the docked Properties panel (N)
@@ -129,6 +137,9 @@ export function persistViewSettings(): () => void {
 			(LINK_ARROWS as readonly string[]).includes(v) ? (v as LinkArrow) : null
 		),
 		persist(showChevrons, 'imge.graphEditor.showChevrons', (v) => v === 'true'),
+		persist(portLook, 'imge.graphEditor.portLook', (v) =>
+			(PORT_LOOKS as readonly string[]).includes(v) ? (v as PortLook) : 'filled'
+		),
 		// stored only when hidden ("false"); the default (shown) leaves nothing behind
 		persistHidden(showDotGrid, 'imge.graphEditor.hideDotGrid'),
 		persistHidden(snapToGrid, 'imge.graphEditor.noSnap'),
@@ -510,6 +521,8 @@ export function addLink(
 		bend?: number;
 		arrow?: LinkArrow;
 		route?: LinkRoute;
+		line?: LinkLine;
+		mark?: LinkMark;
 	}
 ): { graph: Graph; outcome: LinkOutcome; link?: Link } {
 	const from = portOf(g, link.source);
@@ -530,6 +543,8 @@ export function addLink(
 		...(link.bend !== undefined ? { bend: link.bend } : {}),
 		arrow: link.arrow ?? 'forward',
 		route: link.route ?? 'above',
+		line: link.line ?? 'solid',
+		mark: link.mark ?? 'arrow',
 		source: { ...link.source },
 		target: { ...link.target }
 	};
@@ -560,13 +575,13 @@ export function cycleLinkShape(g: Graph, linkId: string): Graph {
 }
 
 /**
- * Sets how one link is drawn (Properties panel): any of shape, arrow and route. Returns the
+ * Sets how one link is drawn (Properties panel): any of shape, arrow, route, line and mark. Returns the
  * same graph when nothing changes, so it doesn't make an undo step.
  */
 export function setLinkStyle(
 	g: Graph,
 	linkId: string,
-	style: Partial<Pick<Link, 'shape' | 'arrow' | 'route'>>
+	style: Partial<Pick<Link, 'shape' | 'arrow' | 'route' | 'line' | 'mark'>>
 ): Graph {
 	const link = g.data.links.find((l) => l.id === linkId);
 	if (!link || Object.entries(style).every(([key, value]) => link[key as keyof Link] === value)) return g;

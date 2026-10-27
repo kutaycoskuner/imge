@@ -9,6 +9,8 @@ State as of 2026-10-23.
     - [Link rules](#link-rules)
     - [Link shapes](#link-shapes)
     - [Arrows and link names](#arrows-and-link-names)
+    - [Line styles and end marks](#line-styles-and-end-marks)
+    - [Port look](#port-look)
     - [Cycles and self-loops](#cycles-and-self-loops)
     - [Direction and transpose](#direction-and-transpose)
     - [Undo and redo](#undo-and-redo)
@@ -116,6 +118,43 @@ Every link stores its own `arrow`, relative to its direction (output → input):
 - Arrowheads end just outside the port square, so the port never covers them. Lines, arrowheads and chevrons share one solid colour (`--col-link` in `imge.css`: the text colour mixed into the background), so a line never shows through its arrowhead.
 - **Names:** a link's `name` is drawn in the middle of the link, with an outline in the background colour so it stays readable over other lines. Double-click a link (or select it and press <kbd>F2</kbd>) to edit it.
 
+### Line styles and end marks
+
+Besides shape and arrow, every link has a **line** and an end **mark** (graph format v7), set in the Properties panel's Look section:
+
+| Line | Look |
+|---|---|
+| `solid` | a solid line (new links, and every link from before v7) |
+| `dashed` | dashes (UML realization, dependency) |
+| `dotted` | round dots |
+
+| Mark | Look |
+|---|---|
+| `arrow` | ▶ filled arrowhead (new links, and every link from before v7) |
+| `open-arrow` | > two strokes (UML association, dependency) |
+| `triangle` | ▷ hollow triangle (UML inheritance, realization) |
+| `diamond` | ◇ hollow diamond (UML aggregation) |
+| `filled-diamond` | ◆ filled diamond (UML composition) |
+
+- The mark is drawn at the end(s) **arrow** names; arrow `none` draws no mark. <kbd>D</kbd> and the Esc menu's arrow override work as before and move or hide the mark.
+- Hollow marks are filled with the background colour so the line under them doesn't show through; they are larger than the arrowhead so a triangle and a diamond are easy to tell apart.
+- A spline's straight end piece grows with its mark (17 units for arrows, 24 for triangles, 34 for diamonds), so the whole mark lies on the line.
+- **Relation** in the Look section applies a UML relation's line and mark in one step (see [graph-uml.md](graph-uml.md#relations)).
+- Image export keeps line styles and marks (dashes and markers are part of the vector SVG).
+
+### Port look
+
+How the ports (the small squares links attach to) are drawn, for all nodes: the toolbar's **port button** (a node box whose ports show the current look; each click switches filled → hollow → hidden → filled), or Esc menu → Config → **Links** → **Ports**. A display setting kept in this browser (`localStorage` key `imge.graphEditor.portLook`), never written into the graph.
+
+| Look | Drawn as |
+|---|---|
+| filled | solid squares (the default) |
+| hollow | outlined squares, the same size |
+| hidden | not drawn until the mouse is over their node; then they show and take links as usual (drag from one, drop on another node's port) |
+
+- Links attach at the same place in every look.
+- Image export follows the look; with hidden ports the image has none, even for a node under the mouse. Useful for clean diagrams, e.g. UML classes whose relations meet the box edge.
+
 ### Cycles and self-loops
 
 - **Cycles are allowed:** 1 → 2 → 1, 1 → 2 → 3 → 1, several at once.
@@ -186,6 +225,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `editingNodeId` | Id of the node whose name is being edited, or `null`. `GraphNode` shows the text field for that node. |
 | `editingLinkId` | Id of the link whose name is being edited, or `null`. `GraphLinks` shows the text field in the middle of that link. |
 | `linkShapeOverride` / `linkArrowOverride` | Display-only shape / arrow for all links, or `null` for each link's own; never written into the graph. |
+| `portLook` | Display-only port look (`PORT_LOOKS`: filled, hollow, hidden), the class `ports-<look>` on the world layer; never written into the graph. |
 | `showChevrons` | Display-only: direction chevrons in the middle of links. |
 | `showDotGrid` / `snapToGrid` / `showPropertiesPanel` | Display settings: dot grid, snapping, and the Properties panel shown or hidden. |
 
@@ -220,11 +260,11 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 |---|---|---|
 | `CAN_LINK` | Which port kinds may be linked: `{ out: [in, any], in: [out, any], any: [in, out, any] }`. The only place this is decided. | constant |
 | `portOf(g, end)` | The port a link end points at; `undefined` for a missing node / port or a group's. | `Port \| undefined` |
-| `addLink(g, { source, target, type?, name?, shape?, bend?, arrow?, route?, id? })` | Connects two ports whose kinds `CAN_LINK` allows, following the [link rules](#link-rules); the ends may come in either order and the link is stored from the giving end (out / any) to the taking end (in / any); source and target may be the same node. Defaults: shape `spline`, arrow `forward`, route `above`. Gets the next id, or the given `id` when re-routing (if no other link uses it); re-routing also passes the old shape, bend, arrow and route. | `{ graph, outcome, link? }`, see below |
+| `addLink(g, { source, target, type?, name?, shape?, bend?, arrow?, route?, line?, mark?, id? })` | Connects two ports whose kinds `CAN_LINK` allows, following the [link rules](#link-rules); the ends may come in either order and the link is stored from the giving end (out / any) to the taking end (in / any); source and target may be the same node. Defaults: shape `spline`, arrow `forward`, route `above`, line `solid`, mark `arrow`. Gets the next id, or the given `id` when re-routing (if no other link uses it); re-routing also passes the old shape, bend, arrow, route, line and mark. | `{ graph, outcome, link? }`, see below |
 | `removeLink(g, linkId)` | Removes one link by its id. | `Graph` |
 | `cycleLinkShape(g, linkId)` | Next shape for one link: spline → line → manhattan → spline. | `Graph` |
 | `setAllLinkShapes(g, shape)` | Writes one shape into every link ("Apply shape to all links"); bends are kept. | `Graph` |
-| `setLinkStyle(g, linkId, style)` | Sets any of `shape`, `arrow`, `route` of one link (Properties panel); the same graph back when nothing changes, so no undo step. | `Graph` |
+| `setLinkStyle(g, linkId, style)` | Sets any of `shape`, `arrow`, `route`, `line`, `mark` of one link (Properties panel); the same graph back when nothing changes, so no undo step. | `Graph` |
 | `setLinkBend(g, linkId, bend)` | Sets a link's `bend`, clamped to 0..1 (a manhattan corner, or the lane distance of a link going around). | `Graph` |
 | `cycleLinkArrow(g, linkId)` | Next arrow for one link: forward → both → backward → none → forward. | `Graph` |
 | `setAllLinkArrows(g, arrow)` | Writes one arrow into every link ("Apply arrow to all links"). | `Graph` |
@@ -285,6 +325,8 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-27 — port look (filled, hollow, hidden until hover): toolbar button (cycles) and the Esc menu's Links section, display only; store `portLook`
+- 2026-10-27 — links get a line style (solid, dashed, dotted) and an end mark (arrow, open arrow, hollow triangle, hollow / filled diamond), graph format v7; `addLink` and `setLinkStyle` take `line` and `mark`; re-routing keeps them
 - 2026-10-23 — Ctrl+G adds the selection to the one selected group; nodes made (Shift+A, toolbar) or pasted (Ctrl+V) inside a group's frame join it
 - 2026-10-23 — keys Ctrl+G (group the selection) and Ctrl+Shift+G (ungroup); new functions `groupNodes`, `ungroupNodes`
 - 2026-10-23 — groups hold nodes: drop to join, Ctrl+drag to leave, a group drag moves its children, resize by the corner mark; new module `groups.ts`

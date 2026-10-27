@@ -80,7 +80,7 @@ The toolbar's picture button (bottom left) opens three choices; each downloads t
 | **SVG** | transparent | Full vector: shapes and text, sharp at any size; opens as editable shapes in vector editors (Inkscape, Illustrator, Figma). |
 
 - **What is in it:** nodes, links, groups (with the gap for the name in the frame), names, colours, square and circle shapes, UML compartments with highlighting and the red marks of invalid lines, arrowheads and link names, exactly as drawn, with a 40-unit margin.
-- **What is left out:** the selection highlight (the selection is cleared for a moment and restored), the dot grid, group resize marks, link grab areas, shadows, the toolbar, the panel.
+- **What is left out:** the selection highlight (the selection is cleared for a moment and restored), the dot grid, group resize marks, link grab areas, shadows, the toolbar, the panel; ports when the port look is hidden (see [graph-editing.md](graph-editing.md#port-look)).
 - **How:** `src/lib/graph/export-svg.ts` reads the drawing element by element and writes it as SVG shapes: backgrounds and borders as rectangles / ellipses (rounded corners, single-side lines), text line by line where the browser placed each character (font, colour, baseline), group frames as a border path with a gap; the link layer is SVG already and is copied with its styles. `export-image.ts` turns that SVG into a PNG (transparent) or JPG (theme background) on a canvas. Before saving, the SVG is checked to be valid.
 - **Fonts:** the text keeps its font names (Arial, monospace); a viewer without them uses a similar font.
 
@@ -95,7 +95,7 @@ The toolbar's picture button (bottom left) opens three choices; each downloads t
     - **Config:** folder, graphs in the folder, save, the graph's direction, links, new graph and download (everything described on this page).
     - **Examples:** one example graph per kind of graph (see [graph-types.md](graph-types.md)), under category headings (**Mind mapping**, **Math**, **Circuits**, **Software architecture**, **Other**; `category` per example and the order in `categories` in `index.json`), as cerulean chips with the name (the kind of graph and the description in the hover text), each with its description under it, in columns (the tab is 60% of the window wide on wide screens, so all examples fit without scrolling; one column in narrow windows). Kinds the editor can't draw yet are **sketches** (a small dashed "sketch" tag): drawn with basic nodes to show what the type is about. A click opens it without a file name (asks first if the open graph has unsaved changes); Save as in Config stores it in your folder under a name of your own. The examples are `static/data/examples/*.json`, listed in `static/data/examples/index.json`; the Feature map (the start graph) is listed first.
     - **Keybindings:** every shortcut as key caps and the mouse actions (the same as [graph-editing.md](graph-editing.md#mouse-and-keys), shorter).
-- The Config tab also has a **Graph** section with the direction (left-to-right / top-to-bottom; Transpose turns the layout, see [graph-editing.md](graph-editing.md#direction-and-transpose)), and a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) and the direction-chevrons toggle; see [graph-editing.md](graph-editing.md#link-shapes).
+- The Config tab also has a **Graph** section with the direction (left-to-right / top-to-bottom; Transpose turns the layout, see [graph-editing.md](graph-editing.md#direction-and-transpose)), and a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) the direction-chevrons toggle and the port look (filled, hollow, hidden; display only); see [graph-editing.md](graph-editing.md#link-shapes) and [Port look](graph-editing.md#port-look).
 
 ### A menu for each page
 
@@ -164,6 +164,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-10-27 — Config tab: port look in the Links section; image export leaves hidden ports out
 - 2026-10-27 — export the graph as an image from the toolbar: PNG (transparent), JPG (theme background), SVG (full vector, transparent)
 - 2026-10-23 — Examples tab: category headings (Mind mapping, Math, Circuits, Software architecture, Other); the kind moved into the chip's hover text so the tab fits without scrolling
 - 2026-10-21 — Examples tab: entries in columns (60% of the window wide), descriptions under the chips, "sketch" tag for types the editor can't draw yet; 17 examples (9 new sketches)

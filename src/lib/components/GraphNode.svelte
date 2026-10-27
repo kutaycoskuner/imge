@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-10-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -19,14 +19,16 @@
 	// Its shape (content `shape`, types that allow it): square (the default) or circle.
 	// A UML class (type "uml-class") is drawn as three stacked compartments: class name,
 	// attributes, methods; every member line is highlighted by its parts (uml.ts) and a line
-	// that doesn't follow the notation is underlined in red, its error as a tooltip.
+	// that doesn't follow the notation is underlined in red, its error as a tooltip. UML's
+	// text styles: an abstract class's name and {abstract} methods in italics, {static}
+	// members underlined (the markers themselves aren't drawn).
 	// Mouse down for select/drag/link is handled by the page through the data-* attributes;
 	// ports carry `data-port-key` ("<node id>:<port id>") so GraphLinks can find and measure them,
 	// and `data-port-kind` (in / out / any) for the link rules.
 	import { graph, editingNodeId, renameNode, isGroup, frames } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
-	import { nodeName, nodeColor, portSide, umlMembers, nodeShape } from '$lib/graph/node-types';
-	import { parseAttribute, parseMethod } from '$lib/graph/uml';
+	import { nodeName, nodeColor, portSide, umlMembers, umlAbstract, nodeShape } from '$lib/graph/node-types';
+	import { parseAttribute, parseMethod, drawnTokens } from '$lib/graph/uml';
 	import { parseHexColor, dimColor } from '$lib/graph/color';
 
 	export let node: GraphNode;
@@ -43,6 +45,7 @@
 	$: frame = group ? ($frames[node.id] ?? null) : null;
 	$: at = frame ? { x: frame.x, y: frame.y } : node.position;
 	$: uml = node.type === 'uml-class';
+	$: abstract = uml && umlAbstract(node);
 	// content shape (basic, group): a circle is drawn round (styles .shape-circle in imge.css)
 	$: circle = nodeShape(node) === 'circle';
 	// the two member compartments, as data for one template: parsed lines (tokens + error)
@@ -90,6 +93,7 @@
 	class:colored={!!color}
 	class:group
 	class:uml
+	class:abstract
 	class:shape-circle={circle}
 	data-id={node.id}
 	style="transform: translate({at.x}px, {-at.y}px);{color
@@ -132,7 +136,7 @@
 	{#each compartments as compartment (compartment.label)}
 		<ul class="uml-compartment" aria-label={compartment.label}>
 			{#each compartment.lines as line}
-				<li class="uml-line" class:invalid={!!line.error} title={line.error ?? undefined}>{#each line.tokens as token}<span class="uml-{token.kind}">{token.text}</span>{/each}</li>
+				<li class="uml-line" class:invalid={!!line.error} class:static={line.static} class:abstract={line.abstract} title={line.error ?? undefined}>{#each line.error ? line.tokens : drawnTokens(line) as token}<span class="uml-{token.kind}">{token.text}</span>{/each}</li>
 			{/each}
 		</ul>
 	{/each}
