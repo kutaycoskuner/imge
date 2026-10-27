@@ -133,6 +133,36 @@ new
     background-color: var(--col-selected);
 }
 
+/* port look (Esc menu, display only; class ports-<look> on .world): hollow = an outline
+   the same size (border inside the box, so links still meet the centre); hidden = see-through
+   until the mouse is over the node, so links can still be dragged from them (the image
+   export leaves see-through ports out) */
+.world.ports-hollow .port {
+    box-sizing: border-box;
+    background-color: var(--bg);
+    border: 1.5px solid var(--col);
+}
+
+.world.ports-hollow .port:hover {
+    background-color: var(--bg);
+    border-color: var(--col-selected);
+}
+
+.world.ports-hidden .port {
+    opacity: 0;
+    transition: opacity 0.12s;
+}
+
+.world.ports-hidden .node:hover .port {
+    opacity: 1;
+}
+
+/* while an image is made (export-image.ts): hidden ports stay out, even under the mouse */
+.world.ports-hidden.exporting .node .port {
+    opacity: 0;
+    transition: none;
+}
+
 /* keyboard key caps (Kbd.svelte, and any <kbd> on the site) */
 kbd {
     display: inline-block;
@@ -299,7 +329,7 @@ kbd {
     max-width: 28em;
     padding: 0;
     text-align: left;
-    border-radius: 3px; /* UML classes are drawn as rectangles: barely rounded */
+    border-radius: 2px; /* UML classes are drawn as rectangles: corners only just softened */
 }
 
 .node.uml .node-title,
@@ -328,7 +358,17 @@ kbd {
     line-height: 1.5;
 }
 
+/* UML text styles: abstract class names and {abstract} methods in italics, {static}
+   members underlined (on the canvas; the Properties field shows the markers instead) */
+.node.uml.abstract .node-title { font-style: italic; }
+.uml-line.abstract { font-style: italic; }
+.uml-line.static {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
 /* syntax highlighting of member lines */
+.uml-marker { color: #8e4ec6; font-style: italic; }
 .uml-visibility { color: #d6409f; font-weight: 600; }
 .uml-modifier { color: #8e4ec6; }
 .uml-type { color: #2a9fd6; }
@@ -392,13 +432,51 @@ kbd {
     cursor: pointer;
 }
 
-/* arrowheads (SVG markers on .link paths) and mid-link direction chevrons */
+/* line styles (link.line); round caps turn the zero-length dashes into dots */
+.link.line-dashed {
+    stroke-dasharray: 9 5;
+}
+
+.link.line-dotted {
+    stroke-dasharray: 0 5;
+    stroke-linecap: round;
+}
+
+/* end marks (SVG markers on .link paths, link.mark) and mid-link direction chevrons:
+   filled in the line colour, hollow with the background inside (the line under it
+   doesn't show through), open = strokes only */
 .link-arrow {
     fill: var(--col-link);
+    stroke: var(--col-link);
+    stroke-width: 0;
+    stroke-linejoin: miter;
+}
+
+.link-arrow.mark-hollow,
+.link-arrow.mark-open {
+    stroke-width: 1.4;
+}
+
+.link-arrow.mark-hollow {
+    fill: var(--bg);
+}
+
+.link-arrow.mark-open {
+    fill: none;
+    stroke-linecap: round;
 }
 
 .link-arrow.selected {
     fill: var(--col-selected);
+    stroke: var(--col-selected);
+}
+
+.link-arrow.mark-hollow.selected {
+    fill: var(--bg);
+}
+
+.link-arrow.mark-open.selected {
+    fill: none;
 }
 
 .link-chevrons path {

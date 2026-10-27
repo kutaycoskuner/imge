@@ -1,7 +1,7 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 6,
+        "version": 7,
         "direction": "left-to-right"
     },
     "data": {
@@ -169,6 +169,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -184,6 +186,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -199,6 +203,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -214,6 +220,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -229,6 +237,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -244,6 +254,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",

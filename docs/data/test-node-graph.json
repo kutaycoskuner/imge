@@ -1,7 +1,7 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 6,
+        "version": 7,
         "direction": "left-to-right"
     },
     "data": {
@@ -253,7 +253,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Graph format v6",
+                    "name": "Graph format v7",
                     "color": null,
                     "shape": "square"
                 }
@@ -281,7 +281,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Format adapters (v0 to v6)",
+                    "name": "Format adapters (v0 to v7)",
                     "color": null,
                     "shape": "square"
                 }
@@ -1261,7 +1261,7 @@
             {
                 "id": "n46",
                 "type": "uml-class",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": -300,
                     "y": -620
@@ -1283,10 +1283,12 @@
                 "content": {
                     "name": "UmlClass",
                     "color": null,
+                    "abstract": false,
                     "attributes": [
                         "- name: String",
                         "- attributes: List<String>",
-                        "- methods: List<String>"
+                        "- methods: List<String>",
+                        "{static} + VERSION: int = 2"
                     ],
                     "methods": [
                         "+ parseAttribute(line: String): UmlLine",
@@ -1349,6 +1351,118 @@
                     "color": null,
                     "shape": "square"
                 }
+            },
+            {
+                "id": "n49",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 300,
+                    "y": -380
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Link look (line, mark, UML)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n50",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": 900
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Image export (PNG, JPG, SVG)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n51",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": -380
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "UML class diagram (partly)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n52",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": 780
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Port look (filled, hollow, hidden)",
+                    "color": null,
+                    "shape": "square"
+                }
             }
         ],
         "links": [
@@ -1357,6 +1471,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -1372,6 +1488,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -1387,6 +1505,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -1402,6 +1522,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -1417,6 +1539,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -1432,6 +1556,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -1447,6 +1573,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -1462,6 +1590,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n9",
@@ -1477,6 +1607,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n10",
@@ -1493,6 +1625,8 @@
                 "name": "read / write",
                 "shape": "manhattan",
                 "arrow": "both",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n9",
@@ -1508,6 +1642,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n12",
@@ -1523,6 +1659,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n12",
@@ -1538,6 +1676,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n13",
@@ -1553,6 +1693,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n13",
@@ -1568,6 +1710,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n13",
@@ -1583,6 +1727,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n13",
@@ -1598,6 +1744,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n14",
@@ -1613,6 +1761,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n14",
@@ -1628,6 +1778,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n14",
@@ -1643,6 +1795,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n14",
@@ -1658,6 +1812,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n14",
@@ -1673,6 +1829,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n22",
@@ -1688,6 +1846,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n22",
@@ -1703,6 +1863,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n22",
@@ -1718,6 +1880,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n27",
@@ -1733,6 +1897,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n27",
@@ -1748,6 +1914,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n27",
@@ -1763,6 +1931,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n28",
@@ -1778,6 +1948,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n28",
@@ -1793,6 +1965,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n28",
@@ -1808,6 +1982,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n15",
@@ -1823,6 +1999,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n20",
@@ -1838,6 +2016,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n22",
@@ -1853,6 +2033,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n31",
@@ -1869,6 +2051,8 @@
                 "name": "specify",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n11",
@@ -1885,6 +2069,8 @@
                 "name": "after each change",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n32",
@@ -1900,6 +2086,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n6",
@@ -1915,6 +2103,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n16",
@@ -1930,6 +2120,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n16",
@@ -1945,6 +2137,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n12",
@@ -1960,6 +2154,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n16",
@@ -1975,6 +2171,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n12",
@@ -1990,6 +2188,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n40",
@@ -2005,6 +2205,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n40",
@@ -2020,6 +2222,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n41",
@@ -2035,6 +2239,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n42",
@@ -2050,6 +2256,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n18",
@@ -2065,6 +2273,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n40",
@@ -2080,6 +2290,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n46",
@@ -2095,6 +2307,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n44",
@@ -2110,6 +2324,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n27",
@@ -2117,6 +2333,74 @@
                 },
                 "target": {
                     "node": "n48",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l52",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "dashed",
+                "mark": "triangle",
+                "route": "above",
+                "source": {
+                    "node": "n26",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n49",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l53",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n29",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n50",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l54",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n49",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n51",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l55",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n30",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n52",
                     "port": "i1"
                 }
             }

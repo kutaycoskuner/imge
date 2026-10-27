@@ -1,7 +1,7 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 6,
+        "version": 7,
         "direction": "left-to-right"
     },
     "data": {
@@ -175,6 +175,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -190,6 +192,8 @@
                 "type": "basic",
                 "shape": "spline",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -206,6 +210,8 @@
                 "name": "e.g.",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -222,6 +228,8 @@
                 "name": "e.g.",
                 "shape": "spline",
                 "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -237,6 +245,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n5",
