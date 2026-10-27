@@ -235,8 +235,8 @@
                 "name": "3. user row",
                 "shape": "spline",
                 "arrow": "backward",
-                "line": "solid",
-                "mark": "arrow",
+                "line": "dashed",
+                "mark": "open-arrow",
                 "route": "above",
                 "source": {
                     "node": "n8",
@@ -253,8 +253,8 @@
                 "name": "4. 200 OK + token",
                 "shape": "spline",
                 "arrow": "backward",
-                "line": "solid",
-                "mark": "arrow",
+                "line": "dashed",
+                "mark": "open-arrow",
                 "route": "above",
                 "source": {
                     "node": "n7",

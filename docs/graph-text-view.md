@@ -31,6 +31,7 @@ State as of 2026-10-27 (graph format v7). Experimental: the layout is simple and
 - **Select:** click a box or a line to select that node or link (<kbd>Shift</kbd>+click adds nodes); the Properties panel shows it, and the selection is drawn in the selection colour.
 - **Keys that act on the canvas itself** do nothing in the text view: zoom (<kbd>+</kbd> / <kbd>-</kbd>), fit (<kbd>Home</kbd>), add at the mouse (<kbd>Shift+A</kbd>), rename on the canvas (<kbd>F2</kbd>).
 - **Copy text** puts the plain characters on the clipboard; **Download .txt** saves them, named after the graph's file. The bar shows the size in characters.
+- **Image export** (the toolbar's picture button) exports the text while the text view is on: PNG, JPG or SVG of the characters as the view shows them, with colours, italics and underlines (see [graph-saving.md](graph-saving.md#exporting-an-image)).
 
 ## What it draws
 
@@ -67,6 +68,7 @@ The view (`src/lib/components/GraphTextView.svelte`) draws the grid in a `<pre>`
 | File | Role |
 |---|---|
 | `src/lib/graph/ascii.ts` | `graphToAscii`, `asciiText` (plain text), `wrap`, `undrawnLinks`. Tests in `ascii.spec.ts`. |
+| `src/lib/graph/export-svg.ts` (`drawTextViewSvg`), `export-image.ts` | Image export of the text view: each run of characters as SVG text on its column. |
 | `src/lib/components/GraphTextView.svelte` | The view: bar (size, Copy text, Download .txt, Back to canvas), the grid, click to select. |
 | `src/lib/graph/store.ts` | `viewMode` (`canvas` / `text`). |
 | `src/lib/components/UI_GraphEditor.svelte`, `src/lib/icons/icon-terminal.svelte` | The toolbar's view button. |
@@ -80,4 +82,5 @@ The view (`src/lib/components/GraphTextView.svelte`) draws the grid in a `<pre>`
 
 ## Changes
 
+- 2026-10-27 — image export (PNG / JPG / SVG) follows the text view: the characters with their styles
 - 2026-10-27 — first version: text view with boxes, UML compartments and styles, groups, routed links with line styles and marks, names; click to select; Copy text, Download .txt; toolbar view button

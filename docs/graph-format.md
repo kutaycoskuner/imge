@@ -243,6 +243,7 @@ Do this for every change to the file structure or to what a field means, however
 
 ## Changes
 
+- 2026-10-27 — base graph: the UmlClass constant reads `{static} + VERSION: int = 2 {readOnly}` (UML property string); no format change: member lines are text
 - 2026-10-27 — base graph gets Text view (experimental) (53 nodes, 56 links); no format change
 - 2026-10-27 — format version 7: link `line` and `mark` (UML relations: dashed lines, hollow triangles, diamonds, open arrows); `6 → 7` adapter, sample graph-v7.json; base graph and examples stored as v7; new section "Why links have `line` and `mark`"; uml-class type version 2 (`abstract`); base graph gets Link look, UML class diagram (partly), Image export and Port look (52 nodes, 55 links), its format nodes say v7
 - 2026-10-23 — base graph and examples: every node on its type's newest version (basic 2 with `shape`, group 3), checked by `node-types.spec.ts`

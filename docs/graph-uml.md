@@ -8,6 +8,7 @@ State as of 2026-10-27 (graph format v7, node type `uml-class` version 2).
 - [Using it](#using-it)
 - [Notation](#notation)
 - [Member markers](#member-markers)
+- [Property strings](#property-strings)
 - [Relations](#relations)
 - [Highlighting and format check](#highlighting-and-format-check)
 - [In the file](#in-the-file)
@@ -24,6 +25,7 @@ State as of 2026-10-27 (graph format v7, node type `uml-class` version 2).
 | Class box: name, attributes, methods in three compartments | yes |
 | Member notation: visibility `+ - # ~`, types, defaults, parameters, derived `/` | yes, checked while typing |
 | Static members (underlined), abstract methods and classes (italics) | yes |
+| Property strings: `{readOnly}` (Java `final`), `{ordered}`, `{unique}`, `{id}`, `{redefines …}`; methods `{query}` | yes, checked, drawn as text |
 | Relations: association, inheritance, realization, dependency, aggregation, composition | yes, with their line and mark |
 | Different marks at the two ends of one link (diamond at the whole and arrow at the part) | no: one mark shape per link |
 | Multiplicities and roles at the link ends (`1`, `0..*`, `owner`) | no: a link has one name, in its middle |
@@ -51,14 +53,15 @@ One member per line, as in UML class diagrams:
 
 | Member | Form | Examples |
 |---|---|---|
-| Attribute | `[markers] [visibility] [/] name [: Type] [= default]` | `- count: int = 0`, `# name: String`, `+ /area: double`, `id`, `{static} - count: int = 0` |
-| Method | `[markers] [visibility] name([parameters]) [: ReturnType]` | `+ area(): double`, `- resize(by: double): void`, `+ Square(side: double)`, `+ {abstract} area(): double` |
+| Attribute | `[markers] [visibility] [/] name [: Type] [= default] [{properties}]` | `- count: int = 0`, `# name: String`, `+ /area: double`, `id`, `{static} - count: int = 0`, `- radius: double {readOnly}` |
+| Method | `[markers] [visibility] name([parameters]) [: ReturnType] [{properties}]` | `+ area(): double`, `- resize(by: double): void`, `+ Square(side: double)`, `+ {abstract} area(): double`, `+ size(): int {query}` |
 | Parameter | `[in \| out \| inout] name [: Type] [= default]` | `scale: double`, `unit: String = "cm"`, `in from: List<int>` |
 
 - **Visibility:** `+` public, `-` private, `#` protected, `~` package; optional.
 - **`/`** before an attribute's name: derived (computed from others).
 - **Types:** a name with optional dots, generics, arrays and a trailing `?`: `int`, `java.util.Date`, `List<String>`, `Map<String, List<int>>`, `int[]`, `Date?`. Optional for attributes and parameters; a method without a return type is fine (e.g. a constructor).
 - **Markers:** `{static}` and `{abstract}`, see below.
+- **Property strings:** `{readOnly}` and others at the end of a line, see [Property strings](#property-strings).
 
 ## Member markers
 
@@ -74,6 +77,30 @@ UML tells static and abstract members apart by how they are drawn, not by a word
 - Checked: `{abstract}` on an attribute ("only methods (and classes) can be {abstract}"), a method both `{static}` and `{abstract}`, and unknown markers such as `{final}` (they are stored, drawn as typed and underlined in red).
 - An abstract **class** isn't a member: it is the **Abstract class** checkbox (content `abstract`), drawn as the class name in italics.
 - Visibility already has its own marks: `+` public, `-` private, `#` protected, `~` package.
+
+## Property strings
+
+UML writes some facts about a member as a **property string** in braces at the **end** of its line. Unlike the markers, it is **drawn as text** on the node:
+
+| Property | On | Means | Example |
+|---|---|---|---|
+| `{readOnly}` | attributes | can't change after it is set (Java `final`) | `- radius: double {readOnly}` |
+| `{ordered}` / `{unordered}` | attributes, methods | a many-valued member keeps an order / doesn't | `+ items: Item[] {ordered}` |
+| `{unique}` / `{nonunique}` | attributes, methods | no value twice / values may repeat | `- tags: String[] {unique}` |
+| `{seq}` / `{sequence}` | attributes | ordered and may repeat | `- path: Point[] {seq}` |
+| `{id}` | attributes | part of what identifies the object | `- isbn: String {id}` |
+| `{union}`, `{composite}` | attributes | derived union; owned by composition | |
+| `{redefines x}`, `{subsets x}` | attributes (`redefines` also methods) | redefines / is a subset of the member `x` of a parent class | `- wheels: Wheel[] {redefines parts}` |
+| `{query}` | methods | doesn't change the object (Java: a getter) | `+ getRadius(): double {query}` |
+
+- **A list** is comma-separated: `+ ids: int[] {readOnly, ordered}`.
+- **With markers:** `{static} - PI: double = 3.14 {readOnly}` is a `static final` constant: drawn underlined *and* with `{readOnly}` at the end.
+- **At the start** like a marker (`{readOnly} - x: int`) is accepted too; the node draws it at the end, where UML puts it.
+- **Checked:** `{readOnly}` on a method ("only attributes can be {readOnly}"), a property string that isn't closed (`- x: int {readOnly`), unknown words (`{final}`), and `{static}` / `{abstract}` at the end (they go at the start). The line is kept and drawn as typed, underlined in red.
+- **A default value in braces** (`- v: int[] = {1, 2}`) stays a default: a property string holds only words.
+- Lists of allowed words: `ATTRIBUTE_PROPERTIES` and `METHOD_PROPERTIES` in `src/lib/graph/uml.ts`.
+
+**Java to UML, for class diagrams of Java code:** `static` → `{static}` (underlined), `final` field → `{readOnly}`, `static final` → both, `abstract` → `{abstract}` (italics) / Abstract class, constructor → a method without return type (`+ Kugel(radius: double)`), `String[] args` → `args: String[]`.
 
 ## Relations
 
@@ -102,6 +129,7 @@ A relation between classes is a link with a UML look. Links have a **line** styl
 | visibility (`+ - # ~`) | pink, bold |
 | `/` derived, `in` / `out` / `inout` | violet |
 | `{static}`, `{abstract}` (Properties field; the node draws the style) | violet, italic |
+| property string words (`readOnly`, `query` ...) | violet |
 | type | cerulean |
 | default value | green |
 | parameter name | italic |
@@ -119,7 +147,10 @@ A line that doesn't follow the notation is **kept** (nothing typed is ever refus
 | `+ area(1scale)` | parameter "1scale" should be "name: Type" |
 | `{abstract} - count: int` | only methods (and classes) can be {abstract} |
 | `{static} {abstract} f(): void` | a method can't be both {static} and {abstract} |
-| `{final} + f(): void` | unknown marker "{final}": write {static} or {abstract} |
+| `{final} + f(): void` | unknown marker "{final}": write {static} or {abstract} (a property string such as {readOnly} goes at the end) |
+| `+ area(): double {readOnly}` | only attributes can be {readOnly} |
+| `- x: int {readOnly` | the property string isn't closed: '}' is missing |
+| `- x: int {final}` | unknown property "{final}": e.g. {readOnly}, {ordered}, {unique} |
 
 ## In the file
 
@@ -158,7 +189,7 @@ A relation is a link with its look (graph format v7):
 
 | File | Role |
 |---|---|
-| `src/lib/graph/uml.ts` | `parseAttribute`, `parseMethod`: tokens for highlighting, the format check's message and the `static` / `abstract` markers; `drawnTokens` (a line without its markers, for the node); `isTypeName`, `VISIBILITY`, `UML_MARKERS`. Tests in `uml.spec.ts`. |
+| `src/lib/graph/uml.ts` | `parseAttribute`, `parseMethod`: tokens for highlighting, the format check's message, the `static` / `abstract` markers and the `properties`; `drawnTokens` (a line as the node draws it: without its markers, property strings at the end); `isTypeName`, `VISIBILITY`, `UML_MARKERS`, `ATTRIBUTE_PROPERTIES`, `METHOD_PROPERTIES`. Tests in `uml.spec.ts`. |
 | `src/lib/graph/node-types.ts` | The `uml-class` type: template (ports, content), label; `umlMembers(node, key)`, `umlAbstract(node)`. |
 | `src/lib/graph/link-relations.ts` | `UML_RELATIONS` (the relations as looks), `relationOf(link)`, `relationStyle(relation, link)`. Tests in `link-relations.spec.ts`. |
 | `src/lib/graph/store.ts` | `setNodeContent(g, nodeId, patch)`: sets content keys (here `abstract`, `attributes`, `methods`); `setLinkStyle` sets a link's `line`, `mark`, `arrow`. |
@@ -181,6 +212,9 @@ What exists is the **class box** (name, attributes and methods in compartments, 
 | Multiplicities and roles at the link ends (`1`, `0..*`, `owner`) | missing: a link has one name, in its middle |
 | Relations attaching anywhere on a class box | missing: a class has one input and one output in fixed places, so relations always leave one side and enter the other |
 | Interfaces and enums (`«interface»` above the name, enum values) | partly: `«interface»` can be written in the name (it wraps onto its own line); no stereotype field, no enum compartment |
+| Property strings (`{readOnly}`, `{query}` ...) | done (2026-10-27) |
+| Multiplicity in types (`args: String[*]`, `items: Item[0..5]`) | partly: `String[]` is accepted (fine for Java), `[*]` / `[0..5]` not yet |
+| Stereotypes on members (`+ «create» Kugel(radius: double)`) | missing (constructors without a return type work) |
 | Packages around classes | partly: groups hold classes, wrap and carry them and can be resized; no package look (tab) yet |
 | Notes attached to classes | missing (the Note node type is planned) |
 | Checks beyond the notation (duplicate member names, unknown types) | missing |
@@ -190,7 +224,7 @@ What exists is the **class box** (name, attributes and methods in compartments, 
 1. ~~**Relation kinds**~~ — done: graph format v7 gives links `line` and `mark`, the relations are named looks ([Relations](#relations)). Chosen over a relation `type` so any diagram can use the looks; see [graph-format.md](graph-format.md#why-links-have-line-and-mark-v7).
 2. **Link ends:** a mark per end (`marks: { source, target }`, a new format version) and multiplicity and role labels at each end of an association.
 3. **Attach anywhere:** relations connect to the nearest side of a class box instead of fixed input / output ports. To decide then: ports on all four sides (the v6 port `side` exists for this), or borderless anchors just for UML.
-4. **Stereotypes:** ~~member markers and abstract classes~~ (done); `«interface»` / `«enum»` as a field above the name (in `content`) and an enum values compartment.
+4. **Stereotypes:** ~~member markers and abstract classes~~ (done), ~~property strings~~ (done); `«interface»` / `«enum»` as a field above the name (in `content`) and an enum values compartment; `«create»` on constructors; multiplicities in types (`[*]`, `[0..5]`).
 5. **Packages:** the UML package look (a tab with the name) for groups that hold classes; holding, wrapping, moving and resizing already work.
 6. Notes (the Note node type) and the further checks.
 
@@ -198,6 +232,7 @@ With 1–3 done, class diagrams can be called functional. Other UML diagrams (se
 
 ## Changes
 
+- 2026-10-27 — property strings at the end of member lines (`{readOnly}`, `{ordered}`, `{unique}`, `{id}`, `{redefines …}`, methods `{query}`), drawn as text, checked; Java to UML notes; the Shapes example and the feature map's UmlClass use `{readOnly}`; roadmap: multiplicity in types and «create» noted
 - 2026-10-27 — section "Is it full UML?" (no: class diagrams partly, table of what works); class corners 2 px; the feature map shows the state
 - 2026-10-27 — relations: links get line styles and end marks (graph format v7), the Relation dropdown with six UML relations; member markers `{static}` (underlined) and `{abstract}` (italic, methods) with checks; Abstract class checkbox (type version 2, content `abstract`); the Shapes example shows all of it; roadmap steps 1 and the member half of 4 done
 - 2026-10-21 — roadmap to a functional class diagram (relation kinds, end labels, attach anywhere, stereotypes, packages), planned for later

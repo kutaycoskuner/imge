@@ -9,7 +9,9 @@
 //   SVG  full vector (shapes and text, export-svg.ts), transparent background
 //   PNG  that drawing as a picture at PNG_SCALE times the size, transparent background
 //   JPG  the same with the theme's background colour (JPG has no transparency)
-// Always the whole graph (not only the part in view), at zoom 1 with PADDING around it; the
+// In the text view (viewMode "text") the image is the text instead: the characters as the view
+// shows them (font, colours, styles; drawTextViewSvg), whole, with PADDING around them.
+// Otherwise always the whole graph (not only the part in view), at zoom 1 with PADDING around it; the
 // selection is cleared for a moment so no highlight is in the picture, and editing aids
 // (resize marks, link grab areas) are left out; the world layer gets the class `exporting`
 // meanwhile (hidden ports stay hidden under the mouse).
@@ -20,10 +22,10 @@
 
 import { get } from 'svelte/store';
 import { tick } from 'svelte';
-import { graph, selection, frames, nodeSizes } from './store';
+import { graph, selection, frames, nodeSizes, viewMode } from './store';
 import { camera } from '$lib/camera';
 import { workspace } from './file-access';
-import { drawGraphSvg } from './export-svg';
+import { drawGraphSvg, drawTextViewSvg } from './export-svg';
 
 export type ImageFormat = 'svg' | 'png' | 'jpg';
 
@@ -58,8 +60,9 @@ function graphBounds(): { minX: number; maxX: number; minY: number; maxY: number
 }
 
 /**
- * The graph as a vector SVG (text), transparent unless `background` is given; null when the
- * graph is empty or not drawn. Clears the selection while it reads the drawing.
+ * The graph as a vector SVG (text), transparent unless `background` is given; in the text
+ * view, the text as the view shows it. Null when the graph is empty or not drawn. Clears the
+ * selection while it reads the drawing.
  */
 export async function graphToSvg(
 	background: string | null = null
@@ -67,12 +70,17 @@ export async function graphToSvg(
 	const bounds = graphBounds();
 	const world = document.querySelector<HTMLElement>('.world');
 	if (!bounds || !world) return null;
+	const textView = get(viewMode) === 'text';
 	const kept = get(selection);
 	selection.set({ nodes: [], link: null });
 	world.classList.add('exporting'); // e.g. hidden ports stay hidden under the mouse (imge.css)
 	await tick();
 	try {
-		const result = drawGraphSvg({ world, zoom: get(camera).zoom, bounds, padding: PADDING, background });
+		const pre = textView ? document.querySelector<HTMLElement>('.text-view pre.ascii') : null;
+		if (textView && !pre) return null;
+		const result = pre
+			? drawTextViewSvg(pre, PADDING, background)
+			: drawGraphSvg({ world, zoom: get(camera).zoom, bounds, padding: PADDING, background });
 		// a broken SVG would be refused by every viewer: say so instead of saving it
 		const error = new DOMParser().parseFromString(result.svg, 'image/svg+xml').querySelector('parsererror');
 		if (error) throw new Error(`the drawing is not valid SVG (${error.textContent?.trim().slice(0, 120)})`);

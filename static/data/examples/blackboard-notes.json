@@ -210,7 +210,7 @@
                 "name": "e.g.",
                 "shape": "spline",
                 "arrow": "forward",
-                "line": "solid",
+                "line": "dotted",
                 "mark": "arrow",
                 "route": "above",
                 "source": {
@@ -228,7 +228,7 @@
                 "name": "e.g.",
                 "shape": "spline",
                 "arrow": "forward",
-                "line": "solid",
+                "line": "dotted",
                 "mark": "arrow",
                 "route": "above",
                 "source": {

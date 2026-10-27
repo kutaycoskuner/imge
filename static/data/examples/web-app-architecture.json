@@ -338,8 +338,8 @@
                 "name": "enqueue",
                 "shape": "manhattan",
                 "arrow": "forward",
-                "line": "solid",
-                "mark": "arrow",
+                "line": "dashed",
+                "mark": "open-arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -355,8 +355,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
-                "line": "solid",
-                "mark": "arrow",
+                "line": "dashed",
+                "mark": "open-arrow",
                 "route": "above",
                 "source": {
                     "node": "n6",
@@ -372,8 +372,8 @@
                 "type": "basic",
                 "shape": "manhattan",
                 "arrow": "forward",
-                "line": "solid",
-                "mark": "arrow",
+                "line": "dashed",
+                "mark": "open-arrow",
                 "route": "above",
                 "source": {
                     "node": "n7",

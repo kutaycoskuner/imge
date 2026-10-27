@@ -80,6 +80,7 @@ The toolbar's picture button (bottom left) opens three choices; each downloads t
 | **SVG** | transparent | Full vector: shapes and text, sharp at any size; opens as editable shapes in vector editors (Inkscape, Illustrator, Figma). |
 
 - **What is in it:** nodes, links, groups (with the gap for the name in the frame), names, colours, square and circle shapes, UML compartments with highlighting and the red marks of invalid lines, arrowheads and link names, exactly as drawn, with a 40-unit margin.
+- **In the text view** ([graph-text-view.md](graph-text-view.md)) the image is the text as the view shows it: the characters on their columns in the view's font, with its colours, bold, italics and underlines (`drawTextViewSvg`); PNG / JPG / SVG as above, with a 40 px margin. The SVG keeps the text as text, so it needs a monospace font with box-drawing characters where it is opened (the view's font list: Cascadia Mono, Consolas, DejaVu Sans Mono, Menlo); PNG and JPG are pictures and look the same everywhere.
 - **What is left out:** the selection highlight (the selection is cleared for a moment and restored), the dot grid, group resize marks, link grab areas, shadows, the toolbar, the panel; ports when the port look is hidden (see [graph-editing.md](graph-editing.md#port-look)).
 - **How:** `src/lib/graph/export-svg.ts` reads the drawing element by element and writes it as SVG shapes: backgrounds and borders as rectangles / ellipses (rounded corners, single-side lines), text line by line where the browser placed each character (font, colour, baseline), group frames as a border path with a gap; the link layer is SVG already and is copied with its styles. `export-image.ts` turns that SVG into a PNG (transparent) or JPG (theme background) on a canvas. Before saving, the SVG is checked to be valid.
 - **Fonts:** the text keeps its font names (Arial, monospace); a viewer without them uses a similar font.
@@ -164,6 +165,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-10-27 — image export in the text view: the text as the view shows it (drawTextViewSvg)
 - 2026-10-27 — Config tab: port look in the Links section; image export leaves hidden ports out
 - 2026-10-27 — export the graph as an image from the toolbar: PNG (transparent), JPG (theme background), SVG (full vector, transparent)
 - 2026-10-23 — Examples tab: category headings (Mind mapping, Math, Circuits, Software architecture, Other); the kind moved into the chip's hover text so the tab fits without scrolling

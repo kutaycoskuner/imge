@@ -101,7 +101,7 @@ UML sequence diagrams: participants (objects, services) side by side as vertical
 
 - **Status:** not yet
 - **Missing:** a lifeline node type (a header with a long vertical line), messages that attach anywhere along a lifeline and keep their order in time (not port to port), return messages (dashed), activation bars, optional fragments (loop / alt boxes, possibly built on groups).
-- **Example (sketch):** Login sequence (`sequence-login.json`): participants as coloured columns, messages numbered in time order, replies as backward arrows
+- **Example (sketch):** Login sequence (`sequence-login.json`): participants as coloured columns, messages numbered in time order, replies as dashed lines with open arrows (UML)
 
 ### Loose architecture / process map
 
@@ -184,6 +184,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 
 ## Changes
 
+- 2026-10-27 — examples use the link looks where their kind of diagram has a convention: sequence replies dashed with open arrows, rework loops dashed, asynchronous work dashed, control / status signals dashed, a meter probe and example links dotted
 - 2026-10-27 — link line styles and end marks (graph format v7) and UML relations; UML static / abstract members and abstract classes; the UML row's missing list updated
 - 2026-10-23 — node shapes started (square, circle): lattice, tree and set examples use circles
 - 2026-10-23 — groups hold, wrap and move their nodes and can be resized

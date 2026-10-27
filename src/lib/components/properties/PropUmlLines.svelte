@@ -32,7 +32,7 @@
 	$: if (!focused) draft = value.join('\n');
 
 	// parsed per line; an empty line is just empty (dropped when saving)
-	$: lines = draft.split('\n').map((line) => (line.trim() ? parse(line) : { tokens: [{ text: line, kind: 'text' as const }], error: null, static: false, abstract: false }));
+	$: lines = draft.split('\n').map((line) => (line.trim() ? parse(line) : { tokens: [{ text: line, kind: 'text' as const }], error: null, static: false, abstract: false, properties: [] }));
 	$: problems = lines.map((l, i) => ({ line: i + 1, error: l.error })).filter((p) => p.error);
 	$: filled = lines.filter((l) => l.tokens.some((t) => t.text.trim())).length;
 	$: rows = Math.max(3, lines.length + 1);

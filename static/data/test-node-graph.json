@@ -1288,7 +1288,7 @@
                         "- name: String",
                         "- attributes: List<String>",
                         "- methods: List<String>",
-                        "{static} + VERSION: int = 2"
+                        "{static} + VERSION: int = 2 {readOnly}"
                     ],
                     "methods": [
                         "+ parseAttribute(line: String): UmlLine",

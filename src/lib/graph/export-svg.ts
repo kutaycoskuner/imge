@@ -11,6 +11,8 @@
 //
 // It reads what the browser drew, element by element, in drawing order:
 //   - the link layer is SVG already: copied, with its computed styles written as attributes
+// drawTextViewSvg does the same for the text view (experimental): the characters on their
+// columns in the view's font and styles.
 //   - every other element: its background and borders (rounded corners, circles via
 //     border-radius 50%, single sides such as the UML compartment lines), its text placed
 //     line by line where the browser put each character (font, colour, weight; the baseline
@@ -308,5 +310,74 @@ export function drawGraphSvg(o: DrawOptions): { svg: string; width: number; heig
 	const svg =
 		`<svg xmlns="${SVG_NS}" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
 		`${background}<g transform="${shift}">${out.join('')}</g></svg>`;
+	return { svg, width, height };
+}
+
+/**
+ * The text view (GraphTextView's `<pre>`) as an SVG: every run of characters as `<text>` on
+ * its own character column, in the view's font, colours, weights and italics; underlines
+ * (straight or wavy) as lines. Columns stay aligned even where a font draws a glyph wider
+ * (runs get their exact width with textLength, one-cell glyphs are centred in their cell).
+ *
+ * Args:
+ *     pre: the text view's `<pre class="ascii">`, its children runs (`<span>`) and newlines.
+ *     padding: space around the text, px.
+ *     background: a CSS colour to fill behind it, or null for transparent.
+ */
+export function drawTextViewSvg(pre: HTMLElement, padding: number, background: string | null): { svg: string; width: number; height: number } {
+	const cs = getComputedStyle(pre);
+	const size = parseFloat(cs.fontSize) || 13;
+	const lineHeight = parseFloat(cs.lineHeight) || size * 1.17;
+	const font = `${size}px ${cs.fontFamily}`;
+	const paint = painter();
+	paint.font = font;
+	const cell = paint.measureText('0').width || size * 0.6;
+	const out: string[] = [];
+	let row = 0;
+	let col = 0;
+	let cols = 0;
+	for (const node of Array.from(pre.childNodes)) {
+		const text = node.textContent ?? '';
+		if (node.nodeType === Node.TEXT_NODE) {
+			// the newlines between rows
+			for (const ch of Array.from(text)) {
+				if (ch === '\n') (row++, (col = 0));
+				else col++;
+			}
+			continue;
+		}
+		const chars = Array.from(text);
+		const x = padding + col * cell;
+		const mid = padding + row * lineHeight + lineHeight / 2;
+		col += chars.length;
+		cols = Math.max(cols, col);
+		if (!text.trim()) continue;
+		const s = getComputedStyle(node as Element);
+		const one = (node as Element).classList.contains('ascii-w');
+		const place = one
+			? `x="${num(x + cell / 2)}" text-anchor="middle"`
+			: `x="${num(x)}"${chars.length > 1 ? ` textLength="${num(chars.length * cell)}" lengthAdjust="spacing"` : ''}`;
+		const weight = s.fontWeight !== '400' ? ` font-weight="${s.fontWeight}"` : '';
+		const italic = s.fontStyle !== 'normal' ? ` font-style="${s.fontStyle}"` : '';
+		out.push(`<text ${place} y="${num(mid)}" dominant-baseline="central" ${fillAttr(s.color)}${weight}${italic} xml:space="preserve">${esc(text)}</text>`);
+		if (s.textDecorationLine.includes('underline')) {
+			const y = mid + size * 0.55;
+			const end = x + chars.length * cell;
+			if (s.textDecorationStyle === 'wavy') {
+				let d = `M ${num(x)} ${num(y)}`;
+				for (let at = x, up = true; at < end; at += 2, up = !up) d += ` L ${num(Math.min(at + 2, end))} ${num(up ? y - 1.5 : y + 0.5)}`;
+				out.push(`<path d="${d}" fill="none" ${fillAttr(s.textDecorationColor, 'stroke')} stroke-width="1"/>`);
+			} else {
+				out.push(`<line x1="${num(x)}" y1="${num(y)}" x2="${num(end)}" y2="${num(y)}" ${fillAttr(s.textDecorationColor, 'stroke')} stroke-width="1"/>`);
+			}
+		}
+	}
+	const rows = col > 0 ? row + 1 : row;
+	const width = Math.ceil(cols * cell + 2 * padding);
+	const height = Math.ceil(rows * lineHeight + 2 * padding);
+	const fill = background ? `<rect width="100%" height="100%" ${fillAttr(background)}/>` : '';
+	const svg =
+		`<svg xmlns="${SVG_NS}" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" font-family="${esc(cs.fontFamily)}" font-size="${num(size)}">` +
+		`${fill}${out.join('')}</svg>`;
 	return { svg, width, height };
 }

@@ -12,13 +12,19 @@
 // rejected: a line with an error is still stored and drawn, just marked.
 //
 // Notation (UML class diagrams):
-//   attribute   [markers] [visibility] [/] name [: Type] [= default]       e.g. "- count: int = 0"
-//   method      [markers] [visibility] name([param, ...]) [: ReturnType]   e.g. "+ area(scale: double): double"
+//   attribute   [markers] [visibility] [/] name [: Type] [= default] [{properties}]
+//                                             e.g. "- count: int = 0", "- radius: double {readOnly}"
+//   method      [markers] [visibility] name([param, ...]) [: ReturnType] [{properties}]
+//                                             e.g. "+ area(scale: double): double", "+ size(): int {query}"
 //   parameter   [in | out | inout] name [: Type] [= default]
 //   visibility  + public, - private, # protected, ~ package;  / = derived attribute
 //   markers     {static} (drawn underlined) and, methods only, {abstract} (drawn in italics),
 //               before or after the visibility: "{static} + count: int", "+ {abstract} area(): double";
 //               the node draws the line's style instead of the marker text
+//   properties  a UML property string at the end, comma-separated words, drawn as text:
+//               attributes {readOnly} (Java final), {ordered}, {unique}, {id}, {redefines x} ...
+//               (ATTRIBUTE_PROPERTIES), methods {query} ... (METHOD_PROPERTIES); also accepted
+//               at the start like a marker ("{readOnly} - x: int"), then drawn at the end
 //   Type        a name, optionally with dots, generics <...>, [] and a trailing ?
 //               (e.g. List<String>, int[], Map<String, List<int>>, Date?)
 //
@@ -26,11 +32,12 @@
 // Details: docs/graph-uml.md
 // -----------------------------------------------------------------------------------------
 
-export type UmlTokenKind = 'visibility' | 'marker' | 'modifier' | 'name' | 'type' | 'default' | 'param' | 'punct' | 'text';
+export type UmlTokenKind = 'visibility' | 'marker' | 'property' | 'modifier' | 'name' | 'type' | 'default' | 'param' | 'punct' | 'text';
 
 export interface UmlToken {
 	text: string;
 	kind: UmlTokenKind;
+	front?: boolean; // a property string written at the start; drawn at the end (drawnTokens)
 }
 
 export interface UmlLine {
@@ -38,10 +45,16 @@ export interface UmlLine {
 	error: string | null; // why the line doesn't follow the notation, or null
 	static: boolean; // {static}: a class member, drawn underlined
 	abstract: boolean; // {abstract}: a method without a body here, drawn in italics
+	properties: string[]; // the property string's words, e.g. ["readOnly"] (first word of each item)
 }
 
 /** The member markers: written {static} / {abstract} at the start of a line. */
 export const UML_MARKERS = ['static', 'abstract'] as const;
+
+/** Property strings an attribute may carry (UML 2: the first word of each item counts). */
+export const ATTRIBUTE_PROPERTIES = ['readOnly', 'ordered', 'unordered', 'unique', 'nonunique', 'seq', 'sequence', 'id', 'union', 'composite', 'redefines', 'subsets'];
+/** Property strings a method may carry. */
+export const METHOD_PROPERTIES = ['query', 'ordered', 'unordered', 'unique', 'nonunique', 'redefines'];
 
 /** The visibility marks and what they mean. */
 export const VISIBILITY: Record<string, string> = { '+': 'public', '-': 'private', '#': 'protected', '~': 'package' };
@@ -64,6 +77,7 @@ export function isTypeName(text: string): boolean {
 class Reader {
 	tokens: UmlToken[] = [];
 	markers = new Set<string>(); // the {static} / {abstract} markers read
+	properties: string[] = []; // property strings written at the start ({readOnly} - x: int)
 	constructor(private rest: string) {}
 	get left(): string {
 		return this.rest;
@@ -91,7 +105,7 @@ class Reader {
 		return this.line(this.tokens, error);
 	}
 	line(tokens: UmlToken[], error: string | null): UmlLine {
-		return { tokens, error, static: this.markers.has('static'), abstract: this.markers.has('abstract') };
+		return { tokens, error, static: this.markers.has('static'), abstract: this.markers.has('abstract'), properties: this.properties };
 	}
 }
 
@@ -118,16 +132,84 @@ function readVisibility(r: Reader): void {
 	}
 }
 
-// {static} / {abstract} markers at the cursor, recorded in r.markers; returns an error or null
+// {static} / {abstract} markers at the cursor, recorded in r.markers (a property string
+// written there, {readOnly}, in r.properties); returns an error or null
 function readMarkers(r: Reader): string | null {
 	for (;;) {
 		r.space();
 		const m = /^\{\s*([A-Za-z]*)\s*\}/.exec(r.left);
 		if (!m) return null;
-		if (!(UML_MARKERS as readonly string[]).includes(m[1])) return `unknown marker "${m[0]}": write {static} or {abstract}`;
-		r.take(m[0].length, 'marker');
-		r.markers.add(m[1]);
+		if ((UML_MARKERS as readonly string[]).includes(m[1])) {
+			r.take(m[0].length, 'marker');
+			r.markers.add(m[1]);
+		} else if ([...ATTRIBUTE_PROPERTIES, ...METHOD_PROPERTIES].includes(m[1])) {
+			r.take(m[0].length, 'property');
+			r.tokens[r.tokens.length - 1].front = true;
+			r.properties.push(m[1]);
+		} else return `unknown marker "${m[0]}": write {static} or {abstract} (a property string such as {readOnly} goes at the end)`;
 	}
+}
+
+// one item of a property string: a word, optionally with one argument ("redefines size")
+const PROPERTY_ITEM = /^[A-Za-z]\w*(?:\s+[A-Za-z_][\w:.]*)?$/;
+
+/**
+ * The property string at the end of a line ("{readOnly}", "{ordered, unique}"), with its
+ * tokens; null when the line doesn't end in one. Only words count, so a default value in
+ * braces ("= {1, 2}") stays a default.
+ */
+function trailingProperties(line: string): { start: number; tokens: UmlToken[]; names: string[] } | null {
+	const m = /\{([^{}]*)\}(\s*)$/.exec(line);
+	if (!m || !line.slice(0, m.index).trim()) return null;
+	const items = m[1].split(',');
+	if (!items.every((item) => PROPERTY_ITEM.test(item.trim()))) return null;
+	let start = m.index;
+	while (start > 0 && /\s/.test(line[start - 1])) start--;
+	const tokens: UmlToken[] = [];
+	const add = (text: string, kind: UmlTokenKind) => text && tokens.push({ text, kind });
+	add(line.slice(start, m.index), 'text');
+	add('{', 'punct');
+	items.forEach((item, i) => {
+		if (i > 0) add(',', 'punct');
+		const lead = item.length - item.trimStart().length;
+		add(item.slice(0, lead), 'text');
+		add(item.trim(), 'property');
+		add(item.slice(lead + item.trim().length), 'text');
+	});
+	add('}', 'punct');
+	add(m[2], 'text');
+	return { start, tokens, names: items.map((item) => item.trim().split(/\s+/)[0]) };
+}
+
+// whether the property words fit the member; returns an error or null
+function checkProperties(names: string[], member: 'attribute' | 'method'): string | null {
+	const allowed = member === 'attribute' ? ATTRIBUTE_PROPERTIES : METHOD_PROPERTIES;
+	for (const name of names) {
+		if (allowed.includes(name)) continue;
+		if (name === 'readOnly') return 'only attributes can be {readOnly}';
+		if ((UML_MARKERS as readonly string[]).includes(name)) return `{${name}} goes at the start of the line`;
+		return `unknown property "{${name}}": e.g. ${member === 'attribute' ? '{readOnly}, {ordered}, {unique}' : '{query}'}`;
+	}
+	return null;
+}
+
+// a "{" the line still has where only a property string could be: never closed, or not one
+function braceError(rest: string): string {
+	return rest.includes('}') ? `"${rest.trim()}" isn't a property string: write e.g. {readOnly}` : "the property string isn't closed: '}' is missing";
+}
+
+// a member line with its property string at the end read separately: the part before it by
+// `body`, then the property tokens added and checked
+function withProperties(line: string, member: 'attribute' | 'method', body: (text: string) => UmlLine): UmlLine {
+	const props = trailingProperties(line);
+	const read = body(props ? line.slice(0, props.start) : line);
+	if (!props) return read;
+	return {
+		...read,
+		tokens: [...read.tokens, ...props.tokens],
+		properties: [...read.properties, ...props.names],
+		error: read.error ?? checkProperties(props.names, member)
+	};
 }
 
 // markers, visibility, markers again (both orders are common); returns an error or null
@@ -137,21 +219,38 @@ function readStart(r: Reader): string | null {
 
 /**
  * The tokens a node draws: without the markers and the space after them (the node shows
- * them as the line's style instead).
+ * them as the line's style instead); a property string written at the start moves to the
+ * end, where UML writes it.
  */
 export function drawnTokens(line: UmlLine): UmlToken[] {
 	const out: UmlToken[] = [];
+	const moved: string[] = [];
 	for (let i = 0; i < line.tokens.length; i++) {
-		if (line.tokens[i].kind !== 'marker') out.push(line.tokens[i]);
-		else if (line.tokens[i + 1]?.kind === 'text' && !line.tokens[i + 1].text.trim()) i++;
+		const token = line.tokens[i];
+		if (token.kind !== 'marker' && !token.front) {
+			out.push(token);
+			continue;
+		}
+		if (token.front) moved.push(token.text.replace(/[{}\s]/g, ''));
+		if (line.tokens[i + 1]?.kind === 'text' && !line.tokens[i + 1].text.trim()) i++;
+	}
+	if (moved.length) {
+		out.push({ text: ' ', kind: 'text' }, { text: '{', kind: 'punct' });
+		moved.forEach((name, i) => {
+			if (i > 0) out.push({ text: ', ', kind: 'punct' });
+			out.push({ text: name, kind: 'property' });
+		});
+		out.push({ text: '}', kind: 'punct' });
 	}
 	return out;
 }
 
-/** Reads one attribute line: `[visibility] [/] name [: Type] [= default]`. */
-export function parseAttribute(line: string): UmlLine {
+/** Reads one attribute line: `[markers] [visibility] [/] name [: Type] [= default] [{properties}]`. */
+export const parseAttribute = (line: string): UmlLine => withProperties(line, 'attribute', attributeBody);
+
+function attributeBody(line: string): UmlLine {
 	const r = new Reader(line);
-	const markerError = readStart(r);
+	const markerError = readStart(r) ?? checkProperties(r.properties, 'attribute');
 	if (markerError) return r.done(markerError);
 	if (r.markers.has('abstract')) return r.done('only methods (and classes) can be {abstract}');
 	if (r.left.startsWith('/')) {
@@ -164,16 +263,19 @@ export function parseAttribute(line: string): UmlLine {
 	r.space();
 	if (r.left.startsWith('(')) return r.done('looks like a method: methods go in the methods list');
 	if (r.left.startsWith(':')) {
-		const error = readType(r, /=/, 'attribute');
+		const error = readType(r, /[={]/, 'attribute');
 		if (error) return r.done(error);
 	}
 	if (r.left.startsWith('=')) {
 		r.take(1, 'punct');
 		r.space();
 		if (!r.left.trim()) return r.done("a value is missing after '='");
+		const open = /\{[^}]*$/.exec(r.left); // "= 0 {readOnly": a property string never closed
+		if (open) return r.done(braceError(open[0]));
 		r.take(r.left.trimEnd().length, 'default');
 		r.space();
 	}
+	if (r.left.startsWith('{')) return r.done(braceError(r.left));
 	if (r.left) return r.done(`unexpected "${r.left.trim()}": write "name: Type = value"`);
 	return r.done(null);
 }
@@ -223,10 +325,12 @@ function splitParams(text: string): string[] {
 	return parts;
 }
 
-/** Reads one method line: `[visibility] name([param, ...]) [: ReturnType]`. */
-export function parseMethod(line: string): UmlLine {
+/** Reads one method line: `[markers] [visibility] name([param, ...]) [: ReturnType] [{properties}]`. */
+export const parseMethod = (line: string): UmlLine => withProperties(line, 'method', methodBody);
+
+function methodBody(line: string): UmlLine {
 	const r = new Reader(line);
-	const markerError = readStart(r);
+	const markerError = readStart(r) ?? checkProperties(r.properties, 'method');
 	if (markerError) return r.done(markerError);
 	if (r.markers.has('static') && r.markers.has('abstract')) return r.done("a method can't be both {static} and {abstract}");
 	if (!r.match(IDENT, 'name')) {
@@ -259,9 +363,10 @@ export function parseMethod(line: string): UmlLine {
 	r.take(1, 'punct'); // ')'
 	r.space();
 	if (r.left.startsWith(':')) {
-		const error = readType(r, /$/, 'return type');
+		const error = readType(r, /\{/, 'return type');
 		if (error) return r.done(error);
 	}
+	if (r.left.startsWith('{')) return r.done(braceError(r.left));
 	if (r.left) return r.done(`unexpected "${r.left.trim()}" after the method: write "name(param: Type): ReturnType"`);
 	return r.done(null);
 }

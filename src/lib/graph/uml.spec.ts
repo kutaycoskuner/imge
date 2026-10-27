@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------------------
 // uml.spec.ts -- checks reading UML attribute and method lines: the tokens for highlighting
 // (they always join back to the line), the format check's error messages, and the
-// {static} / {abstract} member markers.
+// {static} / {abstract} member markers and property strings ({readOnly} ...).
 // Run: npm run test:unit -- --run
 // -----------------------------------------------------------------------------------------
 
@@ -124,5 +124,58 @@ describe('member markers', () => {
 		expect(parseAttribute('{abstract} - count: int').error).toMatch(/only methods/);
 		expect(parseMethod('{static} {abstract} f(): void').error).toMatch(/both/);
 		expect(parseMethod('{final} + f(): void').error).toMatch(/unknown marker/);
+	});
+});
+
+describe('property strings', () => {
+	const joined = (line: ReturnType<typeof parseAttribute>) => line.tokens.map((t) => t.text).join('');
+	const drawn = (line: ReturnType<typeof parseAttribute>) => drawnTokens(line).map((t) => t.text).join('');
+
+	it('reads {readOnly} at the end of an attribute, also after a default and with {static}', () => {
+		for (const text of ['- radius: double {readOnly}', '{static} - PI: double = 3.14 {readOnly}', '- id {readOnly}']) {
+			const line = parseAttribute(text);
+			expect(line.error, text).toBeNull();
+			expect(line.properties).toEqual(['readOnly']);
+			expect(joined(line)).toBe(text);
+		}
+		const pi = parseAttribute('{static} - PI: double = 3.14 {readOnly}');
+		expect(pi.static).toBe(true);
+		expect(pi.tokens.find((t) => t.kind === 'default')?.text).toBe('3.14');
+		expect(drawn(pi)).toBe('- PI: double = 3.14 {readOnly}'); // drawn as text, the marker as a style
+	});
+
+	it('reads a list, and a property with an argument', () => {
+		expect(parseAttribute('+ ids: int[] {readOnly, ordered}')).toMatchObject({ error: null, properties: ['readOnly', 'ordered'] });
+		expect(parseAttribute('- sizes: List<int> {redefines size}')).toMatchObject({ error: null, properties: ['redefines'] });
+		expect(parseAttribute('+ ids: int[] {readOnly, ordered}').tokens.filter((t) => t.kind === 'property').map((t) => t.text)).toEqual(['readOnly', 'ordered']);
+	});
+
+	it('methods take their own properties; {readOnly} is for attributes', () => {
+		expect(parseMethod('+ size(): int {query}')).toMatchObject({ error: null, properties: ['query'] });
+		expect(parseMethod('+ area(): double {readOnly}').error).toBe('only attributes can be {readOnly}');
+		expect(parseMethod('{readOnly} + area(): double').error).toBe('only attributes can be {readOnly}');
+	});
+
+	it('flags an unclosed property string and unknown properties, keeping the line', () => {
+		expect(parseAttribute('- x: int {readOnly').error).toMatch(/isn't closed/);
+		expect(parseAttribute('- x: int = 0 {readOnly').error).toMatch(/isn't closed/);
+		expect(parseMethod('+ f(): int {query').error).toMatch(/isn't closed/);
+		const unknown = parseAttribute('- x: int {final}');
+		expect(unknown.error).toMatch(/unknown property "\{final\}"/);
+		expect(joined(unknown)).toBe('- x: int {final}');
+		expect(parseAttribute('- x: int {static}').error).toBe('{static} goes at the start of the line');
+	});
+
+	it('a default value in braces stays a default', () => {
+		const line = parseAttribute('- v: int[] = {1, 2}');
+		expect(line).toMatchObject({ error: null, properties: [] });
+		expect(line.tokens.find((t) => t.kind === 'default')?.text).toBe('{1, 2}');
+	});
+
+	it('accepts {readOnly} at the start and draws it at the end', () => {
+		const line = parseAttribute('{readOnly} - x: int');
+		expect(line).toMatchObject({ error: null, properties: ['readOnly'] });
+		expect(drawn(line)).toBe('- x: int {readOnly}');
+		expect(drawn(parseAttribute('{static} {readOnly} - PI: double = 3.14'))).toBe('- PI: double = 3.14 {readOnly}');
 	});
 });

@@ -15,15 +15,15 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.27.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.28.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-    <img alt="Graph editor in the light theme showing the feature map; the selected dashed link with a hollow triangle is shown in the Properties panel's Look section as the UML relation Realization" src="_display/0.27-graph_editor.png" />
+    <img alt="Graph editor in the light theme showing the feature map; the selected dashed link with a hollow triangle is shown in the Properties panel's Look section as the UML relation Realization" src="_display/0.28-graph_editor.png" />
     <br>
-    <sub><i>v0.27.0 graph editor (light theme): the feature map, a dashed link with a hollow triangle selected, its Look section in the Properties panel (N) showing the UML relation, mark and line</i></sub>
+    <sub><i>v0.28.0 graph editor (light theme): the feature map, a dashed link with a hollow triangle selected, its Look section in the Properties panel (N) showing the UML relation, mark and line</i></sub>
 </p>
 
 # Installation and Use
@@ -58,7 +58,7 @@ npm run test:unit -- --run
 - [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
 - [Properties panel](docs/graph-properties-panel.md): the docked panel for the selection, what it shows, how to add a section (e.g. for a node type)
 - [Text view (experimental)](docs/graph-text-view.md): the graph drawn with box-drawing characters, copy or download as plain text
-- [UML class nodes](docs/graph-uml.md): the three-compartment class node, member notation, static / abstract members, highlighting and format check, relations (inheritance, realization, aggregation ...)
+- [UML class nodes](docs/graph-uml.md): the three-compartment class node, member notation, static / abstract members, property strings ({readOnly}), highlighting and format check, relations (inheritance, realization, aggregation ...)
 - [Simulation layer (planned)](docs/graph-simulation.md): how graphs could later run: math nodes, textures, digital and analog circuits
 - [Graph types](docs/graph-types.md): kinds of graphs imge could draw, which are possible today and what each still needs
 
@@ -86,7 +86,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] add / delete nodes (toolbar button or Shift+A, Delete)
 - [x] copy / paste nodes with the links between them (Ctrl+C, Ctrl+V at the mouse)
 - [x] undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z; a whole drag is one step)
-- [x] UML class nodes (node type UML class): class name, attributes and methods in three compartments, member lines highlighted and checked against the UML notation, edited in the Properties panel; {static} members underlined, abstract classes and {abstract} methods in italics
+- [x] UML class nodes (node type UML class): class name, attributes and methods in three compartments, member lines highlighted and checked against the UML notation, edited in the Properties panel; {static} members underlined, abstract classes and {abstract} methods in italics; property strings such as {readOnly} (Java final) and {query}
 - [x] link line styles (solid, dashed, dotted) and end marks (arrow, open arrow, hollow triangle, hollow / filled diamond); UML relations (association, inheritance, realization, dependency, aggregation, composition) chosen by name in the Properties panel
 - [x] groups (node type Group): hold the nodes dropped into them (Ctrl+drag takes one out); nodes made or pasted inside a frame join it; Ctrl+G groups the selection (or adds it to the one selected group), Ctrl+Shift+G ungroups; the Properties panel lists a group's contents, the frame wraps its children with a margin and moves them along; resize by the corner mark or in the Properties panel, never smaller than the children; nested groups
 - [x] node shapes: square or circle (Properties panel) for nodes and groups; a circle group is a round frame around its children
@@ -98,7 +98,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] node linking (drag output to input, or F on two selected nodes; drag an input's end away to detach); many links per port, each link with its own id
 - [x] link shapes: spline, straight line or manhattan (right angles, draggable corner); L changes the selected link, the Esc menu can show all links in one shape or apply one shape to all
 - [x] arrows per link: forward, backward, both or none (D), optional mid-link chevrons; link names shown in the middle of the link (double-click or F2)
-- [x] text view (experimental, toolbar button): the graph drawn with box-drawing characters (boxes, UML compartments, routed links with their line styles and marks); click to select, Copy text, Download .txt
+- [x] text view (experimental, toolbar button): the graph drawn with box-drawing characters (boxes, UML compartments, routed links with their line styles and marks); click to select, Copy text, Download .txt; image export follows it (the text as PNG / JPG / SVG)
 - [x] port look for all nodes (toolbar button cycles it, or the Esc menu): filled, hollow, or hidden until the mouse is over the node; image export follows it
 - [x] cycles (1 -> 2 -> 1) and self-loops: the link closing a cycle goes around its nodes, above or below (R), lane draggable
 - [x] direction: left-to-right or top-to-bottom; Transpose (toolbar button or Esc menu) switches it, ports, links and routes follow; switching back restores the layout

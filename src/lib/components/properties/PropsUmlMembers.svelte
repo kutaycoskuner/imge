@@ -62,5 +62,6 @@
 {/each}
 <p class="prop-note">
 	One member per line: <code>+ - # ~</code> visibility, <code>name: Type = value</code>, <code>name(param: Type): Type</code>;
-	<code>{'{static}'}</code> (drawn underlined) and <code>{'{abstract}'}</code> (methods, in italics) before or after the visibility.
+	<code>{'{static}'}</code> (drawn underlined) and <code>{'{abstract}'}</code> (methods, in italics) before or after the visibility;
+	a property string at the end: <code>{'{readOnly}'}</code> (final), <code>{'{ordered, unique}'}</code>, methods <code>{'{query}'}</code>.
 </p>
