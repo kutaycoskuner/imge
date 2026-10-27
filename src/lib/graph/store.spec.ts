@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-17
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -28,6 +28,13 @@ import {
 	selectBox,
 	copyNodes,
 	pasteNodes,
+	setNodePosition,
+	setNodeType,
+	setNodeColor,
+	setNodeContent,
+	isGroup,
+	CAN_LINK,
+	setLinkStyle,
 	cycleLinkShape,
 	setAllLinkShapes,
 	setLinkBend,
@@ -58,12 +65,14 @@ const ends = (from: string, to: string) => ({
 const link = (g: Graph, from: string, to: string) => addLink(g, ends(from, to)).graph;
 
 describe('nodes', () => {
-	it('adds nodes n1, n2 ... with a name, input i1 and output o1', () => {
+	it('adds nodes n1, n2 ... built from the basic template: name in content, ports i1 (in) and o1 (out)', () => {
 		const g = threeNodes();
 		expect(g.data.nodes.map((n) => n.id)).toEqual(['n1', 'n2', 'n3']);
-		expect(g.data.nodes[0].name).toBe('Node');
-		expect(g.data.nodes[0].inputs.map((p) => p.id)).toEqual(['i1']);
-		expect(g.data.nodes[0].outputs.map((p) => p.id)).toEqual(['o1']);
+		expect(g.data.nodes[0]).toMatchObject({ type: 'basic', typeVersion: 2, content: { name: 'Node', color: null, shape: 'square' } });
+		expect(g.data.nodes[0].ports.map((p) => [p.id, p.kind])).toEqual([
+			['i1', 'in'],
+			['o1', 'out']
+		]);
 		expect(nextNodeId(g)).toBe('n4');
 	});
 
@@ -79,9 +88,9 @@ describe('nodes', () => {
 
 	it('renames, and keeps the old name for a blank one', () => {
 		let g = renameNode(threeNodes(), 'n2', '  Mixer  ');
-		expect(g.data.nodes[1].name).toBe('Mixer');
+		expect(g.data.nodes[1].content.name).toBe('Mixer');
 		g = renameNode(g, 'n2', '   ');
-		expect(g.data.nodes[1].name).toBe('Mixer');
+		expect(g.data.nodes[1].content.name).toBe('Mixer');
 	});
 
 	it('moves only the given nodes', () => {
@@ -111,7 +120,7 @@ describe('nodes', () => {
 });
 
 describe('link rules', () => {
-	it('adds a link l1 with type, shape spline and both ends', () => {
+	it('adds a link l1 with type, shape spline, a solid line with an arrowhead and both ends', () => {
 		const { graph, outcome, link: created } = addLink(threeNodes(), ends('n1', 'n2'));
 		expect(outcome).toBe('added');
 		expect(created).toEqual({
@@ -120,6 +129,8 @@ describe('link rules', () => {
 			shape: 'spline',
 			arrow: 'forward',
 			route: 'above',
+			line: 'solid',
+			mark: 'arrow',
 			...ends('n1', 'n2')
 		});
 		expect(graph.data.links).toEqual([created]);
@@ -229,7 +240,7 @@ describe('link shapes', () => {
 	});
 
 	it('new nodes have no color', () => {
-		expect(threeNodes().data.nodes.every((n) => n.color === null)).toBe(true);
+		expect(threeNodes().data.nodes.every((n) => n.content.color === null)).toBe(true);
 	});
 });
 
@@ -420,7 +431,7 @@ describe('copy / paste', () => {
 		const [a, b] = nodeIds.map((id) => pasted.data.nodes.find((n) => n.id === id)!);
 		expect(a.position).toEqual({ x: 1000, y: -500 });
 		expect(b.position.x - a.position.x).toBe(300);
-		expect(a.name).toBe('Start');
+		expect(a.content.name).toBe('Start');
 		const copy = pasted.data.links.find((l) => l.id === 'l3')!;
 		expect(copy.source.node).toBe('n4');
 		expect(copy.target.node).toBe('n5');
@@ -441,5 +452,106 @@ describe('copy / paste', () => {
 	it('pastes nothing from an empty clipboard', () => {
 		const g = threeNodes();
 		expect(pasteNodes(g, { nodes: [], links: [] }, { x: 0, y: 0 }).graph).toBe(g);
+	});
+});
+
+describe('properties panel edits', () => {
+	it('places a node at a point, and returns the same graph when it is already there', () => {
+		const g = threeNodes();
+		const moved = setNodePosition(g, 'n2', { x: 40, y: -20 });
+		expect(moved.data.nodes[1].position).toEqual({ x: 40, y: -20 });
+		expect(moved.data.nodes[0]).toBe(g.data.nodes[0]);
+		expect(setNodePosition(moved, 'n2', { x: 40, y: -20 })).toBe(moved);
+	});
+
+	it('sets a node type, and returns the same graph when it already has it', () => {
+		const g = threeNodes();
+		const typed = setNodeType(g, 'n1', 'note');
+		expect(typed.data.nodes[0].type).toBe('note');
+		expect(setNodeType(typed, 'n1', 'note')).toBe(typed);
+	});
+
+	it('colours several nodes at once, and clears the colour with null', () => {
+		const g = threeNodes();
+		const coloured = setNodeColor(g, ['n1', 'n3'], '#2a9fd6');
+		expect(coloured.data.nodes.map((n) => n.content.color)).toEqual(['#2a9fd6', null, '#2a9fd6']);
+		expect(setNodeColor(coloured, ['n1', 'n3'], '#2a9fd6')).toBe(coloured);
+		expect(setNodeColor(coloured, ['n1'], null).data.nodes[0].content.color).toBeNull();
+	});
+
+	it('sets content keys, keeps the others, and returns the same graph when nothing changes', () => {
+		const g = setNodeType(threeNodes(), 'n1', 'uml-class');
+		expect(g.data.nodes[0].content).toEqual({ name: 'Node', color: null, shape: 'square', abstract: false, attributes: [], methods: [] });
+		const set = setNodeContent(g, 'n1', { attributes: ['- radius: double'] });
+		expect(set.data.nodes[0].content).toEqual({ name: 'Node', color: null, shape: 'square', abstract: false, attributes: ['- radius: double'], methods: [] });
+		expect(setNodeContent(set, 'n1', { attributes: ['- radius: double'] })).toBe(set);
+		expect(setNodeContent(set, 'missing', { attributes: [] })).toBe(set);
+	});
+
+	it('changing the type keeps the name and colour, and brings the template ports back', () => {
+		let g = setNodeColor(renameNode(threeNodes(), 'n1', 'Frame'), ['n1'], '#46a758');
+		g = setNodeType(g, 'n1', 'group');
+		expect(g.data.nodes[0]).toMatchObject({ type: 'group', ports: [], content: { name: 'Frame', color: '#46a758' } });
+		g = setNodeType(g, 'n1', 'basic');
+		expect(g.data.nodes[0].ports.map((p) => [p.id, p.kind])).toEqual([
+			['i1', 'in'],
+			['o1', 'out']
+		]);
+		// content keeps what the group added (an empty children list), as for every type change
+		expect(g.data.nodes[0].content).toEqual({ name: 'Frame', color: '#46a758', shape: 'square', children: [] });
+	});
+
+	it('makes a node a group, removing its links in the same step', () => {
+		const g = link(link(threeNodes(), 'n1', 'n2'), 'n2', 'n3');
+		const grouped = setNodeType(g, 'n1', 'group');
+		expect(isGroup(grouped.data.nodes[0])).toBe(true);
+		expect(grouped.data.links.map((l) => l.id)).toEqual(['l2']); // n2 -> n3 stays
+		expect(isGroup(setNodeType(g, 'n3', 'group').data.nodes[2])).toBe(true);
+	});
+
+	it('links only the kinds CAN_LINK allows, stored from the giving to the taking end', () => {
+		const g = threeNodes();
+		// a drag that started at an input: stored the other way round
+		const fromInput = addLink(g, { source: { node: 'n2', port: 'i1' }, target: { node: 'n1', port: 'o1' } });
+		expect(fromInput.outcome).toBe('added');
+		expect(fromInput.link).toMatchObject(ends('n1', 'n2'));
+		// out -> out and in -> in are refused
+		expect(addLink(g, { source: { node: 'n1', port: 'o1' }, target: { node: 'n2', port: 'o1' } }).outcome).toBe('unknown-port');
+		expect(addLink(g, { source: { node: 'n1', port: 'i1' }, target: { node: 'n2', port: 'i1' } }).outcome).toBe('unknown-port');
+		expect(CAN_LINK).toEqual({ out: ['in', 'any'], in: ['out', 'any'], any: ['in', 'out', 'any'] });
+	});
+
+	it('a two-way (any) port links to inputs, outputs and other two-way ports', () => {
+		let g = threeNodes();
+		const anyPort = { id: 'p1', kind: 'any' as const, type: 'basic', label: 'Terminal' };
+		g = { ...g, data: { ...g.data, nodes: g.data.nodes.map((n) => (n.id === 'n2' ? { ...n, ports: [anyPort] } : n)) } };
+		const toInput = addLink(g, { source: { node: 'n2', port: 'p1' }, target: { node: 'n3', port: 'i1' } });
+		expect(toInput.link).toMatchObject({ source: { node: 'n2', port: 'p1' }, target: { node: 'n3', port: 'i1' } });
+		const fromOutput = addLink(g, { source: { node: 'n2', port: 'p1' }, target: { node: 'n1', port: 'o1' } });
+		expect(fromOutput.link).toMatchObject({ source: { node: 'n1', port: 'o1' }, target: { node: 'n2', port: 'p1' } });
+		expect(addLink(g, { source: { node: 'n2', port: 'p1' }, target: { node: 'n2', port: 'p1' } }).outcome).toBe('added');
+	});
+
+	it('never links to or from a group (drag or F)', () => {
+		const g = setNodeType(threeNodes(), 'n2', 'group');
+		expect(addLink(g, ends('n1', 'n2')).outcome).toBe('unknown-port');
+		expect(addLink(g, ends('n2', 'n3')).outcome).toBe('unknown-port');
+		expect(quickLink(g, 'n1', 'n2')).toBeNull();
+	});
+
+	it('sets a link style, and returns the same graph when nothing changes', () => {
+		const g = link(threeNodes(), 'n1', 'n2');
+		const styled = setLinkStyle(g, 'l1', { shape: 'manhattan', arrow: 'both' });
+		expect(styled.data.links[0]).toMatchObject({ shape: 'manhattan', arrow: 'both', route: 'above' });
+		expect(setLinkStyle(styled, 'l1', { shape: 'manhattan' })).toBe(styled);
+		expect(setLinkStyle(g, 'missing', { shape: 'line' })).toBe(g);
+	});
+
+	it('a new link is solid with an arrowhead; line and mark are set like the other styles', () => {
+		const g = link(threeNodes(), 'n1', 'n2');
+		expect(g.data.links[0]).toMatchObject({ line: 'solid', mark: 'arrow' });
+		const styled = setLinkStyle(g, 'l1', { line: 'dashed', mark: 'triangle' });
+		expect(styled.data.links[0]).toMatchObject({ line: 'dashed', mark: 'triangle', arrow: 'forward' });
+		expect(setLinkStyle(styled, 'l1', { line: 'dashed' })).toBe(styled);
 	});
 });

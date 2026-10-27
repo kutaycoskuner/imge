@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-14
+//   last update     : 2026-10-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -9,6 +9,8 @@
 //
 // Old versions stay here frozen (never edited) because their adapters in migrations.ts
 // read them; only the newest version is used by the rest of the app (`Graph`).
+// v6 (current): nodes are id, type, typeVersion, position, ports (one list with `kind`) and
+// `content` (whatever the node's type defines, e.g. name and color for basic / group).
 // Field-by-field description and version history: docs/graph-format.md
 // -----------------------------------------------------------------------------------------
 
@@ -164,10 +166,109 @@ export interface GraphV5 {
 }
 
 // -----------------------------------------------------------------------------------------
+// v6 -- node model for many node types (UML, circuits, notes ...): every node has the same
+// top level (what generic editor code reads), and everything its type defines is in `content`
+// -----------------------------------------------------------------------------------------
+// what a port may connect to: in (takes links), out (gives links), any (two-way, e.g. a
+// resistor terminal); which pairs may link is decided in one place (CAN_LINK, store.ts)
+export const PORT_KINDS = ['in', 'out', 'any'] as const;
+export type PortKind = (typeof PORT_KINDS)[number];
+
+// where a port is drawn, relative to the graph's direction so it stays put when the graph is
+// transposed: start / end = the edges links enter / leave along the reading direction
+// (left / right in left-to-right), above / below = the edges across it
+export const PORT_SIDES = ['start', 'end', 'above', 'below'] as const;
+export type PortSide = (typeof PORT_SIDES)[number];
+
+export interface PortV6 {
+	id: string; // unique only within its node; v5 ports keep their ids (i1 ..., o1 ...)
+	kind: PortKind; // direction / what may connect (≠ `type`)
+	type: string; // what flows through it: "basic" for now (later number, vector, bit ...)
+	label: string;
+	// set by the type's template; missing = from `kind`: in -> start, out -> end, any -> start
+	side?: PortSide;
+}
+
+export type LinkEndV6 = LinkEndV5;
+
+// unchanged fields; `source` is the giving end (a port of kind out or any), `target` the taking
+// end (in or any): CAN_LINK (store.ts) decides which kinds may link, and addLink stores a link in
+// this order whichever end a drag started at; the arrowheads come only from `arrow`
+export type LinkV6 = LinkV5;
+
+/**
+ * A node's type-defined part. Each type decides its keys (see node-types.ts); `{}` when the
+ * type has none (e.g. a gate whose symbol comes from the type). Generic editor code never
+ * reads it: it asks the type (e.g. for a label).
+ */
+export type NodeContentV6 = { [key: string]: unknown };
+
+/** `content` of the basic and group types (v5's top-level name and color, moved here). */
+export interface NamedContentV6 {
+	name: string;
+	color: string | null; // "#rrggbb", or null for the theme's default look
+}
+
+export interface NodeV6 {
+	id: string; // unique within the graph: n1, n2 ...
+	type: string; // node type id: "basic", "group" ... (node-types.ts)
+	typeVersion: number; // version of the type's template this node follows (its samples: <type>-v<n>.json)
+	position: { x: number; y: number }; // top-left corner, world coords, y up
+	ports: PortV6[]; // in, out and two-way ports in one list; [] for types without ports (group)
+	content: NodeContentV6;
+}
+
+export interface GraphV6 {
+	metadata: {
+		format: typeof GRAPH_FORMAT;
+		version: 6;
+		direction: Direction;
+		[key: string]: unknown;
+	};
+	data: { nodes: NodeV6[]; links: LinkV6[] };
+}
+
+// -----------------------------------------------------------------------------------------
+// v7 -- links get a line style and an end mark, so UML relations (and other diagrams) can be
+// drawn: dashed for realization / dependency, a hollow triangle for inheritance, diamonds for
+// aggregation / composition ...; `arrow` still says at which end(s) the mark is drawn
+// -----------------------------------------------------------------------------------------
+// how the line is drawn
+export const LINK_LINES = ['solid', 'dashed', 'dotted'] as const;
+export type LinkLine = (typeof LINK_LINES)[number];
+// the shape drawn at the end(s) `arrow` names: arrow = filled arrowhead (the look before v7),
+// open-arrow = two strokes, triangle = hollow triangle, diamond = hollow, filled-diamond
+export const LINK_MARKS = ['arrow', 'open-arrow', 'triangle', 'diamond', 'filled-diamond'] as const;
+export type LinkMark = (typeof LINK_MARKS)[number];
+
+export type PortV7 = PortV6;
+export type LinkEndV7 = LinkEndV6;
+export type NodeV7 = NodeV6;
+export type NodeContentV7 = NodeContentV6;
+export type NamedContentV7 = NamedContentV6;
+
+export interface LinkV7 extends LinkV6 {
+	line: LinkLine;
+	mark: LinkMark; // one shape for every marked end; arrow none = no mark at all
+}
+
+export interface GraphV7 {
+	metadata: {
+		format: typeof GRAPH_FORMAT;
+		version: 7;
+		direction: Direction;
+		[key: string]: unknown;
+	};
+	data: { nodes: NodeV7[]; links: LinkV7[] };
+}
+
+// -----------------------------------------------------------------------------------------
 // current version -- the app only works with these
 // -----------------------------------------------------------------------------------------
-export type Port = PortV5;
-export type GraphNode = NodeV5;
-export type LinkEnd = LinkEndV5;
-export type Link = LinkV5;
-export type Graph = GraphV5;
+export type Port = PortV7;
+export type GraphNode = NodeV7;
+export type NodeContent = NodeContentV7;
+export type NamedContent = NamedContentV7;
+export type LinkEnd = LinkEndV7;
+export type Link = LinkV7;
+export type Graph = GraphV7;

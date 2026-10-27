@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-17
+//   last update     : 2026-10-21
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -184,6 +184,10 @@ export interface ExampleGraph {
 	kind: string; // the graph type it shows (see docs/graph-types.md)
 	file: string; // path under data/
 	description: string;
+	// a graph type the editor can't draw yet, shown with basic nodes (docs/graph-types.md)
+	sketch?: boolean;
+	// heading it is listed under in the Examples tab (index.json lists the categories in order)
+	category?: string;
 }
 
 /** The example graphs offered in the menu; an empty list when the index can't be read. */

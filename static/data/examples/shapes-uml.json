@@ -1,139 +1,303 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 5,
+        "version": 7,
         "direction": "top-to-bottom"
     },
     "data": {
         "nodes": [
             {
                 "id": "n1",
-                "name": "Shape (abstract)",
-                "type": "basic",
-                "color": null,
+                "type": "uml-class",
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Shape",
+                    "color": null,
+                    "abstract": true,
+                    "attributes": [
+                        "# name: String {readOnly}",
+                        "# color: Color = BLACK",
+                        "{static} - count: int = 0"
+                    ],
+                    "methods": [
+                        "+ {abstract} area(): double",
+                        "+ {abstract} perimeter(): double",
+                        "+ draw(canvas: Canvas): void",
+                        "{static} + created(): int"
+                    ]
+                }
             },
             {
                 "id": "n2",
-                "name": "Circle",
-                "type": "basic",
-                "color": null,
+                "type": "uml-class",
+                "typeVersion": 2,
                 "position": {
-                    "x": -320,
-                    "y": -170
+                    "x": -340,
+                    "y": -260
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Circle",
+                    "color": null,
+                    "abstract": false,
+                    "attributes": [
+                        "- radius: double"
+                    ],
+                    "methods": [
+                        "+ area(): double",
+                        "+ perimeter(): double"
+                    ]
+                }
             },
             {
                 "id": "n3",
-                "name": "Rectangle",
-                "type": "basic",
-                "color": null,
+                "type": "uml-class",
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
-                    "y": -170
+                    "y": -260
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Rectangle",
+                    "color": null,
+                    "abstract": false,
+                    "attributes": [
+                        "- width: double",
+                        "- height: double"
+                    ],
+                    "methods": [
+                        "+ area(): double",
+                        "+ perimeter(): double"
+                    ]
+                }
             },
             {
                 "id": "n4",
-                "name": "Triangle",
-                "type": "basic",
-                "color": null,
+                "type": "uml-class",
+                "typeVersion": 2,
                 "position": {
-                    "x": 320,
-                    "y": -170
+                    "x": 340,
+                    "y": -260
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Triangle",
+                    "color": null,
+                    "abstract": false,
+                    "attributes": [
+                        "- a: double",
+                        "- b: double",
+                        "- c: double"
+                    ],
+                    "methods": [
+                        "+ area(): double",
+                        "+ isRight(): boolean"
+                    ]
+                }
             },
             {
                 "id": "n5",
-                "name": "Square",
-                "type": "basic",
-                "color": null,
+                "type": "uml-class",
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
-                    "y": -340
+                    "y": -520
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "Square",
+                    "color": null,
+                    "abstract": false,
+                    "attributes": [
+                        "- side: double"
+                    ],
+                    "methods": [
+                        "+ Square(side: double)"
+                    ]
+                }
+            },
+            {
+                "id": "n6",
+                "type": "uml-class",
+                "typeVersion": 2,
+                "position": {
+                    "x": 340,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "«interface» Drawable",
+                    "color": null,
+                    "abstract": false,
+                    "attributes": [],
+                    "methods": [
+                        "+ {abstract} draw(canvas: Canvas): void"
+                    ]
+                }
+            },
+            {
+                "id": "n7",
+                "type": "uml-class",
+                "typeVersion": 2,
+                "position": {
+                    "x": -340,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Drawing",
+                    "color": null,
+                    "abstract": false,
+                    "attributes": [
+                        "- title: String"
+                    ],
+                    "methods": [
+                        "+ add(shape: Shape): void",
+                        "+ render(canvas: Canvas): void"
+                    ]
+                }
+            },
+            {
+                "id": "n8",
+                "type": "uml-class",
+                "typeVersion": 2,
+                "position": {
+                    "x": 680,
+                    "y": -260
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Canvas",
+                    "color": null,
+                    "abstract": false,
+                    "attributes": [
+                        "- width: int",
+                        "- height: int"
+                    ],
+                    "methods": [
+                        "+ line(x1: int, y1: int, x2: int, y2: int): void"
+                    ]
+                }
             }
         ],
         "links": [
             {
                 "id": "l1",
                 "type": "basic",
-                "name": "extends",
                 "shape": "line",
                 "arrow": "backward",
+                "line": "solid",
+                "mark": "triangle",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -147,9 +311,10 @@
             {
                 "id": "l2",
                 "type": "basic",
-                "name": "extends",
                 "shape": "line",
                 "arrow": "backward",
+                "line": "solid",
+                "mark": "triangle",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -163,9 +328,10 @@
             {
                 "id": "l3",
                 "type": "basic",
-                "name": "extends",
                 "shape": "line",
                 "arrow": "backward",
+                "line": "solid",
+                "mark": "triangle",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -179,9 +345,10 @@
             {
                 "id": "l4",
                 "type": "basic",
-                "name": "extends",
                 "shape": "line",
                 "arrow": "backward",
+                "line": "solid",
+                "mark": "triangle",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -189,6 +356,57 @@
                 },
                 "target": {
                     "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "backward",
+                "line": "dashed",
+                "mark": "triangle",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n1",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "backward",
+                "line": "solid",
+                "mark": "diamond",
+                "route": "above",
+                "source": {
+                    "node": "n7",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n1",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "dashed",
+                "mark": "open-arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
                     "port": "i1"
                 }
             }

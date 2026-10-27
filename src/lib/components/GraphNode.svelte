@@ -2,24 +2,63 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-14
+	//   last update     : 2026-10-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// One graph node inside the world layer: name (title), input points (left), output points
-	// (right), selected highlight, and inline title editing (double-click or F2 via
+	// One graph node inside the world layer: name (title, from content.name), its ports as
+	// points on the start edge (left; in and two-way ports) and the end edge (right; out ports),
+	// placed by each port's side (node-types.ts portSide), its colour (border in the colour, fill a dim version of it; see $lib/graph/color.ts),
+	// selected highlight, and inline title editing (double-click or F2 via
 	// `editingNodeId`; Enter or clicking away saves, Esc cancels).
+	// A group (type "group") is drawn as a frame (a <fieldset>) with its name in a gap of the
+	// top edge (the <legend>), no ports, drawn at its frame (its stored rect grown to wrap the
+	// nodes it holds, store `frames`), with a resize handle in the bottom-right corner;
+	// only the name and the handle take the mouse, so clicks inside the
+	// frame reach the canvas and the nodes on top of it (styles: .node.group in imge.css).
+	// Its shape (content `shape`, types that allow it): square (the default) or circle.
+	// A UML class (type "uml-class") is drawn as three stacked compartments: class name,
+	// attributes, methods; every member line is highlighted by its parts (uml.ts) and a line
+	// that doesn't follow the notation is underlined in red, its error as a tooltip. UML's
+	// text styles: an abstract class's name and {abstract} methods in italics, {static}
+	// members underlined (the markers themselves aren't drawn).
 	// Mouse down for select/drag/link is handled by the page through the data-* attributes;
-	// ports carry `data-port-key` so GraphLinks can find and measure them.
-	import { graph, editingNodeId, renameNode } from '$lib/graph/store';
+	// ports carry `data-port-key` ("<node id>:<port id>") so GraphLinks can find and measure them,
+	// and `data-port-kind` (in / out / any) for the link rules.
+	import { graph, editingNodeId, renameNode, isGroup, frames } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
+	import { nodeName, nodeColor, portSide, umlMembers, umlAbstract, nodeShape } from '$lib/graph/node-types';
+	import { parseAttribute, parseMethod, drawnTokens } from '$lib/graph/uml';
+	import { parseHexColor, dimColor } from '$lib/graph/color';
 
 	export let node: GraphNode;
 	export let selected = false;
 
+	// only a hex colour is drawn; anything else in the file is kept but shown as the default
+	$: name = nodeName(node);
+	$: color = nodeColor(node) ? parseHexColor(nodeColor(node)!) : null;
+	// the two port columns; ports on the edges across the flow (above / below) aren't drawn yet
+	$: startPorts = node.ports.filter((p) => portSide(p) === 'start');
+	$: endPorts = node.ports.filter((p) => portSide(p) === 'end');
+	$: group = isGroup(node);
+	// a group is drawn at its frame: its stored rect grown around its children (groups.ts)
+	$: frame = group ? ($frames[node.id] ?? null) : null;
+	$: at = frame ? { x: frame.x, y: frame.y } : node.position;
+	$: uml = node.type === 'uml-class';
+	$: abstract = uml && umlAbstract(node);
+	// content shape (basic, group): a circle is drawn round (styles .shape-circle in imge.css)
+	$: circle = nodeShape(node) === 'circle';
+	// the two member compartments, as data for one template: parsed lines (tokens + error)
+	$: compartments = uml
+		? [
+				{ label: 'Attributes', lines: umlMembers(node, 'attributes').map(parseAttribute) },
+				{ label: 'Methods', lines: umlMembers(node, 'methods').map(parseMethod) }
+			]
+		: [];
+
 	let draft = '';
 	$: editing = $editingNodeId === node.id;
-	$: if (editing) draft = node.name;
+	$: if (editing) draft = name;
 
 	function commit(): void {
 		// the store, not `editing`: the field's blur can fire after Esc already ended editing
@@ -51,9 +90,35 @@
 <div
 	class="node"
 	class:selected
+	class:colored={!!color}
+	class:group
+	class:uml
+	class:abstract
+	class:shape-circle={circle}
 	data-id={node.id}
-	style="transform: translate({node.position.x}px, {-node.position.y}px);"
+	style="transform: translate({at.x}px, {-at.y}px);{color
+		? ` --node-col: ${color}; --node-fill: ${dimColor(color)};`
+		: ''}{frame ? ` width: ${frame.w}px; height: ${frame.h}px;` : ''}"
 >
+	{#if group}
+		<fieldset class="group-frame">
+			<legend class="group-title">
+				{#if editing}
+					<input
+						class="node-title-input"
+						bind:value={draft}
+						use:focusSelect
+						on:keydown|stopPropagation={handleKey}
+						on:blur={commit}
+					/>
+				{:else}
+					<span class="node-title" role="presentation" on:dblclick={() => editingNodeId.set(node.id)}>{name}</span>
+				{/if}
+			</legend>
+		</fieldset>
+		<!-- the page drags this corner to resize the group (never smaller than its children) -->
+		<div class="group-resize" data-group-id={node.id} title="Drag to resize"></div>
+	{:else}
 	{#if editing}
 		<input
 			class="node-title-input"
@@ -64,32 +129,40 @@
 		/>
 	{:else}
 		<div class="node-title" role="presentation" on:dblclick={() => editingNodeId.set(node.id)}>
-			{node.name}
+			{name}
 		</div>
 	{/if}
 
+	{#each compartments as compartment (compartment.label)}
+		<ul class="uml-compartment" aria-label={compartment.label}>
+			{#each compartment.lines as line}
+				<li class="uml-line" class:invalid={!!line.error} class:static={line.static} class:abstract={line.abstract} title={line.error ?? undefined}>{#each line.error ? line.tokens : drawnTokens(line) as token}<span class="uml-{token.kind}">{token.text}</span>{/each}</li>
+			{/each}
+		</ul>
+	{/each}
+
 	<div class="inputs">
-		{#each node.inputs ?? [] as input}
+		{#each startPorts as port (port.id)}
 			<div
 				class="port node-input"
-				title={input.label}
-				data-port-key="{node.id}:input:{input.id}"
+				title={port.label}
+				data-port-key="{node.id}:{port.id}"
 				data-node-id={node.id}
-				data-port-kind="input"
-				data-port-id={input.id}
+				data-port-kind={port.kind}
+				data-port-id={port.id}
 			></div>
 		{/each}
 	</div>
 
 	<div class="outputs">
-		{#each node.outputs ?? [] as output}
+		{#each endPorts as port (port.id)}
 			<div
 				class="port node-output"
-				title={output.label}
-				data-port-key="{node.id}:output:{output.id}"
+				title={port.label}
+				data-port-key="{node.id}:{port.id}"
 				data-node-id={node.id}
-				data-port-kind="output"
-				data-port-id={output.id}
+				data-port-kind={port.kind}
+				data-port-id={port.id}
 			></div>
 		{/each}
 	</div>
@@ -97,4 +170,5 @@
 	<div class="content">
 		<div class="add-content hover-visible"></div>
 	</div>
+	{/if}
 </div>

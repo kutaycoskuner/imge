@@ -1,202 +1,234 @@
 {
     "metadata": {
         "format": "imge-graph",
-        "version": 5,
+        "version": 7,
         "direction": "top-to-bottom"
     },
     "data": {
         "nodes": [
             {
                 "id": "n1",
-                "name": "{a, b, c}",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": 0
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "{a, b, c}",
+                    "color": null,
+                    "shape": "circle"
+                }
             },
             {
                 "id": "n2",
-                "name": "{a, b}",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 2,
                 "position": {
                     "x": -320,
                     "y": -170
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "{a, b}",
+                    "color": null,
+                    "shape": "circle"
+                }
             },
             {
                 "id": "n3",
-                "name": "{a, c}",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -170
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "{a, c}",
+                    "color": null,
+                    "shape": "circle"
+                }
             },
             {
                 "id": "n4",
-                "name": "{b, c}",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 2,
                 "position": {
                     "x": 320,
                     "y": -170
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "{b, c}",
+                    "color": null,
+                    "shape": "circle"
+                }
             },
             {
                 "id": "n5",
-                "name": "{a}",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 2,
                 "position": {
                     "x": -320,
                     "y": -340
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "{a}",
+                    "color": null,
+                    "shape": "circle"
+                }
             },
             {
                 "id": "n6",
-                "name": "{b}",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -340
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "{b}",
+                    "color": null,
+                    "shape": "circle"
+                }
             },
             {
                 "id": "n7",
-                "name": "{c}",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 2,
                 "position": {
                     "x": 320,
                     "y": -340
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "{c}",
+                    "color": null,
+                    "shape": "circle"
+                }
             },
             {
                 "id": "n8",
-                "name": "∅",
                 "type": "basic",
-                "color": null,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -510
                 },
-                "inputs": [
+                "ports": [
                     {
                         "id": "i1",
+                        "kind": "in",
                         "type": "basic",
                         "label": "Input"
-                    }
-                ],
-                "outputs": [
+                    },
                     {
                         "id": "o1",
+                        "kind": "out",
                         "type": "basic",
                         "label": "Output"
                     }
-                ]
+                ],
+                "content": {
+                    "name": "∅",
+                    "color": null,
+                    "shape": "circle"
+                }
             }
         ],
         "links": [
@@ -205,6 +237,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -220,6 +254,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -235,6 +271,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n1",
@@ -250,6 +288,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -265,6 +305,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n2",
@@ -280,6 +322,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -295,6 +339,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n3",
@@ -310,6 +356,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -325,6 +373,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n4",
@@ -340,6 +390,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n5",
@@ -355,6 +407,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n6",
@@ -370,6 +424,8 @@
                 "type": "basic",
                 "shape": "line",
                 "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
                 "route": "above",
                 "source": {
                     "node": "n7",

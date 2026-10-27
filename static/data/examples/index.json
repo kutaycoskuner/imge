@@ -1,52 +1,139 @@
 {
+    "categories": [
+        "Mind mapping",
+        "Math",
+        "Circuits",
+        "Software architecture",
+        "Other"
+    ],
     "examples": [
         {
             "name": "Feature map",
             "kind": "relation map",
             "file": "test-node-graph.json",
-            "description": "The editor's own features and how they build on each other (the start graph)."
+            "description": "The editor's own features and how they build on each other (the start graph).",
+            "category": "Mind mapping"
         },
         {
             "name": "Trip planning",
             "kind": "mind map",
             "file": "examples/trip-planning.json",
-            "description": "An idea in the middle, related ideas around it; no arrows, curved links."
+            "description": "An idea in the middle, related ideas around it; no arrows, curved links.",
+            "category": "Mind mapping"
         },
         {
-            "name": "Find the largest number",
-            "kind": "flowchart",
-            "file": "examples/find-largest.json",
-            "description": "An algorithm top to bottom: yes / no branches and a loop drawn around the steps."
+            "name": "Lecture notes",
+            "kind": "blackboard note taking",
+            "file": "examples/blackboard-notes.json",
+            "description": "Colour-coded notes scattered like on a blackboard, a group for definitions; dotted links lead to examples.",
+            "sketch": true,
+            "category": "Mind mapping"
         },
         {
             "name": "Binary search tree",
             "kind": "number tree",
             "file": "examples/binary-search-tree.json",
-            "description": "Smaller values to the left, larger to the right; straight lines, no arrows."
+            "description": "Smaller values to the left, larger to the right; straight lines, no arrows.",
+            "category": "Math"
         },
         {
             "name": "Subsets of {a, b, c}",
             "kind": "lattice",
             "file": "examples/subset-lattice.json",
-            "description": "A Hasse diagram: every subset under the sets that contain it; lines, no arrows."
+            "description": "A Hasse diagram: every subset under the sets that contain it; lines, no arrows.",
+            "category": "Math"
+        },
+        {
+            "name": "Quadratic a·x² + b·x + c",
+            "kind": "math calculation nodes",
+            "file": "examples/math-quadratic.json",
+            "description": "Constants flow through operations into a result; the values are written in the names.",
+            "sketch": true,
+            "category": "Math"
+        },
+        {
+            "name": "Function f: A → B",
+            "kind": "set visualization / function projection",
+            "file": "examples/set-function.json",
+            "description": "Two sets as groups; f maps both elements of A to x: not one-to-one, not onto.",
+            "sketch": true,
+            "category": "Math"
+        },
+        {
+            "name": "Half adder",
+            "kind": "circuit (digital)",
+            "file": "examples/circuit-half-adder.json",
+            "description": "Two bits in; sum (XOR) and carry (AND) out.",
+            "sketch": true,
+            "category": "Circuits"
+        },
+        {
+            "name": "Voltage divider",
+            "kind": "circuit (analog)",
+            "file": "examples/circuit-voltage-divider.json",
+            "description": "Source, two resistors and ground in a loop; the meter reads the middle (dotted: a probe, not a wire).",
+            "sketch": true,
+            "category": "Circuits"
+        },
+        {
+            "name": "ALU (4-bit, sketch)",
+            "kind": "ALU / processor mapping",
+            "file": "examples/alu-sketch.json",
+            "description": "Registers feed an adder, an AND and an OR unit; a multiplexer picks one by opcode (control and status signals dashed).",
+            "sketch": true,
+            "category": "Circuits"
         },
         {
             "name": "Web app architecture",
             "kind": "architecture map",
             "file": "examples/web-app-architecture.json",
-            "description": "Services and how requests flow between them; manhattan links with named protocols."
+            "description": "Services and how requests flow between them; manhattan links with named protocols, asynchronous work dashed with open arrows.",
+            "category": "Software architecture"
+        },
+        {
+            "name": "Shapes (UML classes)",
+            "kind": "UML class diagram",
+            "file": "examples/shapes-uml.json",
+            "description": "UML classes and their relations: inheritance (hollow triangles at the parent), realization of an interface (dashed), aggregation (diamond), dependency (dashed open arrow); abstract class and methods in italics, static members underlined.",
+            "category": "Software architecture"
+        },
+        {
+            "name": "Login sequence",
+            "kind": "sequence diagram",
+            "file": "examples/sequence-login.json",
+            "description": "Participants as coloured columns, messages numbered in time order, replies as dashed lines with open arrows (UML).",
+            "sketch": true,
+            "category": "Software architecture"
+        },
+        {
+            "name": "Package dependencies",
+            "kind": "big data relation graph",
+            "file": "examples/big-data-packages.json",
+            "description": "29 packages in four layers (ui → core → data → utils), placed by hand.",
+            "sketch": true,
+            "category": "Software architecture"
+        },
+        {
+            "name": "Find the largest number",
+            "kind": "flowchart",
+            "file": "examples/find-largest.json",
+            "description": "An algorithm top to bottom: yes / no branches and a loop drawn around the steps.",
+            "category": "Other"
         },
         {
             "name": "Release process",
             "kind": "process planning",
             "file": "examples/release-process.json",
-            "description": "Steps in order; review and test loop back to development, drawn above and below."
+            "description": "Steps in order; review and test loop back to development (dashed: rework), drawn above and below.",
+            "category": "Other"
         },
         {
-            "name": "Shapes (UML-ish)",
-            "kind": "UML (partly)",
-            "file": "examples/shapes-uml.json",
-            "description": "Classes and inheritance; arrows point to the parent class (no UML arrow heads yet)."
+            "name": "Marble texture",
+            "kind": "textures (shader-like)",
+            "file": "examples/texture-marble.json",
+            "description": "Coordinates, noise and bands mixed into a marble pattern.",
+            "sketch": true,
+            "category": "Other"
         }
     ]
 }

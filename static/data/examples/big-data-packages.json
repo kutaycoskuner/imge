@@ -1,0 +1,1522 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 7,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "ui/button",
+                    "color": "#d6409f",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "ui/dialog",
+                    "color": "#d6409f",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "ui/menu",
+                    "color": "#d6409f",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "ui/table",
+                    "color": "#d6409f",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 0
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "ui/chart",
+                    "color": "#d6409f",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": -100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "ui/form",
+                    "color": "#d6409f",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": -200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "ui/tabs",
+                    "color": "#d6409f",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n8",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": -300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "ui/toast",
+                    "color": "#d6409f",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n9",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "core/router",
+                    "color": "#3e63dd",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n10",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "core/state",
+                    "color": "#3e63dd",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n11",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "core/events",
+                    "color": "#3e63dd",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n12",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "core/i18n",
+                    "color": "#3e63dd",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n13",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 0
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "core/auth",
+                    "color": "#3e63dd",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n14",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": -100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "core/theme",
+                    "color": "#3e63dd",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n15",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": -200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "core/layout",
+                    "color": "#3e63dd",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n16",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": -300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "core/forms",
+                    "color": "#3e63dd",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n17",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "data/http",
+                    "color": "#12a594",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n18",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "data/cache",
+                    "color": "#12a594",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n19",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "data/store",
+                    "color": "#12a594",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n20",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "data/schema",
+                    "color": "#12a594",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n21",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 0
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "data/query",
+                    "color": "#12a594",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n22",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": -100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "data/sync",
+                    "color": "#12a594",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n23",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "utils/strings",
+                    "color": "#8d8d8d",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n24",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "utils/dates",
+                    "color": "#8d8d8d",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n25",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "utils/numbers",
+                    "color": "#8d8d8d",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n26",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "utils/arrays",
+                    "color": "#8d8d8d",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n27",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "utils/objects",
+                    "color": "#8d8d8d",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n28",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": -100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "utils/ids",
+                    "color": "#8d8d8d",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n29",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": -200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "utils/log",
+                    "color": "#8d8d8d",
+                    "shape": "square"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n14",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n11",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n15",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n11",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n14",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n10",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n12",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l9",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n14",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l10",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n10",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l11",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n16",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l12",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n12",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l13",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n7",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l14",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n7",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n15",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l15",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n8",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n11",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l16",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n9",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n21",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l17",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n9",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n23",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l18",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n10",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n19",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l19",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n10",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n22",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l20",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n11",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n28",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l21",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n11",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n29",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l22",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n17",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l23",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n24",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l24",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n17",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l25",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n18",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l26",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n27",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l27",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n15",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n25",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l28",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n20",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l29",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n23",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l30",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n17",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n29",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l31",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n17",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n27",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l32",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n18",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n24",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l33",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n18",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n28",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l34",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n19",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n27",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l35",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n19",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n26",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l36",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n20",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n23",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l37",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n20",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n25",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l38",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n21",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n26",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l39",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n21",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n23",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l40",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n24",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l41",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n29",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

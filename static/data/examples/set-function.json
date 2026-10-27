@@ -1,0 +1,175 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 7,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": -660,
+                    "y": 300
+                },
+                "ports": [],
+                "content": {
+                    "name": "Set A",
+                    "color": "#2a9fd6",
+                    "children": [
+                        "n2",
+                        "n3"
+                    ],
+                    "shape": "circle"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "1",
+                    "color": "#2a9fd6",
+                    "shape": "circle"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 140
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "2",
+                    "color": "#2a9fd6",
+                    "shape": "circle"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": -60,
+                    "y": 300
+                },
+                "ports": [],
+                "content": {
+                    "name": "Set B",
+                    "color": "#46a758",
+                    "children": [
+                        "n5",
+                        "n6"
+                    ],
+                    "shape": "circle"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "content": {
+                    "name": "x",
+                    "color": "#46a758",
+                    "shape": "circle"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 140
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "content": {
+                    "name": "y",
+                    "color": "#46a758",
+                    "shape": "circle"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "name": "f",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "name": "f",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

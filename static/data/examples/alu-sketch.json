@@ -1,0 +1,484 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 7,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 320
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Register A (4 bits)",
+                    "color": "#ffc53d",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 160
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Register B (4 bits)",
+                    "color": "#ffc53d",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": -60
+                },
+                "ports": [
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Opcode (2 bits)",
+                    "color": "#ffc53d",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 380
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "A"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "B"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Sum"
+                    },
+                    {
+                        "id": "o2",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Carry"
+                    }
+                ],
+                "content": {
+                    "name": "Adder",
+                    "color": "#2a9fd6",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 240
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "A"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "B"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "AND unit",
+                    "color": "#2a9fd6",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "A"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "B"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "OR unit",
+                    "color": "#2a9fd6",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 260
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Add"
+                    },
+                    {
+                        "id": "i2",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "AND"
+                    },
+                    {
+                        "id": "i3",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "OR"
+                    },
+                    {
+                        "id": "i4",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Select"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Multiplexer (picks by opcode)",
+                    "color": "#8e4ec6",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n8",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 260
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "content": {
+                    "name": "Result register",
+                    "color": "#46a758",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n9",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    }
+                ],
+                "content": {
+                    "name": "Flags (carry, zero)",
+                    "color": "#e5484d",
+                    "shape": "square"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "name": "4 bits",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i2"
+                }
+            },
+            {
+                "id": "l9",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i3"
+                }
+            },
+            {
+                "id": "l10",
+                "type": "basic",
+                "name": "select",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "dashed",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i4"
+                }
+            },
+            {
+                "id": "l11",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n7",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l12",
+                "type": "basic",
+                "name": "carry",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "dashed",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o2"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

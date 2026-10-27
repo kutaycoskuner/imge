@@ -1,0 +1,11 @@
+{
+    "metadata": { "format": "imge-node-type", "type": "group", "version": 2, "graphFormat": 6 },
+    "node": {
+        "id": "n1",
+        "type": "group",
+        "typeVersion": 2,
+        "position": { "x": 0, "y": 0 },
+        "ports": [],
+        "content": { "name": "Group", "color": null, "children": [] }
+    }
+}

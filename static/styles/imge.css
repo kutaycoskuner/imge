@@ -63,6 +63,14 @@
     box-shadow: 0 2px 4px var(--col-transparent-1);
 }
 
+/* a node with a colour (GraphNode sets --node-col and --node-fill, see $lib/graph/color.ts):
+   border in the colour itself, fill a dim version of it; defined before .node.selected so
+   the orange selection border still shows on a coloured node */
+.node.colored {
+    border-color: var(--node-col);
+    background-color: var(--node-fill);
+}
+
 
 
 /* ---------------------------------------------------------------------------------------
@@ -125,6 +133,36 @@ new
     background-color: var(--col-selected);
 }
 
+/* port look (Esc menu, display only; class ports-<look> on .world): hollow = an outline
+   the same size (border inside the box, so links still meet the centre); hidden = see-through
+   until the mouse is over the node, so links can still be dragged from them (the image
+   export leaves see-through ports out) */
+.world.ports-hollow .port {
+    box-sizing: border-box;
+    background-color: var(--bg);
+    border: 1.5px solid var(--col);
+}
+
+.world.ports-hollow .port:hover {
+    background-color: var(--bg);
+    border-color: var(--col-selected);
+}
+
+.world.ports-hidden .port {
+    opacity: 0;
+    transition: opacity 0.12s;
+}
+
+.world.ports-hidden .node:hover .port {
+    opacity: 1;
+}
+
+/* while an image is made (export-image.ts): hidden ports stay out, even under the mouse */
+.world.ports-hidden.exporting .node .port {
+    opacity: 0;
+    transition: none;
+}
+
 /* keyboard key caps (Kbd.svelte, and any <kbd> on the site) */
 kbd {
     display: inline-block;
@@ -165,8 +203,185 @@ kbd {
     box-shadow: 0 0 0 1px var(--col-selected), 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* group (node type "group"): a frame behind other nodes, its name in a gap of the top edge
+   (fieldset + legend). The node box itself is invisible and lets the mouse through; only the
+   name takes it (select, drag, double-click to rename). Fixed size for now. */
+.node.group,
+.node.group.selected,
+.node.group:hover {
+    width: 20em;
+    height: 12em;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+.group-frame {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    min-inline-size: 0;
+    border: 2px solid var(--col-link);
+    border-radius: 4px;
+}
+
+.group-title {
+    color: var(--col-link); /* the name takes the frame's colour (below: coloured, selected) */
+    margin: 0 auto; /* centred on the top edge */
+    padding: 0 0.6em;
+    font-size: 1.2em;
+    white-space: nowrap;
+    max-width: calc(100% - 2em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: auto;
+    cursor: move;
+}
+
+.group-title .node-title {
+    cursor: inherit;
+}
+
+.node.group.colored .group-frame {
+    border-color: var(--node-col);
+    background: color-mix(in srgb, var(--node-col) 6%, transparent);
+}
+
+.node.group.colored .group-title {
+    color: var(--node-col);
+}
+
+.node.group.selected .group-frame {
+    border-color: var(--col-selected);
+}
+
+.node.group.selected .group-title {
+    color: var(--col-selected);
+}
+
+/* a group's resize handle: a small corner mark at the bottom right, the only part besides the
+   name that takes the mouse */
+.group-resize {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 14px;
+    height: 14px;
+    pointer-events: auto;
+    cursor: nwse-resize;
+    border-right: 3px solid var(--col-link);
+    border-bottom: 3px solid var(--col-link);
+    border-radius: 0 0 4px 0;
+    opacity: 0.6;
+}
+
+.group-resize:hover,
+.node.group.selected .group-resize {
+    opacity: 1;
+}
+
+.node.group.colored .group-resize {
+    border-color: var(--node-col);
+}
+
+.node.group.selected .group-resize {
+    border-color: var(--col-selected);
+}
+
 .node-title {
     cursor: text;
+}
+
+/* node shapes (content `shape`, see NODE_SHAPES in $lib/graph/node-types.ts): a circle node is
+   round with its name in the middle, its ports on the left and right (top / bottom in
+   top-to-bottom graphs); a circle group has a round frame (groups.ts makes its rect a square) */
+.node.shape-circle:not(.group) {
+    /* as wide as the name plus a little padding (not the square's 10em and 1em padding),
+       at least 3.5em, at most 9em (longer names wrap); as tall as wide */
+    width: max-content;
+    min-width: 3.5em;
+    max-width: 9em;
+    height: auto;
+    aspect-ratio: 1;
+    padding: 0.5em;
+    box-sizing: border-box;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.node.group.shape-circle .group-frame {
+    border-radius: 50%;
+}
+
+/* UML class (node type "uml-class"): class name on top, then the attributes and the methods
+   compartments, each a list of member lines (GraphNode, parsed by $lib/graph/uml.ts) */
+.node.uml {
+    width: auto;
+    min-width: 10em;
+    max-width: 28em;
+    padding: 0;
+    text-align: left;
+    border-radius: 2px; /* UML classes are drawn as rectangles: corners only just softened */
+}
+
+.node.uml .node-title,
+.node.uml .node-title-input {
+    padding: 0.6em 1em;
+    text-align: center;
+    font-weight: 600;
+}
+
+.uml-compartment {
+    list-style: none;
+    margin: 0;
+    padding: 0.35em 0.9em;
+    min-height: 0.8em; /* an empty compartment still shows as a band */
+    border-top: 1px solid var(--col-border);
+    font-family: monospace;
+    font-size: 0.85em;
+}
+
+.node.uml.colored .uml-compartment {
+    border-top-color: var(--node-col);
+}
+
+.uml-line {
+    white-space: pre;
+    line-height: 1.5;
+}
+
+/* UML text styles: abstract class names and {abstract} methods in italics, {static}
+   members underlined (on the canvas; the Properties field shows the markers instead) */
+.node.uml.abstract .node-title { font-style: italic; }
+.uml-line.abstract { font-style: italic; }
+.uml-line.static {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* syntax highlighting of member lines */
+.uml-marker { color: #8e4ec6; font-style: italic; }
+.uml-property { color: #8e4ec6; }
+.uml-visibility { color: #d6409f; font-weight: 600; }
+.uml-modifier { color: #8e4ec6; }
+.uml-type { color: #2a9fd6; }
+.uml-default { color: #46a758; }
+.uml-param { font-style: italic; }
+.uml-punct { opacity: 0.6; }
+
+/* format check: a line that doesn't follow the notation (its error is the tooltip) */
+.uml-line.invalid {
+    text-decoration: underline wavy #d9534f;
+    text-decoration-skip-ink: none;
+    text-underline-offset: 3px;
 }
 
 .node-title-input {
@@ -218,13 +433,51 @@ kbd {
     cursor: pointer;
 }
 
-/* arrowheads (SVG markers on .link paths) and mid-link direction chevrons */
+/* line styles (link.line); round caps turn the zero-length dashes into dots */
+.link.line-dashed {
+    stroke-dasharray: 9 5;
+}
+
+.link.line-dotted {
+    stroke-dasharray: 0 5;
+    stroke-linecap: round;
+}
+
+/* end marks (SVG markers on .link paths, link.mark) and mid-link direction chevrons:
+   filled in the line colour, hollow with the background inside (the line under it
+   doesn't show through), open = strokes only */
 .link-arrow {
     fill: var(--col-link);
+    stroke: var(--col-link);
+    stroke-width: 0;
+    stroke-linejoin: miter;
+}
+
+.link-arrow.mark-hollow,
+.link-arrow.mark-open {
+    stroke-width: 1.4;
+}
+
+.link-arrow.mark-hollow {
+    fill: var(--bg);
+}
+
+.link-arrow.mark-open {
+    fill: none;
+    stroke-linecap: round;
 }
 
 .link-arrow.selected {
     fill: var(--col-selected);
+    stroke: var(--col-selected);
+}
+
+.link-arrow.mark-hollow.selected {
+    fill: var(--bg);
+}
+
+.link-arrow.mark-open.selected {
+    fill: none;
 }
 
 .link-chevrons path {

@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-16
+	//   last update     : 2026-10-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -11,7 +11,8 @@
 	// folder, remember it or remove the saved folder), see the imge graphs in it by name and
 	// open one with a click, save / save as, optional autosave, download a copy; the graph's
 	// direction; a Links section with the display-only shape override and "apply to all
-	// links" (writes the shape into every link). Buttons with a shortcut show it as key caps.
+	// links" (writes the shape into every link) and the port look (filled / hollow / hidden,
+	// display only). Buttons with a shortcut show it as key caps.
 	// Chrome and Edge read and write the folder; Firefox and Safari can only read it, so
 	// saving downloads the file there. All actions and state live in $lib/graph/file-access.ts.
 	import {
@@ -37,6 +38,9 @@
 		linkShapeOverride,
 		linkArrowOverride,
 		showChevrons,
+		portLook,
+		PORT_LOOKS,
+		type PortLook,
 		setAllLinkShapes,
 		setAllLinkArrows,
 		setDirection,
@@ -57,13 +61,8 @@
 		graph.update((g) => setDirection(g, direction, sizes));
 	}
 
-	// what the arrow choices look like in the selects
-	const ARROW_LABELS: Record<LinkArrow, string> = {
-		forward: '→ forward',
-		both: '↔ both',
-		backward: '← backward',
-		none: 'none'
-	};
+	// what the arrow choices look like in the selects (shared with the Properties panel)
+	import { LINK_ARROW_LABELS as ARROW_LABELS } from './properties/sections';
 
 	let applyArrow: LinkArrow = 'forward';
 	$: if ($linkArrowOverride) applyArrow = $linkArrowOverride;
@@ -76,6 +75,13 @@
 		graph.update((g) => setAllLinkArrows(g, applyArrow));
 		linkArrowOverride.set(null);
 	}
+
+	// what the port look choices read as
+	const PORT_LOOK_LABELS: Record<PortLook, string> = {
+		filled: '■ filled',
+		hollow: '□ hollow',
+		hidden: 'hidden (shown on hover)'
+	};
 
 	let saveAsName = '';
 	$: w = $workspace;
@@ -274,6 +280,13 @@
 			<input type="checkbox" bind:checked={$showChevrons} />
 			<span>Direction chevrons in the middle of links (display only)</span>
 		</label>
+		<div class="row">
+			<span>Ports</span>
+			<select class="choice" bind:value={$portLook}>
+				{#each PORT_LOOKS as look}<option value={look}>{PORT_LOOK_LABELS[look]}</option>{/each}
+			</select>
+			<span class="note">display only, not saved; hidden ports show while the mouse is over their node</span>
+		</div>
 		<p class="note">
 			A selected link: <Kbd keys="R" /> routes it above or below when it closes a cycle or loops back
 			to its node; <Kbd keys="F2" /> or double-click edits its name.

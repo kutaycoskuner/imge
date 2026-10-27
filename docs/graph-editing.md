@@ -2,13 +2,15 @@
 
 How to create, edit and delete nodes and links in the graph editor, the rules links follow, and a reference for the functions behind it.
 
-State as of 2026-10-17.
+State as of 2026-10-23.
 
 - [Using it](#using-it)
     - [Mouse and keys](#mouse-and-keys)
     - [Link rules](#link-rules)
     - [Link shapes](#link-shapes)
     - [Arrows and link names](#arrows-and-link-names)
+    - [Line styles and end marks](#line-styles-and-end-marks)
+    - [Port look](#port-look)
     - [Cycles and self-loops](#cycles-and-self-loops)
     - [Direction and transpose](#direction-and-transpose)
     - [Undo and redo](#undo-and-redo)
@@ -30,10 +32,14 @@ State as of 2026-10-17.
 | Click node / link | Select it (selected items turn orange). |
 | Shift+click node | Add it to the selection, or remove it. |
 | Click empty space | Clear the selection (and start panning). |
-| Shift+drag empty space | Box selection: draws a rectangle and adds every node it touches (partly inside is enough) to the selection; the selection updates while you drag, and nodes the box leaves again drop out. Esc cancels and restores the selection from before. A Shift+click without dragging keeps the selection. |
-| Drag node | Move it, and every other selected node with it. Its top-left corner snaps to half grid squares (the dots and the midpoints between them); hold **Alt** to move freely, or turn snapping off with the toolbar's snap button. |
+| Shift+drag empty space | Box selection: draws a rectangle and adds every node it touches (partly inside is enough; a group only when it is completely inside) to the selection; the selection updates while you drag, and nodes the box leaves again drop out. Esc cancels and restores the selection from before. A Shift+click without dragging keeps the selection. |
+| Drag node | Move it, and every other selected node with it (a selected group with everything it holds). Its top-left corner snaps to half grid squares (the dots and the midpoints between them); hold **Alt** to move freely, or turn snapping off with the toolbar's snap button. Dropped inside a group's frame, a node that isn't in a group joins that group. |
+| **Ctrl+G** (Cmd+G) | Group: put the selected nodes in a new group that wraps them; if they were all in one group, the new group goes inside it. With exactly one group among the selected nodes, the others are **added to that group** instead. The group is selected. Replaces the browser's "find next" while the canvas has the keyboard. |
+| **Ctrl+Shift+G** (Cmd+Shift+G) | Ungroup: a selected group is dissolved (removed; what it held goes to the group it was in); selected nodes in a group are taken out of it (to that group's own group, if any). |
+| **Ctrl**+drag node (Cmd) | Take it out of its group: on release it leaves its group, or joins the group it was dropped in. |
+| Drag a group's corner mark | Resize the group (bottom right); never smaller than its children plus a 64-unit margin. |
 | Toolbar "Add Node" | New node at the screen center. |
-| **Shift+A** | New node centered on the mouse. |
+| **Shift+A** | New node centered on the mouse; made inside a group's frame, it joins that group. |
 | Double-click the name, or **F2** | Edit the node's name. Enter or clicking away saves; Esc cancels (without opening the menu); an empty name keeps the old one. |
 | **Delete** / **Backspace** | Remove the selected link, or the selected nodes together with all their links. |
 | **Ctrl+C** (Cmd+C) | Copy the selected nodes and the links between them (links to nodes that aren't selected are left out). Kept in memory for this tab, so it can be pasted into another graph opened in the same tab; a reload forgets it. With no node selected, the browser's own copy runs. |
@@ -52,6 +58,7 @@ State as of 2026-10-17.
 | Drag a selected manhattan link's middle segment | Move its corner (the highlighted grab area); saved as the link's `bend`. |
 | **+** / **=** and **-** | Zoom in / out by ×1.2 toward the screen center (the mouse wheel zooms toward the cursor). |
 | **Home** | Fit the whole graph in the window (same as the toolbar's corner-brackets button). |
+| **N** | Show or hide the Properties panel: the selection's details, all edited there; see [graph-properties-panel.md](graph-properties-panel.md). |
 | **Ctrl+S** (Cmd+S) | Save the graph to its file; a graph without a file yet opens the menu (see [graph-saving.md](graph-saving.md)). Replaces the browser's "save page". |
 | **Ctrl+Shift+S** (Cmd+Shift+S) | Download the graph as a `.json` file (same as the toolbar's export button). |
 | **Esc** | Cancel a link drag; otherwise open the menu (open / save graphs, see [graph-saving.md](graph-saving.md)). |
@@ -61,11 +68,12 @@ State as of 2026-10-17.
 - Shortcuts are paused while the Esc menu is open, except Ctrl+S and Ctrl+Shift+S, which work everywhere.
 - The toolbar's hover hints and the menu's buttons show their key as key caps, e.g. <kbd>Shift</kbd>+<kbd>A</kbd>: a hint text puts keys in square brackets (`"Add Node [Shift+A]"`) and `AssistanceMsg` draws them with `Kbd.svelte`.
 - Other Ctrl / Cmd / Alt combinations are left to the browser.
-- A new node is named "Node" and has one input and one output.
+- A new node is built from the Basic type's template: named "Node", with one input and one output.
 
 ### Link rules
 
-- A link always goes from an output (right side of a node) to an input (left side).
+- A link connects a port that gives links to one that takes them: an output (right side of a node) to an input (left side). Which port kinds may be linked is decided in one place, `CAN_LINK` (out → in, and two-way `any` ports with everything; no node type has `any` ports yet).
+- A drag may start at either end: dragging from an input without links to an output makes the same link, stored from the output to the input.
 - Cycles are allowed (1 → 2 → 1), and so is a link from a node to itself (a self-loop); see [Cycles and self-loops](#cycles-and-self-loops).
 - Any number of links may meet at a port, in both directions (many-to-many): linking into a connected input adds a link.
 - No exact duplicates: one link per output-port → input-port pair.
@@ -101,6 +109,7 @@ Every link stores its own `arrow`, relative to its direction (output → input):
 | `both` | ↔ arrowheads at both ends. |
 | `none` | no arrowhead (graphs from before v4 open this way, so they look as before). |
 
+- **Splines and arrowheads:** a spline leaves and enters its ports with a short straight piece (17 units, as long as an arrowhead reaches), and curves only in between. An arrowhead is drawn straight along the end of its line, so this keeps it on the line however the nodes are placed.
 - **One link:** select it and press <kbd>D</kbd>.
 - **All links**, in the Esc menu's **Links** section, the same way as shapes:
     - **Show all arrows as …**: display only, not saved (`localStorage` key `imge.graphEditor.linkArrowOverride`)
@@ -108,6 +117,43 @@ Every link stores its own `arrow`, relative to its direction (output → input):
     - **Direction chevrons**: a display option (`imge.graphEditor.showChevrons`) that adds small chevrons in the middle of every link that has an arrow, pointing the same way. Useful where the ends are hidden behind other lines.
 - Arrowheads end just outside the port square, so the port never covers them. Lines, arrowheads and chevrons share one solid colour (`--col-link` in `imge.css`: the text colour mixed into the background), so a line never shows through its arrowhead.
 - **Names:** a link's `name` is drawn in the middle of the link, with an outline in the background colour so it stays readable over other lines. Double-click a link (or select it and press <kbd>F2</kbd>) to edit it.
+
+### Line styles and end marks
+
+Besides shape and arrow, every link has a **line** and an end **mark** (graph format v7), set in the Properties panel's Look section:
+
+| Line | Look |
+|---|---|
+| `solid` | a solid line (new links, and every link from before v7) |
+| `dashed` | dashes (UML realization, dependency) |
+| `dotted` | round dots |
+
+| Mark | Look |
+|---|---|
+| `arrow` | ▶ filled arrowhead (new links, and every link from before v7) |
+| `open-arrow` | > two strokes (UML association, dependency) |
+| `triangle` | ▷ hollow triangle (UML inheritance, realization) |
+| `diamond` | ◇ hollow diamond (UML aggregation) |
+| `filled-diamond` | ◆ filled diamond (UML composition) |
+
+- The mark is drawn at the end(s) **arrow** names; arrow `none` draws no mark. <kbd>D</kbd> and the Esc menu's arrow override work as before and move or hide the mark.
+- Hollow marks are filled with the background colour so the line under them doesn't show through; they are larger than the arrowhead so a triangle and a diamond are easy to tell apart.
+- A spline's straight end piece grows with its mark (17 units for arrows, 24 for triangles, 34 for diamonds), so the whole mark lies on the line.
+- **Relation** in the Look section applies a UML relation's line and mark in one step (see [graph-uml.md](graph-uml.md#relations)).
+- Image export keeps line styles and marks (dashes and markers are part of the vector SVG).
+
+### Port look
+
+How the ports (the small squares links attach to) are drawn, for all nodes: the toolbar's **port button** (a node box whose ports show the current look; each click switches filled → hollow → hidden → filled), or Esc menu → Config → **Links** → **Ports**. A display setting kept in this browser (`localStorage` key `imge.graphEditor.portLook`), never written into the graph.
+
+| Look | Drawn as |
+|---|---|
+| filled | solid squares (the default) |
+| hollow | outlined squares, the same size |
+| hidden | not drawn until the mouse is over their node; then they show and take links as usual (drag from one, drop on another node's port) |
+
+- Links attach at the same place in every look.
+- Image export follows the look; with hidden ports the image has none, even for a node under the mouse. Useful for clean diagrams, e.g. UML classes whose relations meet the box edge.
 
 ### Cycles and self-loops
 
@@ -158,7 +204,7 @@ When an action is refused or changes something you might not expect, a short mes
 | Situation | Message |
 |---|---|
 | The same output-to-input link already exists | That link already exists |
-| Output dropped on an output, or input on an input | Links go from an output (right) to an input (left) |
+| Output dropped on an output, or input on an input (kinds `CAN_LINK` doesn't allow) | Links go from an output (right) to an input (left) |
 | F with fewer or more than two nodes selected | Select two nodes (Shift+click), then press F |
 | F when both directions are already linked (or a node has no output / input) | These nodes are already linked (or have no output / input) |
 | Ctrl+Z / Ctrl+Y with nothing left | Nothing to undo / Nothing to redo |
@@ -179,7 +225,9 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `editingNodeId` | Id of the node whose name is being edited, or `null`. `GraphNode` shows the text field for that node. |
 | `editingLinkId` | Id of the link whose name is being edited, or `null`. `GraphLinks` shows the text field in the middle of that link. |
 | `linkShapeOverride` / `linkArrowOverride` | Display-only shape / arrow for all links, or `null` for each link's own; never written into the graph. |
+| `portLook` | Display-only port look (`PORT_LOOKS`: filled, hollow, hidden), the class `ports-<look>` on the world layer; never written into the graph. |
 | `showChevrons` | Display-only: direction chevrons in the middle of links. |
+| `showDotGrid` / `snapToGrid` / `showPropertiesPanel` | Display settings: dot grid, snapping, and the Properties panel shown or hidden. |
 
 `persistViewSettings()` (called by the page on mount) restores the three display settings from this browser and saves every change there.
 
@@ -190,20 +238,33 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 | `emptyGraph()` | A graph with no nodes or links, stamped with the current format. | `Graph` |
 | `nextNodeId(g)` | `n` + highest `n<number>` id + 1 (ids in another form are ignored), so ids are never reused after a delete in the middle. | `string` |
 | `nextLinkId(g)` | `l` + highest `l<number>` link id + 1; never reused either. | `string` |
-| `addNode(g, at, name = 'Node')` | Adds a node with one input (`i1`) and one output (`o1`), roughly centered on `at`. Its position (top-left corner) is rounded to whole units. | `{ graph, node }` |
-| `renameNode(g, nodeId, name)` | Sets the name, trimmed. A blank name keeps the old one. | `Graph` |
+| `addNode(g, at, name?)` | Adds a basic node built from the basic template (`node-types.ts`): ports `i1` (in) and `o1` (out), `content` `{ name: "Node", color: null }` (`name` replaces the default), `typeVersion` of the template; roughly centered on `at`, its position (top-left corner) rounded to whole units. | `{ graph, node }` |
+| `renameNode(g, nodeId, name)` | Sets `content.name`, trimmed, for a node whose content has a name. A blank name keeps the old one. | `Graph` |
+| `setNodeColor(g, nodeIds, color)` | Sets `content.color` of the given nodes whose content has a colour (`"#rrggbb"`, or `null` for the default look); the same graph back when all already have it. | `Graph` |
+| `groupFrames(g, sizes)` (`groups.ts`) | Every group's frame: its stored rect grown to wrap its children with `GROUP_MARGIN` (64), nested groups bottom-up; the store `frames` keeps it current from the measured `nodeSizes`. | `Record<id, Rect>` |
+| `groupNodes(g, nodeIds)` / `ungroupNodes(g, nodeIds)` (`store.ts`) | Ctrl+G / Ctrl+Shift+G: a new group around the nodes (inside their shared group, if any) / dissolve groups, take nodes out. | `{ graph, groupId }` / `{ graph, freed }` |
+| `setGroupMembership(g, nodeIds, groupId)` | Moves nodes into a group, or out of every group (`null`); a group never goes into itself or a group it holds. | `Graph` |
+| `resizeGroup(g, groupId, size, sizes)` | Sets a group's size from its frame's top-left corner, never smaller than `minGroupSize` (children + margin, at least 100). | `Graph` |
+| `withDescendants(g, ids)` / `parentOf(g, id)` / `groupAt(g, frames, point, skip)` | The ids plus everything in the groups among them / the group a node is in / the innermost group under a point. | ids / node |
+| `setNodeContent(g, nodeId, patch)` | Sets keys of a node's `content` (a type's own Properties section, e.g. a UML class's `attributes` / `methods`); other keys stay; the same graph back when every value is already there. | `Graph` |
+| `setNodeType(g, nodeId, type)` | Sets a node's `type` (Properties panel's Type dropdown) and reshapes it to the type's template, port kind by port kind: a kind the type has no ports of is removed with its links, a kind the node lacks comes from the template; `content` gets the template's missing keys (existing ones kept); `typeVersion` follows the type. The same graph back when unchanged; one undo restores everything. | `Graph` |
+| `isGroup(node)` / `hasLinks(g, nodeId)` | Whether a node is a group (frame without ports; `addLink` and `quickLink` never use it) / whether any link starts or ends at it. | `boolean` |
+| `setNodePosition(g, nodeId, at)` | Puts one node's top-left corner at a world point (Properties panel); the same graph back when it is already there. | `Graph` |
 | `moveNodes(g, nodeIds, dx, dy)` | Moves the given nodes by a world-space delta. | `Graph` |
-| `removeNodes(g, nodeIds)` | Removes the nodes and every link that starts or ends at them. | `Graph` |
+| `removeNodes(g, nodeIds)` | Removes the nodes and every link that starts or ends at them; they leave their group, and a removed group's children stay. | `Graph` |
 | `createNodeAt(at)` | Store action: adds a node to the open graph centered on `at` and selects only it. Used by Shift+A and the toolbar. | the new `GraphNode` |
 
 ### Links
 
 | Function | Does | Returns |
 |---|---|---|
-| `addLink(g, { source, target, type?, name?, shape?, bend?, arrow?, route?, id? })` | Connects an output (`source`) to an input (`target`), following the [link rules](#link-rules); source and target may be the same node. Defaults: shape `spline`, arrow `forward`, route `above`. Gets the next id, or the given `id` when re-routing (if no other link uses it); re-routing also passes the old shape, bend, arrow and route. | `{ graph, outcome, link? }`, see below |
+| `CAN_LINK` | Which port kinds may be linked: `{ out: [in, any], in: [out, any], any: [in, out, any] }`. The only place this is decided. | constant |
+| `portOf(g, end)` | The port a link end points at; `undefined` for a missing node / port or a group's. | `Port \| undefined` |
+| `addLink(g, { source, target, type?, name?, shape?, bend?, arrow?, route?, line?, mark?, id? })` | Connects two ports whose kinds `CAN_LINK` allows, following the [link rules](#link-rules); the ends may come in either order and the link is stored from the giving end (out / any) to the taking end (in / any); source and target may be the same node. Defaults: shape `spline`, arrow `forward`, route `above`, line `solid`, mark `arrow`. Gets the next id, or the given `id` when re-routing (if no other link uses it); re-routing also passes the old shape, bend, arrow, route, line and mark. | `{ graph, outcome, link? }`, see below |
 | `removeLink(g, linkId)` | Removes one link by its id. | `Graph` |
 | `cycleLinkShape(g, linkId)` | Next shape for one link: spline → line → manhattan → spline. | `Graph` |
 | `setAllLinkShapes(g, shape)` | Writes one shape into every link ("Apply shape to all links"); bends are kept. | `Graph` |
+| `setLinkStyle(g, linkId, style)` | Sets any of `shape`, `arrow`, `route`, `line`, `mark` of one link (Properties panel); the same graph back when nothing changes, so no undo step. | `Graph` |
 | `setLinkBend(g, linkId, bend)` | Sets a link's `bend`, clamped to 0..1 (a manhattan corner, or the lane distance of a link going around). | `Graph` |
 | `cycleLinkArrow(g, linkId)` | Next arrow for one link: forward → both → backward → none → forward. | `Graph` |
 | `setAllLinkArrows(g, arrow)` | Writes one arrow into every link ("Apply arrow to all links"). | `Graph` |
@@ -264,6 +325,18 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-27 — in the text view (see [graph-text-view.md](graph-text-view.md)) the keys that act on the canvas itself (+, -, Home, Shift+A, F2) do nothing; store `viewMode`
+- 2026-10-27 — port look (filled, hollow, hidden until hover): toolbar button (cycles) and the Esc menu's Links section, display only; store `portLook`
+- 2026-10-27 — links get a line style (solid, dashed, dotted) and an end mark (arrow, open arrow, hollow triangle, hollow / filled diamond), graph format v7; `addLink` and `setLinkStyle` take `line` and `mark`; re-routing keeps them
+- 2026-10-23 — Ctrl+G adds the selection to the one selected group; nodes made (Shift+A, toolbar) or pasted (Ctrl+V) inside a group's frame join it
+- 2026-10-23 — keys Ctrl+G (group the selection) and Ctrl+Shift+G (ungroup); new functions `groupNodes`, `ungroupNodes`
+- 2026-10-23 — groups hold nodes: drop to join, Ctrl+drag to leave, a group drag moves its children, resize by the corner mark; new module `groups.ts`
+- 2026-10-21 — new function `setNodeContent` (UML class members)
+- 2026-10-21 — graph format v6: nodes keep name and colour in `content` and their ports in one list with `kind`; `addNode` builds from the basic template, `setNodeType` reshapes by port kind and fills `content`; one link rule `CAN_LINK`, `addLink` takes the ends in either order (a drag from an input works) and stores giving → taking; new `portOf`
+- 2026-10-21 — groups: no links to or from a group (`addLink` outcome `unknown-port`, F skips it), a box takes a group only when it is fully inside; new `isGroup`, `hasLinks`
+- 2026-10-21 — node colours (Properties panel); new function `setNodeColor`
+- 2026-10-21 — spline arrowheads stay on their line: splines start and end with a short straight piece the arrowhead lies on
+- 2026-10-17 — Properties panel (N): the selection's details and editing, see graph-properties-panel.md; new functions `setNodePosition`, `setLinkStyle`; shortcuts also pause while a dropdown has the keyboard
 - 2026-10-17 — undo / redo (Ctrl+Z, Ctrl+Y / Ctrl+Shift+Z), one step per edit or mouse gesture; undoing back to the saved graph clears the unsaved marker; new `history.ts`
 - 2026-10-17 — Ctrl+C / Ctrl+V copy and paste nodes with the links between them; new functions `copyNodes`, `pasteNodes`, store `nodeClipboard`
 - 2026-10-17 — box selection: Shift+drag on empty space selects every node the box touches; new function `selectBox`

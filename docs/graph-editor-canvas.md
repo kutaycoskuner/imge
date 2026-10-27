@@ -2,7 +2,7 @@
 
 How the graph editor's endless canvas works: the camera, the two coordinate spaces, zoom, the dot grid and node rendering. Editing nodes and links: [graph-editing.md](graph-editing.md).
 
-State as of 2026-10-14.
+State as of 2026-10-27.
 
 ## Current feature set
 
@@ -16,11 +16,14 @@ State as of 2026-10-14.
 | Dot grid | Endless, faint background; 40-unit spacing that doubles when zoomed out; stays lined up with the nodes. Shown or hidden with the toolbar's dot grid button. |
 | Origin marker | Development only: red/green L at (0, 0) pointing toward +x and +y, Blender axis colors, fixed 40 px size. |
 | Coordinate tracker | Bottom right; whole world coordinates under the mouse. |
-| Nodes | Loaded from `static/data/test-node-graph.json`: title, input points (left), output points (right). |
+| Nodes | Loaded from `static/data/test-node-graph.json` (graph format v7): title from `content.name`, ports placed by their side (in / two-way on the start edge, out on the end edge, see `portSide`); a node with a colour gets a border in it and a dim fill of it (`.node.colored` in `imge.css`). |
 | Node and link editing | Select, add, rename, move, delete, link, detach: see [graph-editing.md](graph-editing.md). |
+| Text view | The toolbar's view button (a window with `>_`) switches between the canvas and the graph drawn as text (experimental, see [graph-text-view.md](graph-text-view.md)). |
+| Port look | The toolbar's port button (a node box whose ports show the current look) switches filled → hollow → hidden → filled; the same setting as the Esc menu's Ports choice, see [graph-editing.md](graph-editing.md#port-look). |
+| Properties panel | Docked on the right (N, toolbar button): shows and edits the selection; see [graph-properties-panel.md](graph-properties-panel.md). |
 | Export | Downloads the graph as `graph_data.json`. |
 | Assistance message | Toolbar buttons show a hint on hover; refused edits show a short message. |
-| Test button | Pans the canvas 10 px to the right (click or Enter). |
+| Export as image | The toolbar's picture button opens **PNG** (transparent) / **JPG** (theme background) / **SVG** (vector, transparent): downloads the whole graph as an image (see [graph-saving.md](graph-saving.md#exporting-an-image)). Replaces the old test button. |
 | Not wired up yet | Import, adding/removing ports. |
 
 ## Files
@@ -35,7 +38,8 @@ State as of 2026-10-14.
 | `src/lib/components/PolkaDots.svelte` | Endless dot grid that follows the camera. |
 | `src/lib/components/OriginAxes.svelte` | Origin marker: red/green L at world (0, 0). |
 | `src/lib/components/CoordTracker.svelte` | Shows the world coordinates under the mouse. |
-| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, transpose, dot grid, snap, open (menu), export. The buttons are a data list (`buttons`: icon, hint, action) rendered by one loop. |
+| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, transpose, dot grid, snap, port look, canvas / text view, Properties panel, open (menu), export, export as image. The buttons are a data list (`buttons`: icon, hint, action) rendered by one loop. |
+| `src/lib/components/properties/` | The Properties panel and its sections (see [graph-properties-panel.md](graph-properties-panel.md)). |
 | `src/lib/icons/` | One component per icon, reusable on any page; markup only, state as props (see its README). |
 | `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node`, port, selection and link styles. |
 | `static/data/test-node-graph.json` | Test graph; node `position` values are world coordinates. File structure and versions: [graph-format.md](graph-format.md). |
@@ -149,6 +153,12 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Changes
 
+- 2026-10-27 — toolbar button for the text view (canvas / text, `icon-terminal`)
+- 2026-10-27 — toolbar button for the port look (filled → hollow → hidden), icon `icon-node-ports`
+- 2026-10-27 — the toolbar's test button is replaced by Export as image (PNG / JPG / SVG)
+- 2026-10-21 — nodes drawn from graph format v6 (content, one ports list with kind)
+- 2026-10-21 — coloured nodes drawn (border in the colour, dim fill)
+- 2026-10-17 — Properties panel docked on the right, toolbar button to show / hide it
 - 2026-10-17 — undo is wired up (see graph-editing.md)
 - 2026-10-16 — toolbar icons moved to `src/lib/icons/`, toolbar buttons kept as a data list
 - 2026-10-16 — node dragging snaps to half grid squares (Alt = free, toolbar snap button); grid spacing moved to `camera.ts` (`gridSpacing`, `snapStep`)

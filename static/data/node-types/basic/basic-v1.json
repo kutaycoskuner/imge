@@ -1,0 +1,12 @@
+{
+    "metadata": { "format": "imge-node-type", "type": "basic", "version": 1, "graphFormat": 5 },
+    "node": {
+        "id": "n1",
+        "name": "Node",
+        "type": "basic",
+        "color": null,
+        "position": { "x": 0, "y": 0 },
+        "inputs": [{ "id": "i1", "type": "basic", "label": "Input" }],
+        "outputs": [{ "id": "o1", "type": "basic", "label": "Output" }]
+    }
+}
