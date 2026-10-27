@@ -2,7 +2,7 @@
 
 How the graph editor opens and saves graphs on your computer, what it remembers and where, and how each page gets its own Esc menu.
 
-State as of 2026-10-23.
+State as of 2026-10-27.
 
 - [Opening and saving](#opening-and-saving)
     - [Which files are listed](#which-files-are-listed)
@@ -68,6 +68,21 @@ The toolbar's export button (the arrow pointing down), the menu's **Download a c
 | Last default download number of the day | `localStorage` key `imge.graphEditor.downloadCounter` (the browser can't see your downloads folder, so it counts here). | No. |
 
 Clearing the site's data in the browser removes the remembered folder and the autosave setting; your files stay where they are.
+
+## Exporting an image
+
+The toolbar's picture button (bottom left) opens three choices; each downloads the **whole graph** (not only the part in view) as an image, named like the graph's file (`my graph.png`) or `imgegraph-<date>.png` / `.jpg` / `.svg` for a graph without a file:
+
+| Format | Background | Good for |
+|---|---|---|
+| **PNG** | transparent | Documents, slides, chats, on any background: a picture at twice the size (2 pixels per world unit), so text stays sharp. |
+| **JPG** | the theme's (light or dark) | Places that don't take transparency, smaller files for photos-style sharing; twice the size like PNG. |
+| **SVG** | transparent | Full vector: shapes and text, sharp at any size; opens as editable shapes in vector editors (Inkscape, Illustrator, Figma). |
+
+- **What is in it:** nodes, links, groups (with the gap for the name in the frame), names, colours, square and circle shapes, UML compartments with highlighting and the red marks of invalid lines, arrowheads and link names, exactly as drawn, with a 40-unit margin.
+- **What is left out:** the selection highlight (the selection is cleared for a moment and restored), the dot grid, group resize marks, link grab areas, shadows, the toolbar, the panel.
+- **How:** `src/lib/graph/export-svg.ts` reads the drawing element by element and writes it as SVG shapes: backgrounds and borders as rectangles / ellipses (rounded corners, single-side lines), text line by line where the browser placed each character (font, colour, baseline), group frames as a border path with a gap; the link layer is SVG already and is copied with its styles. `export-image.ts` turns that SVG into a PNG (transparent) or JPG (theme background) on a canvas. Before saving, the SVG is checked to be valid.
+- **Fonts:** the text keeps its font names (Arial, monospace); a viewer without them uses a similar font.
 
 ## The Esc menu
 
@@ -149,6 +164,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-10-27 — export the graph as an image from the toolbar: PNG (transparent), JPG (theme background), SVG (full vector, transparent)
 - 2026-10-23 — Examples tab: category headings (Mind mapping, Math, Circuits, Software architecture, Other); the kind moved into the chip's hover text so the tab fits without scrolling
 - 2026-10-21 — Examples tab: entries in columns (60% of the window wide), descriptions under the chips, "sketch" tag for types the editor can't draw yet; 17 examples (9 new sketches)
 - 2026-10-17 — undoing back to the opened or saved graph clears the unsaved marker; loading a graph clears the undo history

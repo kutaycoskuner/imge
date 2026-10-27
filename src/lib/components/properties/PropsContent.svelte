@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-10-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -24,6 +24,9 @@
 	$: node = ctx.nodes[0];
 	// the shapes this node's type allows (none: its shape is fixed, e.g. a UML class)
 	$: shapes = NODE_SHAPES.filter((s) => nodeType(node.type)?.shapes?.includes(s.id));
+	// computed here, not in the markup: Svelte 5 compiles a function call as a <select> value
+	// into code that throws ("$0 is not defined")
+	$: shape = nodeShape(node);
 
 	function chooseShape(event: Event): void {
 		const shape = (event.currentTarget as HTMLSelectElement).value;
@@ -66,9 +69,9 @@
 	{#if shapes.length}
 		<dt><label for="prop-node-shape">Shape</label></dt>
 		<dd>
-			<select id="prop-node-shape" class="prop-input" value={nodeShape(node)} on:change={chooseShape}>
-				{#each shapes as shape (shape.id)}
-					<option value={shape.id}>{shape.title}</option>
+			<select id="prop-node-shape" class="prop-input" value={shape} on:change={chooseShape}>
+				{#each shapes as option (option.id)}
+					<option value={option.id}>{option.title}</option>
 				{/each}
 			</select>
 		</dd>

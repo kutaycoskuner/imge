@@ -13,17 +13,17 @@
 </p> -->
 
 <p align="center">
-    <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
+    <img alt="Graph editor in the light theme showing the feature map; the selected round node Node shape is shown in the Properties panel, and the toolbar's image button shows its PNG, JPG and SVG choices" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.24.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.25.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-    <img alt="Graph editor in the light theme showing the feature map; the selected round node Node shape is shown in the Properties panel with Shape set to Circle" src="_display/0.24-graph_editor.png" />
+    <img alt="Graph editor in the light theme showing the feature map; the selected round node Node shape is shown in the Properties panel with Shape set to Circle" src="_display/0.25-graph_editor.png" />
     <br>
-    <sub><i>v0.24.0 graph editor (light theme): the feature map with the round Node shape node selected, its Shape in the Properties panel (N)</i></sub>
+    <sub><i>v0.25.0 graph editor (light theme): the feature map, a round node in the Properties panel (N), and the toolbar's image export (PNG / JPG / SVG)</i></sub>
 </p>
 
 # Installation and Use
@@ -99,6 +99,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] cycles (1 -> 2 -> 1) and self-loops: the link closing a cycle goes around its nodes, above or below (R), lane draggable
 - [x] direction: left-to-right or top-to-bottom; Transpose (toolbar button or Esc menu) switches it, ports, links and routes follow; switching back restores the layout
 - [x] export data as json (default name imgegraph-<date>-<NN>.json)
+- [x] export the graph as an image from the toolbar's picture button: PNG (2x, transparent), JPG (2x, theme background) or SVG (full vector, transparent); the whole graph, as drawn, without selection or editing aids
 - [x] point the editor at a folder on your computer: its imge graphs are listed by name and open with a click; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
 - [x] versioned graph format (now v6: nodes are id, type, typeVersion, position, ports with a kind, and content defined by their type), older files upgraded on load; a sample per version in static/data/samples, a sample node per node type version in static/data/node-types

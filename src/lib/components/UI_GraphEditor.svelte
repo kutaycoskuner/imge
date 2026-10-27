@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-17
+	//   last update     : 2026-10-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -10,8 +10,8 @@
 	// transpose (switch the direction left-to-right / top-to-bottom and turn the layout; the icon's
 	// strong arrow is the current direction), dot grid on / off, snap to grid on / off,
 	// Properties panel on / off,
-	// add node at the screen center, open graph (opens the Esc menu), export (download) and a
-	// test pan button. Hover hints show each button's key in [brackets], drawn as key caps
+	// add node at the screen center, open graph (opens the Esc menu), export (download) and
+	// export as image (a flyout with PNG / JPG / SVG, $lib/graph/export-image.ts). Hover hints show each button's key in [brackets], drawn as key caps
 	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
 	// the page. The buttons are a data list (`buttons`); their icons live in $lib/icons.
 	import { browser } from '$app/environment';
@@ -19,7 +19,8 @@
 	import { createEventDispatcher } from 'svelte';
 
 	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen, menuTab } from '../../stores/imge_main';
-	import { ZOOM_STEP, camera, panBy, zoomAt } from '$lib/camera';
+	import { ZOOM_STEP, camera, zoomAt } from '$lib/camera';
+	import { exportGraphImage, type ImageFormat } from '$lib/graph/export-image';
 	import {
 		createNodeAt,
 		graph,
@@ -56,6 +57,7 @@
 	import IconSidebarRight from '$lib/icons/icon-sidebar-right.svelte';
 	import IconChevronUp from '$lib/icons/icon-chevron-up.svelte';
 	import IconChevronDown from '$lib/icons/icon-chevron-down.svelte';
+	import IconImage from '$lib/icons/icon-image.svelte';
 
 	// transpose: switch between left-to-right and top-to-bottom; the layout turns around node centres
 	$: direction = $graph.metadata.direction;
@@ -112,8 +114,29 @@
 		menuOpen.set(true);
 	};
 
-	// moves the canvas 10 px to the right
-	const test = () => panBy(10, 0);
+	// Export as image: the button opens a flyout with the formats (as data); a choice downloads
+	// the whole graph as that image and closes the flyout; a click elsewhere closes it too
+	const IMAGE_FORMATS: { format: ImageFormat; label: string; hint: string }[] = [
+		{ format: 'png', label: 'PNG', hint: 'Picture, 2x size, transparent background' },
+		{ format: 'jpg', label: 'JPG', hint: 'Picture, 2x size, with the theme background' },
+		{ format: 'svg', label: 'SVG', hint: 'Vector (shapes and text), transparent background' }
+	];
+	let imageMenuOpen = false;
+	const toggleImageMenu = () => (imageMenuOpen = !imageMenuOpen);
+
+	async function exportImage(format: ImageFormat): Promise<void> {
+		imageMenuOpen = false;
+		try {
+			const name = await exportGraphImage(format);
+			handleMouseOver(name ? `Exported ${name}` : 'Nothing to export: the graph is empty');
+		} catch (error) {
+			handleMouseOver(`Could not export the image: ${(error as Error).message}`);
+		}
+	}
+
+	function closeImageMenu(event: MouseEvent): void {
+		if (imageMenuOpen && !(event.target as Element).closest('.image-export')) imageMenuOpen = false;
+	}
 
 	// Emit events (fitToScreen and addNode)
 
@@ -132,6 +155,7 @@
 		icon?: typeof IconPlus;
 		iconProps?: Record<string, unknown>;
 		text?: string; // shown instead of an icon
+		flyout?: boolean; // opens the image formats next to it
 	};
 	let buttons: ToolbarButton[];
 	$: buttons = [
@@ -163,7 +187,7 @@
 		},
 		{ id: 'open', icon: IconChevronUp, hint: 'Open Graph [Esc]', action: openGraphMenu },
 		{ id: 'download', icon: IconChevronDown, hint: 'Download Graph [Ctrl+Shift+S]', action: exportGraph },
-		{ id: 'test', text: 'T', hint: 'test button', action: test }
+		{ id: 'image', icon: IconImage, hint: 'Export as Image (PNG / JPG / SVG)', action: toggleImageMenu, flyout: true }
 	];
 </script>
 
@@ -172,6 +196,7 @@
 	{#each buttons as button (button.id)}
 		<div
 			class="access-function"
+			class:image-export={button.flyout}
 			role="button"
 			tabindex="0"
 			on:click={button.action}
@@ -184,9 +209,26 @@
 			{:else}
 				<div>{button.text}</div>
 			{/if}
+			{#if button.flyout && imageMenuOpen}
+				<!-- the formats, to the right of the button; clicks here don't reach the button -->
+				<div class="image-flyout" role="menu" tabindex="-1" on:click|stopPropagation on:keydown|stopPropagation>
+					{#each IMAGE_FORMATS as option (option.format)}
+						<button
+							role="menuitem"
+							title={option.hint}
+							on:click={() => exportImage(option.format)}
+							on:mouseenter={() => handleMouseOver(`Export as ${option.label}: ${option.hint}`)}
+						>
+							{option.label}
+						</button>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	{/each}
 </div>
+
+<svelte:window on:click={closeImageMenu} />
 
 <!-- Styles -->
 <style>
@@ -220,6 +262,42 @@
 		width: 100%;
 		height: 100%;
 		opacity: 0.8;
+	}
+
+	/* the image formats, beside the toolbar's image button */
+	.image-export {
+		position: relative;
+	}
+
+	.image-flyout {
+		position: absolute;
+		left: calc(100% + 6px);
+		top: 50%;
+		transform: translateY(-50%);
+		display: flex;
+		gap: 3px;
+		padding: 3px;
+		background: var(--bg);
+		border: 1px solid color-mix(in srgb, var(--col) 20%, transparent);
+		border-radius: 4px;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+	}
+
+	/* buttons are reset globally (settings_overlay.css), so the look is set here */
+	.image-flyout button {
+		font: inherit;
+		font-size: 0.75em;
+		color: var(--col);
+		background: none;
+		border: 1px solid color-mix(in srgb, var(--col) 25%, transparent);
+		border-radius: 3px;
+		padding: 0.15em 0.5em;
+		cursor: pointer;
+	}
+
+	.image-flyout button:hover {
+		border-color: var(--col-selected);
+		color: var(--col-selected);
 	}
 
 	@media (max-width: 480px) {

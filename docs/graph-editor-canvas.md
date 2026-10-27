@@ -2,7 +2,7 @@
 
 How the graph editor's endless canvas works: the camera, the two coordinate spaces, zoom, the dot grid and node rendering. Editing nodes and links: [graph-editing.md](graph-editing.md).
 
-State as of 2026-10-21.
+State as of 2026-10-27.
 
 ## Current feature set
 
@@ -21,7 +21,7 @@ State as of 2026-10-21.
 | Properties panel | Docked on the right (N, toolbar button): shows and edits the selection; see [graph-properties-panel.md](graph-properties-panel.md). |
 | Export | Downloads the graph as `graph_data.json`. |
 | Assistance message | Toolbar buttons show a hint on hover; refused edits show a short message. |
-| Test button | Pans the canvas 10 px to the right (click or Enter). |
+| Export as image | The toolbar's picture button opens **PNG** (transparent) / **JPG** (theme background) / **SVG** (vector, transparent): downloads the whole graph as an image (see [graph-saving.md](graph-saving.md#exporting-an-image)). Replaces the old test button. |
 | Not wired up yet | Import, adding/removing ports. |
 
 ## Files
@@ -151,6 +151,7 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Changes
 
+- 2026-10-27 — the toolbar's test button is replaced by Export as image (PNG / JPG / SVG)
 - 2026-10-21 — nodes drawn from graph format v6 (content, one ports list with kind)
 - 2026-10-21 — coloured nodes drawn (border in the colour, dim fill)
 - 2026-10-17 — Properties panel docked on the right, toolbar button to show / hide it

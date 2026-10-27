@@ -2,7 +2,7 @@
 
 The graph editor's docked panel on the right that shows and edits whatever is selected, like Blender's sidebar (<kbd>N</kbd>).
 
-State as of 2026-10-23.
+State as of 2026-10-27.
 
 - [Why a panel](#why-a-panel)
 - [Using it](#using-it)
@@ -135,6 +135,7 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 
 ## Changes
 
+- 2026-10-27 — fix: the Shape dropdown threw "$0 is not defined" when a node was selected (a function call as a select's value); the shape is computed first
 - 2026-10-23 — the start graph and all examples follow the newest type versions (basic 2, group 3), checked by a test
 - 2026-10-23 — circles have their own size rules: circle nodes fit their name (3.5em to 9em), circle groups use a 32-unit margin around their children's corners
 - 2026-10-23 — node shape: Square / Circle in the Content section (basic, group); circle groups are round frames
