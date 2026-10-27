@@ -13,7 +13,7 @@ Current version: **7**
 | `src/lib/graph/migrations.spec.ts` | Tests: every version sample upgrades to exactly the current sample; bad files are refused. |
 | `static/data/samples/graph-v<n>.json` | The same tiny graph (2 nodes, 1 link) saved in each format version, to compare versions side by side; also the test fixtures. |
 | `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per node type and type version (`basic-v1`, `basic-v2`, `group-v1` to `group-v3`, `uml-class-v1`, `uml-class-v2`), with a small header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`); test fixtures for the type templates. |
-| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data, node types; 52 nodes (one of them a circle), 55 links; the Node color node is coloured, and a violet group "Types v1" holds the node type templates and wraps them), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), one link is dashed with a hollow triangle (Link look), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
+| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data, node types; 53 nodes (one of them a circle), 56 links; the Node color node is coloured, and a violet group "Types v1" holds the node type templates and wraps them), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), one link is dashed with a hollow triangle (Link look), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
 
 ## Structure (version 7)
 
@@ -243,6 +243,7 @@ Do this for every change to the file structure or to what a field means, however
 
 ## Changes
 
+- 2026-10-27 — base graph gets Text view (experimental) (53 nodes, 56 links); no format change
 - 2026-10-27 — format version 7: link `line` and `mark` (UML relations: dashed lines, hollow triangles, diamonds, open arrows); `6 → 7` adapter, sample graph-v7.json; base graph and examples stored as v7; new section "Why links have `line` and `mark`"; uml-class type version 2 (`abstract`); base graph gets Link look, UML class diagram (partly), Image export and Port look (52 nodes, 55 links), its format nodes say v7
 - 2026-10-23 — base graph and examples: every node on its type's newest version (basic 2 with `shape`, group 3), checked by `node-types.spec.ts`
 - 2026-10-23 — content `shape` (square / circle) for basic (type v2) and group (type v3); base graph gets Node shape and Examples (by category), Group / Type samples renamed; examples use circles where they fit

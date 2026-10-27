@@ -45,6 +45,7 @@
 	import GraphExamplesMenu from '$lib/components/GraphExamplesMenu.svelte';
 	import GraphKeysMenu from '$lib/components/GraphKeysMenu.svelte';
 	import GraphPropertiesPanel from '$lib/components/properties/GraphPropertiesPanel.svelte';
+	import GraphTextView from '$lib/components/GraphTextView.svelte';
 	import { onMount, tick } from 'svelte';
 	import { dev } from '$app/environment';
 	import {
@@ -101,6 +102,7 @@
 		persistViewSettings,
 		linkShapeOverride,
 		portLook,
+		viewMode,
 		linkArrowOverride,
 		editingLinkId,
 		type LinkOutcome,
@@ -498,6 +500,9 @@
 			return;
 		}
 		if (event.ctrlKey || event.metaKey || event.altKey) return;
+		// text view: keys that act on the canvas itself (zoom, fit, add at the mouse, rename on
+		// the canvas) do nothing; edits of the selection still work and show in the text
+		if ($viewMode === 'text' && (['+', '=', '-', 'home', 'f2'].includes(key) || (key === 'a' && event.shiftKey))) return;
 
 		if (key === '+' || key === '=') {
 			// "=" is the unshifted "+" key on most layouts; numpad "+" also arrives as "+"
@@ -781,6 +786,9 @@
 	></div>
 {/if}
 
+{#if $viewMode === 'text'}
+	<GraphTextView />
+{/if}
 <GraphPropertiesPanel />
 <UI_GraphEditor on:requestExport={downloadGraph} on:requestFit={fitGraphInView} />
 <CoordTracker />

@@ -123,6 +123,9 @@ export const linkShapeOverride = writable<LinkShape | null>(null); // null = eac
 export const linkArrowOverride = writable<LinkArrow | null>(null); // null = each link's own
 export const showChevrons = writable<boolean>(false); // direction chevrons in the middle of links
 export const portLook = writable<PortLook>('filled'); // class ports-<look> on the world layer
+// canvas = the drawn graph; text = the graph as box-drawing characters over it (GraphTextView,
+// experimental); not remembered, every visit starts on the canvas
+export const viewMode = writable<'canvas' | 'text'>('canvas');
 export const showDotGrid = writable<boolean>(true); // the background dot grid
 export const snapToGrid = writable<boolean>(true); // dragged nodes snap to half grid squares
 export const showPropertiesPanel = writable<boolean>(true); // the docked Properties panel (N)

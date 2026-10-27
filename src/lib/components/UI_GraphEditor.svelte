@@ -9,7 +9,8 @@
 	// Graph editor toolbar (bottom left): zoom in/out toward the screen center, fit graph,
 	// transpose (switch the direction left-to-right / top-to-bottom and turn the layout; the icon's
 	// strong arrow is the current direction), dot grid on / off, snap to grid on / off, port
-	// look (filled -> hollow -> hidden -> filled), Properties panel on / off,
+	// look (filled -> hollow -> hidden -> filled), canvas / text view (experimental), Properties
+	// panel on / off,
 	// add node at the screen center, open graph (opens the Esc menu), export (download) and
 	// export as image (a flyout with PNG / JPG / SVG, $lib/graph/export-image.ts). Hover hints show each button's key in [brackets], drawn as key caps
 	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
@@ -30,7 +31,8 @@
 		snapToGrid,
 		showPropertiesPanel,
 		portLook,
-		PORT_LOOKS
+		PORT_LOOKS,
+		viewMode
 	} from '$lib/graph/store';
 
 	// dot grid on / off (a display setting, remembered in this browser)
@@ -49,6 +51,11 @@
 		portLook.set(nextPortLook);
 		handleMouseOver(`Ports ${$portLook}${$portLook === 'hidden' ? ' (shown on hover)' : ''}`);
 	};
+	// canvas / text view: the graph drawn as box-drawing characters (GraphTextView)
+	const toggleView = () => {
+		viewMode.update((mode) => (mode === 'canvas' ? 'text' : 'canvas'));
+		handleMouseOver($viewMode === 'text' ? 'Text view (experimental)' : 'Canvas view');
+	};
 	// Properties panel on / off (also N and the panel's own chevron; remembered in this browser)
 	const toggleProperties = () => {
 		showPropertiesPanel.update((shown) => !shown);
@@ -63,6 +70,7 @@
 	import IconDotGrid from '$lib/icons/icon-dot-grid.svelte';
 	import IconSnap from '$lib/icons/icon-snap.svelte';
 	import IconNodePorts from '$lib/icons/icon-node-ports.svelte';
+	import IconTerminal from '$lib/icons/icon-terminal.svelte';
 	import IconSidebarRight from '$lib/icons/icon-sidebar-right.svelte';
 	import IconChevronUp from '$lib/icons/icon-chevron-up.svelte';
 	import IconChevronDown from '$lib/icons/icon-chevron-down.svelte';
@@ -193,6 +201,13 @@
 			iconProps: { look: $portLook },
 			hint: `Ports ${$portLook}: switch to ${nextPortLook}`,
 			action: cyclePortLook
+		},
+		{
+			id: 'view',
+			icon: IconTerminal,
+			iconProps: { on: $viewMode === 'text' },
+			hint: $viewMode === 'text' ? 'View as Canvas' : 'View as Text (experimental)',
+			action: toggleView
 		},
 		{
 			id: 'properties',

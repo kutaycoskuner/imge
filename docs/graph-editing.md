@@ -325,6 +325,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-10-27 — in the text view (see [graph-text-view.md](graph-text-view.md)) the keys that act on the canvas itself (+, -, Home, Shift+A, F2) do nothing; store `viewMode`
 - 2026-10-27 — port look (filled, hollow, hidden until hover): toolbar button (cycles) and the Esc menu's Links section, display only; store `portLook`
 - 2026-10-27 — links get a line style (solid, dashed, dotted) and an end mark (arrow, open arrow, hollow triangle, hollow / filled diamond), graph format v7; `addLink` and `setLinkStyle` take `line` and `mark`; re-routing keeps them
 - 2026-10-23 — Ctrl+G adds the selection to the one selected group; nodes made (Shift+A, toolbar) or pasted (Ctrl+V) inside a group's frame join it
