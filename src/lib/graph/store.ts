@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-27
+//   last update     : 2026-11-02
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ import {
 	type NodeContent,
 	PORT_KINDS
 } from './types';
-import { nodeType } from './node-types';
+import { nodeType, hasColor, SCALE_MIN, SCALE_MAX } from './node-types';
 import {
 	groupFrames,
 	pruneChildren,
@@ -286,7 +286,9 @@ export function setNodeType(g: Graph, nodeId: string, type: string): Graph {
 		type,
 		typeVersion: template?.version ?? node.typeVersion,
 		ports: template?.ports ? reshape(template.ports) : node.ports,
-		content: template?.content ? { ...structuredClone(template.content), ...node.content } : node.content
+		content: template?.content
+			? { ...structuredClone(template.content), ...node.content, ...(template.adopt?.(node.content) ?? {}) }
+			: node.content
 	};
 	const has = (port: string) => shaped.ports.some((p) => p.id === port);
 	const keeps = (l: Link) => (l.source.node !== nodeId || has(l.source.port)) && (l.target.node !== nodeId || has(l.target.port));
@@ -297,12 +299,22 @@ export function setNodeType(g: Graph, nodeId: string, type: string): Graph {
 }
 
 /**
+ * Sets a text or image node's scale (Properties panel, the corner handle), kept within
+ * SCALE_MIN .. SCALE_MAX and rounded to 0.01. The same graph when it doesn't change.
+ */
+export function setNodeScale(g: Graph, nodeId: string, scale: number): Graph {
+	if (!Number.isFinite(scale)) return g;
+	const value = Math.round(Math.min(SCALE_MAX, Math.max(SCALE_MIN, scale)) * 100) / 100;
+	return setNodeContent(g, nodeId, { scale: value });
+}
+
+/**
  * Sets the colour of the given nodes (Properties panel): "#rrggbb", or null for the theme's
  * default look. Returns the same graph when every node already has it (no undo step).
  */
 export function setNodeColor(g: Graph, nodeIds: string[], color: string | null): Graph {
-	// only nodes whose type keeps a colour (content has `color`) are coloured
-	const ids = new Set(g.data.nodes.filter((n) => nodeIds.includes(n.id) && 'color' in n.content).map((n) => n.id));
+	// only nodes whose type keeps a colour are coloured
+	const ids = new Set(g.data.nodes.filter((n) => nodeIds.includes(n.id) && hasColor(n)).map((n) => n.id));
 	if (!g.data.nodes.some((n) => ids.has(n.id) && n.content.color !== color)) return g;
 	return withNodes(g, g.data.nodes.map((n) => (ids.has(n.id) ? { ...n, content: { ...n.content, color } } : n)));
 }

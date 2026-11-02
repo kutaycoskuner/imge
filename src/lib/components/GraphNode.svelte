@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-27
+	//   last update     : 2026-11-02
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -22,12 +22,17 @@
 	// that doesn't follow the notation is underlined in red, its error as a tooltip. UML's
 	// text styles: an abstract class's name and {abstract} methods in italics, {static}
 	// members underlined (the markers themselves aren't drawn).
+	// A text node (type "text") is only its text: no box, no ports, its lines as typed, in its
+	// colour, bold and alignment, at its scale (font size); double-click or F2 edits it in a
+	// field (Enter = new line, Ctrl+Enter or clicking away saves, Esc cancels). An image node
+	// (type "image") is only its picture at its stored size times its scale, with its ports on
+	// the edges. Both show a scale handle in the bottom-right corner that the page drags.
 	// Mouse down for select/drag/link is handled by the page through the data-* attributes;
 	// ports carry `data-port-key` ("<node id>:<port id>") so GraphLinks can find and measure them,
 	// and `data-port-kind` (in / out / any) for the link rules.
-	import { graph, editingNodeId, renameNode, isGroup, frames } from '$lib/graph/store';
+	import { graph, editingNodeId, renameNode, setNodeContent, isGroup, frames } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
-	import { nodeName, nodeColor, portSide, umlMembers, umlAbstract, nodeShape } from '$lib/graph/node-types';
+	import { nodeName, nodeColor, portSide, umlMembers, umlAbstract, nodeShape, nodeScale, nodeText, imageOf } from '$lib/graph/node-types';
 	import { parseAttribute, parseMethod, drawnTokens } from '$lib/graph/uml';
 	import { parseHexColor, dimColor } from '$lib/graph/color';
 
@@ -56,15 +61,37 @@
 			]
 		: [];
 
+	// text and image nodes: no box, drawn at their scale
+	$: textNode = node.type === 'text';
+	$: imageNode = node.type === 'image';
+	$: scale = nodeScale(node);
+	$: image = imageNode ? imageOf(node) : null;
+
 	let draft = '';
 	$: editing = $editingNodeId === node.id;
-	$: if (editing) draft = name;
+	$: if (editing) draft = textNode ? nodeText(node) : name;
 
 	function commit(): void {
 		// the store, not `editing`: the field's blur can fire after Esc already ended editing
 		if ($editingNodeId !== node.id) return;
-		graph.update((g) => renameNode(g, node.id, draft));
+		const id = node.id;
+		const text = draft;
+		graph.update((g) => (textNode ? setNodeContent(g, id, { text }) : renameNode(g, id, text)));
 		editingNodeId.set(null);
+	}
+
+	// the text field: Enter makes a new line, Ctrl+Enter saves, Esc cancels
+	function handleTextKey(event: KeyboardEvent): void {
+		if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) commit();
+		else if (event.key === 'Escape') {
+			event.preventDefault();
+			cancel();
+		}
+	}
+
+	function focusText(el: HTMLTextAreaElement) {
+		el.focus();
+		el.select();
 	}
 
 	function cancel(): void {
@@ -94,6 +121,8 @@
 	class:group
 	class:uml
 	class:abstract
+	class:text-node={textNode}
+	class:image-node={imageNode}
 	class:shape-circle={circle}
 	data-id={node.id}
 	style="transform: translate({at.x}px, {-at.y}px);{color
@@ -118,6 +147,31 @@
 		</fieldset>
 		<!-- the page drags this corner to resize the group (never smaller than its children) -->
 		<div class="group-resize" data-group-id={node.id} title="Drag to resize"></div>
+	{:else if textNode}
+		{#if editing}
+			<textarea
+				class="text-input"
+				style="font-size: {scale}em; text-align: {node.content.align ?? 'left'};"
+				rows={Math.max(1, draft.split('\n').length)}
+				bind:value={draft}
+				use:focusText
+				on:keydown|stopPropagation={handleTextKey}
+				on:blur={commit}
+			></textarea>
+		{:else}
+			<div
+				class="text-body"
+				class:bold={node.content.bold === true}
+				style="font-size: {scale}em; text-align: {node.content.align ?? 'left'};"
+				role="presentation"
+				on:dblclick={() => editingNodeId.set(node.id)}
+			>{nodeText(node) || ' '}</div>
+		{/if}
+		<!-- the page drags this corner to scale the node -->
+		<div class="node-scale" data-node-id={node.id} title="Drag to scale"></div>
+	{:else if image}
+		<img class="image-body" src={image.src} alt={name} width={image.w} height={image.h} draggable="false" />
+		<div class="node-scale" data-node-id={node.id} title="Drag to scale"></div>
 	{:else}
 	{#if editing}
 		<input
@@ -140,7 +194,9 @@
 			{/each}
 		</ul>
 	{/each}
+	{/if}
 
+	{#if !group && !textNode}
 	<div class="inputs">
 		{#each startPorts as port (port.id)}
 			<div

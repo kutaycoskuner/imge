@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-27
+//   last update     : 2026-11-02
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -10,6 +10,7 @@
 // open it as shapes), with a transparent background.
 //
 // It reads what the browser drew, element by element, in drawing order:
+//   - image nodes' pictures as <image>, carried inside the SVG as data: URLs (DrawOptions.images)
 //   - the link layer is SVG already: copied, with its computed styles written as attributes
 // drawTextViewSvg does the same for the text view (experimental): the characters on their
 // columns in the view's font and styles.
@@ -31,7 +32,7 @@
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 /** Parts of the drawing that are only there for editing, left out of the image. */
-export const EDITING_AIDS = '.group-resize, .link-bend, .link-hit, .link-preview, .hover-visible';
+export const EDITING_AIDS = '.group-resize, .node-scale, .link-bend, .link-hit, .link-preview, .hover-visible';
 /** SVG presentation properties copied from the computed style of the link layer's parts. */
 const SVG_PROPS = [
 	'fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'stroke-linecap',
@@ -96,6 +97,9 @@ export interface DrawOptions {
 	bounds: { minX: number; maxX: number; minY: number; maxY: number }; // world coords, y up
 	padding: number;
 	background?: string | null; // CSS colour behind everything, or none (transparent)
+	// pictures of image nodes as data: URLs, by their src as written in the page, so the SVG
+	// carries them (a src missing here is linked by its full address instead)
+	images?: Map<string, string>;
 }
 
 /** The graph as drawn, as a vector SVG document (text) and its size. */
@@ -295,6 +299,15 @@ export function drawGraphSvg(o: DrawOptions): { svg: string; width: number; heig
 		const alpha = opacity * (parseFloat(cs.opacity) || 0);
 		if (alpha <= 0) return;
 		if (el !== o.world) drawBox(el as HTMLElement, cs, alpha);
+		if (el instanceof HTMLImageElement) {
+			// an image node's picture, at its drawn box, stretched to it like the page draws it
+			const b = box(el.getBoundingClientRect());
+			const src = el.getAttribute('src') ?? '';
+			const href = o.images?.get(src) ?? el.currentSrc ?? src;
+			const op = alpha < 1 ? ` opacity="${num(alpha)}"` : '';
+			out.push(`<image x="${num(b.x)}" y="${num(b.y)}" width="${num(b.w)}" height="${num(b.h)}" preserveAspectRatio="none" href="${esc(href)}"${op}/>`);
+			return;
+		}
 		for (const child of Array.from(el.childNodes)) {
 			if (child.nodeType === Node.TEXT_NODE) drawText(child as Text, cs, alpha);
 			else if (child.nodeType === Node.ELEMENT_NODE) walk(child as Element, alpha);

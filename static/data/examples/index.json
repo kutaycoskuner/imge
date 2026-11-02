@@ -84,6 +84,14 @@
             "category": "Circuits"
         },
         {
+            "name": "LED circuit (symbols)",
+            "kind": "circuit with symbols",
+            "file": "examples/circuit-led-symbols.json",
+            "description": "Battery, switch, resistor, LED and ground as image nodes wired together, named by text nodes under them, and the placeholder parts library; the parts don't simulate yet.",
+            "sketch": true,
+            "category": "Circuits"
+        },
+        {
             "name": "Web app architecture",
             "kind": "architecture map",
             "file": "examples/web-app-architecture.json",
@@ -111,6 +119,13 @@
             "file": "examples/big-data-packages.json",
             "description": "29 packages in four layers (ui → core → data → utils), placed by hand.",
             "sketch": true,
+            "category": "Software architecture"
+        },
+        {
+            "name": "Weather station",
+            "kind": "annotated architecture overview",
+            "file": "examples/weather-station.json",
+            "description": "A poster-like overview: title and notes as text nodes, sensors, gateway and server tiers as coloured boxes in groups, named links between tiers.",
             "category": "Software architecture"
         },
         {

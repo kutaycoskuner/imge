@@ -1,0 +1,548 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 7,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "ports": [],
+                "content": {
+                    "text": "LED with a series resistor",
+                    "color": null,
+                    "scale": 1.6,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": -50
+                },
+                "ports": [],
+                "content": {
+                    "text": "R = (9 V − 2 V) / 20 mA = 350 Ω → 390 Ω (next standard value)",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": -140
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Battery 9 V",
+                    "src": "images/parts/battery.svg",
+                    "width": 96,
+                    "height": 48,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n4",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 180,
+                    "y": -144
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Switch",
+                    "src": "images/parts/switch.svg",
+                    "width": 96,
+                    "height": 40,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n5",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 360,
+                    "y": -148
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "R 390 Ω",
+                    "src": "images/parts/resistor.svg",
+                    "width": 96,
+                    "height": 32,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n6",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 540,
+                    "y": -140
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "LED (red)",
+                    "src": "images/parts/led.svg",
+                    "width": 96,
+                    "height": 48,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n7",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 720,
+                    "y": -140
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Ground",
+                    "src": "images/parts/ground.svg",
+                    "width": 64,
+                    "height": 48,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n8",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": -260
+                },
+                "ports": [],
+                "content": {
+                    "text": "Parts library (placeholders, more to come)",
+                    "color": null,
+                    "scale": 1,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n9",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": -300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Capacitor",
+                    "src": "images/parts/capacitor.svg",
+                    "width": 96,
+                    "height": 40,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n10",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 160,
+                    "y": -296
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Lamp",
+                    "src": "images/parts/lamp.svg",
+                    "width": 96,
+                    "height": 48,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n11",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 320,
+                    "y": -300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Diode",
+                    "src": "images/parts/diode.svg",
+                    "width": 96,
+                    "height": 40,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n12",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 480,
+                    "y": -288
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "AND gate",
+                    "src": "images/parts/and-gate.svg",
+                    "width": 96,
+                    "height": 64,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n13",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 640,
+                    "y": -288
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "OR gate",
+                    "src": "images/parts/or-gate.svg",
+                    "width": 96,
+                    "height": 64,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n14",
+                "type": "image",
+                "typeVersion": 1,
+                "position": {
+                    "x": 800,
+                    "y": -296
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "NOT gate",
+                    "src": "images/parts/not-gate.svg",
+                    "width": 96,
+                    "height": 48,
+                    "scale": 1
+                }
+            },
+            {
+                "id": "n15",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 12,
+                    "y": -200
+                },
+                "ports": [],
+                "content": {
+                    "text": "Battery 9 V",
+                    "color": "#8b8d98",
+                    "scale": 0.85,
+                    "bold": false,
+                    "align": "center"
+                }
+            },
+            {
+                "id": "n16",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 208,
+                    "y": -200
+                },
+                "ports": [],
+                "content": {
+                    "text": "Switch",
+                    "color": "#8b8d98",
+                    "scale": 0.85,
+                    "bold": false,
+                    "align": "center"
+                }
+            },
+            {
+                "id": "n17",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 384,
+                    "y": -200
+                },
+                "ports": [],
+                "content": {
+                    "text": "R 390 Ω",
+                    "color": "#8b8d98",
+                    "scale": 0.85,
+                    "bold": false,
+                    "align": "center"
+                }
+            },
+            {
+                "id": "n18",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 560,
+                    "y": -200
+                },
+                "ports": [],
+                "content": {
+                    "text": "LED (red)",
+                    "color": "#8b8d98",
+                    "scale": 0.85,
+                    "bold": false,
+                    "align": "center"
+                }
+            },
+            {
+                "id": "n19",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 728,
+                    "y": -200
+                },
+                "ports": [],
+                "content": {
+                    "text": "Ground",
+                    "color": "#8b8d98",
+                    "scale": 0.85,
+                    "bold": false,
+                    "align": "center"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n3",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "name": "20 mA",
+                "shape": "manhattan",
+                "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "none",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

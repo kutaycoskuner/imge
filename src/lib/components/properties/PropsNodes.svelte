@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-11-02
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 	// them all.
 	import PropColor from './PropColor.svelte';
 	import { graph, selection, removeNodes, setNodeColor } from '$lib/graph/store';
-	import { nodeLabel, nodeColor, hasNamedContent } from '$lib/graph/node-types';
+	import { nodeLabel, nodeColor, hasColor } from '$lib/graph/node-types';
 	import type { PanelContext } from './sections';
 
 	export let ctx: PanelContext;
@@ -21,7 +21,7 @@
 	).length;
 
 	// the colour the colourable ones share, or null with "mixed" shown when they differ
-	$: colourable = ctx.nodes.filter(hasNamedContent);
+	$: colourable = ctx.nodes.filter(hasColor);
 	$: colors = new Set(colourable.map(nodeColor));
 	$: shared = colors.size === 1 ? [...colors][0] : null;
 

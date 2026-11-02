@@ -2,15 +2,17 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-11-02
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// The Examples tab of the graph editor's Esc menu: one example graph per kind of graph
 	// (static/data/examples/index.json, see docs/graph-types.md) as cerulean chips in columns
-	// (as many as fit in 60% of the window; one in narrow windows) under category headings
-	// (Mind mapping, Math, Circuits, Software architecture, Other; `category` in the index),
-	// each with its description under it; a sketch (a type
+	// (as many as fit, at least 12em wide, in 80% of the window; one in narrow windows) under category headings
+	// (Mind mapping, Math, Circuits, Software architecture, Other; `category` in the index;
+	// the heading left of its examples, above them in narrow windows),
+	// each with its description under it in at most two lines (the whole text on hover), so
+	// the tab fits without scrolling down to 1280 x 720; a sketch (a type
 	// the editor can't draw yet, shown with basic nodes) gets a small "sketch" tag. A click
 	// opens the example without a file name.
 	import { onMount } from 'svelte';
@@ -50,7 +52,7 @@
 							title="This type isn't drawn by the editor yet: shown with basic nodes (see docs/graph-types.md)">sketch</span
 						>{/if}
 				</button>
-				<span class="example-description">{example.description}</span>
+				<span class="example-description" title={example.description}>{example.description}</span>
 			</li>
 		{/each}
 	</ul>
@@ -69,9 +71,9 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.6em;
-		/* 60% of the window on wide screens, so every example fits without scrolling; up to
+		/* 80% of the window on wide screens, so every example fits without scrolling; up to
 		   1024 px the menu already takes the window's width (SettingsOverlay) */
-		width: 60vw;
+		width: 80vw;
 		max-width: 100%;
 		text-align: left;
 	}
@@ -82,15 +84,24 @@
 		}
 	}
 
-	/* one block per category: a small heading, then its examples */
+	/* one row per category: a small heading on the left, its examples beside it (saves a line
+	   per category, so the tab fits without scrolling); stacked in narrow windows */
 	.category {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25em;
+		display: grid;
+		grid-template-columns: 7.5em minmax(0, 1fr);
+		gap: 0.25em 1em;
+		align-items: start;
+	}
+
+	@media (max-width: 640px) {
+		.category {
+			grid-template-columns: minmax(0, 1fr);
+		}
 	}
 
 	.category-title {
 		margin: 0;
+		padding-top: 0.45em; /* level with the chips' text */
 		font-size: 0.72em;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
@@ -104,8 +115,8 @@
 		margin: 0;
 		padding: 0;
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(13em, 1fr));
-		gap: 0.35em 1.4em;
+		grid-template-columns: repeat(auto-fill, minmax(12em, 1fr));
+		gap: 0.35em 1em;
 	}
 
 	.examples li {
@@ -156,9 +167,18 @@
 	.status {
 		margin: 0;
 		padding: 0;
-		font-size: 0.75em;
-		line-height: 1.35;
+		font-size: 0.7em;
+		line-height: 1.3;
 		opacity: 0.6;
+	}
+
+	/* at most two lines; the whole description is the hover text */
+	.example-description {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		overflow: hidden;
 	}
 
 	.status {

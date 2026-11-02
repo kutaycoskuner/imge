@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-11-02
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -275,6 +275,14 @@
 
 	.properties-panel :global(.prop-dirty) {
 		color: var(--col-selected);
+	}
+
+	/* a text field over several lines (text nodes) */
+	.properties-panel :global(.prop-textarea) {
+		resize: vertical;
+		font: inherit;
+		white-space: pre;
+		overflow-x: auto;
 	}
 
 	/* a checkbox with its text on one line */

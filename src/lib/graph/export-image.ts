@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-27
+//   last update     : 2026-11-02
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -60,6 +60,34 @@ function graphBounds(): { minX: number; maxX: number; minY: number; maxY: number
 }
 
 /**
+ * The pictures of the image nodes in the drawing as data: URLs, by their src, so the exported
+ * SVG carries them (and PNG / JPG can paint them: a canvas only draws what the SVG contains).
+ * A picture that can't be read is left out of the map (the SVG then links it).
+ */
+async function inlineImages(world: HTMLElement): Promise<Map<string, string>> {
+	const images = new Map<string, string>();
+	const sources = new Set(Array.from(world.querySelectorAll('img'), (img) => img.getAttribute('src') ?? ''));
+	await Promise.all(
+		[...sources].map(async (src) => {
+			if (!src || src.startsWith('data:')) return void (src && images.set(src, src));
+			try {
+				const blob = await (await fetch(src)).blob();
+				const url = await new Promise<string>((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onload = () => resolve(String(reader.result));
+					reader.onerror = () => reject(reader.error);
+					reader.readAsDataURL(blob);
+				});
+				images.set(src, url);
+			} catch {
+				// left to the link in the SVG
+			}
+		})
+	);
+	return images;
+}
+
+/**
  * The graph as a vector SVG (text), transparent unless `background` is given; in the text
  * view, the text as the view shows it. Null when the graph is empty or not drawn. Clears the
  * selection while it reads the drawing.
@@ -80,7 +108,7 @@ export async function graphToSvg(
 		if (textView && !pre) return null;
 		const result = pre
 			? drawTextViewSvg(pre, PADDING, background)
-			: drawGraphSvg({ world, zoom: get(camera).zoom, bounds, padding: PADDING, background });
+			: drawGraphSvg({ world, zoom: get(camera).zoom, bounds, padding: PADDING, background, images: await inlineImages(world) });
 		// a broken SVG would be refused by every viewer: say so instead of saving it
 		const error = new DOMParser().parseFromString(result.svg, 'image/svg+xml').querySelector('parsererror');
 		if (error) throw new Error(`the drawing is not valid SVG (${error.textContent?.trim().slice(0, 120)})`);

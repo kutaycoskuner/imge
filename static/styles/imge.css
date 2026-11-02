@@ -321,6 +321,89 @@ kbd {
     border-radius: 50%;
 }
 
+/* text and image nodes (types "text", "image"): no box, just the text or the picture; a
+   dashed outline shows the node's extent on hover and when selected; the scale handle in the
+   bottom-right corner (dragged by the page) like a group's resize mark */
+.node.text-node,
+.node.image-node,
+.node.text-node.colored,
+.node.image-node.colored {
+    width: max-content;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+}
+
+.node.text-node:hover,
+.node.image-node:hover {
+    box-shadow: none;
+    outline: 1px dashed color-mix(in srgb, var(--col) 30%, transparent);
+    outline-offset: 4px;
+}
+
+.node.text-node.selected,
+.node.image-node.selected {
+    outline: 1px dashed var(--col-selected);
+    outline-offset: 4px;
+}
+
+.node.text-node.colored {
+    color: var(--node-col);
+}
+
+.text-body {
+    white-space: pre; /* lines as typed; the node is as wide as its longest line */
+    text-align: left;
+    line-height: 1.3;
+    cursor: text;
+}
+
+.text-body.bold {
+    font-weight: 700;
+}
+
+.text-input {
+    display: block;
+    font: inherit;
+    line-height: 1.3;
+    color: inherit;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--col-selected);
+    outline: none;
+    resize: none;
+    white-space: pre;
+    overflow: hidden;
+    field-sizing: content; /* grows with the text where the browser can */
+    min-width: 6em;
+}
+
+.image-body {
+    display: block;
+    pointer-events: none; /* the node takes the mouse (drag, select), not the picture */
+}
+
+.node-scale {
+    position: absolute;
+    right: -8px;
+    bottom: -8px;
+    width: 10px;
+    height: 10px;
+    cursor: nwse-resize;
+    border-right: 2px solid var(--col-selected);
+    border-bottom: 2px solid var(--col-selected);
+    opacity: 0;
+}
+
+.node.text-node:hover .node-scale,
+.node.image-node:hover .node-scale,
+.node.selected .node-scale {
+    opacity: 1;
+}
+
 /* UML class (node type "uml-class"): class name on top, then the attributes and the methods
    compartments, each a list of member lines (GraphNode, parsed by $lib/graph/uml.ts) */
 .node.uml {

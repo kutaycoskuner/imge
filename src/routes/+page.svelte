@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-27
+	//   last update     : 2026-11-02
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -23,7 +23,8 @@
 	//          or take selected nodes out of their group),
 	//          a node dropped, made (Shift+A) or pasted inside a group joins it; Ctrl+drop takes it out (or into the
 	//          group it is dropped in); dragging a group moves what it holds; drag a group's
-	//          corner handle to resize it (never smaller than its children),
+	//          corner handle to resize it (never smaller than its children), a text or image
+	//          node's corner handle to scale it,
 	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
 	//          link, F2 or double-click renames a link (drag a selected
 	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
@@ -45,6 +46,7 @@
 	import GraphExamplesMenu from '$lib/components/GraphExamplesMenu.svelte';
 	import GraphKeysMenu from '$lib/components/GraphKeysMenu.svelte';
 	import GraphPropertiesPanel from '$lib/components/properties/GraphPropertiesPanel.svelte';
+	import { nodeScale } from '$lib/graph/node-types';
 	import GraphTextView from '$lib/components/GraphTextView.svelte';
 	import { onMount, tick } from 'svelte';
 	import { dev } from '$app/environment';
@@ -106,7 +108,8 @@
 		linkArrowOverride,
 		editingLinkId,
 		type LinkOutcome,
-		type Selection
+		type Selection,
+		setNodeScale
 	} from '$lib/graph/store';
 	import type { Link, LinkEnd, PortKind } from '$lib/graph/types';
 	import { trackHistory, holdHistory, releaseHistory, undo, redo } from '$lib/graph/history';
@@ -130,6 +133,8 @@
 
 	// a group's corner handle being dragged: the frame's size and the mouse when it began (world)
 	let resizeDrag: { groupId: string; start: { w: number; h: number }; mouseStart: Point } | null = null;
+	// the scale handle of a text or image node: its scale and drawn width when the drag began
+	let scaleDrag: { nodeId: string; start: number; width: number; mouseStart: Point } | null = null;
 
 	// corner of a selected manhattan link (or the lane of a link going around its nodes) being
 	// dragged: the bend maps `from` (0) .. `to` (1)
@@ -196,6 +201,16 @@
 		const port = target.closest<HTMLElement>('.port');
 		if (port) return startLinkDrag(port);
 
+		const scaler = target.closest<HTMLElement>('.node-scale');
+		if (scaler) {
+			const nodeId = scaler.dataset.nodeId!;
+			const node = $graph.data.nodes.find((n) => n.id === nodeId);
+			const width = $nodeSizes[nodeId]?.w;
+			if (node && width) scaleDrag = { nodeId, start: nodeScale(node), width, mouseStart: mouseWorld() };
+			selection.set({ nodes: [nodeId], link: null });
+			return;
+		}
+
 		const handle = target.closest<HTMLElement>('.group-resize');
 		if (handle) {
 			const groupId = handle.dataset.groupId!;
@@ -255,6 +270,8 @@
 			}
 		} else if (resizeDrag) {
 			resizeByHandle(resizeDrag, event.altKey || !$snapToGrid);
+		} else if (scaleDrag) {
+			scaleByHandle(scaleDrag, event.altKey || !$snapToGrid);
 		} else if (boxDrag) {
 			boxDrag = { ...boxDrag, end: { x: event.clientX, y: event.clientY } };
 			updateBoxSelection(boxDrag);
@@ -274,6 +291,7 @@
 		bendDrag = null;
 		boxDrag = null;
 		resizeDrag = null;
+		scaleDrag = null;
 		releaseHistory();
 	}
 
@@ -377,6 +395,15 @@
 		const id = drag.groupId;
 		const sizes = $nodeSizes;
 		graph.update((g) => resizeGroup(g, id, size, sizes));
+	}
+
+	// Dragging a text or image node's scale handle: the scale follows the node's width (the
+	// handle's distance from the left edge), in steps of 0.25 unless Alt is held or snapping is off
+	function scaleByHandle(drag: NonNullable<typeof scaleDrag>, free: boolean): void {
+		const grow = (drag.width + mouseWorld().x - drag.mouseStart.x) / drag.width;
+		const scale = free ? drag.start * grow : Math.round(drag.start * grow * 4) / 4;
+		const id = drag.nodeId;
+		graph.update((g) => setNodeScale(g, id, scale));
 	}
 
 	// Box selection

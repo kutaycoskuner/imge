@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-27
+//   last update     : 2026-11-02
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -24,6 +24,8 @@ import PropsGraph from './PropsGraph.svelte';
 import PropsNode from './PropsNode.svelte';
 import PropsContent from './PropsContent.svelte';
 import PropsUmlMembers from './PropsUmlMembers.svelte';
+import PropsText from './PropsText.svelte';
+import PropsImage from './PropsImage.svelte';
 import PropsGroupContents from './PropsGroupContents.svelte';
 import PropsNodeLinks from './PropsNodeLinks.svelte';
 import PropsNodes from './PropsNodes.svelte';
@@ -47,10 +49,12 @@ export interface PanelSection {
 
 const nothingSelected = (ctx: PanelContext) => !ctx.link && ctx.nodes.length === 0;
 const oneNode = (ctx: PanelContext) => ctx.nodes.length === 1;
-const oneNodeWithPorts = (ctx: PanelContext) => oneNode(ctx) && !isGroup(ctx.nodes[0]); // groups have none
+const oneNodeWithPorts = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].ports.length > 0; // not groups, text nodes
 // a type that keeps a name and a colour in its content (basic, group); other types add their own
 const oneNamedNode = (ctx: PanelContext) => oneNode(ctx) && hasNamedContent(ctx.nodes[0]);
 const oneUmlClass = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].type === 'uml-class';
+const oneText = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].type === 'text';
+const oneImage = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].type === 'image';
 const oneGroup = (ctx: PanelContext) => oneNode(ctx) && isGroup(ctx.nodes[0]);
 const someNodes = (ctx: PanelContext) => ctx.nodes.length > 1;
 const aLink = (ctx: PanelContext) => !!ctx.link;
@@ -60,6 +64,8 @@ export const PANEL_SECTIONS: PanelSection[] = [
 	{ id: 'node', title: 'Node', component: PropsNode, show: oneNode },
 	{ id: 'node-content', title: 'Content', component: PropsContent, show: oneNamedNode },
 	{ id: 'uml-members', title: 'Attributes and methods', component: PropsUmlMembers, show: oneUmlClass },
+	{ id: 'text', title: 'Text', component: PropsText, show: oneText },
+	{ id: 'image', title: 'Image', component: PropsImage, show: oneImage },
 	{ id: 'group-contents', title: 'Contents', component: PropsGroupContents, show: oneGroup },
 	{ id: 'node-links', title: 'Ports and links', component: PropsNodeLinks, show: oneNodeWithPorts },
 	{ id: 'nodes', title: 'Selection', component: PropsNodes, show: someNodes },
