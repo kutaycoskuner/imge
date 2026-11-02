@@ -1,0 +1,567 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 7,
+        "direction": "top-to-bottom"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "ports": [],
+                "content": {
+                    "text": "Weather station",
+                    "color": null,
+                    "scale": 2.2,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": -70
+                },
+                "ports": [],
+                "content": {
+                    "text": "Readings from the garden, stored on a server and shown on a dashboard",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": -140
+                },
+                "ports": [],
+                "content": {
+                    "text": "Sensors",
+                    "color": null,
+                    "scale": 1,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": -180
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Temperature",
+                    "color": "#6e56cf",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 260,
+                    "y": -180
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Humidity",
+                    "color": "#6e56cf",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 520,
+                    "y": -180
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Wind",
+                    "color": "#6e56cf",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 780,
+                    "y": -180
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Rain gauge",
+                    "color": "#6e56cf",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n8",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": -400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Radio receiver",
+                    "color": "#30a46c",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n9",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 260,
+                    "y": -400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Collector",
+                    "color": "#30a46c",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n10",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 520,
+                    "y": -400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Local cache (7 days)",
+                    "color": "#30a46c",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n11",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 780,
+                    "y": -400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Uploader",
+                    "color": "#30a46c",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n12",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": -40,
+                    "y": -340
+                },
+                "ports": [],
+                "content": {
+                    "name": "Gateway (Raspberry Pi)",
+                    "color": "#30a46c",
+                    "children": [
+                        "n8",
+                        "n9",
+                        "n10",
+                        "n11"
+                    ],
+                    "shape": "square",
+                    "width": 1060,
+                    "height": 180
+                }
+            },
+            {
+                "id": "n13",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": -660
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "REST API",
+                    "color": "#0090ff",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n14",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 260,
+                    "y": -660
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Database",
+                    "color": "#0090ff",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n15",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 520,
+                    "y": -660
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Alerts (e-mail)",
+                    "color": "#0090ff",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n16",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 780,
+                    "y": -660
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Dashboard",
+                    "color": "#0090ff",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n17",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": -40,
+                    "y": -600
+                },
+                "ports": [],
+                "content": {
+                    "name": "Server (API + database)",
+                    "color": "#0090ff",
+                    "children": [
+                        "n13",
+                        "n14",
+                        "n15",
+                        "n16"
+                    ],
+                    "shape": "square",
+                    "width": 1060,
+                    "height": 180
+                }
+            },
+            {
+                "id": "n18",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": -860
+                },
+                "ports": [],
+                "content": {
+                    "text": "Good to know",
+                    "color": null,
+                    "scale": 1,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n19",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": -900
+                },
+                "ports": [],
+                "content": {
+                    "text": "Readings every 5 minutes\nThe gateway keeps 7 days when the server is down\nAlerts: frost, storm, heavy rain",
+                    "color": null,
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "name": "433 MHz radio",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n4",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n7",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "name": "HTTPS every 5 min",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n11",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n13",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

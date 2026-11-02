@@ -1253,7 +1253,9 @@
                     "children": [
                         "n41",
                         "n42",
-                        "n46"
+                        "n46",
+                        "n54",
+                        "n55"
                     ],
                     "shape": "square"
                 }
@@ -1263,8 +1265,8 @@
                 "type": "uml-class",
                 "typeVersion": 2,
                 "position": {
-                    "x": -300,
-                    "y": -620
+                    "x": -320,
+                    "y": -640
                 },
                 "ports": [
                     {
@@ -1490,6 +1492,89 @@
                     "name": "Text view (experimental)",
                     "color": null,
                     "shape": "square"
+                }
+            },
+            {
+                "id": "n54",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": -840
+                },
+                "ports": [],
+                "content": {
+                    "text": "Text (no box, scalable)",
+                    "color": null,
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n55",
+                "type": "image",
+                "typeVersion": 2,
+                "position": {
+                    "x": -280,
+                    "y": -890
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Image (resistor part)",
+                    "src": "images/parts/resistor.svg",
+                    "width": 96,
+                    "height": 32,
+                    "scale": 1,
+                    "caption": "Image (with caption)",
+                    "showCaption": true
+                }
+            },
+            {
+                "id": "n56",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": -1200,
+                    "y": 1460
+                },
+                "ports": [],
+                "content": {
+                    "text": "imge: feature map",
+                    "color": null,
+                    "scale": 2.2,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n57",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": -1200,
+                    "y": 1380
+                },
+                "ports": [],
+                "content": {
+                    "text": "What the graph editor can do, each link read as \"builds on\".\nOpen more graphs from the Esc menu: Examples.",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
                 }
             }
         ],
@@ -2446,6 +2531,23 @@
                 },
                 "target": {
                     "node": "n53",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l57",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n55",
                     "port": "i1"
                 }
             }

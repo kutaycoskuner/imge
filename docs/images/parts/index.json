@@ -1,0 +1,71 @@
+{
+    "description": "Placeholder circuit symbols for image nodes (graph editor): grey strokes, leads at the middle of the left / right edge. Listed in the Properties panel's Image section.",
+    "parts": [
+        {
+            "file": "images/parts/resistor.svg",
+            "name": "Resistor",
+            "width": 96,
+            "height": 32
+        },
+        {
+            "file": "images/parts/capacitor.svg",
+            "name": "Capacitor",
+            "width": 96,
+            "height": 40
+        },
+        {
+            "file": "images/parts/battery.svg",
+            "name": "Battery",
+            "width": 96,
+            "height": 48
+        },
+        {
+            "file": "images/parts/lamp.svg",
+            "name": "Lamp",
+            "width": 96,
+            "height": 48
+        },
+        {
+            "file": "images/parts/switch.svg",
+            "name": "Switch",
+            "width": 96,
+            "height": 40
+        },
+        {
+            "file": "images/parts/diode.svg",
+            "name": "Diode",
+            "width": 96,
+            "height": 40
+        },
+        {
+            "file": "images/parts/led.svg",
+            "name": "LED",
+            "width": 96,
+            "height": 48
+        },
+        {
+            "file": "images/parts/ground.svg",
+            "name": "Ground",
+            "width": 64,
+            "height": 48
+        },
+        {
+            "file": "images/parts/and-gate.svg",
+            "name": "AND gate",
+            "width": 96,
+            "height": 64
+        },
+        {
+            "file": "images/parts/or-gate.svg",
+            "name": "OR gate",
+            "width": 96,
+            "height": 64
+        },
+        {
+            "file": "images/parts/not-gate.svg",
+            "name": "NOT gate",
+            "width": 96,
+            "height": 48
+        }
+    ]
+}
