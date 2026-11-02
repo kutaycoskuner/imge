@@ -96,7 +96,7 @@ The toolbar's picture button (bottom left) opens three choices; each downloads t
     - **Config:** folder, graphs in the folder, save, the graph's direction, links, new graph and download (everything described on this page).
     - **Examples:** one example graph per kind of graph (see [graph-types.md](graph-types.md)), under category headings (**Mind mapping**, **Math**, **Circuits**, **Software architecture**, **Other**; `category` per example and the order in `categories` in `index.json`; each heading left of its examples), as cerulean chips with the name (the kind of graph and the description in the hover text), each with its description under it in at most two lines (the whole text on hover), in columns at least 12em wide (the tab is 80% of the window wide, so all 19 examples fit without scrolling from 1280 × 720 up; headings above their examples and one column in narrow windows). Kinds the editor can't draw yet are **sketches** (a small dashed "sketch" tag): drawn with basic nodes to show what the type is about. A click opens it without a file name (asks first if the open graph has unsaved changes); Save as in Config stores it in your folder under a name of your own. The examples are `static/data/examples/*.json`, listed in `static/data/examples/index.json`; the Feature map (the start graph) is listed first.
     - **Keybindings:** every shortcut as key caps and the mouse actions (the same as [graph-editing.md](graph-editing.md#mouse-and-keys), shorter).
-- The Config tab also has a **Graph** section with the direction (left-to-right / top-to-bottom; Transpose turns the layout, see [graph-editing.md](graph-editing.md#direction-and-transpose)), and a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) the direction-chevrons toggle and the port look (filled, hollow, hidden; display only); see [graph-editing.md](graph-editing.md#link-shapes) and [Port look](graph-editing.md#port-look).
+- The Config tab also has a **Graph** section with the direction (left-to-right / top-to-bottom; Transpose turns the layout, see [graph-editing.md](graph-editing.md#direction-and-transpose)), and a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) the direction-chevrons toggle, the port look (filled, hollow, hidden; display only) and image captions (each image's own, show all, hide all; display only); see [graph-editing.md](graph-editing.md#link-shapes) and [Port look](graph-editing.md#port-look).
 
 ### A menu for each page
 
@@ -165,6 +165,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-11-02 — Config tab: Image captions (show all / hide all / each image's own)
 - 2026-11-02 — image export carries image nodes' pictures inside the SVG; the scale handle is left out like the other editing aids
 - 2026-10-27 — image export in the text view: the text as the view shows it (drawTextViewSvg)
 - 2026-10-27 — Config tab: port look in the Links section; image export leaves hidden ports out

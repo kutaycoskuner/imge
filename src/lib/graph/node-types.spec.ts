@@ -15,7 +15,7 @@
 // -----------------------------------------------------------------------------------------
 
 import { describe, it, expect } from 'vitest';
-import { NODE_TYPES, nodeType, nodeLabel, groupSize, GROUP_SIZE, nodeScale, imageOf, SCALE_MIN, SCALE_MAX } from './node-types';
+import { NODE_TYPES, nodeType, nodeLabel, groupSize, GROUP_SIZE, nodeScale, imageOf, imageCaption, SCALE_MIN, SCALE_MAX } from './node-types';
 import { addNode, emptyGraph, setNodeType, setNodeScale } from './store';
 import { migrateGraph, CURRENT_GRAPH_VERSION } from './migrations';
 import { GRAPH_FORMAT, type GraphNode } from './types';
@@ -170,5 +170,23 @@ describe('text and image nodes', () => {
 		const image = setNodeType(start(), 'n1', 'image').data.nodes[0];
 		expect(imageOf(image)).toEqual({ src: 'images/parts/resistor.svg', w: 96, h: 32 });
 		expect(imageOf({ ...image, content: { ...image.content, scale: 2 } })).toMatchObject({ w: 192, h: 64 });
+	});
+});
+
+describe('image captions', () => {
+	const image = () => setNodeType(addNode(emptyGraph(), { x: 0, y: 0 }).graph, 'n1', 'image').data.nodes[0];
+	const withCaption = (caption: unknown, showCaption: unknown) => ({ ...image(), content: { ...image().content, caption, showCaption } });
+
+	it('shows a caption the node has and shows; none when empty or switched off', () => {
+		expect(imageCaption(withCaption('R1', true))).toBe('R1');
+		expect(imageCaption(withCaption('  ', true))).toBe('');
+		expect(imageCaption(withCaption('R1', false))).toBe('');
+		expect(imageCaption(withCaption(undefined, undefined))).toBe(''); // a version 1 image
+	});
+
+	it('the Esc menu can show or hide every caption, but never invents one', () => {
+		expect(imageCaption(withCaption('R1', false), 'show')).toBe('R1');
+		expect(imageCaption(withCaption('R1', true), 'hide')).toBe('');
+		expect(imageCaption(withCaption('', true), 'show')).toBe('');
 	});
 });

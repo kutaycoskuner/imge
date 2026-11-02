@@ -123,15 +123,17 @@ export const NODE_TYPES: NodeType[] = [
 		title: 'Image',
 		description: 'Only a picture (a part from the library or an uploaded image), scalable; an input and an output (circuit parts later)',
 		ready: true,
-		version: 1,
+		// v2: `caption` (text under the picture) and `showCaption`; a v1 image has no caption
+		version: 2,
 		ports: [
 			{ id: 'i1', kind: 'in', type: 'basic', label: 'Input' },
 			{ id: 'o1', kind: 'out', type: 'basic', label: 'Output' }
 		],
 		// src: a path below static/ (library parts: images/parts/*.svg) or a data: URL (uploaded);
 		// width / height: its size at scale 1 (world units), so links and exports know it before
-		// the picture has loaded
-		content: { name: 'Image', src: 'images/parts/resistor.svg', width: 96, height: 32, scale: 1 },
+		// the picture has loaded; caption: text under it (beside it in top-to-bottom graphs),
+		// drawn when showCaption is on, unless the Esc menu shows or hides all captions
+		content: { name: 'Image', src: 'images/parts/resistor.svg', width: 96, height: 32, scale: 1, caption: '', showCaption: true },
 		label: named('Image')
 	},
 	{ id: 'note', title: 'Note', description: 'A block of text without ports (planned)', ready: false },
@@ -194,6 +196,13 @@ export const nodeText = (node: GraphNode): string => (typeof node.content.text =
 function textLabel(node: GraphNode): string {
 	const first = nodeText(node).split('\n').find((l) => l.trim())?.trim() ?? '';
 	return first ? (first.length > 40 ? `${first.slice(0, 39)}…` : first) : 'Text';
+}
+
+/** The caption an image node shows: its caption when it has one and shows it (or `override` says show), else ''. */
+export function imageCaption(node: GraphNode, override: 'show' | 'hide' | null = null): string {
+	const caption = typeof node.content.caption === 'string' ? node.content.caption.trim() : '';
+	if (!caption || override === 'hide') return '';
+	return override === 'show' || node.content.showCaption !== false ? caption : '';
 }
 
 /** An image node's picture source and its drawn size (width / height times scale). */

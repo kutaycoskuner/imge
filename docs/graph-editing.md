@@ -47,6 +47,7 @@ State as of 2026-10-23.
 | **Ctrl+Z** (Cmd+Z) | Undo the last change; see [Undo and redo](#undo-and-redo). |
 | **Ctrl+Y** or **Ctrl+Shift+Z** | Redo what was undone. |
 | **Ctrl+V** (Cmd+V) | Paste the copied nodes as new nodes (new ids; names, ports and link looks kept), their layout unchanged, with the group's top-left corner at the mouse, snapped like a dragged node unless snapping is off. The pasted nodes become the selection, ready to drag. Pasting again without moving the mouse puts the next copy one grid square further down-right. |
+| Touch screens | One finger works like the mouse (long press = Shift), two fingers zoom and pan; see [graph-touch.md](graph-touch.md). |
 | Drag from an output point | A dashed curve follows the mouse; release on an input point to link. |
 | Drag from an input point without links | The same, backwards; release on an output point. |
 | Drag from an input point that has links | Picks up its most recent link from the output end: release on another input to re-route it (it keeps its id and name), on empty space to remove it. |
@@ -326,6 +327,7 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-11-02 — touch screens: gestures for every mouse action ($lib/touch.ts, [graph-touch.md](graph-touch.md)); Undo / Redo also in the toolbar
 - 2026-11-02 — scale handle on text and image nodes (`setNodeScale`); F2 / double-click on a text node edits its text over several lines
 - 2026-10-27 — in the text view (see [graph-text-view.md](graph-text-view.md)) the keys that act on the canvas itself (+, -, Home, Shift+A, F2) do nothing; store `viewMode`
 - 2026-10-27 — port look (filled, hollow, hidden until hover): toolbar button (cycles) and the Esc menu's Links section, display only; store `portLook`

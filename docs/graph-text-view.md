@@ -84,6 +84,7 @@ The view (`src/lib/components/GraphTextView.svelte`) draws the grid in a `<pre>`
 
 ## Changes
 
+- 2026-11-02 — image nodes show their caption on a line under `[name]` when shown; follows the Image captions override
 - 2026-11-02 — text nodes as bare lines, image nodes as `[name]` boxes; one-cell gap next to text nodes
 - 2026-10-27 — image export (PNG / JPG / SVG) follows the text view: the characters with their styles
 - 2026-10-27 — first version: text view with boxes, UML compartments and styles, groups, routed links with line styles and marks, names; click to select; Copy text, Download .txt; toolbar view button

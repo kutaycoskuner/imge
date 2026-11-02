@@ -3,6 +3,7 @@
 --------------------------------------------------------------------------------------- */
 .viewport {
     overflow: hidden;
+    touch-action: none; /* the canvas handles touch itself ($lib/touch.ts): no page scroll or zoom */
     position: absolute;
     top: 0;
     left: 0;
@@ -155,6 +156,32 @@ new
 
 .world.ports-hidden .node:hover .port {
     opacity: 1;
+}
+
+/* touch screens have no hover: hidden ports show on the selected node, so it can be linked */
+@media (hover: none) {
+    .world.ports-hidden .node.selected .port {
+        opacity: 1;
+    }
+}
+
+/* touch screens: a finger-sized area around ports and handles (they look the same) */
+@media (pointer: coarse) {
+    .port {
+        position: relative;
+    }
+
+    .port::after,
+    .group-resize::after,
+    .node-scale::after {
+        content: '';
+        position: absolute;
+        inset: -12px;
+    }
+
+    .node.selected .node-scale {
+        opacity: 1;
+    }
 }
 
 /* while an image is made (export-image.ts): hidden ports stay out, even under the mouse */
@@ -384,6 +411,28 @@ kbd {
 .image-body {
     display: block;
     pointer-events: none; /* the node takes the mouse (drag, select), not the picture */
+}
+
+/* an image node's caption: under the picture, outside the node's box (the ports stay at the
+   picture's middle); beside it in top-to-bottom graphs, where links leave through the bottom */
+.image-caption {
+    position: absolute;
+    top: calc(100% + 0.3em);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: pre;
+    font-size: 0.85em;
+    line-height: 1.25;
+    text-align: center;
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+.world.top-to-bottom .image-caption {
+    top: 50%;
+    left: calc(100% + 0.6em);
+    transform: translateY(-50%);
+    text-align: left;
 }
 
 .node-scale {

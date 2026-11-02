@@ -39,7 +39,7 @@
 // -----------------------------------------------------------------------------------------
 
 import type { Graph, GraphNode, Link, LinkArrow, LinkLine, LinkMark } from './types';
-import { nodeLabel, nodeName, nodeColor, nodeShape, nodeText, portSide, umlMembers, umlAbstract, groupSize } from './node-types';
+import { nodeLabel, nodeName, nodeColor, nodeShape, nodeText, portSide, umlMembers, umlAbstract, groupSize, imageCaption } from './node-types';
 import { groupChildren } from './groups';
 import { parseAttribute, parseMethod, drawnTokens, type UmlLine } from './uml';
 
@@ -144,7 +144,7 @@ function umlLine(line: UmlLine): Text {
 	return tokens.flatMap((t) => chars(t.text, [`uml-${t.kind}`, style].filter(Boolean).join(' ')));
 }
 
-function nodeBox(node: GraphNode, col: number, row: number): Box {
+function nodeBox(node: GraphNode, col: number, row: number, captions: 'show' | 'hide' | null = null): Box {
 	const base = { id: node.id, col, row, round: nodeShape(node) === 'circle', color: nodeColor(node), group: false };
 	if (node.type === 'uml-class') {
 		const name = chars(nodeName(node) || 'Class', umlAbstract(node) ? 'ascii-b ascii-i' : 'ascii-b');
@@ -168,8 +168,10 @@ function nodeBox(node: GraphNode, col: number, row: number): Box {
 		});
 		return { ...base, round: false, w, h: rows.length, rows, bare: true };
 	}
-	// an image node: a rounded box with its name in brackets (the picture itself isn't text)
-	const label = node.type === 'image' ? [`[${nodeName(node) || 'Image'}]`] : null;
+	// an image node: a rounded box with its name in brackets (the picture itself isn't text),
+	// its caption on the line under it when it shows one
+	const caption = node.type === 'image' ? imageCaption(node, captions) : '';
+	const label = node.type === 'image' ? [`[${nodeName(node) || 'Image'}]`, ...(caption ? [caption] : [])] : null;
 	const lines = label ?? wrap(nodeLabel(node), NAME_WRAP);
 	const inner = Math.max(...lines.map(length)) + 2;
 	return { ...base, round: base.round || !!label, w: inner + 2, h: lines.length + 2, rows: lines.map((l) => centered(chars(l), inner)) };
@@ -235,11 +237,12 @@ interface Point {
  * Args:
  *     g: the graph (any node types; unknown types are drawn as boxes with their label).
  *     options.arrowOverride: the editor's display override for arrows (null = each link's own).
+ *     options.captionOverride: the editor's display override for image captions (null = each image's own).
  *
  * Returns:
  *     The grid, [row][column], trimmed to what is drawn; 0 x 0 for an empty graph.
  */
-export function graphToAscii(g: Graph, options: { arrowOverride?: LinkArrow | null } = {}): AsciiArt {
+export function graphToAscii(g: Graph, options: { arrowOverride?: LinkArrow | null; captionOverride?: 'show' | 'hide' | null } = {}): AsciiArt {
 	const nodes = g.data.nodes;
 	if (!nodes.length) return { width: 0, height: 0, cells: [] };
 	const swap = g.metadata.direction === 'top-to-bottom';
@@ -256,7 +259,7 @@ export function graphToAscii(g: Graph, options: { arrowOverride?: LinkArrow | nu
 	// 1. node boxes, top to bottom, each moved down past the boxes placed before it
 	const boxes = new Map<string, Box>();
 	const placed: Box[] = [];
-	const plain = nodes.filter((n) => n.type !== 'group').map((n) => nodeBox(n, at(n).col, at(n).row));
+	const plain = nodes.filter((n) => n.type !== 'group').map((n) => nodeBox(n, at(n).col, at(n).row, options.captionOverride ?? null));
 	plain.sort((a, b) => a.row - b.row || a.col - b.col);
 	for (const box of plain) {
 		while (placed.some((p) => clash(box, p))) box.row++;

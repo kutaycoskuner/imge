@@ -7,13 +7,14 @@
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Properties panel section "Image" for an image node (type "image"): its name (for lists and
-	// link ends), the picture (a part from the library in static/images/parts/index.json, or an
-	// uploaded file), and its scale (also the node's corner handle).
+	// link ends), its caption (text under the picture, with a switch to show it), the picture (a
+	// part from the library in static/images/parts/index.json, or an uploaded file), and its
+	// scale (also the node's corner handle).
 	// An uploaded picture is stored in the graph file itself as a data: URL, so the file stays
 	// complete wherever it goes; its size at scale 1 is the picture's own, at most UPLOAD_MAX
 	// world units on its longer side. Pictures over UPLOAD_WARN bytes ask first.
 	import PropText from './PropText.svelte';
-	import { graph, renameNode, setNodeContent, setNodeScale } from '$lib/graph/store';
+	import { graph, renameNode, setNodeContent, setNodeScale, captionOverride } from '$lib/graph/store';
 	import { nodeName, nodeScale, imageOf, SCALE_MIN, SCALE_MAX } from '$lib/graph/node-types';
 	import type { PanelContext } from './sections';
 
@@ -90,6 +91,29 @@
 	<dt>Name</dt>
 	<dd>
 		<PropText label="Image name" value={nodeName(node)} onCommit={(name) => graph.update((g) => renameNode(g, node.id, name))} />
+	</dd>
+
+	<dt>Caption</dt>
+	<dd>
+		<PropText
+			label="Caption"
+			placeholder="text under the picture"
+			value={typeof node.content.caption === 'string' ? node.content.caption : ''}
+			onCommit={(caption) => graph.update((g) => setNodeContent(g, node.id, { caption: caption.trim() }))}
+		/>
+		<label class="prop-check">
+			<input
+				type="checkbox"
+				checked={node.content.showCaption !== false}
+				on:change={(e) => {
+					const id = node.id;
+					const showCaption = e.currentTarget.checked;
+					graph.update((g) => setNodeContent(g, id, { showCaption }));
+				}}
+			/>
+			Show caption
+		</label>
+		{#if $captionOverride}<div class="prop-faint">all captions {$captionOverride === 'show' ? 'shown' : 'hidden'} (Esc menu)</div>{/if}
 	</dd>
 
 	<dt class="prop-top"><label for="prop-image-part">Picture</label></dt>

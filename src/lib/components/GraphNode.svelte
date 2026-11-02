@@ -26,13 +26,14 @@
 	// colour, bold and alignment, at its scale (font size); double-click or F2 edits it in a
 	// field (Enter = new line, Ctrl+Enter or clicking away saves, Esc cancels). An image node
 	// (type "image") is only its picture at its stored size times its scale, with its ports on
-	// the edges. Both show a scale handle in the bottom-right corner that the page drags.
+	// the edges, and its caption under it (beside it in top-to-bottom graphs; outside the node's
+	// box, so the ports stay at the picture's middle) when shown (imageCaption, captionOverride). Both show a scale handle in the bottom-right corner that the page drags.
 	// Mouse down for select/drag/link is handled by the page through the data-* attributes;
 	// ports carry `data-port-key` ("<node id>:<port id>") so GraphLinks can find and measure them,
 	// and `data-port-kind` (in / out / any) for the link rules.
-	import { graph, editingNodeId, renameNode, setNodeContent, isGroup, frames } from '$lib/graph/store';
+	import { graph, editingNodeId, renameNode, setNodeContent, isGroup, frames, captionOverride } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
-	import { nodeName, nodeColor, portSide, umlMembers, umlAbstract, nodeShape, nodeScale, nodeText, imageOf } from '$lib/graph/node-types';
+	import { nodeName, nodeColor, portSide, umlMembers, umlAbstract, nodeShape, nodeScale, nodeText, imageOf, imageCaption } from '$lib/graph/node-types';
 	import { parseAttribute, parseMethod, drawnTokens } from '$lib/graph/uml';
 	import { parseHexColor, dimColor } from '$lib/graph/color';
 
@@ -66,6 +67,7 @@
 	$: imageNode = node.type === 'image';
 	$: scale = nodeScale(node);
 	$: image = imageNode ? imageOf(node) : null;
+	$: caption = imageNode ? imageCaption(node, $captionOverride) : '';
 
 	let draft = '';
 	$: editing = $editingNodeId === node.id;
@@ -171,6 +173,7 @@
 		<div class="node-scale" data-node-id={node.id} title="Drag to scale"></div>
 	{:else if image}
 		<img class="image-body" src={image.src} alt={name} width={image.w} height={image.h} draggable="false" />
+		{#if caption}<div class="image-caption">{caption}</div>{/if}
 		<div class="node-scale" data-node-id={node.id} title="Drag to scale"></div>
 	{:else}
 	{#if editing}

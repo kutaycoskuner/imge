@@ -47,7 +47,7 @@ The panel shows the sections whose condition matches the selection, top to botto
 | One UML class | Attributes and methods | The Abstract class checkbox (name in italics; a note when the class has `{abstract}` methods but isn't abstract), then one field per compartment, one member per line in UML notation (`{static}` / `{abstract}` markers included), highlighted while typing, with the lines that don't follow the notation listed under the field; leaving a field saves it (see [graph-uml.md](graph-uml.md)). |
 | One group | Contents | The nodes it holds, by label and id (a click selects one, × takes it out of the group), how to add nodes, and **Ungroup** (removes the group; what it held stays). |
 | One text node | Text | The text (several lines; saved when the field is left, Esc puts it back), colour, scale, alignment, bold (see [graph-text-and-images.md](graph-text-and-images.md)). |
-| One image node | Image | Name, the picture (a library part or **Upload image…**, with its size and what it adds to the file), scale. |
+| One image node | Image | Name, caption with Show caption, the picture (a library part or **Upload image…**, with its size and what it adds to the file), scale. |
 | One node with ports | Ports and links | Its ports by kind (inputs, outputs, and two-way ports when it has any), by label; links coming in and going out, by the node at the other end (and the link's name); a click selects the link. |
 | Several nodes | Selection | How many nodes and how many links between them; one colour for all of them whose type has a colour (empty with "mixed" when they differ; × resets all); their labels (a click selects only that one); Delete all of them. |
 | One link | Link | Name (editable; empty removes it), id, From and To as node label · port label (a click selects the node), Delete link. |
@@ -137,6 +137,7 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 
 ## Changes
 
+- 2026-11-02 — on screens up to 640 px wide the panel is a drawer from the right edge that starts closed (not remembered); a finger-sized tab on touch screens (see [graph-touch.md](graph-touch.md)); Image section: caption and Show caption
 - 2026-11-02 — sections Text and Image for the new node types; Ports and links shows for every node that has ports (not for groups or text nodes); the Content section and multi-selection colour go by what the node's type defines (`hasNamedContent`, `hasColor`), not by keys left from an earlier type
 - 2026-10-27 — fix: the Shape dropdown threw "$0 is not defined" when a node was selected (a function call as a select's value); the shape is computed first
 - 2026-10-23 — the start graph and all examples follow the newest type versions (basic 2, group 3), checked by a test

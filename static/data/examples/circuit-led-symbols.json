@@ -43,7 +43,7 @@
             {
                 "id": "n3",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -140
@@ -67,13 +67,15 @@
                     "src": "images/parts/battery.svg",
                     "width": 96,
                     "height": 48,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "Battery 9 V",
+                    "showCaption": true
                 }
             },
             {
                 "id": "n4",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 180,
                     "y": -144
@@ -97,13 +99,15 @@
                     "src": "images/parts/switch.svg",
                     "width": 96,
                     "height": 40,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "Switch",
+                    "showCaption": true
                 }
             },
             {
                 "id": "n5",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 360,
                     "y": -148
@@ -127,13 +131,15 @@
                     "src": "images/parts/resistor.svg",
                     "width": 96,
                     "height": 32,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "R 390 Ω",
+                    "showCaption": true
                 }
             },
             {
                 "id": "n6",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 540,
                     "y": -140
@@ -157,13 +163,15 @@
                     "src": "images/parts/led.svg",
                     "width": 96,
                     "height": 48,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "LED (red)",
+                    "showCaption": true
                 }
             },
             {
                 "id": "n7",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 720,
                     "y": -140
@@ -187,7 +195,9 @@
                     "src": "images/parts/ground.svg",
                     "width": 64,
                     "height": 48,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "Ground",
+                    "showCaption": true
                 }
             },
             {
@@ -210,7 +220,7 @@
             {
                 "id": "n9",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 0,
                     "y": -300
@@ -234,13 +244,15 @@
                     "src": "images/parts/capacitor.svg",
                     "width": 96,
                     "height": 40,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "Capacitor",
+                    "showCaption": true
                 }
             },
             {
                 "id": "n10",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 160,
                     "y": -296
@@ -264,13 +276,15 @@
                     "src": "images/parts/lamp.svg",
                     "width": 96,
                     "height": 48,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "Lamp",
+                    "showCaption": true
                 }
             },
             {
                 "id": "n11",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 320,
                     "y": -300
@@ -294,13 +308,15 @@
                     "src": "images/parts/diode.svg",
                     "width": 96,
                     "height": 40,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "Diode",
+                    "showCaption": true
                 }
             },
             {
                 "id": "n12",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 480,
                     "y": -288
@@ -324,13 +340,15 @@
                     "src": "images/parts/and-gate.svg",
                     "width": 96,
                     "height": 64,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "AND gate",
+                    "showCaption": true
                 }
             },
             {
                 "id": "n13",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 640,
                     "y": -288
@@ -354,13 +372,15 @@
                     "src": "images/parts/or-gate.svg",
                     "width": 96,
                     "height": 64,
-                    "scale": 1
+                    "scale": 1,
+                    "caption": "OR gate",
+                    "showCaption": true
                 }
             },
             {
                 "id": "n14",
                 "type": "image",
-                "typeVersion": 1,
+                "typeVersion": 2,
                 "position": {
                     "x": 800,
                     "y": -296
@@ -384,92 +404,9 @@
                     "src": "images/parts/not-gate.svg",
                     "width": 96,
                     "height": 48,
-                    "scale": 1
-                }
-            },
-            {
-                "id": "n15",
-                "type": "text",
-                "typeVersion": 1,
-                "position": {
-                    "x": 12,
-                    "y": -200
-                },
-                "ports": [],
-                "content": {
-                    "text": "Battery 9 V",
-                    "color": "#8b8d98",
-                    "scale": 0.85,
-                    "bold": false,
-                    "align": "center"
-                }
-            },
-            {
-                "id": "n16",
-                "type": "text",
-                "typeVersion": 1,
-                "position": {
-                    "x": 208,
-                    "y": -200
-                },
-                "ports": [],
-                "content": {
-                    "text": "Switch",
-                    "color": "#8b8d98",
-                    "scale": 0.85,
-                    "bold": false,
-                    "align": "center"
-                }
-            },
-            {
-                "id": "n17",
-                "type": "text",
-                "typeVersion": 1,
-                "position": {
-                    "x": 384,
-                    "y": -200
-                },
-                "ports": [],
-                "content": {
-                    "text": "R 390 Ω",
-                    "color": "#8b8d98",
-                    "scale": 0.85,
-                    "bold": false,
-                    "align": "center"
-                }
-            },
-            {
-                "id": "n18",
-                "type": "text",
-                "typeVersion": 1,
-                "position": {
-                    "x": 560,
-                    "y": -200
-                },
-                "ports": [],
-                "content": {
-                    "text": "LED (red)",
-                    "color": "#8b8d98",
-                    "scale": 0.85,
-                    "bold": false,
-                    "align": "center"
-                }
-            },
-            {
-                "id": "n19",
-                "type": "text",
-                "typeVersion": 1,
-                "position": {
-                    "x": 728,
-                    "y": -200
-                },
-                "ports": [],
-                "content": {
-                    "text": "Ground",
-                    "color": "#8b8d98",
-                    "scale": 0.85,
-                    "bold": false,
-                    "align": "center"
+                    "scale": 1,
+                    "caption": "NOT gate",
+                    "showCaption": true
                 }
             }
         ],

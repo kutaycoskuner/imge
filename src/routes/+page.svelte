@@ -25,6 +25,8 @@
 	//          group it is dropped in); dragging a group moves what it holds; drag a group's
 	//          corner handle to resize it (never smaller than its children), a text or image
 	//          node's corner handle to scale it,
+	//          touch: one finger drives the same mouse gestures, a long press is Shift, two
+	//          fingers pinch-zoom and pan ($lib/touch.ts, docs/graph-touch.md),
 	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
 	//          link, F2 or double-click renames a link (drag a selected
 	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
@@ -48,6 +50,7 @@
 	import GraphPropertiesPanel from '$lib/components/properties/GraphPropertiesPanel.svelte';
 	import { nodeScale } from '$lib/graph/node-types';
 	import GraphTextView from '$lib/components/GraphTextView.svelte';
+	import { touchGestures } from '$lib/touch';
 	import { onMount, tick } from 'svelte';
 	import { dev } from '$app/environment';
 	import {
@@ -783,6 +786,7 @@
 <div
 	class="viewport no-scroll"
 	role="presentation"
+	use:touchGestures
 	on:mousedown={handleMouseDown}
 	on:wheel|nonpassive|preventDefault={handleWheel}
 	on:dblclick={handleDoubleClick}

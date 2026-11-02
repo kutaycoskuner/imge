@@ -1,2554 +1,2556 @@
 {
-  "metadata": {
-    "format": "imge-graph",
-    "version": 7,
-    "direction": "left-to-right"
-  },
-  "data": {
-    "nodes": [
-      {
-        "id": "n1",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -1200,
-          "y": 1000
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
+    "metadata": {
+        "format": "imge-graph",
+        "version": 7,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -1200,
+                    "y": 1000
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Camera (pan + zoom)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 1160
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Coordinate system (y up)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 1060
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Pan (drag empty space)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 960
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Zoom (wheel, + / -)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 860
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Fit graph (Home)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 1260
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Dot grid (adaptive)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 1160
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Origin marker (dev only)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n8",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 1060
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Coordinate tracker",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n9",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -1200,
+                    "y": 440
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Graph format v7",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n10",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 540
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Format adapters (v0 to v7)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n11",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 540
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Version samples",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n12",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -900,
+                    "y": 340
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Graph store",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n13",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 340
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Node CRUD",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n14",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": -60
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Link CRUD",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n15",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 500
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Name editing (F2)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n16",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Selection (Shift+click)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n17",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "New graph (Shift+N)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n18",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Node color",
+                    "color": "#2a9fd6",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n19",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Drag to link",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n20",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 0
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "F quick link",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n21",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": -100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Detach / re-route",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n22",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": -200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Link shapes (L)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n23",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": -100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Spline",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n24",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": -200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Line",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n25",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": -300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Manhattan corner",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n26",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": -300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Cycles & arrows (D, R)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n27",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 1000
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Esc menu (per page)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n28",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 300,
+                    "y": 1100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Graph folder",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n29",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 300,
+                    "y": 1000
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Download (Ctrl+Shift+S)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n30",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 300,
+                    "y": 900
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Display override (links)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n31",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": 1200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Save / Save as (Ctrl+S)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n32",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": 1100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Autosave",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n33",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": 1000
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Read-only folder (Firefox)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n34",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 900,
+                    "y": 440
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Shortcuts & key caps",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n35",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": 1260
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Snap to grid (Alt = free)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n36",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 400
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Box select (Shift+drag)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n37",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Copy / paste (Ctrl+C, V)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n38",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": 140
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Undo / redo (Ctrl+Z, Y)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n39",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 100
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Properties panel (N)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n40",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -600,
+                    "y": -480
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Node types (templates)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n41",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": -460
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Basic (ports)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n42",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": -300,
+                    "y": -540
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Group (holds nodes, Ctrl+G)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n43",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 100,
+                    "y": -480
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Type samples (versions)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n44",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 0,
+                    "y": 200
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Colour picker",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n45",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": -360,
+                    "y": -420
+                },
+                "ports": [],
+                "content": {
+                    "name": "Types v1",
+                    "color": "#8e4ec6",
+                    "children": [
+                        "n41",
+                        "n42",
+                        "n46",
+                        "n54",
+                        "n55"
+                    ],
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n46",
+                "type": "uml-class",
+                "typeVersion": 2,
+                "position": {
+                    "x": -320,
+                    "y": -640
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "UmlClass",
+                    "color": null,
+                    "abstract": false,
+                    "attributes": [
+                        "- name: String",
+                        "- attributes: List<String>",
+                        "- methods: List<String>",
+                        "{static} + VERSION: int = 2 {readOnly}"
+                    ],
+                    "methods": [
+                        "+ parseAttribute(line: String): UmlLine",
+                        "+ parseMethod(line: String): UmlLine"
+                    ]
+                }
+            },
+            {
+                "id": "n47",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 300,
+                    "y": 220
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Node shape",
+                    "color": null,
+                    "shape": "circle"
+                }
+            },
+            {
+                "id": "n48",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 300,
+                    "y": 800
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Examples (by category)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n49",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 300,
+                    "y": -380
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Link look (line, mark, UML)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n50",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": 900
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Image export (PNG, JPG, SVG)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n51",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": -380
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "UML class diagram (partly)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n52",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": 780
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Port look (filled, hollow, hidden)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n53",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 600,
+                    "y": 680
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Text view (experimental)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n54",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": -300,
+                    "y": -840
+                },
+                "ports": [],
+                "content": {
+                    "text": "Text (no box, scalable)",
+                    "color": null,
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n55",
+                "type": "image",
+                "typeVersion": 2,
+                "position": {
+                    "x": -280,
+                    "y": -890
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Image (resistor part)",
+                    "src": "images/parts/resistor.svg",
+                    "width": 96,
+                    "height": 32,
+                    "scale": 1,
+                    "caption": "Image (with caption)",
+                    "showCaption": true
+                }
+            },
+            {
+                "id": "n56",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": -1200,
+                    "y": 1460
+                },
+                "ports": [],
+                "content": {
+                    "text": "imge: feature map",
+                    "color": null,
+                    "scale": 2.2,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n57",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": -1200,
+                    "y": 1380
+                },
+                "ports": [],
+                "content": {
+                    "text": "What the graph editor can do, each link read as \"builds on\".\nOpen more graphs from the Esc menu: Examples.",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            }
         ],
-        "content": {
-          "name": "Camera (pan + zoom)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n2",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -900,
-          "y": 1160
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Coordinate system (y up)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n3",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -900,
-          "y": 1060
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Pan (drag empty space)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n4",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -900,
-          "y": 960
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Zoom (wheel, + / -)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n5",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -900,
-          "y": 860
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Fit graph (Home)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n6",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -600,
-          "y": 1260
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Dot grid (adaptive)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n7",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -600,
-          "y": 1160
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Origin marker (dev only)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n8",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -600,
-          "y": 1060
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Coordinate tracker",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n9",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -1200,
-          "y": 440
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Graph format v7",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n10",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -900,
-          "y": 540
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Format adapters (v0 to v7)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n11",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -600,
-          "y": 540
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Version samples",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n12",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -900,
-          "y": 340
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Graph store",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n13",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -600,
-          "y": 340
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Node CRUD",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n14",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -600,
-          "y": -60
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Link CRUD",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n15",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": 500
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Name editing (F2)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n16",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": 400
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Selection (Shift+click)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n17",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": 300
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "New graph (Shift+N)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n18",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": 200
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Node color",
-          "color": "#2a9fd6",
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n19",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": 100
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Drag to link",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n20",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": 0
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "F quick link",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n21",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": -100
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Detach / re-route",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n22",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": -200
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Link shapes (L)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n23",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 0,
-          "y": -100
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Spline",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n24",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 0,
-          "y": -200
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Line",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n25",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 0,
-          "y": -300
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Manhattan corner",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n26",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": -300
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Cycles & arrows (D, R)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n27",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 0,
-          "y": 1000
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Esc menu (per page)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n28",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 300,
-          "y": 1100
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Graph folder",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n29",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 300,
-          "y": 1000
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Download (Ctrl+Shift+S)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n30",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 300,
-          "y": 900
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Display override (links)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n31",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 600,
-          "y": 1200
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Save / Save as (Ctrl+S)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n32",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 600,
-          "y": 1100
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Autosave",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n33",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 600,
-          "y": 1000
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Read-only folder (Firefox)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n34",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 900,
-          "y": 440
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Shortcuts & key caps",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n35",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": 1260
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Snap to grid (Alt = free)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n36",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 0,
-          "y": 400
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Box select (Shift+drag)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n37",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 0,
-          "y": 300
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Copy / paste (Ctrl+C, V)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n38",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -600,
-          "y": 140
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Undo / redo (Ctrl+Z, Y)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n39",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 0,
-          "y": 100
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Properties panel (N)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n40",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -600,
-          "y": -480
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Node types (templates)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n41",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": -460
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Basic (ports)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n42",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": -300,
-          "y": -540
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Group (holds nodes, Ctrl+G)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n43",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 100,
-          "y": -480
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Type samples (versions)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n44",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 0,
-          "y": 200
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Colour picker",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n45",
-        "type": "group",
-        "typeVersion": 3,
-        "position": {
-          "x": -360,
-          "y": -420
-        },
-        "ports": [],
-        "content": {
-          "name": "Types v1",
-          "color": "#8e4ec6",
-          "children": [
-            "n41",
-            "n42",
-            "n46",
-            "n54",
-            "n55"
-          ],
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n46",
-        "type": "uml-class",
-        "typeVersion": 2,
-        "position": {
-          "x": -320,
-          "y": -640
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "UmlClass",
-          "color": null,
-          "abstract": false,
-          "attributes": [
-            "- name: String",
-            "- attributes: List<String>",
-            "- methods: List<String>",
-            "{static} + VERSION: int = 2 {readOnly}"
-          ],
-          "methods": [
-            "+ parseAttribute(line: String): UmlLine",
-            "+ parseMethod(line: String): UmlLine"
-          ]
-        }
-      },
-      {
-        "id": "n47",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 300,
-          "y": 220
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Node shape",
-          "color": null,
-          "shape": "circle"
-        }
-      },
-      {
-        "id": "n48",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 300,
-          "y": 800
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Examples (by category)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n49",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 300,
-          "y": -380
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Link look (line, mark, UML)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n50",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 600,
-          "y": 900
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Image export (PNG, JPG, SVG)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n51",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 600,
-          "y": -380
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "UML class diagram (partly)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n52",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 600,
-          "y": 780
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Port look (filled, hollow, hidden)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n53",
-        "type": "basic",
-        "typeVersion": 2,
-        "position": {
-          "x": 600,
-          "y": 680
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Text view (experimental)",
-          "color": null,
-          "shape": "square"
-        }
-      },
-      {
-        "id": "n54",
-        "type": "text",
-        "typeVersion": 1,
-        "position": {
-          "x": -300,
-          "y": -840
-        },
-        "ports": [],
-        "content": {
-          "text": "Text (no box, scalable)",
-          "color": null,
-          "scale": 1,
-          "bold": false,
-          "align": "left"
-        }
-      },
-      {
-        "id": "n55",
-        "type": "image",
-        "typeVersion": 1,
-        "position": {
-          "x": -280,
-          "y": -890
-        },
-        "ports": [
-          {
-            "id": "i1",
-            "kind": "in",
-            "type": "basic",
-            "label": "Input"
-          },
-          {
-            "id": "o1",
-            "kind": "out",
-            "type": "basic",
-            "label": "Output"
-          }
-        ],
-        "content": {
-          "name": "Image (resistor part)",
-          "src": "images/parts/resistor.svg",
-          "width": 96,
-          "height": 32,
-          "scale": 1
-        }
-      },
-      {
-        "id": "n56",
-        "type": "text",
-        "typeVersion": 1,
-        "position": {
-          "x": -1200,
-          "y": 1460
-        },
-        "ports": [],
-        "content": {
-          "text": "imge: feature map",
-          "color": null,
-          "scale": 2.2,
-          "bold": true,
-          "align": "left"
-        }
-      },
-      {
-        "id": "n57",
-        "type": "text",
-        "typeVersion": 1,
-        "position": {
-          "x": -1200,
-          "y": 1380
-        },
-        "ports": [],
-        "content": {
-          "text": "What the graph editor can do, each link read as \"builds on\".\nOpen more graphs from the Esc menu: Examples.",
-          "color": "#8b8d98",
-          "scale": 1,
-          "bold": false,
-          "align": "left"
-        }
-      }
-    ],
-    "links": [
-      {
-        "id": "l1",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n1",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n2",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l2",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n1",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n3",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l3",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n1",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n4",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l4",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n1",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n5",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l5",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n2",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n6",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l6",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n2",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n7",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l7",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n2",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n8",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l8",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n9",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n10",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l9",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n10",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n11",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l10",
-        "type": "basic",
-        "name": "read / write",
-        "shape": "manhattan",
-        "arrow": "both",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n9",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n12",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l11",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n12",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n13",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l12",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n12",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n14",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l13",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n13",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n15",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l14",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n13",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n16",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l15",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n13",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n17",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l16",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n13",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n18",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l17",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n14",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n19",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l18",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n14",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n20",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l19",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n14",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n21",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l20",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n14",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n22",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l21",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n14",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n26",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l22",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n22",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n23",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l23",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n22",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n24",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l24",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n22",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n25",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l25",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n27",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n28",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l26",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n27",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n29",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l27",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n27",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n30",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l28",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n28",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n31",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l29",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n28",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n32",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l30",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n28",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n33",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l31",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n15",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n34",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l32",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n20",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n34",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l33",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n22",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n34",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l34",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n31",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n34",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l35",
-        "type": "basic",
-        "name": "specify",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n11",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n9",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l36",
-        "type": "basic",
-        "name": "after each change",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n32",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n32",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l37",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n6",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n35",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l38",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n16",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n36",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l39",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n16",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n37",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l40",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n12",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n38",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l41",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n16",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n39",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l42",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n12",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n40",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l43",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n40",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n41",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l44",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n40",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n42",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l45",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n41",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n43",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l46",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n42",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n43",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l47",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n18",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n44",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l48",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n40",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n46",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l49",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n46",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n43",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l50",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n44",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n47",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l51",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n27",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n48",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l52",
-        "type": "basic",
-        "shape": "spline",
-        "arrow": "forward",
-        "line": "dashed",
-        "mark": "triangle",
-        "route": "above",
-        "source": {
-          "node": "n26",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n49",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l53",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n29",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n50",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l54",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n49",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n51",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l55",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n30",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n52",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l56",
-        "type": "basic",
-        "shape": "line",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n30",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n53",
-          "port": "i1"
-        }
-      },
-      {
-        "id": "l57",
-        "type": "basic",
-        "shape": "manhattan",
-        "arrow": "forward",
-        "line": "solid",
-        "mark": "arrow",
-        "route": "above",
-        "source": {
-          "node": "n40",
-          "port": "o1"
-        },
-        "target": {
-          "node": "n55",
-          "port": "i1"
-        }
-      }
-    ]
-  }
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n2",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n3",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n4",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l4",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n1",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n5",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l5",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n6",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l6",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n7",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l7",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n2",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n8",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l8",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n9",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n10",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l9",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n10",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n11",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l10",
+                "type": "basic",
+                "name": "read / write",
+                "shape": "manhattan",
+                "arrow": "both",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n9",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n12",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l11",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n13",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l12",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n14",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l13",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n15",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l14",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n16",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l15",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n17",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l16",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n18",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l17",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n19",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l18",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n20",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l19",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n21",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l20",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n22",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l21",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n14",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n26",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l22",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n23",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l23",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n24",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l24",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n25",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l25",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n27",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n28",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l26",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n27",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n29",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l27",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n27",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n30",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l28",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n28",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n31",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l29",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n28",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n32",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l30",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n28",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n33",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l31",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n15",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l32",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n20",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l33",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n22",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l34",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n31",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n34",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l35",
+                "type": "basic",
+                "name": "specify",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n11",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n9",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l36",
+                "type": "basic",
+                "name": "after each change",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n32",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n32",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l37",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n6",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n35",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l38",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n36",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l39",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n37",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l40",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n38",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l41",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n16",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n39",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l42",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n40",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l43",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n41",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l44",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n42",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l45",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n41",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n43",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l46",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n42",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n43",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l47",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n18",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n44",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l48",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n46",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l49",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n46",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n43",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l50",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n44",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n47",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l51",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n27",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n48",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l52",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "dashed",
+                "mark": "triangle",
+                "route": "above",
+                "source": {
+                    "node": "n26",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n49",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l53",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n29",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n50",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l54",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n49",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n51",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l55",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n30",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n52",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l56",
+                "type": "basic",
+                "shape": "line",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n30",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n53",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l57",
+                "type": "basic",
+                "shape": "manhattan",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n55",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
 }

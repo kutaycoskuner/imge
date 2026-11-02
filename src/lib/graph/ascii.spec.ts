@@ -130,3 +130,17 @@ describe('text and image nodes in the text view', () => {
 		expect(cellsWith(art, (c) => c.includes('ascii-b')).map((c) => c.ch).join('')).toBe('Titlesub');
 	});
 });
+
+describe('image captions in the text view', () => {
+	const image = (showCaption: boolean): GraphNode => ({
+		id: 'n1', type: 'image', typeVersion: 2, position: { x: 0, y: 0 }, ports,
+		content: { name: 'R1', src: 'images/parts/resistor.svg', width: 96, height: 32, scale: 1, caption: '390 Ohm', showCaption }
+	});
+
+	it('a shown caption is a line under the name; the override decides for all images', () => {
+		expect(asciiText(graphToAscii(graph([image(true)], []))).split(String.fromCharCode(10))).toEqual(['╭─────────╮', '│  [R1]   │', '│ 390 Ohm │', '╰─────────╯']);
+		expect(asciiText(graphToAscii(graph([image(false)], [])))).not.toContain('390');
+		expect(asciiText(graphToAscii(graph([image(false)], []), { captionOverride: 'show' }))).toContain('390 Ohm');
+		expect(asciiText(graphToAscii(graph([image(true)], []), { captionOverride: 'hide' }))).not.toContain('390');
+	});
+});

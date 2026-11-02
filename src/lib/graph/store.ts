@@ -123,6 +123,9 @@ export const linkShapeOverride = writable<LinkShape | null>(null); // null = eac
 export const linkArrowOverride = writable<LinkArrow | null>(null); // null = each link's own
 export const showChevrons = writable<boolean>(false); // direction chevrons in the middle of links
 export const portLook = writable<PortLook>('filled'); // class ports-<look> on the world layer
+// image captions for all image nodes: show / hide every caption, or null = each node's own
+export const CAPTION_OVERRIDES = ['show', 'hide'] as const;
+export const captionOverride = writable<(typeof CAPTION_OVERRIDES)[number] | null>(null);
 // canvas = the drawn graph; text = the graph as box-drawing characters over it (GraphTextView,
 // experimental); not remembered, every visit starts on the canvas
 export const viewMode = writable<'canvas' | 'text'>('canvas');
@@ -140,13 +143,16 @@ export function persistViewSettings(): () => void {
 			(LINK_ARROWS as readonly string[]).includes(v) ? (v as LinkArrow) : null
 		),
 		persist(showChevrons, 'imge.graphEditor.showChevrons', (v) => v === 'true'),
+		persist(captionOverride, 'imge.graphEditor.captionOverride', (v) => (v === 'show' || v === 'hide' ? v : null)),
 		persist(portLook, 'imge.graphEditor.portLook', (v) =>
 			(PORT_LOOKS as readonly string[]).includes(v) ? (v as PortLook) : 'filled'
 		),
 		// stored only when hidden ("false"); the default (shown) leaves nothing behind
 		persistHidden(showDotGrid, 'imge.graphEditor.hideDotGrid'),
 		persistHidden(snapToGrid, 'imge.graphEditor.noSnap'),
-		persistHidden(showPropertiesPanel, 'imge.graphEditor.hidePropertiesPanel')
+		// narrow screens (phones): the panel starts closed and opening / closing it isn't
+		// remembered, so a phone doesn't change the choice made on a wider screen
+		NARROW_SCREEN() ? startHidden(showPropertiesPanel) : persistHidden(showPropertiesPanel, 'imge.graphEditor.hidePropertiesPanel')
 	];
 	return () => stops.forEach((stop) => stop());
 }
@@ -171,6 +177,16 @@ function persist<T>(store: Writable<T>, key: string, parse: (stored: string) => 
 }
 
 // for a setting that is on by default: remembers only that it was turned off
+/** Window width (px) up to which the editor uses its phone layout (Properties panel as a drawer). */
+export const NARROW_WIDTH = 640;
+const NARROW_SCREEN = () => typeof matchMedia === 'function' && matchMedia(`(max-width: ${NARROW_WIDTH}px)`).matches;
+
+// a shown / hidden setting that starts hidden and isn't stored
+function startHidden(store: Writable<boolean>): () => void {
+	store.set(false);
+	return () => {};
+}
+
 function persistHidden(store: Writable<boolean>, key: string): () => void {
 	try {
 		if (localStorage.getItem(key) === 'true') store.set(false);

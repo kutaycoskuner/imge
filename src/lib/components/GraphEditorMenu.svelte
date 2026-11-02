@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-27
+	//   last update     : 2026-11-02
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -11,8 +11,8 @@
 	// folder, remember it or remove the saved folder), see the imge graphs in it by name and
 	// open one with a click, save / save as, optional autosave, download a copy; the graph's
 	// direction; a Links section with the display-only shape override and "apply to all
-	// links" (writes the shape into every link) and the port look (filled / hollow / hidden,
-	// display only). Buttons with a shortcut show it as key caps.
+	// links" (writes the shape into every link), the port look (filled / hollow / hidden,
+	// display only) and image captions (each image's own / show all / hide all, display only). Buttons with a shortcut show it as key caps.
 	// Chrome and Edge read and write the folder; Firefox and Safari can only read it, so
 	// saving downloads the file there. All actions and state live in $lib/graph/file-access.ts.
 	import {
@@ -40,6 +40,8 @@
 		showChevrons,
 		portLook,
 		PORT_LOOKS,
+		captionOverride,
+		CAPTION_OVERRIDES,
 		type PortLook,
 		setAllLinkShapes,
 		setAllLinkArrows,
@@ -286,6 +288,18 @@
 				{#each PORT_LOOKS as look}<option value={look}>{PORT_LOOK_LABELS[look]}</option>{/each}
 			</select>
 			<span class="note">display only, not saved; hidden ports show while the mouse is over their node</span>
+		</div>
+		<div class="row">
+			<span>Image captions</span>
+			<select
+				class="choice"
+				value={$captionOverride ?? ''}
+				on:change={(e) => captionOverride.set((e.currentTarget.value || null) as (typeof CAPTION_OVERRIDES)[number] | null)}
+			>
+				<option value="">each image's own</option>
+				{#each CAPTION_OVERRIDES as choice}<option value={choice}>{choice === 'show' ? 'show all' : 'hide all'}</option>{/each}
+			</select>
+			<span class="note">display only, not saved; one image: Show caption in its Properties</span>
 		</div>
 		<p class="note">
 			A selected link: <Kbd keys="R" /> routes it above or below when it closes a cycle or loops back

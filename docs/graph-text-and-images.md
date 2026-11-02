@@ -2,7 +2,7 @@
 
 Two node types without a box: **Text** (`text`) is only its text, for titles, captions, section headings and notes on the canvas; **Image** (`image`) is only a picture, a part from the library or an uploaded file, with an input and an output so it can be linked, the start of circuits drawn with their symbols. Both can be **scaled**.
 
-State as of 2026-11-02 (graph format v7, node types `text` and `image` version 1).
+State as of 2026-11-02 (graph format v7, node types `text` version 1 and `image` version 2).
 
 - [Using them](#using-them)
 - [Text nodes](#text-nodes)
@@ -19,7 +19,7 @@ State as of 2026-11-02 (graph format v7, node types `text` and `image` version 1
 - **Make one:** select a node and choose **Text** or **Image** in the Properties panel's Type dropdown. A basic node's name becomes the text of a text node; an image node starts as a resistor symbol.
 - **See its extent:** neither has a box; a dashed outline shows where the node is while the mouse is over it and while it is selected. Drag it like any node; it snaps, joins groups, copies and pastes as usual.
 - **In the start graph:** the feature map's title and subtitle are text nodes, and its "Types v1" group holds a text node and an image node.
-- **Example graphs:** Esc menu → Examples → **Weather station** (Software architecture: an overview laid out like a poster, with a title, a subtitle, headings and notes as text nodes, and tiers as coloured boxes in groups) and **LED circuit (symbols)** (Circuits: image nodes wired together, named by small grey text nodes under them, and the placeholder parts). Until parts draw their own names, a text node under a part is the way to label it.
+- **Example graphs:** Esc menu → Examples → **Weather station** (Software architecture: an overview laid out like a poster, with a title, a subtitle, headings and notes as text nodes, and tiers as coloured boxes in groups) and **LED circuit (symbols)** (Circuits: image nodes wired together, named by their captions, and the placeholder parts with theirs).
 
 ## Text nodes
 
@@ -37,6 +37,7 @@ A text node has **no ports**: it is a label on the canvas, not a step in the gra
 
 | Setting | Where | Notes |
 |---|---|---|
+| Caption | Properties → Image | Text under the picture (beside it in top-to-bottom graphs), e.g. "R1 = 390 Ω"; **Show caption** switches it on / off for this image. Esc menu → Config → Links → **Image captions** shows or hides every caption at once (display only, not saved), like the link shape override. The caption sits outside the node's box, so the ports stay at the picture's middle. |
 | Name | Properties → Image | Used in lists and link ends ("Resistor · Input"), not drawn. It follows the picture (a part's name, an uploaded file's name) until you give it one of your own. |
 | Picture | Properties → Image → Picture | A part from the library (`static/images/parts/index.json`), or **Upload image…** for any image file the browser can show (PNG, JPG, SVG, GIF, WebP ...). |
 | Scale | Properties → Image, or the corner handle | Times the picture's size at scale 1 (shown under the field). |
@@ -60,12 +61,14 @@ A text node has **no ports**: it is a label on the canvas, not a step in the gra
 
 { "id": "n5", "type": "image", "typeVersion": 1, "position": { "x": 360, "y": -148 },
   "ports": [ { "id": "i1", "kind": "in", ... }, { "id": "o1", "kind": "out", ... } ],
-  "content": { "name": "R 390 Ω", "src": "images/parts/resistor.svg", "width": 96, "height": 32, "scale": 1 } }
+  "content": { "name": "Resistor", "src": "images/parts/resistor.svg", "width": 96, "height": 32, "scale": 1,
+               "caption": "R 390 Ω", "showCaption": true } }
 ```
 
 - `text`: the lines, `\n` between them; `color`: `"#rrggbb"` or `null`; `scale`; `bold`; `align`: `left` / `center` / `right`.
+- `caption`: text under the picture (`""` = none); `showCaption`: whether it is drawn (type version 2; a version 1 image has neither and shows no caption).
 - `src`: a path below `static/` (library) or a `data:` URL (uploaded); `width` / `height`: the picture's size at scale 1, in world units, stored so links, the text view and exports know the node's size before the picture has loaded.
-- No graph format change: node `type` and `content` were made for new types (format v6). Samples: `static/data/node-types/text/text-v1.json`, `static/data/node-types/image/image-v1.json`.
+- No graph format change: node `type` and `content` were made for new types (format v6). Samples: `static/data/node-types/text/text-v1.json`, `static/data/node-types/image/image-v1.json`, `image-v2.json`.
 
 ## Where they show
 
@@ -73,14 +76,15 @@ A text node has **no ports**: it is a label on the canvas, not a step in the gra
 |---|---|---|
 | Canvas | its text | its picture, ports on the edges |
 | Image export (PNG / JPG / SVG) | as drawn | the picture, carried inside the SVG (library parts are read and inlined), so the file is complete |
-| Text view | its lines without a border, aligned and bold as set (scale doesn't apply to characters) | a rounded box with its name in brackets: `╭──────────╮ │ [Resistor] │` |
+| Text view | its lines without a border, aligned and bold as set (scale doesn't apply to characters) | a rounded box with its name in brackets and its caption under it when shown: `│ [Resistor] │ │ R 390 Ω │` |
 | Port look (Esc menu) | – | the ports follow it; **hidden** gives clean circuit drawings |
 
 ## Files
 
 | File | Role |
 |---|---|
-| `src/lib/graph/node-types.ts` | The `text` and `image` types (templates, labels; `adopt` turns a basic node's name into text); `nodeScale`, `nodeText`, `imageOf`, `hasColor`, `SCALE_MIN` / `SCALE_MAX`. |
+| `src/lib/graph/node-types.ts` | The `text` and `image` types (templates, labels; `adopt` turns a basic node's name into text); `nodeScale`, `nodeText`, `imageOf`, `imageCaption`, `hasColor`, `SCALE_MIN` / `SCALE_MAX`. |
+| `src/lib/graph/store.ts` (`captionOverride`), `GraphEditorMenu.svelte` | Image captions: show all / hide all / each image's own (display only). |
 | `src/lib/graph/store.ts` | `setNodeScale`; `setNodeType` uses the type's `adopt`. |
 | `src/lib/components/GraphNode.svelte` | Draws them (styles `.node.text-node`, `.node.image-node`, `.text-body`, `.image-body`, `.node-scale` in `static/styles/imge.css`), the canvas text field. |
 | `src/routes/+page.svelte` | The scale handle drag (`scaleByHandle`). |
@@ -99,4 +103,5 @@ The image node is the first step towards circuits drawn with their symbols. Plan
 
 ## Changes
 
+- 2026-11-02 — image captions (image type version 2: `caption`, `showCaption`), Image captions override in the Esc menu; the LED example names its parts by captions instead of text nodes
 - 2026-11-02 — first version: node types Text and Image (version 1), scale (corner handle, Properties field), library of placeholder circuit parts, image upload stored in the graph file, Properties sections Text and Image; examples Weather station and LED circuit (symbols)

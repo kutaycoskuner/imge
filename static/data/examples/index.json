@@ -87,7 +87,7 @@
             "name": "LED circuit (symbols)",
             "kind": "circuit with symbols",
             "file": "examples/circuit-led-symbols.json",
-            "description": "Battery, switch, resistor, LED and ground as image nodes wired together, named by text nodes under them, and the placeholder parts library; the parts don't simulate yet.",
+            "description": "Battery, switch, resistor, LED and ground as image nodes wired together, named by their captions, and the placeholder parts library; the parts don't simulate yet.",
             "sketch": true,
             "category": "Circuits"
         },

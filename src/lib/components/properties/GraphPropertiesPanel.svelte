@@ -181,6 +181,36 @@
 		height: 0.9em;
 	}
 
+	/* touch screens: a tab big enough for a finger */
+	@media (pointer: coarse) {
+		.panel-tab {
+			width: 2em;
+			height: 3.4em;
+		}
+
+		.panel-tab :global(svg),
+		.panel-icon :global(svg) {
+			width: 1.4em;
+			height: 1.4em;
+		}
+	}
+
+	/* phones: the panel is a drawer from the right edge, as tall as the window below the top
+	   links, over the canvas; closed it is the tab above */
+	@media (max-width: 640px) {
+		.properties-panel {
+			top: 2.4em;
+			right: 0;
+			bottom: 0;
+			max-height: none;
+			width: min(22em, 88vw);
+			border-right: none;
+			border-radius: 6px 0 0 0;
+			font-size: 0.85em;
+			box-shadow: -4px 0 16px rgba(0, 0, 0, 0.3);
+		}
+	}
+
 	/* one section: a header bar that folds it, like Blender's panels */
 	.panel-section {
 		border-radius: 4px;
