@@ -2,14 +2,14 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-02
+	//   last update     : 2026-11-05
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// The Config tab of the graph editor's Esc menu (registered by routes/+page.svelte, next
 	// to the Examples and Keybindings tabs): point it at a folder on the computer (edit
 	// folder, remember it or remove the saved folder), see the imge graphs in it by name and
-	// open one with a click, save / save as, optional autosave, download a copy; the graph's
+	// open one with a click (the menu closes), save / save as, optional autosave, download a copy; the graph's
 	// direction; a Links section with the display-only shape override and "apply to all
 	// links" (writes the shape into every link), the port look (filled / hollow / hidden,
 	// display only) and image captions (each image's own / show all / hide all, display only). Buttons with a shortcut show it as key caps.
@@ -127,7 +127,7 @@
 		{:else}
 			<div class="row">
 				<button class="action" on:click={pickFolder}>Choose folder…</button>
-				<span class="note">The imge graphs in it are listed below.</span>
+				<span class="note">The imge graphs in it and its subfolders are listed below. A graph file can also be dropped on the page.</span>
 			</div>
 		{/if}
 
@@ -166,9 +166,9 @@
 								class="file"
 								class:current={entry.fileName === w.fileName}
 								title={entry.fileName}
-								on:click={() => openFile(entry.fileName)}
+								on:click={async () => (await openFile(entry.fileName)) && menuOpen.set(false)}
 							>
-								<span class="file-name">{entry.name}</span>
+								<span class="file-name">{#if entry.dir}<span class="file-dir">{entry.dir}</span>{/if}{entry.name}</span>
 								<span class="file-meta">{entry.nodes} {entry.nodes === 1 ? 'node' : 'nodes'}</span>
 							</button>
 						</li>
@@ -176,7 +176,7 @@
 				</ul>
 			{/if}
 			{#if w.skipped > 0}
-				<p class="note">
+				<p class="note" title={w.skippedNames.join('\n')}>
 					{w.skipped} other .json {w.skipped === 1 ? 'file' : 'files'} in this folder
 					{w.skipped === 1 ? "isn't an imge graph" : "aren't imge graphs"} and {w.skipped === 1
 						? 'is'
@@ -312,7 +312,7 @@
 			New graph <Kbd keys="Shift+N" />
 		</button>
 		{#if !w.supported}
-			<button class="action subtle" on:click={uploadGraph}>Open a single file…</button>
+			<button class="action subtle" on:click={async () => (await uploadGraph()) && menuOpen.set(false)}>Open a single file…</button>
 		{/if}
 		<button class="action subtle" on:click={downloadGraph}>
 			Download a copy <Kbd keys="Ctrl+Shift+S" />
@@ -453,5 +453,9 @@
 		text-transform: none;
 		font-style: normal;
 		opacity: 1;
+	}
+	/* a graph in a subfolder: its folder in front of its name, faint */
+	.file-dir {
+		opacity: 0.55;
 	}
 </style>

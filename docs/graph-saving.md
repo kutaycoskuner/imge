@@ -16,16 +16,25 @@ State as of 2026-10-27.
 
 ## Opening and saving
 
-You point the editor at a folder on your computer; the imge graphs in it are listed by name and open with a click. Graphs are never stored inside the browser.
+You point the editor at a folder on your computer; the imge graphs in it and in its subfolders are listed by name and open with a click (the menu then closes). A graph file can also be **dropped on the page** from anywhere on the computer. Graphs are never stored inside the browser.
 
 Open the menu with **Esc**, or with the toolbar's open button (the arrow pointing up). The editor starts with the base graph (the feature map in `static/data/test-node-graph.json`); your own graphs are opened from the menu.
 
 ### Which files are listed
 
-- Only `.json` files **directly in the chosen folder** (subfolders aren't searched) that are **imge graphs**: their `metadata.format` is `imge-graph`, or they are old unversioned graphs (see [graph-format.md](graph-format.md)).
-- Each is shown by its name (the file name without `.json`) with its node count, e.g. `feature map · 34 nodes`.
-- Other `.json` files are not listed, and not hidden silently either: the menu says how many were skipped ("1 other .json file in this folder isn't an imge graph").
-- Clicking a name opens that graph; older format versions are upgraded on load.
+- `.json` files in the chosen folder **and its subfolders, up to 4 levels down**, that are **imge graphs**: their `metadata.format` is `imge-graph`, or they are old unversioned graphs (see [graph-format.md](graph-format.md)). Hidden folders (`.git`, `.svelte-kit` ...) and `node_modules` aren't searched.
+- Each is shown by its name (the file name without `.json`) with its node count, e.g. `feature map · 34 nodes`; a graph in a subfolder has its folder in front, faint: `uml/kugel-uml.imge`. The folder's own graphs come first, then by subfolder.
+- Other `.json` files are not listed, and not hidden silently either: the menu says how many were skipped ("1 other .json file in this folder isn't an imge graph"), their names on hover.
+- Clicking a name opens that graph and closes the menu; older format versions are upgraded on load. **Save** writes it back where it came from, also into its subfolder.
+- A folder that can't be read (access withdrawn, a file locked) says so at the bottom of the menu instead of showing an empty list.
+
+### Dropping a graph file
+
+Drag a graph file (`.json`) from the computer onto the page, anywhere (also onto the open menu): the page shows a dashed frame while the file is over it, and the graph opens when it's dropped (asking first if the open graph has unsaved changes); the menu closes.
+
+- With a writable folder open (Chrome, Edge), the dropped graph opens **without a file name**, so Save can't overwrite another file of the same name in that folder; **Save as** stores it there.
+- Otherwise it keeps its file name, so **Save (download)** downloads it under that name.
+- Dropping something else (an image, a text file) says it isn't a graph file. Of several files, the first `.json` one opens.
 
 ### With folder access (Chrome, Edge)
 
@@ -53,7 +62,7 @@ These browsers let a page **read** a folder you pick, but never write to it or r
 - **Choose folder…** / **Edit folder…** picks a folder each visit; the imge graphs in it are listed the same way, marked "(read only)", and open with a click.
 - **Save (download)** (<kbd>Ctrl</kbd>+<kbd>S</kbd>) / **Save as (download)** downloads the updated graph under its file name; put it back into the folder yourself.
 - There's no "remember" and no autosave, since the browser can't write to the folder.
-- **Open a single file…** uploads one graph file, without choosing a folder.
+- **Open a single file…** uploads one graph file, without choosing a folder (dropping it on the page does the same).
 
 The toolbar's export button (the arrow pointing down), the menu's **Download a copy** and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> always download, in every browser. A graph that doesn't have a file yet downloads as `imgegraph-<date>-<NN>.json` (e.g. `imgegraph-20261014-01.json`); the number counts up with each such download and starts again at `01` the next day.
 
@@ -83,6 +92,8 @@ The toolbar's picture button (bottom left) opens three choices; each downloads t
 - **In the text view** ([graph-text-view.md](graph-text-view.md)) the image is the text as the view shows it: the characters on their columns in the view's font, with its colours, bold, italics and underlines (`drawTextViewSvg`); PNG / JPG / SVG as above, with a 40 px margin. The SVG keeps the text as text, so it needs a monospace font with box-drawing characters where it is opened (the view's font list: Cascadia Mono, Consolas, DejaVu Sans Mono, Menlo); PNG and JPG are pictures and look the same everywhere.
 - **What is left out:** the selection highlight (the selection is cleared for a moment and restored), the dot grid, group resize marks, link grab areas, shadows, the toolbar, the panel; ports when the port look is hidden (see [graph-editing.md](graph-editing.md#port-look)).
 - **How:** `src/lib/graph/export-svg.ts` reads the drawing element by element and writes it as SVG shapes: backgrounds and borders as rectangles / ellipses (rounded corners, single-side lines), text line by line where the browser placed each character (font, colour, baseline), group frames as a border path with a gap; the link layer is SVG already and is copied with its styles. `export-image.ts` turns that SVG into a PNG (transparent) or JPG (theme background) on a canvas. Before saving, the SVG is checked to be valid.
+- **Very large graphs:** a browser's canvas holds at most about 268 million pixels and 32 767 px a side (much less in Safari on iPhones and iPads). A graph too big for that at twice its size comes out as large as the browser allows, e.g. `Exported map.jpg at 1.34× (the graph is too big for 2×; SVG keeps every detail)`; if the browser refuses even that, the size is halved until it works (`rasterScale`, `rasterise`). SVG has no such limit. Before this, such an export failed without a word while SVG worked.
+- **Messages:** the result (exported, at what size, or why not) stays at the bottom of the screen for 4 s, also when the mouse moves on.
 - **Fonts:** the text keeps its font names (Arial, monospace); a viewer without them uses a similar font.
 
 ## The Esc menu
@@ -152,6 +163,7 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 | `defaultGraphName(taken?, date?, start?)` | `imgegraph-YYYYMMDD-NN` with the first number from `start` not in `taken`. |
 | `normalizeFileName(input)` | Turns typed text into a safe `.json` file name, or `null` if nothing usable is left. |
 | `setAutosave(on)` | Turns autosave on or off and keeps the setting. |
+| `openLocalFile(file)` | Opens a graph file from anywhere (dropped on the page, or picked by `uploadGraph`); with a writable folder open, without a file name. True when it opened. |
 | `uploadGraph()` / `downloadGraph()` | Open by upload / save by download, for browsers without folder access and the toolbar's export. |
 | `listExamples()` | Reads `data/examples/index.json`: the example graphs (`ExampleGraph`: name, kind, file, description). |
 | `openExample(example)` | Opens an example graph without a file name; asks first if there are unsaved changes. |
@@ -165,6 +177,8 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 
 ## Changes
 
+- 2026-11-05 — fix: PNG / JPG of very large graphs failed silently (canvas too big) while SVG worked: now as large as the browser allows, said in the message; the SVG reaches the canvas as a Blob URL; export messages stay 4 s
+- 2026-11-05 — the folder's subfolders are searched too (up to 4 levels; hidden folders and node_modules skipped), listed with their folder, saved back there; a folder that can't be read says so; skipped files named on hover; opening a graph from the list or by upload closes the menu; dropping a graph file on the page opens it (`openLocalFile`)
 - 2026-11-02 — Config tab: Image captions (show all / hide all / each image's own)
 - 2026-11-02 — image export carries image nodes' pictures inside the SVG; the scale handle is left out like the other editing aids
 - 2026-10-27 — image export in the text view: the text as the view shows it (drawTextViewSvg)

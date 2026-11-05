@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-02
+	//   last update     : 2026-11-05
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@
 	//          a node dropped, made (Shift+A) or pasted inside a group joins it; Ctrl+drop takes it out (or into the
 	//          group it is dropped in); dragging a group moves what it holds; drag a group's
 	//          corner handle to resize it (never smaller than its children), a text or image
-	//          node's corner handle to scale it,
+	//          node's corner handle to scale it, drop a graph file (.json) on the page to open it,
 	//          touch: one finger drives the same mouse gestures, a long press is Shift, two
 	//          fingers pinch-zoom and pan ($lib/touch.ts, docs/graph-touch.md),
 	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
@@ -74,7 +74,8 @@
 		trackChanges,
 		downloadGraph,
 		save,
-		newGraph
+		newGraph,
+		openLocalFile
 	} from '$lib/graph/file-access';
 	import {
 		graph,
@@ -584,6 +585,33 @@
 		}
 	}
 
+	// Dropping a graph file (.json) from the computer anywhere on the page opens it
+	// (openLocalFile: asks first about unsaved changes; the menu closes when it opened)
+	let dropping = false; // a file is being dragged over the page
+	const carriesFiles = (event: DragEvent) => !!event.dataTransfer && Array.from(event.dataTransfer.types).includes('Files');
+
+	function handleDragOver(event: DragEvent): void {
+		if (!carriesFiles(event)) return;
+		event.preventDefault(); // allows the drop (the browser would open the file itself)
+		event.dataTransfer!.dropEffect = 'copy';
+		dropping = true;
+	}
+
+	function handleDragLeave(event: DragEvent): void {
+		if (!event.relatedTarget) dropping = false; // left the window, not just one element
+	}
+
+	async function handleDrop(event: DragEvent): Promise<void> {
+		if (!carriesFiles(event)) return;
+		event.preventDefault();
+		dropping = false;
+		const files = Array.from(event.dataTransfer!.files);
+		const file = files.find((f) => f.name.toLowerCase().endsWith('.json') || f.type === 'application/json');
+		if (!file) return notify(files.length ? `${files[0].name} isn't a graph file (.json)` : 'Nothing to open');
+		if (await openLocalFile(file)) menuOpen.set(false);
+		else if ($workspace.status) notify($workspace.status);
+	}
+
 	// Ctrl+S: save to the graph's file (written into the folder, or downloaded in a read-only
 	// folder); a graph without a file yet opens the menu, where Save as names it
 	function saveShortcut(): void {
@@ -781,7 +809,15 @@
 	on:mousemove={handleMouseMove}
 	on:mouseup={handleMouseUp}
 	on:keydown|capture={handleKeydown}
+	on:dragover={handleDragOver}
+	on:dragleave={handleDragLeave}
+	on:drop={handleDrop}
 />
+
+{#if dropping}
+	<!-- a file is dragged over the page: say what dropping it does -->
+	<div class="drop-overlay"><span>Drop a graph file (.json) to open it</span></div>
+{/if}
 
 <div
 	class="viewport no-scroll"
@@ -831,6 +867,27 @@
 {/if}
 
 <style>
+	/* a file dragged over the page: the whole window shows it can be dropped */
+	.drop-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 400; /* over the menu too: a drop anywhere opens the file */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		pointer-events: none;
+		background: color-mix(in srgb, var(--col-selected) 10%, transparent);
+		border: 3px dashed var(--col-selected);
+	}
+
+	.drop-overlay span {
+		padding: 0.6em 1.2em;
+		border-radius: 6px;
+		background: var(--bg);
+		color: var(--col);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+	}
+
 	/* box selection (Shift+drag on empty space), drawn in screen px above the graph */
 	.select-box {
 		position: fixed;

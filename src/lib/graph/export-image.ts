@@ -1,13 +1,14 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-02
+//   last update     : 2026-11-05
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
 // export-image.ts -- downloads the open graph as an image (toolbar's image button):
 //   SVG  full vector (shapes and text, export-svg.ts), transparent background
-//   PNG  that drawing as a picture at PNG_SCALE times the size, transparent background
+//   PNG  that drawing as a picture at PNG_SCALE times the size, transparent background; a graph
+//        too big for the browser's canvas at that size comes out smaller (rasterScale), said so
 //   JPG  the same with the theme's background colour (JPG has no transparency)
 // In the text view (viewMode "text") the image is the text instead: the characters as the view
 // shows them (font, colours, styles; drawTextViewSvg), whole, with PADDING around them.
@@ -119,29 +120,71 @@ export async function graphToSvg(
 	}
 }
 
-/** The SVG painted on a canvas at PNG_SCALE, as a PNG (transparent) or JPG (on `background`). */
-async function rasterise(svg: string, width: number, height: number, format: 'png' | 'jpg', background: string): Promise<Blob> {
-	const image = new Image();
-	image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-	await image.decode();
+/**
+ * The largest canvas browsers draw: Chrome and Firefox about 268 million pixels and 32 767 px
+ * a side; Safari (iOS) much less, which the retry in rasterise covers.
+ */
+export const CANVAS_MAX_SIDE = 32767;
+export const CANVAS_MAX_AREA = 268_435_456;
+/** Below this scale (pixels per world unit) a picture isn't worth making: the graph is too big. */
+const MIN_SCALE = 0.05;
+
+/**
+ * The pixels per world unit for a PNG / JPG of `width` x `height`: PNG_SCALE when the canvas
+ * fits the browser's limits, else the largest scale that does.
+ */
+export function rasterScale(width: number, height: number): number {
+	return Math.min(PNG_SCALE, CANVAS_MAX_SIDE / width, CANVAS_MAX_SIDE / height, Math.sqrt(CANVAS_MAX_AREA / (width * height)));
+}
+
+// one attempt: the picture on a canvas at `scale`, as a blob; null when the browser refuses
+// a canvas that big (no 2D context, or no blob out of it)
+async function paint(image: HTMLImageElement, width: number, height: number, scale: number, format: 'png' | 'jpg', background: string): Promise<Blob | null> {
 	const canvas = document.createElement('canvas');
-	canvas.width = width * PNG_SCALE;
-	canvas.height = height * PNG_SCALE;
-	const context = canvas.getContext('2d')!;
+	canvas.width = Math.max(1, Math.floor(width * scale));
+	canvas.height = Math.max(1, Math.floor(height * scale));
+	const context = canvas.getContext('2d');
+	if (!context) return null;
 	if (format === 'jpg') {
 		context.fillStyle = background;
 		context.fillRect(0, 0, canvas.width, canvas.height);
 	}
-	context.scale(PNG_SCALE, PNG_SCALE);
+	context.scale(scale, scale);
 	context.drawImage(image, 0, 0, width, height);
 	const type = format === 'jpg' ? 'image/jpeg' : 'image/png';
-	return new Promise((resolve, reject) =>
-		canvas.toBlob(
-			(blob) => (blob ? resolve(blob) : reject(new Error(`the browser could not make a ${format.toUpperCase()}`))),
-			type,
-			JPG_QUALITY
-		)
-	);
+	return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), type, JPG_QUALITY));
+}
+
+/**
+ * The SVG painted on a canvas, as a PNG (transparent) or JPG (on `background`), at PNG_SCALE
+ * or, for a graph too big for that, at the largest scale the browser draws (halved until it
+ * does, MIN_SCALE at least). The SVG goes in as a Blob URL: a data: URL that long fails in
+ * some browsers.
+ *
+ * Returns:
+ *     The picture and the scale it was made at.
+ *
+ * Raises:
+ *     Error: the browser couldn't read the drawing, or the graph is too big for any picture.
+ */
+async function rasterise(svg: string, width: number, height: number, format: 'png' | 'jpg', background: string): Promise<{ blob: Blob; scale: number }> {
+	const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+	try {
+		const image = new Image();
+		image.src = url;
+		try {
+			await image.decode();
+		} catch {
+			throw new Error('the browser could not read the drawing');
+		}
+		for (let scale = rasterScale(width, height); scale >= MIN_SCALE; scale /= 2) {
+			const blob = await paint(image, width, height, scale, format, background);
+			if (blob) return { blob, scale };
+		}
+		throw new Error(`the graph is too big for a ${format.toUpperCase()} (${Math.round(width)} × ${Math.round(height)}); SVG works`);
+	} finally {
+		URL.revokeObjectURL(url);
+	}
 }
 
 /** File name: the graph file's name with the image's extension, or a dated default. */
@@ -167,20 +210,21 @@ function download(blob: Blob, name: string): void {
  * Downloads the open graph as an SVG, PNG or JPG image.
  *
  * Returns:
- *     The file name, or null when there is nothing to export (empty graph).
+ *     The file name and the scale a PNG / JPG was made at (PNG_SCALE, or less for a graph too
+ *     big for that), or null when there is nothing to export (empty graph).
  *
  * Raises:
  *     Error: the browser couldn't draw the image (the toolbar shows the message).
  */
-export async function exportGraphImage(format: ImageFormat): Promise<string | null> {
+export async function exportGraphImage(format: ImageFormat): Promise<{ name: string; scale: number } | null> {
 	const result = await graphToSvg();
 	if (!result) return null;
 	const name = imageName(format);
 	const background = getComputedStyle(document.body).backgroundColor;
-	const blob =
+	const { blob, scale } =
 		format === 'svg'
-			? new Blob([result.svg], { type: 'image/svg+xml' })
+			? { blob: new Blob([result.svg], { type: 'image/svg+xml' }), scale: 1 }
 			: await rasterise(result.svg, result.width, result.height, format, background);
 	download(blob, name);
-	return name;
+	return { name, scale };
 }

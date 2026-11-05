@@ -15,15 +15,15 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.30.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.31.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-    <img alt="Graph editor in the light theme showing the feature map; the selected dashed link with a hollow triangle is shown in the Properties panel's Look section as the UML relation Realization" src="_display/0.30-graph_editor.png" />
+    <img alt="Graph editor in the light theme showing the feature map; the selected dashed link with a hollow triangle is shown in the Properties panel's Look section as the UML relation Realization" src="_display/0.31-graph_editor.png" />
     <br>
-    <sub><i>v0.30.0 graph editor (light theme): the feature map, a dashed link with a hollow triangle selected, its Look section in the Properties panel (N) showing the UML relation, mark and line</i></sub>
+    <sub><i>v0.31.0 graph editor (light theme): the feature map, a dashed link with a hollow triangle selected, its Look section in the Properties panel (N) showing the UML relation, mark and line</i></sub>
 </p>
 
 # Installation and Use
@@ -108,7 +108,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] direction: left-to-right or top-to-bottom; Transpose (toolbar button or Esc menu) switches it, ports, links and routes follow; switching back restores the layout
 - [x] export data as json (default name imgegraph-<date>-<NN>.json)
 - [x] export the graph as an image from the toolbar's picture button: PNG (2x, transparent), JPG (2x, theme background) or SVG (full vector, transparent); the whole graph, as drawn, without selection or editing aids
-- [x] point the editor at a folder on your computer: its imge graphs are listed by name and open with a click; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
+- [x] point the editor at a folder on your computer: its imge graphs (also in subfolders) are listed by name and open with a click, or drop a graph file on the page; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
 - [x] versioned graph format (now v7: nodes are id, type, typeVersion, position, ports with a kind, and content defined by their type; links have shape, arrow, line and mark), older files upgraded on load; a sample per version in static/data/samples, a sample node per node type version in static/data/node-types
 - [x] example graphs in the Esc menu, grouped by category (mind mapping, math, circuits, software architecture, other) (mind map, flowchart, search tree, lattice, architecture map, release process, UML class diagram), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)

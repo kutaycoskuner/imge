@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-02
+	//   last update     : 2026-11-05
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 
 	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen, menuTab } from '../../stores/imge_main';
 	import { ZOOM_STEP, camera, zoomAt } from '$lib/camera';
-	import { exportGraphImage, type ImageFormat } from '$lib/graph/export-image';
+	import { exportGraphImage, PNG_SCALE, type ImageFormat } from '$lib/graph/export-image';
 	import {
 		createNodeAt,
 		graph,
@@ -116,12 +116,28 @@
 
 	// Mouseover event handlers
 	const handleMouseOver = (message: string) => {
+		if (Date.now() < resultUntil) return; // a result is on screen: hovering doesn't replace it
 		assistanceMsg.update(() => message);
 	};
 
 	const handleMouseLeave = () => {
+		if (Date.now() < resultUntil) return; // keep a result readable after the mouse moves on
 		assistanceMsg.update(() => '');
 	};
+
+	// a result (export done or failed) stays RESULT_MS on screen, whatever the mouse does
+	const RESULT_MS = 4000;
+	let resultUntil = 0;
+	let resultTimer: ReturnType<typeof setTimeout> | undefined;
+	function announce(message: string): void {
+		resultUntil = Date.now() + RESULT_MS;
+		assistanceMsg.set(message);
+		clearTimeout(resultTimer);
+		resultTimer = setTimeout(() => {
+			resultUntil = 0;
+			assistanceMsg.set('');
+		}, RESULT_MS);
+	}
 
 	// Zoom functions
 	const zoomIn = () => zoomAt(ZOOM_STEP);
@@ -151,10 +167,12 @@
 	async function exportImage(format: ImageFormat): Promise<void> {
 		imageMenuOpen = false;
 		try {
-			const name = await exportGraphImage(format);
-			handleMouseOver(name ? `Exported ${name}` : 'Nothing to export: the graph is empty');
+			const result = await exportGraphImage(format);
+			if (!result) return announce('Nothing to export: the graph is empty');
+			const smaller = format !== 'svg' && result.scale < PNG_SCALE;
+			announce(`Exported ${result.name}${smaller ? ` at ${result.scale.toFixed(2)}× (the graph is too big for ${PNG_SCALE}×; SVG keeps every detail)` : ''}`);
 		} catch (error) {
-			handleMouseOver(`Could not export the image: ${(error as Error).message}`);
+			announce(`Could not export the image: ${(error as Error).message}`);
 		}
 	}
 
