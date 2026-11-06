@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-11-06
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -17,6 +17,9 @@
 	// - Accepts #abc / abc / #aabbcc / aabbcc ($lib/graph/color.ts); while the text isn't a hex
 	//   colour the field is marked red, and leaving it puts the old value back. Empty = the
 	//   theme's default look (null). Esc cancels the edit (and keeps the Esc menu closed).
+	// Also used outside the graph editor (keyboard layout categories): `required` keeps a colour
+	// set (no reset), onPickStart / onPickEnd replace the graph's undo grouping, and the field
+	// has its own look.
 	import { parseHexColor, dimColor } from '$lib/graph/color';
 	import { holdHistory, releaseHistory } from '$lib/graph/history';
 	import ColorPicker from './ColorPicker.svelte';
@@ -25,6 +28,11 @@
 	export let mixed = false; // several nodes with different colours: empty field, "mixed", reset all
 	export let label = 'Colour';
 	export let onCommit: (color: string | null) => void;
+	// a colour must stay set (e.g. a keyboard layout category): no reset, an empty field goes back
+	export let required = false;
+	// around a picker drag: the graph editor makes the drag one undo step; other pages pass their own
+	export let onPickStart: () => void = holdHistory;
+	export let onPickEnd: () => void = releaseHistory;
 
 	let draft = value ?? '';
 	let focused = false; // typing in the hex field
@@ -44,6 +52,7 @@
 		const text = draft.trim();
 		const color = text === '' ? null : parseHexColor(text);
 		if (text !== '' && !color) return; // not a colour: the field goes back to the stored value
+		if (required && !color) return; // must stay set: an empty field goes back too
 		if (color !== value) onCommit(color);
 	}
 
@@ -99,12 +108,12 @@
 		on:keydown={handleKey}
 		on:blur={handleBlur}
 	/>
-	{#if value !== null || mixed}
+	{#if !required && (value !== null || mixed)}
 		<button class="reset" title="Back to the default look" aria-label="{label}: reset" on:click={() => onCommit(null)}>×</button>
 	{/if}
 </div>
 {#if open}
-	<ColorPicker {value} onStart={holdHistory} onInput={(hex) => onCommit(hex)} onEnd={releaseHistory} />
+	<ColorPicker {value} onStart={onPickStart} onInput={(hex) => onCommit(hex)} onEnd={onPickEnd} />
 {/if}
 </div>
 
@@ -145,9 +154,23 @@
 		box-shadow: 0 0 0 2px var(--col-selected);
 	}
 
+	/* the Properties panel's field look, so the field looks the same on other pages too */
 	.hex {
 		flex: 1;
+		min-width: 0;
+		box-sizing: border-box;
+		font: inherit;
 		font-family: monospace;
+		color: var(--col);
+		background: color-mix(in srgb, var(--col) 7%, var(--bg));
+		border: 1px solid color-mix(in srgb, var(--col) 15%, transparent);
+		border-radius: 3px;
+		padding: 0.2em 0.4em;
+		outline: none;
+	}
+
+	.hex:focus {
+		border-color: var(--col-selected);
 	}
 
 	/* more specific than the panel's shared focus border, so red shows while typing too */

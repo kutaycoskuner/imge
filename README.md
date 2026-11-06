@@ -2,7 +2,7 @@
     Project Imge
 </h1>
 <h3 align="center">
-    Study project: Web based node editor / matrix calculators
+    Study project: Web based node editor / matrix calculators / keyboard layouts
 </h3>
 <p align="center">
     Live: <a href="https://kutaycoskuner.github.io/imge/">kutaycoskuner.github.io/imge</a>
@@ -15,15 +15,21 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.31.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.32.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-    <img alt="Graph editor in the light theme showing the feature map; the selected dashed link with a hollow triangle is shown in the Properties panel's Look section as the UML relation Realization" src="_display/0.31-graph_editor.png" />
+    <img alt="Graph editor in the light theme showing the feature map; the selected dashed link with a hollow triangle is shown in the Properties panel's Look section as the UML relation Realization" src="_display/0.32-graph_editor.png" />
     <br>
-    <sub><i>v0.31.0 graph editor (light theme): the feature map, a dashed link with a hollow triangle selected, its Look section in the Properties panel (N) showing the UML relation, mark and line</i></sub>
+    <sub><i>v0.32.0 graph editor (light theme): the feature map, a dashed link with a hollow triangle selected, its Look section in the Properties panel (N) showing the UML relation, mark and line</i></sub>
+</p>
+
+<p align="center">
+    <img alt="Keyboard layout page in the dark theme: a full-size keyboard with the FPS game example, keys coloured by category (movement blue, combat red, weapons orange, interaction green, communication violet, menus grey) with what they do, the layer chips above and the categories below" src="_display/0.32-keyboard_layout.png" />
+    <br>
+    <sub><i>v0.32.0 keyboard layout (dark theme): the FPS game example on a full-size keyboard, keys coloured by category, the modifier layers as chips</i></sub>
 </p>
 
 # Installation and Use
@@ -43,7 +49,8 @@ cd imge
 npm install
 
 # 3. Start the development server: http://localhost:5173 opens the graph editor,
-#    matrix addition is at /matrix_addition, csv editor at /csv_editor
+#    matrix addition is at /matrix_addition, csv editor at /csv_editor,
+#    keyboard layout at /keyboard_layout
 npm run dev
 
 # optional: run the unit tests
@@ -52,6 +59,7 @@ npm run test:unit -- --run
 
 # Docs
 
+- [Keyboard layout](docs/keyboard-layout.md): the keyboard layout page, layers, the keyboards, the keymap file format
 - [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
 - [Node and link editing](docs/graph-editing.md): mouse and keys, selection, copy / paste, undo / redo, link rules, link shapes, function reference for the graph store
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
@@ -112,6 +120,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
 - [x] versioned graph format (now v7: nodes are id, type, typeVersion, position, ports with a kind, and content defined by their type; links have shape, arrow, line and mark), older files upgraded on load; a sample per version in static/data/samples, a sample node per node type version in static/data/node-types
 - [x] example graphs in the Esc menu, grouped by category (mind mapping, math, circuits, software architecture, other) (mind map, flowchart, search tree, lattice, architecture map, release process, UML class diagram), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)
+- [x] keyboard layout page: what each key does with and without modifiers (Shift, Ctrl, Alt and their combinations), on an ANSI or ISO keyboard coloured by category, and in a list with search; click or press a key to bind it, hold modifiers to see their layer; labels from your own keyboard layout (Chrome, Edge); JSON open / drop / download, examples (FPS game, the graph editor's shortcuts)
 - [ ] vertical / horizontal frameworks
 - [ ] node content editing
 - [ ] add / remove ports

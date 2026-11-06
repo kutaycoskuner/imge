@@ -8,6 +8,7 @@
 	<a href="{base}/">graph editor</a>
 	<a href="{base}/matrix_addition">matrix addition</a>
 	<a href="{base}/csv_editor">csv editor</a>
+	<a href="{base}/keyboard_layout">keyboard layout</a>
 	<!-- <a href="{base}/keyframe">motion animation</a>
 	<a href="{base}/pixel">pixel shader</a> -->
 

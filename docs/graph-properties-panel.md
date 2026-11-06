@@ -137,6 +137,7 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 
 ## Changes
 
+- 2026-11-06 — the colour field (`PropColor`) is also used by the keyboard layout page's categories: `required` (no reset, an empty field goes back), `onPickStart` / `onPickEnd` (default: the graph's undo grouping), and its hex field has its own look
 - 2026-11-02 — on screens up to 640 px wide the panel is a drawer from the right edge that starts closed (not remembered); a finger-sized tab on touch screens (see [graph-touch.md](graph-touch.md)); Image section: caption and Show caption
 - 2026-11-02 — sections Text and Image for the new node types; Ports and links shows for every node that has ports (not for groups or text nodes); the Content section and multi-selection colour go by what the node's type defines (`hasNamedContent`, `hasColor`), not by keys left from an earlier type
 - 2026-10-27 — fix: the Shape dropdown threw "$0 is not defined" when a node was selected (a function call as a select's value); the shape is computed first
