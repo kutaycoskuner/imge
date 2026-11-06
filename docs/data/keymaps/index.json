@@ -1,0 +1,7 @@
+{
+  "description": "Example keyboard layouts for the keyboard layout page (imge-keymap files), listed in its Esc menu.",
+  "examples": [
+    { "name": "FPS game (typical)", "file": "keymaps/fps-game.json", "description": "Movement, combat, weapons, interaction and chat of a first-person shooter, with Shift, Ctrl+Alt and Ctrl+Shift layers." },
+    { "name": "imge graph editor", "file": "keymaps/imge-graph-editor.json", "description": "This site's graph editor: its keyboard shortcuts, by what they do." }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "metadata": { "format": "imge-keymap", "version": 1, "name": "imge graph editor", "physical": "ansi" },
+  "data": {
+    "categories": [
+      { "id": "view", "name": "View", "color": "#0090ff" },
+      { "id": "edit", "name": "Edit", "color": "#30a46c" },
+      { "id": "links", "name": "Links", "color": "#8e4ec6" },
+      { "id": "file", "name": "File", "color": "#f76b15" },
+      { "id": "panels", "name": "Panels and menu", "color": "#8b8d98" }
+    ],
+    "bindings": [
+      { "key": "Equal", "mods": [], "action": "Zoom in", "category": "view" },
+      { "key": "Minus", "mods": [], "action": "Zoom out", "category": "view" },
+      { "key": "NumpadAdd", "mods": [], "action": "Zoom in", "category": "view" },
+      { "key": "NumpadSubtract", "mods": [], "action": "Zoom out", "category": "view" },
+      { "key": "Home", "mods": [], "action": "Fit graph", "category": "view" },
+      { "key": "KeyA", "mods": ["shift"], "action": "Add node at the mouse", "category": "edit" },
+      { "key": "Delete", "mods": [], "action": "Delete selection", "category": "edit" },
+      { "key": "Backspace", "mods": [], "action": "Delete selection", "category": "edit" },
+      { "key": "F2", "mods": [], "action": "Rename", "category": "edit" },
+      { "key": "KeyC", "mods": ["ctrl"], "action": "Copy nodes", "category": "edit" },
+      { "key": "KeyV", "mods": ["ctrl"], "action": "Paste at the mouse", "category": "edit" },
+      { "key": "KeyZ", "mods": ["ctrl"], "action": "Undo", "category": "edit" },
+      { "key": "KeyY", "mods": ["ctrl"], "action": "Redo", "category": "edit" },
+      { "key": "KeyZ", "mods": ["ctrl", "shift"], "action": "Redo", "category": "edit" },
+      { "key": "KeyG", "mods": ["ctrl"], "action": "Group", "category": "edit" },
+      { "key": "KeyG", "mods": ["ctrl", "shift"], "action": "Ungroup", "category": "edit" },
+      { "key": "KeyF", "mods": [], "action": "Link two nodes", "category": "links" },
+      { "key": "KeyL", "mods": [], "action": "Next link shape", "category": "links" },
+      { "key": "KeyD", "mods": [], "action": "Next arrow", "category": "links" },
+      { "key": "KeyR", "mods": [], "action": "Route above / below", "category": "links" },
+      { "key": "KeyS", "mods": ["ctrl"], "action": "Save", "category": "file" },
+      { "key": "KeyS", "mods": ["ctrl", "shift"], "action": "Download a copy", "category": "file" },
+      { "key": "KeyN", "mods": ["shift"], "action": "New graph", "category": "file" },
+      { "key": "KeyN", "mods": [], "action": "Properties panel", "category": "panels" },
+      { "key": "Escape", "mods": [], "action": "Menu", "category": "panels" }
+    ]
+  }
+}
