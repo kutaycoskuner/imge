@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-27
+//   last update     : 2026-11-02
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -14,6 +14,7 @@
 import { describe, it, expect } from 'vitest';
 import { graphToAscii, asciiText, wrap, type AsciiArt } from './ascii';
 import type { Graph, GraphNode, Link } from './types';
+import { nodeLabel } from './node-types';
 import startGraph from '../../../static/data/test-node-graph.json';
 import shapesUml from '../../../static/data/examples/shapes-uml.json';
 
@@ -105,9 +106,41 @@ describe('text drawing', () => {
 	it('the start graph and the UML example draw every node with its name', () => {
 		for (const g of [startGraph, shapesUml] as unknown as Graph[]) {
 			const art = graphToAscii(g);
-			const names = g.data.nodes.filter((n) => n.type !== 'group').map((n) => String(n.content.name).split(' ')[0]);
+			const names = g.data.nodes.filter((n) => n.type !== 'group').map((n) => nodeLabel(n).split(' ')[0].replace(/^\(/, ''));
 			const all = text(art);
 			for (const name of names) expect(all, name).toContain(name);
 		}
+	});
+});
+
+describe('text and image nodes in the text view', () => {
+	it('a text node is its lines without a border, aligned; an image node a rounded box with its name', () => {
+		const text: GraphNode = {
+			id: 'n1', type: 'text', typeVersion: 1, position: { x: 0, y: 0 }, ports: [],
+			content: { text: 'Title\nsub', color: null, scale: 2, bold: true, align: 'center' }
+		};
+		const image: GraphNode = {
+			id: 'n2', type: 'image', typeVersion: 1, position: { x: 0, y: -100 }, ports,
+			content: { name: 'Resistor', src: 'images/parts/resistor.svg', width: 96, height: 32, scale: 1 }
+		};
+		const art = graphToAscii(graph([text, image], []));
+		const rows = asciiText(art).split('\n');
+		expect(rows.slice(0, 2)).toEqual(['Title', ' sub']);
+		expect(rows.slice(-3)).toEqual(['╭────────────╮', '│ [Resistor] │', '╰────────────╯']);
+		expect(cellsWith(art, (c) => c.includes('ascii-b')).map((c) => c.ch).join('')).toBe('Titlesub');
+	});
+});
+
+describe('image captions in the text view', () => {
+	const image = (showCaption: boolean): GraphNode => ({
+		id: 'n1', type: 'image', typeVersion: 2, position: { x: 0, y: 0 }, ports,
+		content: { name: 'R1', src: 'images/parts/resistor.svg', width: 96, height: 32, scale: 1, caption: '390 Ohm', showCaption }
+	});
+
+	it('a shown caption is a line under the name; the override decides for all images', () => {
+		expect(asciiText(graphToAscii(graph([image(true)], []))).split(String.fromCharCode(10))).toEqual(['╭─────────╮', '│  [R1]   │', '│ 390 Ohm │', '╰─────────╯']);
+		expect(asciiText(graphToAscii(graph([image(false)], [])))).not.toContain('390');
+		expect(asciiText(graphToAscii(graph([image(false)], []), { captionOverride: 'show' }))).toContain('390 Ohm');
+		expect(asciiText(graphToAscii(graph([image(true)], []), { captionOverride: 'hide' }))).not.toContain('390');
 	});
 });

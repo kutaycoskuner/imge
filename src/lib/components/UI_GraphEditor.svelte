@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-27
+	//   last update     : 2026-11-05
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -11,6 +11,7 @@
 	// strong arrow is the current direction), dot grid on / off, snap to grid on / off, port
 	// look (filled -> hollow -> hidden -> filled), canvas / text view (experimental), Properties
 	// panel on / off,
+	// undo / redo (also Ctrl+Z / Ctrl+Y; the only way on a touch screen),
 	// add node at the screen center, open graph (opens the Esc menu), export (download) and
 	// export as image (a flyout with PNG / JPG / SVG, $lib/graph/export-image.ts). Hover hints show each button's key in [brackets], drawn as key caps
 	// by AssistanceMsg. Camera changes go through $lib/camera.ts; export is dispatched to
@@ -21,7 +22,7 @@
 
 	import { screenSizeIndex, assistanceMsg, colorMode, menuOpen, menuTab } from '../../stores/imge_main';
 	import { ZOOM_STEP, camera, zoomAt } from '$lib/camera';
-	import { exportGraphImage, type ImageFormat } from '$lib/graph/export-image';
+	import { exportGraphImage, PNG_SCALE, type ImageFormat } from '$lib/graph/export-image';
 	import {
 		createNodeAt,
 		graph,
@@ -56,6 +57,9 @@
 		viewMode.update((mode) => (mode === 'canvas' ? 'text' : 'canvas'));
 		handleMouseOver($viewMode === 'text' ? 'Text view (experimental)' : 'Canvas view');
 	};
+	// undo / redo, saying when there is nothing to do
+	const undoStep = () => handleMouseOver(undo() ? 'Undone [Ctrl+Z]' : 'Nothing to undo');
+	const redoStep = () => handleMouseOver(redo() ? 'Redone [Ctrl+Y]' : 'Nothing to redo');
 	// Properties panel on / off (also N and the panel's own chevron; remembered in this browser)
 	const toggleProperties = () => {
 		showPropertiesPanel.update((shown) => !shown);
@@ -71,6 +75,9 @@
 	import IconSnap from '$lib/icons/icon-snap.svelte';
 	import IconNodePorts from '$lib/icons/icon-node-ports.svelte';
 	import IconTerminal from '$lib/icons/icon-terminal.svelte';
+	import IconUndo from '$lib/icons/icon-undo.svelte';
+	import IconRedo from '$lib/icons/icon-redo.svelte';
+	import { undo, redo } from '$lib/graph/history';
 	import IconSidebarRight from '$lib/icons/icon-sidebar-right.svelte';
 	import IconChevronUp from '$lib/icons/icon-chevron-up.svelte';
 	import IconChevronDown from '$lib/icons/icon-chevron-down.svelte';
@@ -109,12 +116,28 @@
 
 	// Mouseover event handlers
 	const handleMouseOver = (message: string) => {
+		if (Date.now() < resultUntil) return; // a result is on screen: hovering doesn't replace it
 		assistanceMsg.update(() => message);
 	};
 
 	const handleMouseLeave = () => {
+		if (Date.now() < resultUntil) return; // keep a result readable after the mouse moves on
 		assistanceMsg.update(() => '');
 	};
+
+	// a result (export done or failed) stays RESULT_MS on screen, whatever the mouse does
+	const RESULT_MS = 4000;
+	let resultUntil = 0;
+	let resultTimer: ReturnType<typeof setTimeout> | undefined;
+	function announce(message: string): void {
+		resultUntil = Date.now() + RESULT_MS;
+		assistanceMsg.set(message);
+		clearTimeout(resultTimer);
+		resultTimer = setTimeout(() => {
+			resultUntil = 0;
+			assistanceMsg.set('');
+		}, RESULT_MS);
+	}
 
 	// Zoom functions
 	const zoomIn = () => zoomAt(ZOOM_STEP);
@@ -144,10 +167,12 @@
 	async function exportImage(format: ImageFormat): Promise<void> {
 		imageMenuOpen = false;
 		try {
-			const name = await exportGraphImage(format);
-			handleMouseOver(name ? `Exported ${name}` : 'Nothing to export: the graph is empty');
+			const result = await exportGraphImage(format);
+			if (!result) return announce('Nothing to export: the graph is empty');
+			const smaller = format !== 'svg' && result.scale < PNG_SCALE;
+			announce(`Exported ${result.name}${smaller ? ` at ${result.scale.toFixed(2)}× (the graph is too big for ${PNG_SCALE}×; SVG keeps every detail)` : ''}`);
 		} catch (error) {
-			handleMouseOver(`Could not export the image: ${(error as Error).message}`);
+			announce(`Could not export the image: ${(error as Error).message}`);
 		}
 	}
 
@@ -180,6 +205,8 @@
 		{ id: 'zoom-out', icon: IconMinus, hint: 'Zoom Out [-]', action: zoomOut },
 		{ id: 'add-node', icon: IconAddNode, hint: 'Add Node [Shift+A] at mouse', action: addNode },
 		{ id: 'fit', icon: IconFit, hint: 'Fit Graph [Home]', action: fitToScreen },
+		{ id: 'undo', icon: IconUndo, hint: 'Undo [Ctrl+Z]', action: undoStep },
+		{ id: 'redo', icon: IconRedo, hint: 'Redo [Ctrl+Y]', action: redoStep },
 		{ id: 'transpose', icon: IconTranspose, iconProps: { direction }, hint: `Transpose to ${nextDirection}`, action: transpose },
 		{
 			id: 'dot-grid',
@@ -272,6 +299,22 @@
 		bottom: 4em;
 		left: 1em;
 		z-index: 30;
+	}
+
+	/* short windows (a phone held sideways): two columns, so the toolbar stays on screen */
+	@media (max-height: 560px) {
+		.access-wrapper {
+			grid-template-columns: repeat(2, auto);
+			bottom: 3em;
+		}
+	}
+
+	/* touch screens: buttons big enough for a finger */
+	@media (pointer: coarse) {
+		.access-function {
+			width: 1.6em;
+			height: 1.6em;
+		}
 	}
 
 	.access-function {

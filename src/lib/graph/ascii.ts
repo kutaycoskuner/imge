@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-27
+//   last update     : 2026-11-02
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -12,7 +12,8 @@
 // How it works:
 //   1. Boxes: every node becomes a box of characters sized by its text (basic: its name,
 //      wrapped at NAME_WRAP; UML class: name, attributes, methods with separator lines;
-//      circle shapes get rounded corners). It is placed at its world position scaled to
+//      circle shapes get rounded corners; a text node is its lines without a border, an
+//      image node a rounded box with its name in brackets). It is placed at its world position scaled to
 //      character cells (COL_PX / ROW_PX world units per column / row); a box that would
 //      overlap one placed before it moves down until it is free; a link reading forward gets
 //      at least 3 free cells between its boxes (the target moves along).
@@ -38,7 +39,7 @@
 // -----------------------------------------------------------------------------------------
 
 import type { Graph, GraphNode, Link, LinkArrow, LinkLine, LinkMark } from './types';
-import { nodeLabel, nodeName, nodeColor, nodeShape, portSide, umlMembers, umlAbstract, groupSize } from './node-types';
+import { nodeLabel, nodeName, nodeColor, nodeShape, nodeText, portSide, umlMembers, umlAbstract, groupSize, imageCaption } from './node-types';
 import { groupChildren } from './groups';
 import { parseAttribute, parseMethod, drawnTokens, type UmlLine } from './uml';
 
@@ -101,6 +102,7 @@ interface Box {
 	round: boolean;
 	color: string | null;
 	group: boolean;
+	bare?: boolean; // no border: the rows are drawn from the box's corner (text nodes)
 }
 
 const chars = (text: string, cls?: string): Text => Array.from(text).map((ch) => ({ ch, cls }));
@@ -142,7 +144,7 @@ function umlLine(line: UmlLine): Text {
 	return tokens.flatMap((t) => chars(t.text, [`uml-${t.kind}`, style].filter(Boolean).join(' ')));
 }
 
-function nodeBox(node: GraphNode, col: number, row: number): Box {
+function nodeBox(node: GraphNode, col: number, row: number, captions: 'show' | 'hide' | null = null): Box {
 	const base = { id: node.id, col, row, round: nodeShape(node) === 'circle', color: nodeColor(node), group: false };
 	if (node.type === 'uml-class') {
 		const name = chars(nodeName(node) || 'Class', umlAbstract(node) ? 'ascii-b ascii-i' : 'ascii-b');
@@ -153,9 +155,26 @@ function nodeBox(node: GraphNode, col: number, row: number): Box {
 		const rows = [centered(name, inner), 'sep' as const, ...block(attributes), 'sep' as const, ...block(methods)];
 		return { ...base, round: false, w: inner + 2, h: rows.length + 2, rows };
 	}
-	const lines = wrap(nodeLabel(node), NAME_WRAP);
+	if (node.type === 'text') {
+		// only its lines, as typed, in its alignment (its scale doesn't apply to characters)
+		const lines = nodeText(node).split('\n');
+		const w = Math.max(1, ...lines.map(length));
+		const align = node.content.align;
+		const cls = node.content.bold === true ? 'ascii-b' : undefined;
+		const rows = lines.map((l) => {
+			const pad = w - length(l);
+			const left = align === 'center' ? Math.floor(pad / 2) : align === 'right' ? pad : 0;
+			return [...chars(' '.repeat(left)), ...chars(l, cls), ...chars(' '.repeat(pad - left))];
+		});
+		return { ...base, round: false, w, h: rows.length, rows, bare: true };
+	}
+	// an image node: a rounded box with its name in brackets (the picture itself isn't text),
+	// its caption on the line under it when it shows one
+	const caption = node.type === 'image' ? imageCaption(node, captions) : '';
+	const label = node.type === 'image' ? [`[${nodeName(node) || 'Image'}]`, ...(caption ? [caption] : [])] : null;
+	const lines = label ?? wrap(nodeLabel(node), NAME_WRAP);
 	const inner = Math.max(...lines.map(length)) + 2;
-	return { ...base, w: inner + 2, h: lines.length + 2, rows: lines.map((l) => centered(chars(l), inner)) };
+	return { ...base, round: base.round || !!label, w: inner + 2, h: lines.length + 2, rows: lines.map((l) => centered(chars(l), inner)) };
 }
 
 const overlaps = (a: Box, b: Box, gapCols: number, gapRows: number) =>
@@ -218,11 +237,12 @@ interface Point {
  * Args:
  *     g: the graph (any node types; unknown types are drawn as boxes with their label).
  *     options.arrowOverride: the editor's display override for arrows (null = each link's own).
+ *     options.captionOverride: the editor's display override for image captions (null = each image's own).
  *
  * Returns:
  *     The grid, [row][column], trimmed to what is drawn; 0 x 0 for an empty graph.
  */
-export function graphToAscii(g: Graph, options: { arrowOverride?: LinkArrow | null } = {}): AsciiArt {
+export function graphToAscii(g: Graph, options: { arrowOverride?: LinkArrow | null; captionOverride?: 'show' | 'hide' | null } = {}): AsciiArt {
 	const nodes = g.data.nodes;
 	if (!nodes.length) return { width: 0, height: 0, cells: [] };
 	const swap = g.metadata.direction === 'top-to-bottom';
@@ -233,13 +253,16 @@ export function graphToAscii(g: Graph, options: { arrowOverride?: LinkArrow | nu
 	const maxY = Math.max(...nodes.map((n) => n.position.y));
 	const at = (n: GraphNode) => ({ col: Math.round((n.position.x - minX) / COL_PX), row: Math.round((maxY - n.position.y) / ROW_PX) });
 
+	// boxes too close: the gaps above, or one cell next to a text node (no links run there)
+	const clash = (a: Box, b: Box) => (a.bare || b.bare ? overlaps(a, b, 1, 1) : overlaps(a, b, gapCols, gapRows));
+
 	// 1. node boxes, top to bottom, each moved down past the boxes placed before it
 	const boxes = new Map<string, Box>();
 	const placed: Box[] = [];
-	const plain = nodes.filter((n) => n.type !== 'group').map((n) => nodeBox(n, at(n).col, at(n).row));
+	const plain = nodes.filter((n) => n.type !== 'group').map((n) => nodeBox(n, at(n).col, at(n).row, options.captionOverride ?? null));
 	plain.sort((a, b) => a.row - b.row || a.col - b.col);
 	for (const box of plain) {
-		while (placed.some((p) => overlaps(box, p, gapCols, gapRows))) box.row++;
+		while (placed.some((p) => clash(box, p))) box.row++;
 		placed.push(box);
 		boxes.set(box.id, box);
 	}
@@ -266,7 +289,7 @@ export function graphToAscii(g: Graph, options: { arrowOverride?: LinkArrow | nu
 		if (!moved) break;
 		placed.sort((a, b) => a.row - b.row || a.col - b.col);
 		placed.forEach((box, i) => {
-			while (placed.slice(0, i).some((p) => overlaps(box, p, gapCols, gapRows))) box.row++;
+			while (placed.slice(0, i).some((p) => clash(box, p))) box.row++;
 		});
 	}
 
@@ -457,6 +480,12 @@ export function graphToAscii(g: Graph, options: { arrowOverride?: LinkArrow | nu
 		const owner = `node:${box.id}`;
 		const { col: c0, row: r0, w, h } = box;
 		for (let r = r0; r < r0 + h; r++) for (let c = c0; c < c0 + w; c++) s.inBox.add(`${r},${c}`);
+		if (box.bare) {
+			box.rows.forEach((row, i) => {
+				if (row !== 'sep') row.forEach((cell, j) => s.put(r0 + i, c0 + j, { ch: cell.ch, cls: cell.cls, owner, color: box.color ?? undefined }));
+			});
+			continue;
+		}
 		for (let c = c0; c < c0 + w; c++) {
 			const across = (c > c0 ? W : 0) | (c < c0 + w - 1 ? E : 0);
 			s.border(r0, c, across | (c === c0 || c === c0 + w - 1 ? S : 0), owner, box.color, box.round);

@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-11-02
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -181,6 +181,36 @@
 		height: 0.9em;
 	}
 
+	/* touch screens: a tab big enough for a finger */
+	@media (pointer: coarse) {
+		.panel-tab {
+			width: 2em;
+			height: 3.4em;
+		}
+
+		.panel-tab :global(svg),
+		.panel-icon :global(svg) {
+			width: 1.4em;
+			height: 1.4em;
+		}
+	}
+
+	/* phones: the panel is a drawer from the right edge, as tall as the window below the top
+	   links, over the canvas; closed it is the tab above */
+	@media (max-width: 640px) {
+		.properties-panel {
+			top: 2.4em;
+			right: 0;
+			bottom: 0;
+			max-height: none;
+			width: min(22em, 88vw);
+			border-right: none;
+			border-radius: 6px 0 0 0;
+			font-size: 0.85em;
+			box-shadow: -4px 0 16px rgba(0, 0, 0, 0.3);
+		}
+	}
+
 	/* one section: a header bar that folds it, like Blender's panels */
 	.panel-section {
 		border-radius: 4px;
@@ -275,6 +305,14 @@
 
 	.properties-panel :global(.prop-dirty) {
 		color: var(--col-selected);
+	}
+
+	/* a text field over several lines (text nodes) */
+	.properties-panel :global(.prop-textarea) {
+		resize: vertical;
+		font: inherit;
+		white-space: pre;
+		overflow-x: auto;
 	}
 
 	/* a checkbox with its text on one line */

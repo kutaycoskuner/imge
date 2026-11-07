@@ -1,15 +1,17 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-21
+//   last update     : 2026-11-05
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
 // file-access.ts -- opening and saving graphs on the user's computer.
 //
-// The user points the editor at a folder on their computer; the imge graphs in it (only
-// .json files that are valid imge graphs, see readGraphVersion) are listed by name and
-// opened with a click.
+// The user points the editor at a folder on their computer; the imge graphs in it and in its
+// subfolders (up to MAX_DEPTH levels; hidden folders and node_modules skipped; only .json
+// files that are valid imge graphs, see readGraphVersion) are listed by name, with their
+// subfolder, and opened with a click. A graph file can also be dropped on the page or picked
+// with a file dialog (openLocalFile).
 // - With the File System Access API (Chrome, Edge) the folder is read and written directly.
 //   If the user agrees, the folder handle is remembered in IndexedDB (a cookie can't hold
 //   one, and browsers never reveal real paths); on a later visit the browser asks once to
@@ -42,12 +44,19 @@ type DirectoryHandle = any;
 
 /** An imge graph found in the folder. */
 export interface GraphEntry {
-	fileName: string; // e.g. "my graph.json"
+	fileName: string; // its path in the folder, e.g. "my graph.json" or "uml/kugel.json"
 	name: string; // shown in the list: the file name without ".json"
+	dir: string; // its subfolder with a trailing "/", or "" directly in the folder
 	nodes: number;
 }
 
-// read-only folder (browsers without folder access): its graph files, by file name
+/** How many subfolder levels below the chosen folder are searched for graphs. */
+export const MAX_DEPTH = 4;
+// folders never searched: hidden ones (.git, .svelte-kit ...) and installed packages
+const SKIP_DIR = (name: string) => name.startsWith('.') || name === 'node_modules';
+const isJson = (name: string) => name.toLowerCase().endsWith('.json');
+
+// read-only folder (browsers without folder access): its graph files, by their path in it
 let readOnlyFiles = new Map<string, File>();
 
 const DB_NAME = 'imge';
@@ -96,6 +105,7 @@ export interface Workspace {
 	askRemember: boolean; // just picked a folder: show "remember it?"
 	files: GraphEntry[]; // imge graphs in the folder, by name
 	skipped: number; // .json files in the folder that aren't imge graphs
+	skippedNames: string[]; // their paths, shown on hover
 	fileName: string | null; // file the open graph came from / is saved to
 	dirty: boolean; // changes since the last load or save
 	autosave: boolean;
@@ -112,6 +122,7 @@ export const workspace = writable<Workspace>({
 	askRemember: false,
 	files: [],
 	skipped: 0,
+	skippedNames: [],
 	fileName: null,
 	dirty: false,
 	autosave: false,
@@ -329,43 +340,54 @@ async function useFolder(folder: DirectoryHandle): Promise<void> {
 	await refreshFiles();
 }
 
-/** Re-reads the folder and lists the imge graphs in it. */
+/** Re-reads the folder and lists the imge graphs in it and its subfolders. */
 export async function refreshFiles(): Promise<void> {
 	const { folder } = get(workspace);
 	if (!folder) return;
-	const files: File[] = [];
-	for await (const entry of folder.values()) {
-		if (entry.kind === 'file' && entry.name.toLowerCase().endsWith('.json')) {
-			files.push(await entry.getFile());
+	const found: { path: string; file: File }[] = [];
+	// one folder level: its .json files, then its subfolders (up to MAX_DEPTH)
+	async function read(dir: DirectoryHandle, prefix: string, depth: number): Promise<void> {
+		for await (const entry of dir.values()) {
+			if (entry.kind === 'file' && isJson(entry.name)) found.push({ path: prefix + entry.name, file: await entry.getFile() });
+			else if (entry.kind === 'directory' && depth < MAX_DEPTH && !SKIP_DIR(entry.name)) await read(entry, `${prefix}${entry.name}/`, depth + 1);
 		}
 	}
-	await listGraphs(files);
+	try {
+		await read(folder, '', 0);
+	} catch (error) {
+		// said in the menu, never an empty list without a reason
+		patch({ status: `Could not read the folder "${folder.name}": ${(error as Error).message}` });
+	}
+	await listGraphs(found);
 }
 
 /**
- * Keeps only the files that are imge graphs and puts them in the list by name. Other .json
- * files are counted, not hidden silently: the menu shows how many were skipped.
+ * Keeps only the files that are imge graphs and puts them in the list: the folder's own first,
+ * then by subfolder, by name. Other .json files are counted, not hidden silently: the menu
+ * shows how many were skipped (their names on hover).
  */
-async function listGraphs(files: File[]): Promise<void> {
+async function listGraphs(files: { path: string; file: File }[]): Promise<void> {
 	const entries: GraphEntry[] = [];
-	let skipped = 0;
-	for (const file of files) {
-		const entry = await inspectGraphFile(file);
+	const skippedNames: string[] = [];
+	for (const { path, file } of files) {
+		const entry = await inspectGraphFile(path, file);
 		if (entry) entries.push(entry);
-		else skipped++;
+		else skippedNames.push(path);
 	}
-	entries.sort((a, b) => a.name.localeCompare(b.name));
-	patch({ files: entries, skipped });
+	entries.sort((a, b) => (a.dir === b.dir ? a.name.localeCompare(b.name) : !a.dir ? -1 : !b.dir ? 1 : a.dir.localeCompare(b.dir)));
+	patch({ files: entries, skipped: skippedNames.length, skippedNames });
 }
 
-/** A list entry for an imge graph file, or null when the file isn't one. */
-async function inspectGraphFile(file: File): Promise<GraphEntry | null> {
+/** A list entry for an imge graph file at `path` in the folder, or null when it isn't one. */
+async function inspectGraphFile(path: string, file: File): Promise<GraphEntry | null> {
 	try {
 		const doc = JSON.parse(await file.text());
 		readGraphVersion(doc); // throws for anything that isn't an imge graph
+		const slash = path.lastIndexOf('/');
 		return {
-			fileName: file.name,
-			name: file.name.replace(/\.json$/i, ''),
+			fileName: path,
+			name: path.slice(slash + 1).replace(/\.json$/i, ''),
+			dir: path.slice(0, slash + 1),
 			nodes: doc.data.nodes.length
 		};
 	} catch {
@@ -373,19 +395,37 @@ async function inspectGraphFile(file: File): Promise<GraphEntry | null> {
 	}
 }
 
-/** Opens a graph from the folder; asks first if there are unsaved changes. */
-export async function openFile(fileName: string): Promise<void> {
+// a file handle at `path` ("uml/kugel.json") in the folder; `create` makes the file (its
+// subfolders exist already: they come from the list)
+async function fileHandle(folder: DirectoryHandle, path: string, create = false): Promise<any> {
+	const parts = path.split('/');
+	let dir = folder;
+	for (const part of parts.slice(0, -1)) dir = await dir.getDirectoryHandle(part);
+	return dir.getFileHandle(parts[parts.length - 1], { create });
+}
+
+/**
+ * Opens a graph from the folder (`fileName`: its path in the folder); asks first if there
+ * are unsaved changes.
+ *
+ * Returns:
+ *     True when the graph was opened (the menu then closes).
+ */
+export async function openFile(fileName: string): Promise<boolean> {
 	const { folder, dirty } = get(workspace);
-	if (dirty && !confirm('The open graph has unsaved changes. Open another one anyway?')) return;
+	if (dirty && !confirm('The open graph has unsaved changes. Open another one anyway?')) return false;
 	try {
-		const file = folder
-			? await (await folder.getFileHandle(fileName)).getFile()
-			: readOnlyFiles.get(fileName);
-		if (!file) return patch({ status: `${fileName} is no longer in the folder` });
+		const file = folder ? await (await fileHandle(folder, fileName)).getFile() : readOnlyFiles.get(fileName);
+		if (!file) {
+			patch({ status: `${fileName} is no longer in the folder` });
+			return false;
+		}
 		loadGraph(JSON.parse(await file.text()), fileName);
 		patch({ status: `Opened ${fileName.replace(/\.json$/i, '')}` });
+		return true;
 	} catch (error) {
 		patch({ status: `Could not open ${fileName}: ${(error as Error).message}` });
+		return false;
 	}
 }
 
@@ -424,7 +464,7 @@ export async function saveAs(rawName: string): Promise<void> {
 
 async function fileExists(folder: DirectoryHandle, name: string): Promise<boolean> {
 	try {
-		await folder.getFileHandle(name);
+		await fileHandle(folder, name);
 		return true;
 	} catch {
 		return false;
@@ -434,7 +474,7 @@ async function fileExists(folder: DirectoryHandle, name: string): Promise<boolea
 // -----------------------------------------------------------------------------------------
 // read-only folder (Firefox, Safari): directory file input
 // -----------------------------------------------------------------------------------------
-/** Lets the user pick a folder to read; lists the imge graphs directly inside it. */
+/** Lets the user pick a folder to read; lists the imge graphs in it and its subfolders. */
 export function chooseFolderReadOnly(): void {
 	const input = document.createElement('input');
 	input.type = 'file';
@@ -442,24 +482,26 @@ export function chooseFolderReadOnly(): void {
 	input.onchange = async () => {
 		const all = Array.from(input.files ?? []);
 		if (all.length === 0) return;
-		// webkitRelativePath is "<folder>/<file>"; only files directly in the folder count
-		const direct = all.filter(
-			(f) => f.webkitRelativePath.split('/').length === 2 && f.name.toLowerCase().endsWith('.json')
-		);
-		readOnlyFiles = new Map(direct.map((f) => [f.name, f]));
+		// webkitRelativePath is "<folder>/<subfolders>/<file>": the path in the folder is the
+		// part after the folder's own name; the same depth and skipped folders as with access
+		const found = all
+			.map((file) => ({ parts: file.webkitRelativePath.split('/'), file }))
+			.filter(({ parts, file }) => isJson(file.name) && parts.length - 2 <= MAX_DEPTH && !parts.slice(1, -1).some(SKIP_DIR))
+			.map(({ parts, file }) => ({ path: parts.slice(1).join('/'), file }));
+		readOnlyFiles = new Map(found.map(({ path, file }) => [path, file]));
 		patch({
 			folder: null,
 			readOnly: true,
 			folderName: all[0].webkitRelativePath.split('/')[0],
 			status: ''
 		});
-		await listGraphs(direct);
+		await listGraphs(found);
 	};
 	input.click();
 }
 
 async function writeFile(folder: DirectoryHandle, name: string, g: Graph): Promise<void> {
-	const handle = await folder.getFileHandle(name, { create: true });
+	const handle = await fileHandle(folder, name, true); // a graph opened from a subfolder is saved there
 	const writable = await handle.createWritable();
 	// always written as the current format version, see docs/graph-format.md
 	await writable.write(JSON.stringify(stampCurrentVersion(g), null, 2) + '\n');
@@ -484,25 +526,47 @@ export function normalizeFileName(input: string): string | null {
 // -----------------------------------------------------------------------------------------
 // fallback for browsers without folder access: upload and download
 // -----------------------------------------------------------------------------------------
-/** Lets the user pick a .json file and loads it. */
-export function uploadGraph(): void {
-	if (get(workspace).dirty && !confirm('The open graph has unsaved changes. Open another one anyway?')) {
-		return;
+/**
+ * Opens a graph file from anywhere on the computer (dropped on the page, or picked with
+ * uploadGraph); asks first if there are unsaved changes. With a writable folder open, the
+ * graph opens without a file name, so Save can't overwrite a different file of the same name
+ * in that folder (Save as stores it there); otherwise it keeps its name for Save (download).
+ *
+ * Returns:
+ *     True when the graph was opened (the menu then closes); false when the user kept the
+ *     open graph or the file isn't an imge graph (the reason is the status).
+ */
+export async function openLocalFile(file: File): Promise<boolean> {
+	if (get(workspace).dirty && !confirm(`The open graph has unsaved changes. Open ${file.name} anyway?`)) return false;
+	try {
+		const inFolder = !!get(workspace).folder;
+		loadGraph(JSON.parse(await file.text()), inFolder ? null : file.name);
+		patch({ status: inFolder ? `Opened ${file.name} (not in the folder: Save as stores it there)` : `Opened ${file.name}` });
+		return true;
+	} catch (error) {
+		patch({ status: `Could not open ${file.name}: ${(error as Error).message}` });
+		return false;
 	}
-	const input = document.createElement('input');
-	input.type = 'file';
-	input.accept = '.json,application/json';
-	input.onchange = async () => {
-		const file = input.files?.[0];
-		if (!file) return;
-		try {
-			loadGraph(JSON.parse(await file.text()), file.name);
-			patch({ status: `Opened ${file.name}` });
-		} catch (error) {
-			patch({ status: `Could not open ${file.name}: ${(error as Error).message}` });
-		}
-	};
-	input.click();
+}
+
+/**
+ * Lets the user pick a .json file and loads it (openLocalFile).
+ *
+ * Returns:
+ *     True when a graph was opened.
+ */
+export function uploadGraph(): Promise<boolean> {
+	return new Promise((resolve) => {
+		const input = document.createElement('input');
+		input.type = 'file';
+		input.accept = '.json,application/json';
+		input.onchange = async () => {
+			const file = input.files?.[0];
+			resolve(file ? await openLocalFile(file) : false);
+		};
+		input.oncancel = () => resolve(false);
+		input.click();
+	});
 }
 
 /** Downloads the open graph as a .json file (also the toolbar's Export). */

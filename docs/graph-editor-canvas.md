@@ -38,7 +38,7 @@ State as of 2026-10-27.
 | `src/lib/components/PolkaDots.svelte` | Endless dot grid that follows the camera. |
 | `src/lib/components/OriginAxes.svelte` | Origin marker: red/green L at world (0, 0). |
 | `src/lib/components/CoordTracker.svelte` | Shows the world coordinates under the mouse. |
-| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, transpose, dot grid, snap, port look, canvas / text view, Properties panel, open (menu), export, export as image. The buttons are a data list (`buttons`: icon, hint, action) rendered by one loop. |
+| `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, undo / redo, transpose, dot grid, snap, port look, canvas / text view, Properties panel, open (menu), export, export as image. The buttons are a data list (`buttons`: icon, hint, action) rendered by one loop. |
 | `src/lib/components/properties/` | The Properties panel and its sections (see [graph-properties-panel.md](graph-properties-panel.md)). |
 | `src/lib/icons/` | One component per icon, reusable on any page; markup only, state as props (see its README). |
 | `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node`, port, selection and link styles. |
@@ -153,6 +153,7 @@ Before this change, the nodes, dots and coordinates each used their own formula,
 
 ## Changes
 
+- 2026-11-02 — toolbar Undo / Redo buttons (icon-undo, icon-redo); two columns on short screens, bigger buttons on touch screens; the canvas takes touch gestures (touch-action: none, see [graph-touch.md](graph-touch.md))
 - 2026-10-27 — toolbar button for the text view (canvas / text, `icon-terminal`)
 - 2026-10-27 — toolbar button for the port look (filled → hollow → hidden), icon `icon-node-ports`
 - 2026-10-27 — the toolbar's test button is replaced by Export as image (PNG / JPG / SVG)

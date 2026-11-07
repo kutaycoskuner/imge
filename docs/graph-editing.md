@@ -38,14 +38,16 @@ State as of 2026-10-23.
 | **Ctrl+Shift+G** (Cmd+Shift+G) | Ungroup: a selected group is dissolved (removed; what it held goes to the group it was in); selected nodes in a group are taken out of it (to that group's own group, if any). |
 | **Ctrl**+drag node (Cmd) | Take it out of its group: on release it leaves its group, or joins the group it was dropped in. |
 | Drag a group's corner mark | Resize the group (bottom right); never smaller than its children plus a 64-unit margin. |
+| Drag a text or image node's corner handle | Scale it (bottom right; steps of 0.25, **Alt** = free); see [graph-text-and-images.md](graph-text-and-images.md#scale). |
 | Toolbar "Add Node" | New node at the screen center. |
 | **Shift+A** | New node centered on the mouse; made inside a group's frame, it joins that group. |
-| Double-click the name, or **F2** | Edit the node's name. Enter or clicking away saves; Esc cancels (without opening the menu); an empty name keeps the old one. |
+| Double-click the name, or **F2** | Edit the node's name. Enter or clicking away saves; Esc cancels (without opening the menu); an empty name keeps the old one. On a text node: edit its text in a field over several lines (Enter = new line, **Ctrl+Enter** or clicking away saves). |
 | **Delete** / **Backspace** | Remove the selected link, or the selected nodes together with all their links. |
 | **Ctrl+C** (Cmd+C) | Copy the selected nodes and the links between them (links to nodes that aren't selected are left out). Kept in memory for this tab, so it can be pasted into another graph opened in the same tab; a reload forgets it. With no node selected, the browser's own copy runs. |
 | **Ctrl+Z** (Cmd+Z) | Undo the last change; see [Undo and redo](#undo-and-redo). |
 | **Ctrl+Y** or **Ctrl+Shift+Z** | Redo what was undone. |
 | **Ctrl+V** (Cmd+V) | Paste the copied nodes as new nodes (new ids; names, ports and link looks kept), their layout unchanged, with the group's top-left corner at the mouse, snapped like a dragged node unless snapping is off. The pasted nodes become the selection, ready to drag. Pasting again without moving the mouse puts the next copy one grid square further down-right. |
+| Touch screens | One finger works like the mouse (long press = Shift), two fingers zoom and pan; see [graph-touch.md](graph-touch.md). |
 | Drag from an output point | A dashed curve follows the mouse; release on an input point to link. |
 | Drag from an input point without links | The same, backwards; release on an output point. |
 | Drag from an input point that has links | Picks up its most recent link from the output end: release on another input to re-route it (it keeps its id and name), on empty space to remove it. |
@@ -325,6 +327,8 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 
 ## Changes
 
+- 2026-11-02 — touch screens: gestures for every mouse action ($lib/touch.ts, [graph-touch.md](graph-touch.md)); Undo / Redo also in the toolbar
+- 2026-11-02 — scale handle on text and image nodes (`setNodeScale`); F2 / double-click on a text node edits its text over several lines
 - 2026-10-27 — in the text view (see [graph-text-view.md](graph-text-view.md)) the keys that act on the canvas itself (+, -, Home, Shift+A, F2) do nothing; store `viewMode`
 - 2026-10-27 — port look (filled, hollow, hidden until hover): toolbar button (cycles) and the Esc menu's Links section, display only; store `portLook`
 - 2026-10-27 — links get a line style (solid, dashed, dotted) and an end mark (arrow, open arrow, hollow triangle, hollow / filled diamond), graph format v7; `addLink` and `setLinkStyle` take `line` and `mark`; re-routing keeps them

@@ -12,8 +12,8 @@ Current version: **7**
 | `src/lib/graph/migrations.ts` | `CURRENT_GRAPH_VERSION`, the adapters and `migrateGraph()`. |
 | `src/lib/graph/migrations.spec.ts` | Tests: every version sample upgrades to exactly the current sample; bad files are refused. |
 | `static/data/samples/graph-v<n>.json` | The same tiny graph (2 nodes, 1 link) saved in each format version, to compare versions side by side; also the test fixtures. |
-| `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per node type and type version (`basic-v1`, `basic-v2`, `group-v1` to `group-v3`, `uml-class-v1`, `uml-class-v2`), with a small header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`); test fixtures for the type templates. |
-| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data, node types; 53 nodes (one of them a circle), 56 links; the Node color node is coloured, and a violet group "Types v1" holds the node type templates and wraps them), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), one link is dashed with a hollow triangle (Link look), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
+| `static/data/node-types/<type>/<type>-v<n>.json` | One sample node per node type and type version (`basic-v1`, `basic-v2`, `group-v1` to `group-v3`, `uml-class-v1`, `uml-class-v2`, `text-v1`, `image-v1`, `image-v2`), with a small header (`format: "imge-node-type"`, `type`, `version`, `graphFormat`); test fixtures for the type templates. |
+| `static/data/test-node-graph.json` | Base graph the editor loads, stored as the current version: a map of the editor's own features (camera, files & menu, graph data, node types; 57 nodes (one of them a circle, three text nodes: the title, a subtitle and one in the types group, one an image), 57 links; the Node color node is coloured, and a violet group "Types v1" holds the node type templates and wraps them), laid out on the half grid (node corners on multiples of 20, so snapped drags keep it aligned), each link meaning "builds on". It also shows the format at work: each branch uses a different link shape (spline, line, manhattan), "Shortcuts & key caps" takes four links into one input, links carry arrows (one both ways), one link is dashed with a hollow triangle (Link look), a cycle (Version samples → Graph format) and a self-loop (Autosave) go around their nodes, and three links have names. |
 
 ## Structure (version 7)
 
@@ -76,6 +76,8 @@ Current version: **7**
         - uml-class: `name`, `color`, `abstract` (type version 2: `true` draws the class name in italics; missing = `false`), and `attributes` / `methods`: lists of member lines in UML notation, stored as typed (markers such as `{static}` included, see [graph-uml.md](graph-uml.md#member-markers))
         - group (type version 2): also `children` (the ids of the nodes it holds; a node is in at most one group, groups may hold groups) and optional `width` / `height` (world units, at least 100) as its smallest size; missing = 320 × 192. The frame drawn is that rect grown to wrap the children with a 64-unit margin. A version 1 group (no `children`) holds nothing
         - basic (type version 2) and group (type version 3): also `shape`, `"square"` (the default) or `"circle"`; a node without it is a square
+        - text: `text` (lines with `\n` between them), `color`, `scale` (1 = normal size), `bold`, `align` (`left` / `center` / `right`); no ports. See [graph-text-and-images.md](graph-text-and-images.md)
+        - image: `name`, `src` (a path below `static/`, e.g. `images/parts/resistor.svg`, or a `data:` URL for an uploaded picture), `width` / `height` (its size at scale 1, world units), `scale`, and since type version 2 `caption` (text under the picture) and `showCaption`; an input and an output
         - basic and group: `name` (text shown on the node or on the group's top edge) and `color` (a hex colour `"#rrggbb"`, or `null` for the theme's default; drawn as the border, with a dim version as the fill; other text is kept but drawn as the default)
         - other keys inside `content` are carried over unchanged
     - other keys are allowed and carried over unchanged
@@ -172,7 +174,7 @@ v7 stores the look. A link drawn by hand to match a relation *is* that relation,
 
 - **Port ids kept** (`i1`, `o1`): they only need to be unique within their node, the links didn't change in the upgrade, and the direction now lives in `kind`. New ports can use any free id.
 - **Names turned down for `content`:** `data` (the graph root already has `data: { nodes, links }`, and v0 nodes had a `data` field the adapters still read), `props` (Svelte props and the Properties panel), `params` (doesn't fit UML), `context` (a node's surroundings, not its parts; the panel's code already has `ctx`), `sections` (fine as a key *inside* `content` for UML compartments).
-- **Pictures are referenced, never embedded:** e.g. `content.symbol: "resistor"`, with the images kept with the type. A shape fixed by the type lives in the type's template; a shape chosen per node goes into `content.shape`.
+- **Pictures:** pictures that come with the editor (the parts library) are **referenced** by their path, so files stay small and the parts can be improved for every graph; a picture the user **uploads** is **embedded** as a `data:` URL, because the editor has no place of its own to keep it and a graph file must open complete anywhere (the panel shows the size it adds; over 1 MB asks first). A shape fixed by the type lives in the type's template; a shape chosen per node goes into `content.shape`.
 
 ## Version samples
 
@@ -243,6 +245,8 @@ Do this for every change to the file structure or to what a field means, however
 
 ## Changes
 
+- 2026-11-02 — image type version 2 (`caption`, `showCaption`; sample image-v2.json); the base graph's image node has a caption; no format change
+- 2026-11-02 — node types `text` and `image` (version 1, samples text-v1.json, image-v1.json); pictures: library parts referenced, uploads embedded as `data:` URLs (decision updated); base graph: a title and a subtitle as text nodes, a text node and an image node in "Types v1" (57 nodes, 57 links); no format change
 - 2026-10-27 — base graph: the UmlClass constant reads `{static} + VERSION: int = 2 {readOnly}` (UML property string); no format change: member lines are text
 - 2026-10-27 — base graph gets Text view (experimental) (53 nodes, 56 links); no format change
 - 2026-10-27 — format version 7: link `line` and `mark` (UML relations: dashed lines, hollow triangles, diamonds, open arrows); `6 → 7` adapter, sample graph-v7.json; base graph and examples stored as v7; new section "Why links have `line` and `mark`"; uml-class type version 2 (`abstract`); base graph gets Link look, UML class diagram (partly), Image export and Port look (52 nodes, 55 links), its format nodes say v7

@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-27
+	//   last update     : 2026-11-02
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -13,11 +13,11 @@
 	// can't hold are shown here: UML highlighting, underlined {static} members, italic
 	// abstract ones, node colours, the selection. "Copy text" and "Download .txt" give the
 	// plain characters. Mounted by routes/+page.svelte when `viewMode` is "text".
-	import { graph, selection, linkArrowOverride, viewMode } from '$lib/graph/store';
+	import { graph, selection, linkArrowOverride, captionOverride, viewMode } from '$lib/graph/store';
 	import { workspace } from '$lib/graph/file-access';
 	import { graphToAscii, asciiText, undrawnLinks, type AsciiCell } from '$lib/graph/ascii';
 
-	$: art = graphToAscii($graph, { arrowOverride: $linkArrowOverride });
+	$: art = graphToAscii($graph, { arrowOverride: $linkArrowOverride, captionOverride: $captionOverride });
 	$: skipped = undrawnLinks($graph).length;
 	$: selected = new Set([...$selection.nodes.map((id) => `node:${id}`), ...($selection.link ? [`link:${$selection.link}`] : [])]);
 

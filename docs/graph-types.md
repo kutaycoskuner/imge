@@ -75,8 +75,9 @@ Electronic circuits drawn with their symbols: **digital** (gates, flip-flops, re
 
 - **Status:** not yet
 - **Ready in graph format v6:** two-way terminals (port kind `any`, allowed by `CAN_LINK` to link with everything), symbols referenced from content (`content.symbol`), ports that follow parameters (a gate with 2–4 inputs).
-- **Missing:** circuit node types with symbols, port sides above / below drawn, bit / bus value types; to *run* a circuit: the simulation layer with stepping (digital) or a solver (analog), see [graph-simulation.md](graph-simulation.md#digital-circuits).
-- **Examples (sketches):** Half adder (`circuit-half-adder.json`, digital), Voltage divider (`circuit-voltage-divider.json`, analog: a closed loop drawn around its nodes)
+- **Started:** image nodes show circuit symbols (placeholder parts: resistor, capacitor, battery, lamp, switch, diode, LED, ground, AND / OR / NOT gates), wired with links; see [graph-text-and-images.md](graph-text-and-images.md#next-circuit-parts).
+- **Missing:** circuit part types with their own ports at their leads, port sides above / below drawn, bit / bus value types; to *run* a circuit: the simulation layer with stepping (digital) or a solver (analog), see [graph-simulation.md](graph-simulation.md#digital-circuits).
+- **Examples (sketches):** Half adder (`circuit-half-adder.json`, digital), Voltage divider (`circuit-voltage-divider.json`, analog: a closed loop drawn around its nodes), LED circuit (`circuit-led-symbols.json`, drawn with symbols)
 
 #### ALU / processor mapping
 
@@ -184,6 +185,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 
 ## Changes
 
+- 2026-11-02 — circuits started: symbols as image nodes, example LED circuit (symbols); architecture overviews with text nodes (example Weather station)
 - 2026-10-27 — examples use the link looks where their kind of diagram has a convention: sequence replies dashed with open arrows, rework loops dashed, asynchronous work dashed, control / status signals dashed, a meter probe and example links dotted
 - 2026-10-27 — link line styles and end marks (graph format v7) and UML relations; UML static / abstract members and abstract classes; the UML row's missing list updated
 - 2026-10-23 — node shapes started (square, circle): lattice, tree and set examples use circles

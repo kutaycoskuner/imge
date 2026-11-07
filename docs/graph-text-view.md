@@ -38,6 +38,8 @@ State as of 2026-10-27 (graph format v7). Experimental: the layout is simple and
 | Graph | Text |
 |---|---|
 | basic node | a box with its name (wrapped at 22 characters); circle shapes get rounded corners `╭ ╮ ╰ ╯` |
+| text node | its lines without a border, aligned and bold as set (its scale doesn't apply to characters); boxes keep only one cell away from it |
+| image node | a rounded box with its name in brackets: `[Resistor]` |
 | UML class | name, attributes and methods in compartments separated by `├───┤`; highlighted like on the canvas; `{static}` members underlined and abstract classes / `{abstract}` methods in italics in the view, without the marker text |
 | group | a frame around its children's boxes with its name in the top edge |
 | link | right-angled lines from the source's side to the target's side; a link that can't go forward (cycle, self-loop) takes a lane between or around the boxes, on its `route` side |
@@ -82,5 +84,7 @@ The view (`src/lib/components/GraphTextView.svelte`) draws the grid in a `<pre>`
 
 ## Changes
 
+- 2026-11-02 — image nodes show their caption on a line under `[name]` when shown; follows the Image captions override
+- 2026-11-02 — text nodes as bare lines, image nodes as `[name]` boxes; one-cell gap next to text nodes
 - 2026-10-27 — image export (PNG / JPG / SVG) follows the text view: the characters with their styles
 - 2026-10-27 — first version: text view with boxes, UML compartments and styles, groups, routed links with line styles and marks, names; click to select; Copy text, Download .txt; toolbar view button

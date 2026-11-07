@@ -1,0 +1,11 @@
+{
+    "metadata": { "format": "imge-node-type", "type": "text", "version": 1, "graphFormat": 7 },
+    "node": {
+        "id": "n1",
+        "type": "text",
+        "typeVersion": 1,
+        "position": { "x": 0, "y": 0 },
+        "ports": [],
+        "content": { "text": "Text", "color": null, "scale": 1, "bold": false, "align": "left" }
+    }
+}

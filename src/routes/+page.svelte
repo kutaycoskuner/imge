@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-27
+	//   last update     : 2026-11-05
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -23,7 +23,10 @@
 	//          or take selected nodes out of their group),
 	//          a node dropped, made (Shift+A) or pasted inside a group joins it; Ctrl+drop takes it out (or into the
 	//          group it is dropped in); dragging a group moves what it holds; drag a group's
-	//          corner handle to resize it (never smaller than its children),
+	//          corner handle to resize it (never smaller than its children), a text or image
+	//          node's corner handle to scale it, drop a graph file (.json) on the page to open it,
+	//          touch: one finger drives the same mouse gestures, a long press is Shift, two
+	//          fingers pinch-zoom and pan ($lib/touch.ts, docs/graph-touch.md),
 	//          F link two selected nodes, L / D / R next shape / arrow / route of the selected
 	//          link, F2 or double-click renames a link (drag a selected
 	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
@@ -45,7 +48,9 @@
 	import GraphExamplesMenu from '$lib/components/GraphExamplesMenu.svelte';
 	import GraphKeysMenu from '$lib/components/GraphKeysMenu.svelte';
 	import GraphPropertiesPanel from '$lib/components/properties/GraphPropertiesPanel.svelte';
+	import { nodeScale } from '$lib/graph/node-types';
 	import GraphTextView from '$lib/components/GraphTextView.svelte';
+	import { touchGestures } from '$lib/touch';
 	import { onMount, tick } from 'svelte';
 	import { dev } from '$app/environment';
 	import {
@@ -69,7 +74,8 @@
 		trackChanges,
 		downloadGraph,
 		save,
-		newGraph
+		newGraph,
+		openLocalFile
 	} from '$lib/graph/file-access';
 	import {
 		graph,
@@ -106,7 +112,8 @@
 		linkArrowOverride,
 		editingLinkId,
 		type LinkOutcome,
-		type Selection
+		type Selection,
+		setNodeScale
 	} from '$lib/graph/store';
 	import type { Link, LinkEnd, PortKind } from '$lib/graph/types';
 	import { trackHistory, holdHistory, releaseHistory, undo, redo } from '$lib/graph/history';
@@ -130,6 +137,8 @@
 
 	// a group's corner handle being dragged: the frame's size and the mouse when it began (world)
 	let resizeDrag: { groupId: string; start: { w: number; h: number }; mouseStart: Point } | null = null;
+	// the scale handle of a text or image node: its scale and drawn width when the drag began
+	let scaleDrag: { nodeId: string; start: number; width: number; mouseStart: Point } | null = null;
 
 	// corner of a selected manhattan link (or the lane of a link going around its nodes) being
 	// dragged: the bend maps `from` (0) .. `to` (1)
@@ -196,6 +205,16 @@
 		const port = target.closest<HTMLElement>('.port');
 		if (port) return startLinkDrag(port);
 
+		const scaler = target.closest<HTMLElement>('.node-scale');
+		if (scaler) {
+			const nodeId = scaler.dataset.nodeId!;
+			const node = $graph.data.nodes.find((n) => n.id === nodeId);
+			const width = $nodeSizes[nodeId]?.w;
+			if (node && width) scaleDrag = { nodeId, start: nodeScale(node), width, mouseStart: mouseWorld() };
+			selection.set({ nodes: [nodeId], link: null });
+			return;
+		}
+
 		const handle = target.closest<HTMLElement>('.group-resize');
 		if (handle) {
 			const groupId = handle.dataset.groupId!;
@@ -255,6 +274,8 @@
 			}
 		} else if (resizeDrag) {
 			resizeByHandle(resizeDrag, event.altKey || !$snapToGrid);
+		} else if (scaleDrag) {
+			scaleByHandle(scaleDrag, event.altKey || !$snapToGrid);
 		} else if (boxDrag) {
 			boxDrag = { ...boxDrag, end: { x: event.clientX, y: event.clientY } };
 			updateBoxSelection(boxDrag);
@@ -274,6 +295,7 @@
 		bendDrag = null;
 		boxDrag = null;
 		resizeDrag = null;
+		scaleDrag = null;
 		releaseHistory();
 	}
 
@@ -377,6 +399,15 @@
 		const id = drag.groupId;
 		const sizes = $nodeSizes;
 		graph.update((g) => resizeGroup(g, id, size, sizes));
+	}
+
+	// Dragging a text or image node's scale handle: the scale follows the node's width (the
+	// handle's distance from the left edge), in steps of 0.25 unless Alt is held or snapping is off
+	function scaleByHandle(drag: NonNullable<typeof scaleDrag>, free: boolean): void {
+		const grow = (drag.width + mouseWorld().x - drag.mouseStart.x) / drag.width;
+		const scale = free ? drag.start * grow : Math.round(drag.start * grow * 4) / 4;
+		const id = drag.nodeId;
+		graph.update((g) => setNodeScale(g, id, scale));
 	}
 
 	// Box selection
@@ -552,6 +583,33 @@
 			selection.set(boxDrag.base);
 			boxDrag = null;
 		}
+	}
+
+	// Dropping a graph file (.json) from the computer anywhere on the page opens it
+	// (openLocalFile: asks first about unsaved changes; the menu closes when it opened)
+	let dropping = false; // a file is being dragged over the page
+	const carriesFiles = (event: DragEvent) => !!event.dataTransfer && Array.from(event.dataTransfer.types).includes('Files');
+
+	function handleDragOver(event: DragEvent): void {
+		if (!carriesFiles(event)) return;
+		event.preventDefault(); // allows the drop (the browser would open the file itself)
+		event.dataTransfer!.dropEffect = 'copy';
+		dropping = true;
+	}
+
+	function handleDragLeave(event: DragEvent): void {
+		if (!event.relatedTarget) dropping = false; // left the window, not just one element
+	}
+
+	async function handleDrop(event: DragEvent): Promise<void> {
+		if (!carriesFiles(event)) return;
+		event.preventDefault();
+		dropping = false;
+		const files = Array.from(event.dataTransfer!.files);
+		const file = files.find((f) => f.name.toLowerCase().endsWith('.json') || f.type === 'application/json');
+		if (!file) return notify(files.length ? `${files[0].name} isn't a graph file (.json)` : 'Nothing to open');
+		if (await openLocalFile(file)) menuOpen.set(false);
+		else if ($workspace.status) notify($workspace.status);
 	}
 
 	// Ctrl+S: save to the graph's file (written into the folder, or downloaded in a read-only
@@ -751,11 +809,20 @@
 	on:mousemove={handleMouseMove}
 	on:mouseup={handleMouseUp}
 	on:keydown|capture={handleKeydown}
+	on:dragover={handleDragOver}
+	on:dragleave={handleDragLeave}
+	on:drop={handleDrop}
 />
+
+{#if dropping}
+	<!-- a file is dragged over the page: say what dropping it does -->
+	<div class="drop-overlay"><span>Drop a graph file (.json) to open it</span></div>
+{/if}
 
 <div
 	class="viewport no-scroll"
 	role="presentation"
+	use:touchGestures
 	on:mousedown={handleMouseDown}
 	on:wheel|nonpassive|preventDefault={handleWheel}
 	on:dblclick={handleDoubleClick}
@@ -800,6 +867,27 @@
 {/if}
 
 <style>
+	/* a file dragged over the page: the whole window shows it can be dropped */
+	.drop-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 400; /* over the menu too: a drop anywhere opens the file */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		pointer-events: none;
+		background: color-mix(in srgb, var(--col-selected) 10%, transparent);
+		border: 3px dashed var(--col-selected);
+	}
+
+	.drop-overlay span {
+		padding: 0.6em 1.2em;
+		border-radius: 6px;
+		background: var(--bg);
+		color: var(--col);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+	}
+
 	/* box selection (Shift+drag on empty space), drawn in screen px above the graph */
 	.select-box {
 		position: fixed;

@@ -1,0 +1,63 @@
+# -------------------------------------------------------------------------------------------
+#   author          : Kutay Coskuner
+#   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
+#   last update     : 2026-11-07
+#   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
+#                     Check outputs before relying on them.
+# -------------------------------------------------------------------------------------------
+# nginx.conf.template -- serves the prerendered keyboard-only site inside the Docker image.
+# The Dockerfile puts it in /etc/nginx/templates/; when the container starts, nginx's image
+# fills in ${ANALYTICS_TAG} from the container's environment and writes the result as
+# /etc/nginx/conf.d/default.conf.
+#
+# ANALYTICS_TAG: the analytics <script> tag, set by the server's private configuration (the
+# stack's environment), inserted before </head> of the page; empty (the Dockerfile's
+# default) = no analytics. So the site's address and analytics never appear in this repo or
+# the public image. It must not contain single quotes or $ (write the tag with double quotes).
+#
+# The build holds every imge page (SvelteKit prerenders them all), but only the keyboard
+# page and what it loads are served: a whitelist below, everything else is a 404 (the graph
+# editor, matrix and csv pages). / redirects to the keyboard page so the shared address
+# opens it. A new file the keyboard page loads from static/ needs its folder added here.
+# Files under /_app/immutable/ have a content hash in their name and never change, so
+# browsers may keep them for a year. HTTPS is the tunnel's job: this server only speaks
+# plain HTTP inside Docker's network.
+
+server {
+    listen 80;
+    server_name _;
+    root /usr/share/nginx/html;
+
+    gzip on;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+
+    # relative, so the redirect keeps the visitor's https address
+    absolute_redirect off;
+
+    location = / {
+        return 302 /keyboard_layout;
+    }
+
+    # the keyboard page (keyboard_layout.html), with the server's analytics tag
+    location = /keyboard_layout {
+        sub_filter '</head>' '${ANALYTICS_TAG}</head>';
+        sub_filter_once on;
+        try_files /keyboard_layout.html =404;
+    }
+
+    # what it loads: the app's code, styles, icons, example keymaps
+    location ~ ^/(_app/|styles/|icons/|favicons/|favicon\.png$|data/keymaps/) {
+        try_files $uri =404;
+    }
+
+    # every other page or file of the full imge
+    location / {
+        return 404;
+    }
+
+    # ^~: wins over the regex above, so these files get their long cache header
+    location ^~ /_app/immutable/ {
+        try_files $uri =404;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+}

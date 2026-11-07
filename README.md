@@ -2,7 +2,7 @@
     Project Imge
 </h1>
 <h3 align="center">
-    Study project: Web based node editor / matrix calculators
+    Study project: Web based node editor / matrix calculators / keyboard layouts
 </h3>
 <p align="center">
     Live: <a href="https://kutaycoskuner.github.io/imge/">kutaycoskuner.github.io/imge</a>
@@ -15,15 +15,21 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.28.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.33.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
 
 <p align="center">
-    <img alt="Graph editor in the light theme showing the feature map; the selected dashed link with a hollow triangle is shown in the Properties panel's Look section as the UML relation Realization" src="_display/0.28-graph_editor.png" />
+    <img alt="Graph editor in the light theme showing the feature map; the selected dashed link with a hollow triangle is shown in the Properties panel's Look section as the UML relation Realization" src="_display/0.32-graph_editor.png" />
     <br>
-    <sub><i>v0.28.0 graph editor (light theme): the feature map, a dashed link with a hollow triangle selected, its Look section in the Properties panel (N) showing the UML relation, mark and line</i></sub>
+    <sub><i>v0.32.0 graph editor (light theme): the feature map, a dashed link with a hollow triangle selected, its Look section in the Properties panel (N) showing the UML relation, mark and line</i></sub>
+</p>
+
+<p align="center">
+    <img alt="Keyboard layout page in the dark theme: a full-size keyboard with the FPS game example, keys coloured by category (movement blue, combat red, weapons orange, interaction green, communication violet, menus grey) with what they do, the layer chips above and the categories below" src="_display/0.32-keyboard_layout.png" />
+    <br>
+    <sub><i>v0.32.0 keyboard layout (dark theme): the FPS game example on a full-size keyboard, keys coloured by category, the modifier layers as chips</i></sub>
 </p>
 
 # Installation and Use
@@ -43,7 +49,8 @@ cd imge
 npm install
 
 # 3. Start the development server: http://localhost:5173 opens the graph editor,
-#    matrix addition is at /matrix_addition, csv editor at /csv_editor
+#    matrix addition is at /matrix_addition, csv editor at /csv_editor,
+#    keyboard layout at /keyboard_layout
 npm run dev
 
 # optional: run the unit tests
@@ -52,12 +59,16 @@ npm run test:unit -- --run
 
 # Docs
 
+- [Keyboard layout](docs/keyboard-layout.md): the keyboard layout page, layers, the keyboards, the keymap file format
+- [Keyboard site](docs/keyboard-site.md): the keyboard page alone on a self-hosted server, without personal links (`SITE=keyboard` build, Docker image, homelab deploy)
 - [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
 - [Node and link editing](docs/graph-editing.md): mouse and keys, selection, copy / paste, undo / redo, link rules, link shapes, function reference for the graph store
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
 - [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
 - [Properties panel](docs/graph-properties-panel.md): the docked panel for the selection, what it shows, how to add a section (e.g. for a node type)
 - [Text view (experimental)](docs/graph-text-view.md): the graph drawn with box-drawing characters, copy or download as plain text
+- [Touch screens](docs/graph-touch.md): gestures on phones and tablets, the panel drawer, what needs the panel instead of a key
+- [Text and image nodes](docs/graph-text-and-images.md): text without a box, pictures (parts library, upload), scale, circuit parts next
 - [UML class nodes](docs/graph-uml.md): the three-compartment class node, member notation, static / abstract members, property strings ({readOnly}), highlighting and format check, relations (inheritance, realization, aggregation ...)
 - [Simulation layer (planned)](docs/graph-simulation.md): how graphs could later run: math nodes, textures, digital and analog circuits
 - [Graph types](docs/graph-types.md): kinds of graphs imge could draw, which are possible today and what each still needs
@@ -89,6 +100,8 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] UML class nodes (node type UML class): class name, attributes and methods in three compartments, member lines highlighted and checked against the UML notation, edited in the Properties panel; {static} members underlined, abstract classes and {abstract} methods in italics; property strings such as {readOnly} (Java final) and {query}
 - [x] link line styles (solid, dashed, dotted) and end marks (arrow, open arrow, hollow triangle, hollow / filled diamond); UML relations (association, inheritance, realization, dependency, aggregation, composition) chosen by name in the Properties panel
 - [x] groups (node type Group): hold the nodes dropped into them (Ctrl+drag takes one out); nodes made or pasted inside a frame join it; Ctrl+G groups the selection (or adds it to the one selected group), Ctrl+Shift+G ungroups; the Properties panel lists a group's contents, the frame wraps its children with a margin and moves them along; resize by the corner mark or in the Properties panel, never smaller than the children; nested groups
+- [x] touch screens (phones, tablets): one finger works like the mouse (tap, double tap, drag; long press = Shift for box selection), two fingers pinch to zoom and pan; the Properties panel is a drawer on phones; Undo / Redo in the toolbar
+- [x] text nodes (only text, no box: titles, headings, notes; colour, bold, alignment) and image nodes (a picture from the parts library or an uploaded file, with an input and an output, and a caption; show all / hide all captions in the Esc menu); both scalable by a corner handle or in the Properties panel
 - [x] node shapes: square or circle (Properties panel) for nodes and groups; a circle group is a round frame around its children
 - [x] node colours: border in the colour, dim fill of it; set in the Properties panel with a colour picker (saturation / brightness square, hue bar, tints and shades, presets; live on the canvas) or as hex, for one or several nodes
 - [x] Properties panel docked on the right (N or toolbar, hideable, like Blender's sidebar): shows and edits the selected node, nodes or link (name, position, links, shape, arrow, route, corner) so nodes on the canvas stay minimal
@@ -104,10 +117,11 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] direction: left-to-right or top-to-bottom; Transpose (toolbar button or Esc menu) switches it, ports, links and routes follow; switching back restores the layout
 - [x] export data as json (default name imgegraph-<date>-<NN>.json)
 - [x] export the graph as an image from the toolbar's picture button: PNG (2x, transparent), JPG (2x, theme background) or SVG (full vector, transparent); the whole graph, as drawn, without selection or editing aids
-- [x] point the editor at a folder on your computer: its imge graphs are listed by name and open with a click; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
+- [x] point the editor at a folder on your computer: its imge graphs (also in subfolders) are listed by name and open with a click, or drop a graph file on the page; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
 - [x] versioned graph format (now v7: nodes are id, type, typeVersion, position, ports with a kind, and content defined by their type; links have shape, arrow, line and mark), older files upgraded on load; a sample per version in static/data/samples, a sample node per node type version in static/data/node-types
 - [x] example graphs in the Esc menu, grouped by category (mind mapping, math, circuits, software architecture, other) (mind map, flowchart, search tree, lattice, architecture map, release process, UML class diagram), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)
+- [x] keyboard layout page: what each key does with and without modifiers (Shift, Ctrl, Alt and their combinations), on an ANSI or ISO keyboard coloured by category, and in a list with search; click or press a key to bind it, hold modifiers to see their layer; labels from your own keyboard layout (Chrome, Edge); JSON open / drop / download, examples (FPS game, the graph editor's shortcuts)
 - [ ] vertical / horizontal frameworks
 - [ ] node content editing
 - [ ] add / remove ports

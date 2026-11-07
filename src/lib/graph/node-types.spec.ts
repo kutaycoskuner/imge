@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-21
+//   last update     : 2026-11-02
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -9,13 +9,14 @@
 // static/data/node-types/<type>/<type>-v<n>.json (like the graph format samples): every
 // ready type has a sample for each of its versions, the newest one (upgraded to the current
 // graph format) matches the type's template, new nodes and type changes produce exactly that
-// shape, every sample is a valid node of a graph file, and generic UI gets readable labels.
+// shape, every sample is a valid node of a graph file, and generic UI gets readable labels;
+// text and image nodes: text from a name, scale limits, image size.
 // Run: npm run test:unit -- --run
 // -----------------------------------------------------------------------------------------
 
 import { describe, it, expect } from 'vitest';
-import { NODE_TYPES, nodeType, nodeLabel, groupSize, GROUP_SIZE } from './node-types';
-import { addNode, emptyGraph, setNodeType } from './store';
+import { NODE_TYPES, nodeType, nodeLabel, groupSize, GROUP_SIZE, nodeScale, imageOf, imageCaption, SCALE_MIN, SCALE_MAX } from './node-types';
+import { addNode, emptyGraph, setNodeType, setNodeScale } from './store';
 import { migrateGraph, CURRENT_GRAPH_VERSION } from './migrations';
 import { GRAPH_FORMAT, type GraphNode } from './types';
 
@@ -140,5 +141,52 @@ describe("the editor's own graphs follow the newest type templates", () => {
 				for (const key of Object.keys(t!.content!)) expect(node.content, `${path} ${node.id}`).toHaveProperty(key);
 			}
 		}
+	});
+});
+
+describe('text and image nodes', () => {
+	const start = () => addNode(emptyGraph(), { x: 0, y: 0 }, 'Release plan').graph;
+
+	it('a basic node turned into text keeps its name as the text; text has no ports', () => {
+		const text = setNodeType(start(), 'n1', 'text').data.nodes[0];
+		expect(text.content.text).toBe('Release plan');
+		expect(text.ports).toEqual([]);
+		expect(nodeLabel(text)).toBe('Release plan');
+		expect(nodeLabel({ ...text, content: { ...text.content, text: '\n  \n' } })).toBe('Text');
+	});
+
+	it('scale: 1 by default, kept within its limits; setNodeScale rounds to 0.01', () => {
+		const g = setNodeType(start(), 'n1', 'image');
+		const image = g.data.nodes[0];
+		expect(nodeScale(image)).toBe(1);
+		expect(nodeScale({ ...image, content: { ...image.content, scale: 100 } })).toBe(SCALE_MAX);
+		expect(nodeScale({ ...image, content: { ...image.content, scale: 'x' } })).toBe(1);
+		expect(setNodeScale(g, 'n1', 1.234).data.nodes[0].content.scale).toBe(1.23);
+		expect(setNodeScale(g, 'n1', 0.01).data.nodes[0].content.scale).toBe(SCALE_MIN);
+		expect(setNodeScale(g, 'n1', 1)).toBe(g); // unchanged: no undo step
+	});
+
+	it("an image's drawn size is its stored size times its scale", () => {
+		const image = setNodeType(start(), 'n1', 'image').data.nodes[0];
+		expect(imageOf(image)).toEqual({ src: 'images/parts/resistor.svg', w: 96, h: 32 });
+		expect(imageOf({ ...image, content: { ...image.content, scale: 2 } })).toMatchObject({ w: 192, h: 64 });
+	});
+});
+
+describe('image captions', () => {
+	const image = () => setNodeType(addNode(emptyGraph(), { x: 0, y: 0 }).graph, 'n1', 'image').data.nodes[0];
+	const withCaption = (caption: unknown, showCaption: unknown) => ({ ...image(), content: { ...image().content, caption, showCaption } });
+
+	it('shows a caption the node has and shows; none when empty or switched off', () => {
+		expect(imageCaption(withCaption('R1', true))).toBe('R1');
+		expect(imageCaption(withCaption('  ', true))).toBe('');
+		expect(imageCaption(withCaption('R1', false))).toBe('');
+		expect(imageCaption(withCaption(undefined, undefined))).toBe(''); // a version 1 image
+	});
+
+	it('the Esc menu can show or hide every caption, but never invents one', () => {
+		expect(imageCaption(withCaption('R1', false), 'show')).toBe('R1');
+		expect(imageCaption(withCaption('R1', true), 'hide')).toBe('');
+		expect(imageCaption(withCaption('', true), 'show')).toBe('');
 	});
 });
