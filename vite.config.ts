@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import { loadEnv } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import pkg from './package.json';
 
@@ -8,15 +9,18 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const now = new Date();
 const buildDate = `${String(now.getDate()).padStart(2, '0')}-${MONTHS[now.getMonth()]}-${now.getFullYear()}`;
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	plugins: [sveltekit()],
 
 	define: {
 		__APP_VERSION__: JSON.stringify(pkg.version),
-		__BUILD_DATE__: JSON.stringify(buildDate)
+		__BUILD_DATE__: JSON.stringify(buildDate),
+		// which site to build: '' = full imge, 'keyboard' = the keyboard-only site ($lib/site.ts);
+		// SITE from the environment (the Dockerfile sets SITE=keyboard) or a .env file
+		__SITE__: JSON.stringify(loadEnv(mode, '.', 'SITE').SITE ?? '')
 	},
 
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}
-});
+}));

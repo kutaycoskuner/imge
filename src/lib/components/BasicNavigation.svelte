@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import * as config from '$lib/config';
+	import { KEYBOARD_ONLY } from '$lib/site';
 </script>
 
-<!-- src/lib/components/Nav.svelte -->
+<!-- src/lib/components/Nav.svelte; none on the keyboard-only site ($lib/site.ts) -->
+{#if !KEYBOARD_ONLY}
 <nav>
 	<a href="{base}/">graph editor</a>
 	<a href="{base}/matrix_addition">matrix addition</a>
@@ -17,6 +19,7 @@
 	<!-- <a href="{base}/api/posts">md_api</a> -->
 	<!-- <a href="{base}/_test/deeply/nested/route">nesting test</a> -->
 </nav>
+{/if}
 
 <!-- <style>
 	nav {

@@ -15,7 +15,7 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.32.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.33.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
@@ -60,6 +60,7 @@ npm run test:unit -- --run
 # Docs
 
 - [Keyboard layout](docs/keyboard-layout.md): the keyboard layout page, layers, the keyboards, the keymap file format
+- [Keyboard site](docs/keyboard-site.md): the keyboard page alone on a self-hosted server, without personal links (`SITE=keyboard` build, Docker image, homelab deploy)
 - [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
 - [Node and link editing](docs/graph-editing.md): mouse and keys, selection, copy / paste, undo / redo, link rules, link shapes, function reference for the graph store
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files

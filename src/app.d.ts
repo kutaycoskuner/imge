@@ -4,6 +4,8 @@ declare global {
 	// set in vite.config.ts: package.json version and the build day (dd-Mmm-yyyy)
 	const __APP_VERSION__: string;
 	const __BUILD_DATE__: string;
+	// set in vite.config.ts from the SITE environment variable: '' or 'keyboard' ($lib/site.ts)
+	const __SITE__: string;
 
 	namespace App {
 		// interface Error {}

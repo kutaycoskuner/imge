@@ -106,6 +106,12 @@ A file that isn't a keyboard layout is refused with the reason (a graph file is 
 - Undo / redo; several layouts side by side to compare.
 - Import from games' config files.
 
+## Shared on its own
+
+The page also runs alone, without the rest of imge or personal links, on a self-hosted server: [Keyboard site](keyboard-site.md).
+
 ## Changes
+
+- 2026-11-07 — also served alone on a self-hosted server ([Keyboard site](keyboard-site.md))
 
 - 2026-11-06 — first version: keyboard layout page (ANSI / ISO full-size keyboard with numpad, 8 modifier layers, categories with colours (the graph editor's colour picker), key editor for every layer, list with search, pressing and holding real keys, labels from the user's own layout); keymap format version 1; JSON open / drop / download, kept in the browser; examples FPS game and imge graph editor

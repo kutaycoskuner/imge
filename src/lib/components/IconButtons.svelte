@@ -2,16 +2,18 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-16), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-16
+	//   last update     : 2026-11-07
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Bottom-left bar on every page (from +layout.svelte): links to the GitHub repository and
-	// other projects with a hover tooltip, then the site's version and last update.
+	// other projects with a hover tooltip, then the site's version and last update. The
+	// keyboard-only site ($lib/site.ts) shows only the version, no personal links.
 	// The version comes from package.json and the last update is the build date, both set
 	// in vite.config.ts (__APP_VERSION__, __BUILD_DATE__); bump package.json for a release.
 	import { base } from '$app/paths';
 	import * as config from '$lib/config';
+	import { KEYBOARD_ONLY } from '$lib/site';
 
 	import GithubIcon from '$lib/icons/icon-github.svelte';
 	import ThreeIcon from '$lib/icons/icon-three.js.svelte';
@@ -27,6 +29,8 @@
 <nav>
 	<div class="icon-container">
 		<div class="icon-group">
+			<!-- personal links: not on the keyboard-only site ($lib/site.ts) -->
+			{#if !KEYBOARD_ONLY}
 			<a
 				href="https://github.com/kutaycoskuner/imge"
 				target="_blank"
@@ -60,6 +64,7 @@
 			>
 				<FourCubesIcon />
 			</a>
+			{/if}
 
 			<!-- <a
 				href="https://threejs.org/"
