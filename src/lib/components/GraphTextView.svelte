@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-02
+	//   last update     : 2026-11-13
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -91,7 +91,7 @@
 	</div>
 	{#if art.height}
 		<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
-		<pre class="ascii" on:click={select}>{#each rows as row}{#each row as run}<span class={run.cls} data-owner={run.owner} style={run.color ? `color: ${run.color}` : undefined}>{run.text}</span>{/each}{'\n'}{/each}</pre>
+		<pre class="ascii ascii-type" on:click={select}>{#each rows as row}{#each row as run}<span class={run.cls} data-owner={run.owner} style={run.color ? `color: ${run.color}` : undefined}>{run.text}</span>{/each}{'\n'}{/each}</pre>
 	{:else}
 		<p class="faint">The graph is empty.</p>
 	{/if}
@@ -142,14 +142,10 @@
 		opacity: 0.6;
 	}
 
+	/* font, line height, spacing: .ascii-type in imge.css (shared with the matrix text view) */
 	.ascii {
 		margin: 0;
-		font-family: 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', Menlo, monospace;
 		font-size: 13px;
-		line-height: 1.17; /* box-drawing glyphs fill this, so vertical lines join */
-		letter-spacing: 0; /* the site's spacing would break horizontal lines into dashes */
-		font-weight: 400;
-		white-space: pre;
 		cursor: default;
 		width: max-content;
 	}

@@ -41,7 +41,7 @@ State as of 2026-10-27.
 | `src/lib/components/UI_GraphEditor.svelte` | Toolbar: zoom in/out, add node, fit graph, undo / redo, transpose, dot grid, snap, port look, canvas / text view, Properties panel, open (menu), export, export as image. The buttons are a data list (`buttons`: icon, hint, action) rendered by one loop. |
 | `src/lib/components/properties/` | The Properties panel and its sections (see [graph-properties-panel.md](graph-properties-panel.md)). |
 | `src/lib/icons/` | One component per icon, reusable on any page; markup only, state as props (see its README). |
-| `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node`, port, selection and link styles. |
+| `static/styles/imge.css` | `.viewport`, `.world`, `.polka-dots`, `.node`, port, selection and link styles; the toolbar's column and buttons (`.access-wrapper`, `.access-function`), shared with the matrix calculator. |
 | `static/data/test-node-graph.json` | Test graph; node `position` values are world coordinates. File structure and versions: [graph-format.md](graph-format.md). |
 
 ## Two coordinate spaces

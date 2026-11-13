@@ -20,6 +20,14 @@ export default defineConfig(({ mode }) => ({
 		__SITE__: JSON.stringify(loadEnv(mode, '.', 'SITE').SITE ?? '')
 	},
 
+	// the dev server must not watch the symlinked folders (other repos with their node_modules,
+	// the docs repo) or local scratch folders: walking them on OneDrive kept every request waiting
+	server: {
+		watch: {
+			ignored: ['**/.linked_projects/**', '**/_documentation/**', '**/_temp/**', '**/input/**', '**/build/**']
+		}
+	},
+
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	}

@@ -738,3 +738,88 @@ kbd {
 .node:hover .hover-dot {
     display: block;
 } */
+
+/* ---------------------------------------------------------------------------------------
+   Text drawn with box-drawing characters (the graph editor's and the matrix calculator's
+   text views): a monospace font that has them, a line height they fill so vertical lines
+   join, no letter spacing (the site's would break horizontal lines into dashes), no
+   ligatures (Cascadia would merge characters such as == into one sign)
+   --------------------------------------------------------------------------------------- */
+.ascii-type {
+    font-family: 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', Menlo, monospace;
+    line-height: 1.17;
+    letter-spacing: 0;
+    font-weight: 400;
+    font-variant-ligatures: none;
+    white-space: pre;
+}
+
+/* ---------------------------------------------------------------------------------------
+   Page toolbar: a column of small icon buttons fixed at the bottom left, hover hints in the
+   hint line (AssistanceMsg). Used by the graph editor (UI_GraphEditor.svelte) and the matrix
+   calculator; the icons are components in src/lib/icons.
+   .active: the button's state is on (e.g. the chosen operation)
+   [aria-disabled="true"]: shown but can't be used yet (still gets hover, so its hint shows)
+   --------------------------------------------------------------------------------------- */
+.access-wrapper {
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: repeat(auto, 1fr);
+    grid-gap: 2px;
+    position: fixed;
+    bottom: 4em;
+    left: 1em;
+    z-index: 30;
+}
+
+.access-function {
+    display: flex;
+    width: 1.2em;
+    height: 1.2em;
+    padding: 0.2em;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: var(--bg);
+    border-radius: 4px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.access-function svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+}
+
+.access-function.active {
+    background: var(--col-highlight);
+}
+
+.access-function.active svg {
+    opacity: 1;
+}
+
+.access-function[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+
+.access-function[aria-disabled="true"] svg {
+    opacity: 0.3;
+}
+
+/* short windows (a phone held sideways): two columns, so the toolbar stays on screen */
+@media (max-height: 560px) {
+    .access-wrapper {
+        grid-template-columns: repeat(2, auto);
+        bottom: 3em;
+    }
+}
+
+/* touch screens: buttons big enough for a finger */
+@media (pointer: coarse) {
+    .access-function {
+        width: 1.6em;
+        height: 1.6em;
+    }
+}
