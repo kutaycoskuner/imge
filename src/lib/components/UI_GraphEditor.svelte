@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-05
+	//   last update     : 2026-11-13
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -290,53 +290,8 @@
 
 <!-- Styles -->
 <style>
-	.access-wrapper {
-		display: grid;
-		grid-template-columns: 1;
-		grid-template-rows: repeat(auto, 1fr);
-		grid-gap: 2px;
-		position: fixed;
-		bottom: 4em;
-		left: 1em;
-		z-index: 30;
-	}
-
-	/* short windows (a phone held sideways): two columns, so the toolbar stays on screen */
-	@media (max-height: 560px) {
-		.access-wrapper {
-			grid-template-columns: repeat(2, auto);
-			bottom: 3em;
-		}
-	}
-
-	/* touch screens: buttons big enough for a finger */
-	@media (pointer: coarse) {
-		.access-function {
-			width: 1.6em;
-			height: 1.6em;
-		}
-	}
-
-	.access-function {
-		display: flex;
-		width: 1.2em;
-		height: 1.2em;
-		padding: 0.2em;
-		justify-content: center;
-		align-items: center;
-		text-align: center;
-		background: var(--bg);
-		border-radius: 4px;
-		user-select: none;
-		cursor: pointer;
-	}
-
-	/* the icons are their own components (src/lib/icons), so their svg is styled globally */
-	.access-function :global(svg) {
-		width: 100%;
-		height: 100%;
-		opacity: 0.8;
-	}
+	/* the toolbar's column and buttons (.access-wrapper, .access-function) are styled in
+	   static/styles/imge.css, shared with other pages' toolbars (matrix calculator) */
 
 	/* the image formats, beside the toolbar's image button */
 	.image-export {

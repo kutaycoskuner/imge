@@ -2,21 +2,18 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-06
+	//   last update     : 2026-11-15
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// The keyboard layout page's Esc menu (registered by routes/keyboard_layout/+page.svelte):
-	// the layout file (new, open a file, download), the example layouts, and the keyboard: its
-	// shape (ANSI / ISO, stored in the layout), numpad shown, labels from the user's own layout
-	// (view settings, kept in this browser). The menu closes when a layout opens.
-	import { onMount } from 'svelte';
+	// The Config tab of the keyboard layout page's Esc menu (registered by
+	// routes/keyboard_layout/+page.svelte, next to Examples and How to use): the layout file
+	// (new, open a file, download) and the keyboard: its shape (ANSI / ISO, stored in the
+	// layout), numpad shown, labels from the user's own layout (view settings, kept in this
+	// browser). The menu closes when a layout opens.
 	import { menuOpen } from '../../stores/imge_main';
-	import { keymap, view, layoutMap, status, newKeymap, pickKeymapFile, downloadKeymap, listKeymapExamples, openExample, type KeymapExample } from './store';
+	import { keymap, view, layoutMap, status, newKeymap, pickKeymapFile, downloadKeymap } from './store';
 	import { setMetadata, PHYSICAL, type Physical } from './keymap';
-
-	let examples: KeymapExample[] = [];
-	onMount(async () => (examples = await listKeymapExamples()));
 
 	const SHAPES: Record<Physical, string> = {
 		ansi: 'ANSI (US): wide left Shift, \\ above Enter',
@@ -34,21 +31,10 @@
 			<button class="action" on:click={downloadKeymap}>Download .json</button>
 		</div>
 		<p class="note">
-			A layout file (.json) can also be dropped on the page. The open layout is kept in this browser between visits;
-			download it to keep or share it.
+			The open layout is kept in this browser between visits, but only there: <strong>download</strong> it to keep a
+			copy or to share it. A layout file (.json) can also be <strong>dragged and dropped</strong> anywhere on the
+			page. Open and download are in the toolbar at the bottom left too.
 		</p>
-	</section>
-
-	<section>
-		<h3>Examples</h3>
-		<ul class="examples">
-			{#each examples as example (example.file)}
-				<li>
-					<button class="example" on:click={async () => close(await openExample(example))}>{example.name}</button>
-					<span class="note">{example.description}</span>
-				</li>
-			{/each}
-		</ul>
 	</section>
 
 	<section>
@@ -97,8 +83,7 @@
 	}
 
 	/* buttons are reset globally (settings_overlay.css), so their look is set here */
-	.action,
-	.example {
+	.action {
 		font: inherit;
 		color: var(--col);
 		background: none;
@@ -108,34 +93,9 @@
 		cursor: pointer;
 	}
 
-	.action:hover,
-	.example:hover {
+	.action:hover {
 		border-color: var(--col-selected);
 		color: var(--col-selected);
-	}
-
-	.example {
-		--col-example: #2a9fd6;
-		color: var(--col-example);
-		border-color: color-mix(in srgb, var(--col-example) 45%, transparent);
-		background: color-mix(in srgb, var(--col-example) 12%, transparent);
-		font-size: 0.85em;
-	}
-
-	.examples {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.4em;
-	}
-
-	.examples li {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.15em;
 	}
 
 	.choice {

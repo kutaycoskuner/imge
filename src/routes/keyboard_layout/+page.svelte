@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-06
+	//   last update     : 2026-11-15
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -13,8 +13,10 @@
 	// it (with modifiers), selects it: the editor lists it in every layer, and the pressed
 	// layer's field takes the typing. Categories have a name and a colour; the list below shows
 	// every binding by category, with a search.
-	// Layout files: the Esc menu (new, open, download, examples, keyboard shape), or drop a
-	// .json on the page. The open layout is kept in this browser. Data and rules:
+	// Layout files: the Esc menu, in tabs (Config: new, open, download, keyboard shape;
+	// Examples; How to use), the toolbar at the bottom left as in the graph editor (menu,
+	// open, download; hover hints in the hint line), or drop a .json on the page. The open
+	// layout is kept in this browser. Data and rules:
 	// $lib/keymap/keymap.ts, state and files: $lib/keymap/store.ts. Details: docs/keyboard-layout.md
 	import { onMount, tick } from 'svelte';
 	import { menuOpen, pageMenu } from '../../stores/imge_main';
@@ -23,7 +25,14 @@
 	import CategoryList from '$lib/keymap/CategoryList.svelte';
 	import BindingList from '$lib/keymap/BindingList.svelte';
 	import KeymapMenu from '$lib/keymap/KeymapMenu.svelte';
-	import { keymap, chosenLayer, heldLayer, selectedKey, view, layoutMap, status, startKeymapPage, openKeymapFile } from '$lib/keymap/store';
+	import KeymapExamplesMenu from '$lib/keymap/KeymapExamplesMenu.svelte';
+	import KeymapHelpMenu from '$lib/keymap/KeymapHelpMenu.svelte';
+	import AssistanceMsg from '$lib/components/AssistanceMsg.svelte';
+	import IconGear from '$lib/icons/icon-gear.svelte';
+	import IconChevronUp from '$lib/icons/icon-chevron-up.svelte';
+	import IconChevronDown from '$lib/icons/icon-chevron-down.svelte';
+	import { assistanceMsg } from '../../stores/imge_main';
+	import { keymap, chosenLayer, heldLayer, selectedKey, view, layoutMap, status, startKeymapPage, openKeymapFile, pickKeymapFile, downloadKeymap } from '$lib/keymap/store';
 	import { LAYERS, layerId, layerTitle, layerCounts, eventLayer, setMetadata } from '$lib/keymap/keymap';
 	import { isKnownKey } from '$lib/keymap/keyboards';
 
@@ -34,13 +43,30 @@
 	onMount(() => {
 		let stop = () => {};
 		startKeymapPage().then((s) => (stop = s));
-		pageMenu.set({ title: 'Keyboard layout', component: KeymapMenu });
+		pageMenu.set({
+			title: 'Keyboard layout',
+			tabs: [
+				{ id: 'config', label: 'Config', component: KeymapMenu },
+				{ id: 'examples', label: 'Examples', component: KeymapExamplesMenu },
+				{ id: 'help', label: 'How to use', component: KeymapHelpMenu }
+			]
+		});
 		return () => {
 			stop();
 			pageMenu.set(null);
 			menuOpen.set(false);
 		};
 	});
+
+	// toolbar at the bottom left, as the graph editor's (data only; styles .access-* in
+	// imge.css): the menu, open a file, download; hover hints in the hint line (AssistanceMsg)
+	const TOOLS = [
+		{ id: 'menu', icon: IconGear, hint: 'Settings and help [Esc]', action: () => menuOpen.set(true) },
+		{ id: 'open', icon: IconChevronUp, hint: 'Open a layout file (.json), or drop one on the page', action: async () => (await pickKeymapFile()) && menuOpen.set(false) },
+		{ id: 'download', icon: IconChevronDown, hint: 'Download the layout (.json)', action: downloadKeymap }
+	];
+	const hint = (text: string) => assistanceMsg.set(text);
+	const unhint = () => assistanceMsg.set('');
 
 	// keys that change the layer while held, not keys to select
 	const MODIFIER_KEYS = new Set(['Shift', 'Control', 'Alt', 'AltGraph']);
@@ -149,6 +175,25 @@
 {#if dropping}
 	<div class="drop-overlay"><span>Drop a keyboard layout (.json) to open it</span></div>
 {/if}
+
+<div class="access-wrapper" role="toolbar" aria-label="keyboard layout">
+	{#each TOOLS as tool (tool.id)}
+		<div
+			class="access-function"
+			role="button"
+			tabindex="0"
+			aria-label={tool.hint}
+			on:click={tool.action}
+			on:keydown={(event) => event.key === 'Enter' && tool.action()}
+			on:mouseenter={() => hint(tool.hint)}
+			on:mouseleave={unhint}
+		>
+			<svelte:component this={tool.icon} />
+		</div>
+	{/each}
+</div>
+
+<AssistanceMsg />
 
 <style>
 	.keyboard-page {
