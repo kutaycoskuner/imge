@@ -113,11 +113,10 @@
 			</a> -->
 
 			{#if showTooltip}
-				<div class="tooltip-text">
-					{tooltipText}
-				</div>
+				<!-- a link's hover text takes the version's place, in the same look -->
+				<div class="bar-text">{tooltipText}</div>
 			{:else}
-				<div class="version">v{version} · last update {lastUpdate}</div>
+				<div class="bar-text">v{version} · last update {lastUpdate}</div>
 			{/if}
 		</div>
 	</div>
@@ -188,7 +187,8 @@
 	}
 
 	/* in the tooltip's place while no icon is hovered, quieter than the icons */
-	.version {
+	/* the version, or a link's hover text in its place: one look for both */
+	.bar-text {
 		padding-left: 1rem;
 		padding-bottom: 0.5rem;
 		display: flex;
@@ -197,15 +197,5 @@
 		opacity: 0.5;
 		user-select: none;
 		white-space: nowrap;
-	}
-
-	.tooltip-text {
-		padding-left: 1rem;
-		position: relative;
-		bottom: 0;
-		/* ... */
-		display: flex;
-		align-items: center;
-		z-index: 100; /* good */
 	}
 </style>
