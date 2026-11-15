@@ -23,7 +23,8 @@ Page: **keyboard layout** in the top links (`/keyboard_layout`). State as of 202
 | colour by meaning | **Categories** (right of the editor): name and colour each, a count of their bindings; the colour is set with the graph editor's colour field (a click on the swatch opens the picker: saturation / brightness square, hue bar, tints and shades, presets; or type a hex), the keys follow live; **+ Add category**; × removes one (its bindings stay, without a category). A binding gets its category in the editor |
 | find a binding | **All bindings** (bottom): every binding of every layer, grouped by category, as key caps and what it does; the search filters by action, key or modifier ("ctrl", "shift w"); a click shows it on the keyboard |
 | name the layout | click the title at the top |
-| open, save, examples, keyboard shape | the **Esc** menu, see [Files](#files) |
+| open, save, examples, keyboard shape | the **Esc** menu or the **toolbar** at the bottom left, see [Files](#files) |
+| read how it works | the Esc menu's **How to use** tab |
 
 - On the keyboard, a key bound in the shown layer is drawn in its category's colour with what it does. Small letters in a key's top-right corner say which **other** modifier layers use it: `S` Shift, `C` Ctrl, `A` Alt, `CS` Ctrl+Shift, `CA`, `SA`, `CSA`. The modifier keys of the shown layer look pressed.
 - Keys the browser keeps for itself can't be pressed into the page (Ctrl+W, Ctrl+T, Ctrl+N close or open tabs and windows; F11 full screen): click them instead. **Esc** opens the menu; click the Esc key to bind it.
@@ -54,13 +55,23 @@ The chips show how many bindings each layer has. A modifier key itself can be bo
 
 ## Files
 
-The Esc menu (**Esc**):
+**Toolbar** at the bottom left, placed and styled as the graph editor's (`.access-*` in `static/styles/imge.css`); hovering a button shows what it does in the hint line:
 
-- **New layout** — an empty one (asks first when the open one has bindings; download it first to keep it).
-- **Open a file…** — a layout file (`.json`) from your computer. Or **drop** it anywhere on the page (a dashed frame shows while it is dragged over).
-- **Download .json** — the open layout as `<name>.json`.
+| Button | Does |
+|---|---|
+| gear | opens the Esc menu (settings and help) |
+| ↑ | opens a layout file (`.json`) from your computer |
+| ↓ | downloads the open layout as `<name>.json` |
+
+The **Esc menu** (**Esc** or the gear), in three tabs like the graph editor's menu:
+
+- **Config**
+    - **New layout** — an empty one (asks first when the open one has bindings; download it first to keep it).
+    - **Open a file…** — a layout file (`.json`) from your computer. Or **drag and drop** it anywhere on the page (a dashed frame shows while it is dragged over).
+    - **Download .json** — the open layout as `<name>.json`.
+    - **Keyboard** — shape (ANSI / ISO), numpad, key labels.
 - **Examples** — *FPS game (typical)* (movement, combat, weapons, interaction, chat, with Shift, Ctrl+Alt and Ctrl+Shift layers) and *imge graph editor* (this site's graph editor shortcuts). Files: `static/data/keymaps/`, listed in `static/data/keymaps/index.json`.
-- **Keyboard** — shape (ANSI / ISO), numpad, key labels.
+- **How to use** — short instructions: selecting and binding keys, layers, categories and the list, files (kept in the browser, download, drag and drop, open), the toolbar and the menu.
 
 The open layout is **kept in this browser** (`localStorage`, key `imge.keyboardLayout.keymap`) after every change, so a reload or a later visit continues where you were; the first visit opens the first example. Files are the way to keep layouts for good and to share them. View settings (numpad, labels) are kept too (`imge.keyboardLayout.view`).
 
@@ -95,7 +106,8 @@ A file that isn't a keyboard layout is refused with the reason (a graph file is 
 | `src/lib/keymap/store.ts` | The page's state (open layout, layers, selected key, view), kept in the browser; opening, examples, downloading. |
 | `src/lib/keymap/KeyboardView.svelte` | Draws the keyboard. |
 | `src/lib/keymap/KeyEditor.svelte`, `CategoryList.svelte`, `BindingList.svelte` | The editor, the categories (colours with the graph editor's `PropColor` / `ColorPicker`), the list. |
-| `src/lib/keymap/KeymapMenu.svelte` | The Esc menu. |
+| `src/lib/keymap/KeymapMenu.svelte`, `KeymapExamplesMenu.svelte`, `KeymapHelpMenu.svelte` | The Esc menu's tabs: Config, Examples, How to use (the help text is a data list; keep it in step with this page). |
+| `src/lib/icons/icon-gear.svelte` | The toolbar's menu button. |
 | `src/routes/keyboard_layout/+page.svelte` | The page: layer chips, keys pressed and held, dropping files. |
 
 ## Ideas for later
@@ -112,6 +124,7 @@ The page also runs alone, without the rest of imge or personal links, on a self-
 
 ## Changes
 
+- 2026-11-15 — toolbar at the bottom left as in the graph editor (menu, open, download, with hover hints); the Esc menu in tabs: Config, Examples, How to use (instructions, incl. drag and drop and download)
 - 2026-11-07 — also served alone on a self-hosted server ([Keyboard site](keyboard-site.md))
 
 - 2026-11-06 — first version: keyboard layout page (ANSI / ISO full-size keyboard with numpad, 8 modifier layers, categories with colours (the graph editor's colour picker), key editor for every layer, list with search, pressing and holding real keys, labels from the user's own layout); keymap format version 1; JSON open / drop / download, kept in the browser; examples FPS game and imge graph editor

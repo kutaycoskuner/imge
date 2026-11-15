@@ -757,7 +757,7 @@ kbd {
 /* ---------------------------------------------------------------------------------------
    Page toolbar: a column of small icon buttons fixed at the bottom left, hover hints in the
    hint line (AssistanceMsg). Used by the graph editor (UI_GraphEditor.svelte) and the matrix
-   calculator; the icons are components in src/lib/icons.
+   calculator and the keyboard layout page; the icons are components in src/lib/icons.
    .active: the button's state is on (e.g. the chosen operation)
    [aria-disabled="true"]: shown but can't be used yet (still gets hover, so its hint shows)
    --------------------------------------------------------------------------------------- */
