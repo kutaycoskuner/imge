@@ -2,20 +2,24 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-16), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-07
+	//   last update     : 2026-11-15
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// Bottom-left bar on every page (from +layout.svelte): links to the GitHub repository and
 	// other projects with a hover tooltip, then the site's version and last update. The
-	// keyboard-only site ($lib/site.ts) shows only the version, no personal links.
+	// keyboard-only site ($lib/site.ts) shows no personal links; instead, when its server
+	// has a support link (e.g. Ko-fi, set in the server's private configuration, never in
+	// this repo), a cup icon to it, its label as the tooltip.
 	// The version comes from package.json and the last update is the build date, both set
 	// in vite.config.ts (__APP_VERSION__, __BUILD_DATE__); bump package.json for a release.
 	import { base } from '$app/paths';
 	import * as config from '$lib/config';
-	import { KEYBOARD_ONLY } from '$lib/site';
+	import { onMount } from 'svelte';
+	import { KEYBOARD_ONLY, loadSupportLink, type SupportLink } from '$lib/site';
 
 	import GithubIcon from '$lib/icons/icon-github.svelte';
+	import CupHeartIcon from '$lib/icons/icon-cup-heart.svelte';
 	import ThreeIcon from '$lib/icons/icon-three.js.svelte';
 	import FourCubesIcon from '$lib/icons/icon-four_cubes.svelte';
 
@@ -24,6 +28,10 @@
 
 	const version = __APP_VERSION__;
 	const lastUpdate = __BUILD_DATE__;
+
+	// keyboard-only site: the support link its server gives (none on the full imge)
+	let support: SupportLink | null = null;
+	onMount(async () => (support = await loadSupportLink()));
 </script>
 
 <nav>
@@ -63,6 +71,27 @@
 				}}
 			>
 				<FourCubesIcon />
+			</a>
+			{/if}
+
+			<!-- keyboard-only site: the support link from its server ($lib/site.ts) -->
+			{#if support}
+			<a
+				href={support.url}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="icon-button"
+				aria-label={support.label}
+				on:mouseenter={() => {
+					tooltipText = support?.label ?? '';
+					showTooltip = true;
+				}}
+				on:mouseleave={() => {
+					tooltipText = '';
+					showTooltip = false;
+				}}
+			>
+				<CupHeartIcon />
 			</a>
 			{/if}
 

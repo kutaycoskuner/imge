@@ -1,0 +1,2 @@
+<!-- coffee cup with a heart on it (support / tip, as on Ko-fi): a rounded mug, its handle on the right -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" {...$$restProps}><path d="M4 7h12v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" /><path d="M16 9h1.5a2.5 2.5 0 0 1 0 5H16" /><path d="M10 15.5l-2.2-2.1a1.4 1.4 0 0 1 2-2l.2.2.2-.2a1.4 1.4 0 0 1 2 2z" fill="currentColor" stroke-width="1" /></svg>

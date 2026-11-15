@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-11-07
+#   last update     : 2026-11-15
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -------------------------------------------------------------------------------------------
@@ -14,6 +14,11 @@
 # stack's environment), inserted before </head> of the page; empty (the Dockerfile's
 # default) = no analytics. So the site's address and analytics never appear in this repo or
 # the public image. It must not contain single quotes or $ (write the tag with double quotes).
+#
+# SUPPORT_URL, SUPPORT_LABEL: a support link (e.g. a Ko-fi page) and its hover text, from the
+# same private configuration; served as /site-config.json, which the page reads to show a
+# cup icon in its bottom-left bar ($lib/site.ts). Empty URL (the default) = no icon. Neither
+# may contain quotes (" or ') or $.
 #
 # The build holds every imge page (SvelteKit prerenders them all), but only the keyboard
 # page and what it loads are served: a whitelist below, everything else is a 404 (the graph
@@ -43,6 +48,13 @@ server {
         sub_filter '</head>' '${ANALYTICS_TAG}</head>';
         sub_filter_once on;
         try_files /keyboard_layout.html =404;
+    }
+
+    # the server's settings for the page: the support link (empty url = none)
+    location = /site-config.json {
+        default_type application/json;
+        add_header Cache-Control "no-cache";
+        return 200 '{"support": {"url": "${SUPPORT_URL}", "label": "${SUPPORT_LABEL}"}}';
     }
 
     # what it loads: the app's code, styles, icons, example keymaps
