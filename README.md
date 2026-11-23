@@ -15,7 +15,7 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.37.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.38.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
@@ -122,7 +122,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
 - [x] versioned graph format (now v7: nodes are id, type, typeVersion, position, ports with a kind, and content defined by their type; links have shape, arrow, line and mark), older files upgraded on load; a sample per version in static/data/samples, a sample node per node type version in static/data/node-types
 - [x] example graphs in the Esc menu, grouped by category (mind mapping, math, circuits, software architecture, other) (mind map, flowchart, search tree, lattice, architecture map, release process, UML class diagram), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)
-- [x] keyboard layout page: what each key does with and without modifiers (Shift, Ctrl, Alt and their combinations), on an ANSI or ISO keyboard coloured by category, and in a list with search; click or press a key to bind it, hold modifiers to see their layer; labels from your own keyboard layout (Chrome, Edge); JSON open / drop / download, examples (FPS game, the graph editor's shortcuts); several layouts saved in the browser under names (open, save over, rename, download, delete); toolbar at the bottom left (menu, open, save, download) and the Esc menu in tabs: Config, Saved, Examples, How to use
+- [x] keyboard layout page: what each key does with and without modifiers (Shift, Ctrl, Alt and their combinations), on an ANSI or ISO keyboard coloured by category, and in a list with search; click or press a key to bind it, hold modifiers to see their layer; labels from your own keyboard layout (Chrome, Edge); JSON open / drop / download, examples (FPS game, the graph editor's shortcuts); profiles: several layouts saved in the browser under names, switched in the Esc menu, the active one saving every change (save over, rename, download, delete); toolbar at the bottom left (menu, open, save, download) and the Esc menu in tabs: Config, Saved, Examples, How to use
 - [ ] vertical / horizontal frameworks
 - [ ] node content editing
 - [ ] add / remove ports

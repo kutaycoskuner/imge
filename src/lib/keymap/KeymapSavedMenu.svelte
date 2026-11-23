@@ -7,17 +7,19 @@
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// The Saved tab of the keyboard layout page's Esc menu (registered by
-	// routes/keyboard_layout/+page.svelte): layouts saved in this browser ("loadouts"), to
-	// switch between. On top: save the open layout under a name (a name already saved offers
-	// to save over it). Below: the saved layouts, last saved first, each with what it holds
-	// and when it was saved, and open / save over / rename / download / delete; the one that
-	// matches the open layout is marked. Opening one closes the menu. Rules: ./saved.ts,
-	// storing and questions: ./store.ts.
+	// routes/keyboard_layout/+page.svelte): the profiles, layouts saved in this browser
+	// ("loadouts") to switch between (also in the Config tab's switch). On top: save the open
+	// layout as a profile under a name (a name already saved offers to save over it). Below:
+	// the profiles, last saved first, each with what it holds and when it was saved, and
+	// switch / save over / rename / download / delete; the active one (which takes the open
+	// layout's changes) is marked. Switching closes the menu. Rules: ./saved.ts, storing and
+	// questions: ./store.ts.
 	import { menuOpen } from '../../stores/imge_main';
 	import {
 		keymap,
 		status,
 		savedLayouts,
+		activeProfile,
 		saveOpenLayout,
 		openSavedLayout,
 		saveOverSavedLayout,
@@ -25,7 +27,6 @@
 		deleteSavedLayout,
 		downloadSavedLayout
 	} from './store';
-	import { keymapJson } from './keymap';
 	import { sortedSaved, MAX_SAVED } from './saved';
 
 	// the name to save under: the open layout's name until the user types another
@@ -34,7 +35,6 @@
 	$: if (!typed) name = $keymap.metadata.name;
 
 	$: list = sortedSaved($savedLayouts);
-	$: openJson = keymapJson($keymap);
 
 	function save(): void {
 		if (saveOpenLayout(name)) typed = false;
@@ -49,9 +49,9 @@
 
 	// the row's actions: label, hover text, what it does
 	const ACTIONS: { label: string; title: string; run: (id: string) => unknown }[] = [
-		{ label: 'open', title: 'Open this layout (replaces the open one)', run: open },
-		{ label: 'save over', title: 'Save the open layout over this one', run: saveOverSavedLayout },
-		{ label: 'rename', title: 'Rename this saved layout', run: renameSavedLayout },
+		{ label: 'switch', title: 'Switch to this profile (the active one keeps its changes)', run: open },
+		{ label: 'save over', title: 'Save the open layout over this profile and make it active', run: saveOverSavedLayout },
+		{ label: 'rename', title: 'Rename this profile', run: renameSavedLayout },
 		{ label: 'download', title: 'Download this layout as .json, without opening it', run: downloadSavedLayout },
 		{ label: 'delete', title: 'Delete it from this browser', run: deleteSavedLayout }
 	];
@@ -59,22 +59,22 @@
 
 <div class="saved-menu">
 	<section>
-		<h3>Save the open layout</h3>
+		<h3>Save the open layout as a profile</h3>
 		<form class="row" on:submit|preventDefault={save}>
 			<input class="name" aria-label="Name to save under" bind:value={name} on:input={() => (typed = true)} maxlength="80" />
-			<button class="action" type="submit">Save in this browser</button>
+			<button class="action" type="submit">Save as profile</button>
 		</form>
 	</section>
 
 	<section>
-		<h3>Saved in this browser ({list.length}/{MAX_SAVED})</h3>
+		<h3>Profiles in this browser ({list.length}/{MAX_SAVED})</h3>
 		{#if list.length}
 			<ul class="list">
 				{#each list as entry (entry.id)}
-					<li class:current={keymapJson(entry.keymap) === openJson}>
+					<li class:current={entry.id === $activeProfile}>
 						<div class="head">
-							<button class="entry-name" title="Open this layout" on:click={() => open(entry.id)}>{entry.name}</button>
-							{#if keymapJson(entry.keymap) === openJson}<span class="badge">open now</span>{/if}
+							<button class="entry-name" title="Switch to this profile" on:click={() => open(entry.id)}>{entry.name}</button>
+							{#if entry.id === $activeProfile}<span class="badge">active: changes go here</span>{/if}
 						</div>
 						<span class="note">
 							{entry.keymap.data.bindings.length} bindings · {entry.keymap.metadata.physical.toUpperCase()} · saved {when(entry.savedAt)}
@@ -88,12 +88,13 @@
 				{/each}
 			</ul>
 		{:else}
-			<p class="note">Nothing saved yet. Save the open layout above to switch between several layouts later.</p>
+			<p class="note">No profiles yet. Save the open layout above, then switch between profiles here or in the Config tab.</p>
 		{/if}
 	</section>
 
 	<p class="note">
-		Saved layouts stay in this browser only (this device, this browser); clearing the site's data removes them.
+		The active profile takes every change of the open layout. Profiles stay in this browser only (this device, this
+		browser); clearing the site's data removes them.
 		<strong>Download</strong> a layout to keep it elsewhere or to share it.
 	</p>
 

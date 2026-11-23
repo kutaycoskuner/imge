@@ -61,7 +61,7 @@ The chips show how many bindings each layer has. A modifier key itself can be bo
 |---|---|
 | gear | opens the Esc menu (settings, saved layouts and help) |
 | ↑ | opens a layout file (`.json`) from your computer |
-| disk | saves the open layout in this browser under its name (a name already saved asks to save over it); the result shows in the hint line |
+| disk | saves the open layout as a profile under its name, and changes then go into it (a name already saved asks to save over it); the result shows in the hint line |
 | ↓ | downloads the open layout as `<name>.json` |
 
 The **Esc menu** (**Esc** or the gear), in four tabs like the graph editor's menu:
@@ -71,23 +71,26 @@ The **Esc menu** (**Esc** or the gear), in four tabs like the graph editor's men
     - **Open a file…** — a layout file (`.json`) from your computer. Or **drag and drop** it anywhere on the page (a dashed frame shows while it is dragged over).
     - **Download .json** — the open layout as `<name>.json`.
     - **Keyboard** — shape (ANSI / ISO), numpad, key labels.
-- **Saved** — layouts saved in this browser, see [Saved layouts](#saved-layouts).
+- **Saved** — the profiles (layouts saved in this browser), see [Saved layouts (profiles)](#saved-layouts-profiles); the profile switch itself is at the top of **Config**.
 - **Examples** — *FPS game (typical)* (movement, combat, weapons, interaction, chat, with Shift, Ctrl+Alt and Ctrl+Shift layers) and *imge graph editor* (this site's graph editor shortcuts). Files: `static/data/keymaps/`, listed in `static/data/keymaps/index.json`.
 - **How to use** — short instructions: selecting and binding keys, layers, categories and the list, files (kept and saved in the browser, download, drag and drop, open), the toolbar and the menu.
 
 The open layout is **kept in this browser** (`localStorage`, key `imge.keyboardLayout.keymap`) after every change, so a reload or a later visit continues where you were; the first visit opens the first example. Files are the way to keep layouts for good and to share them. View settings (numpad, labels) are kept too (`imge.keyboardLayout.view`).
 
-### Saved layouts
+### Saved layouts (profiles)
 
-Several layouts kept in this browser under names ("loadouts"), to switch between, e.g. one per game:
+Several layouts kept in this browser under names ("loadouts"), e.g. one per game, used as **profiles**: one is active, and the open layout belongs to it.
 
-- **save**: the Saved tab's name field (the open layout's name until you type another) and **Save in this browser**, or the toolbar's disk button (saves under the layout's name); a name already saved (any case) asks to **save over** that entry instead of adding a second one
-- **the list**: last saved first; each entry shows its name, its number of bindings, its keyboard shape and when it was saved; the entry that matches the open layout is marked **open now**
-- **per entry**: **open** (or click the name; asks first when the open layout has bindings and differs from it), **save over** (the open layout replaces what the entry holds; asks), **rename** (a taken name gets a number: `Game (2)`), **download** (the entry as `<its name>.json`, without opening it), **delete** (asks; the open layout stays)
-- **where**: `localStorage`, key `imge.keyboardLayout.saved`: a list of `{ id, name, savedAt, keymap }`, each `keymap` in the [file format](#file-format); an entry that isn't a valid layout (broken, or from a newer version) is left out when reading, the others still show
+- **switch**: the **Profile** list at the top of the Esc menu's Config tab (the tab it opens on), or **switch** in the Saved tab; the profile opens and becomes active
+    - nothing is lost when switching: the active profile already holds every change (below), so there is no question; only when the open layout is in no profile and has bindings (a new layout, an example, a file) does it ask first
+- **changes go into the active profile by themselves**: every edit (binding, category, name, keyboard shape) is saved into it as you make it; no save button needed
+- **save as a profile**: **Save as new profile…** in Config, the Saved tab's name field (the open layout's name until you type another) and **Save as profile**, or the toolbar's disk button (saves under the layout's name); the open layout becomes that profile and active; a name already saved (any case) asks to **save over** that profile instead of adding a second one (no question for the active one)
+- **new layout, examples, files** open outside the profiles: the active profile is left as it was, and the open layout is in no profile until saved as one (Config says so)
+- **the Saved tab**: last saved first; each profile shows its name, its number of bindings, its keyboard shape and when it was saved; the active one is marked; per profile **switch** (or click the name), **save over** (the open layout replaces what it holds and it becomes active; asks), **rename** (a taken name gets a number: `Game (2)`), **download** (as `<its name>.json`, without opening it), **delete** (asks; the open layout stays, now in no profile if it was the active one)
+- **where**: `localStorage`, key `imge.keyboardLayout.saved`: a list of `{ id, name, savedAt, keymap }`, each `keymap` in the [file format](#file-format); an entry that isn't a valid layout (broken, or from a newer version) is left out when reading, the others still show; the active profile's id: `imge.keyboardLayout.activeProfile` (remembered for the next visit)
 - **limits**: at most 50 entries (delete one to save more); when the browser refuses to store (storage full, or blocked e.g. in a private window) the page says so and keeps the list as it was; download instead
 - saved layouts belong to **this browser on this device and this site**: the keyboard-only site ([Keyboard site](keyboard-site.md)) has its own list, and clearing the site's data removes them; download to keep a layout elsewhere or to share it
-- code: rules in `src/lib/keymap/saved.ts` (with tests in `saved.spec.ts`), storing and questions in `store.ts`, the tab in `KeymapSavedMenu.svelte`
+- code: rules in `src/lib/keymap/saved.ts` (tests: `saved.spec.ts`), the profiles' behaviour (active profile, saving each change, switching, questions) in `store.ts` (tests: `store.spec.ts`), the switch in `KeymapMenu.svelte`, the tab in `KeymapSavedMenu.svelte`
 
 A file that isn't a keyboard layout is refused with the reason (a graph file is pointed to the graph editor); a file from a newer version of the page is refused rather than guessed at.
 
@@ -139,6 +142,7 @@ The page also runs alone, without the rest of imge or personal links, on a self-
 
 ## Changes
 
+- 2026-11-23 — saved layouts work as profiles: a profile switch at the top of the Esc menu (Config), the active profile takes every change by itself, switching never asks or loses anything, new / example / file open outside the profiles
 - 2026-11-23 — saved layouts ("loadouts"): several named layouts kept in this browser, a Saved tab (open, save over, rename, download, delete) and a save button in the toolbar
 - 2026-11-15 — toolbar at the bottom left as in the graph editor (menu, open, download, with hover hints); the Esc menu in tabs: Config, Examples, How to use (instructions, incl. drag and drop and download)
 - 2026-11-07 — also served alone on a self-hosted server ([Keyboard site](keyboard-site.md))
