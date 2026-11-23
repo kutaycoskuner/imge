@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-16
+	//   last update     : 2026-11-23
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -130,9 +130,13 @@
 		gap: 1em;
 	}
 
-	/* at most 80% of the window's height; a taller menu scrolls under its header */
+	/* at most 80% of the window's height; a taller menu scrolls under its header. Never wider
+	   than the window: the overlay is twice the window wide (settings_overlay.css) and centres
+	   the menu, so without this a long unbroken line (a note in one paragraph) made the menu
+	   wider than the window and cut it off on both sides; now text wraps instead */
 	.overlay-content.page-menu {
 		max-height: 80vh;
+		max-width: calc(100vw - 4em);
 		overflow-y: auto;
 		box-sizing: border-box;
 		scrollbar-width: thin;

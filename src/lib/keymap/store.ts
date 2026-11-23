@@ -1,17 +1,19 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-06
+//   last update     : 2026-11-23
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
 // store.ts -- the keyboard layout page's state: the open keymap, the layer shown (chosen with
-// the chips, or held with the real modifier keys), the selected key, view settings, and
-// opening / saving keymap files.
+// the chips, or held with the real modifier keys), the selected key, view settings, the
+// saved layouts, and opening / saving keymap files.
 //
 // The open keymap is kept in this browser (localStorage) after every change, so a reload or
-// a later visit continues where you were; files are the way to keep and share layouts
-// (Download .json, open a file, drop one on the page). The first visit opens the first example.
+// a later visit continues where you were. Saved layouts ("loadouts", rules in ./saved.ts)
+// are several named layouts kept in this browser too, to switch between; files are the way
+// to keep layouts outside this browser and to share them (Download .json, open a file, drop
+// one on the page). The first visit opens the first example.
 //
 // Requires: a browser for the functions that touch localStorage, files and fetch (called
 // from onMount and event handlers). Used by: routes/keyboard_layout/+page.svelte and the
@@ -20,9 +22,21 @@
 
 import { writable, get } from 'svelte/store';
 import { emptyKeymap, readKeymap, keymapJson, type Keymap } from './keymap';
+import {
+	MAX_SAVED,
+	readSavedList,
+	savedListJson,
+	addSaved,
+	overwriteSaved,
+	renameSaved,
+	removeSaved,
+	savedByName,
+	type SavedLayout
+} from './saved';
 
 const KEYMAP_KEY = 'imge.keyboardLayout.keymap';
 const VIEW_KEY = 'imge.keyboardLayout.view';
+const SAVED_KEY = 'imge.keyboardLayout.saved';
 
 /** The open keymap. */
 export const keymap = writable<Keymap>(emptyKeymap());
@@ -38,6 +52,8 @@ export const view = writable<{ numpad: boolean; ownLabels: boolean }>({ numpad: 
 export const layoutMap = writable<Map<string, string> | null>(null);
 /** The last result or problem (opened, saved, not a layout file ...), shown on the page. */
 export const status = writable<string>('');
+/** The layouts saved in this browser (the Saved tab of the menu). */
+export const savedLayouts = writable<SavedLayout[]>([]);
 
 /** An example layout listed in static/data/keymaps/index.json. */
 export interface KeymapExample {
@@ -63,6 +79,7 @@ export async function startKeymapPage(): Promise<() => void> {
 		}
 		const v = JSON.parse(localStorage.getItem(VIEW_KEY) ?? 'null');
 		if (v) view.set({ numpad: v.numpad !== false, ownLabels: v.ownLabels !== false });
+		savedLayouts.set(readSavedList(localStorage.getItem(SAVED_KEY)));
 	} catch {
 		// storage blocked or a broken entry: start with what is there
 	}
@@ -151,10 +168,15 @@ export function pickKeymapFile(): Promise<boolean> {
 	});
 }
 
-/** Downloads the open keymap as "<name>.json". */
-export function downloadKeymap(): void {
-	const map = get(keymap);
-	const name = `${map.metadata.name.trim().replace(/[\\/:*?"<>|]/g, '-') || 'keyboard-layout'}.json`;
+/**
+ * Downloads a keymap as "<name>.json".
+ *
+ * Args:
+ *     map: the keymap; the open one when left out.
+ *     fileName: the file's name without .json; the layout's name when left out.
+ */
+export function downloadKeymap(map: Keymap = get(keymap), fileName: string = map.metadata.name): void {
+	const name = `${fileName.trim().replace(/[\\/:*?"<>|]/g, '-') || 'keyboard-layout'}.json`;
 	const url = URL.createObjectURL(new Blob([keymapJson(map)], { type: 'application/json' }));
 	const a = document.createElement('a');
 	a.href = url;
@@ -164,4 +186,98 @@ export function downloadKeymap(): void {
 	a.remove();
 	URL.revokeObjectURL(url);
 	status.set(`Downloaded ${name}`);
+}
+
+// ---- saved layouts ("loadouts"): named layouts kept in this browser -----------------------
+
+/**
+ * Stores a changed list of saved layouts; only when the browser accepts it is the list shown
+ * changed, so the page never shows something that isn't kept.
+ *
+ * Returns:
+ *     True when stored; false when the browser refused (storage full or blocked, e.g. a
+ *     private window); the reason is the status.
+ */
+function commitSaved(list: SavedLayout[], done: string): boolean {
+	try {
+		localStorage.setItem(SAVED_KEY, savedListJson(list));
+	} catch {
+		status.set('This browser didn’t keep it (storage full or blocked): download the layout instead');
+		return false;
+	}
+	savedLayouts.set(list);
+	status.set(done);
+	return true;
+}
+
+/** The saved entry with this id, or a status when it is gone (deleted in another tab). */
+function savedEntry(id: string): SavedLayout | undefined {
+	const entry = get(savedLayouts).find((s) => s.id === id);
+	if (!entry) status.set('That saved layout is gone');
+	return entry;
+}
+
+/**
+ * Saves the open layout in this browser under a name; a name already in the list offers to
+ * save over that entry.
+ *
+ * Returns:
+ *     True when it was saved.
+ */
+export function saveOpenLayout(name: string): boolean {
+	const list = get(savedLayouts);
+	const wanted = name.trim() || get(keymap).metadata.name;
+	const same = savedByName(list, wanted);
+	if (same) {
+		if (!confirm(`"${same.name}" is already saved. Save the open layout over it?`)) return false;
+		return commitSaved(overwriteSaved(list, same.id, get(keymap)), `Saved over "${same.name}"`);
+	}
+	if (list.length >= MAX_SAVED) {
+		status.set(`${MAX_SAVED} layouts are saved, the most this page keeps: delete one first (download it to keep it)`);
+		return false;
+	}
+	const next = addSaved(list, wanted, get(keymap));
+	return commitSaved(next, `Saved "${next[0].name}" in this browser`);
+}
+
+/** Opens a saved layout (asks first when the open one has bindings and differs from it). */
+export function openSavedLayout(id: string): boolean {
+	const entry = savedEntry(id);
+	if (!entry) return false;
+	const open = get(keymap);
+	const differs = keymapJson(open) !== keymapJson(entry.keymap);
+	if (open.data.bindings.length && differs && !confirm(`Open "${entry.name}"? The open layout is replaced (save or download it first to keep it).`)) return false;
+	keymap.set(entry.keymap);
+	selectedKey.set(null);
+	status.set(`Opened "${entry.name}"`);
+	return true;
+}
+
+/** Saves the open layout over a saved entry (asks first). */
+export function saveOverSavedLayout(id: string): boolean {
+	const entry = savedEntry(id);
+	if (!entry || !confirm(`Save the open layout over "${entry.name}"? What it holds now is replaced.`)) return false;
+	return commitSaved(overwriteSaved(get(savedLayouts), id, get(keymap)), `Saved over "${entry.name}"`);
+}
+
+/** Renames a saved entry (asks for the new name). */
+export function renameSavedLayout(id: string): boolean {
+	const entry = savedEntry(id);
+	const name = entry ? prompt('New name for the saved layout:', entry.name) : null;
+	if (!entry || name === null || !name.trim() || name.trim() === entry.name) return false;
+	const list = renameSaved(get(savedLayouts), id, name);
+	return commitSaved(list, `Renamed to "${list.find((s) => s.id === id)?.name}"`);
+}
+
+/** Deletes a saved entry (asks first); the open layout stays as it is. */
+export function deleteSavedLayout(id: string): boolean {
+	const entry = savedEntry(id);
+	if (!entry || !confirm(`Delete the saved layout "${entry.name}" from this browser? Download it first to keep it.`)) return false;
+	return commitSaved(removeSaved(get(savedLayouts), id), `Deleted "${entry.name}"`);
+}
+
+/** Downloads a saved entry as "<its name>.json", without opening it. */
+export function downloadSavedLayout(id: string): void {
+	const entry = savedEntry(id);
+	if (entry) downloadKeymap(entry.keymap, entry.name);
 }

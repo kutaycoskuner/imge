@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-15
+	//   last update     : 2026-11-23
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -42,6 +42,7 @@
 		gap: 1em;
 		text-align: left;
 		min-width: min(36em, 100%);
+		max-width: 40em; /* readable lines, as the graph editor's menu tabs */
 	}
 
 	.examples {
