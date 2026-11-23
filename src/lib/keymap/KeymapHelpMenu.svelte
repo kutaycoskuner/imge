@@ -46,12 +46,14 @@
 			section: 'Files',
 			rows: [
 				{ input: 'Kept in the browser', text: 'The open layout stays here between visits, but only in this browser' },
-				{ input: 'Save in this browser', text: 'Keep several layouts under names and switch between them (the toolbar’s disk button or the Saved tab)' },
-				{ input: 'Saved tab', text: 'Your saved layouts: open, save over, rename, download or delete each one' },
+				{ input: 'Profiles', text: 'Several layouts under names, e.g. one per game; the active one takes every change by itself' },
+				{ input: 'Switch profile', text: 'The Profile list at the top of Config; nothing is lost when switching' },
+				{ input: 'Save as profile', text: 'The toolbar’s disk button, Config or the Saved tab; the open layout becomes that profile' },
+				{ input: 'Saved tab', text: 'All profiles: switch, save over, rename, download or delete each one' },
 				{ input: 'Download', text: 'Saves the layout as a .json file, to keep a copy outside this browser or to share it (toolbar ↓, Config or Saved)' },
 				{ input: 'Drag and drop', text: 'Drop a layout .json anywhere on the page to open it (a dashed frame shows while dragging)' },
 				{ input: 'Open a file', text: 'Pick a layout .json from your computer (toolbar ↑ or Config)' },
-				{ input: 'New / examples', text: 'Start empty (Config) or from an example (Examples); both replace the open layout' }
+				{ input: 'New / examples', text: 'Start empty (Config) or from an example (Examples); they open outside the profiles, the active profile keeps what it holds' }
 			]
 		},
 		{

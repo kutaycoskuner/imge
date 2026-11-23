@@ -82,7 +82,7 @@
 	const TOOLS = [
 		{ id: 'menu', icon: IconGear, hint: 'Settings, saved layouts and help [Esc]', action: () => menuOpen.set(true) },
 		{ id: 'open', icon: IconChevronUp, hint: 'Open a layout file (.json), or drop one on the page', action: async () => (await pickKeymapFile()) && menuOpen.set(false) },
-		{ id: 'save', icon: IconFloppy, hint: 'Save in this browser under the layout’s name (menu: Saved)', action: quickSave },
+		{ id: 'save', icon: IconFloppy, hint: 'Save as a profile under the layout’s name; changes then go into it (switch: Esc menu)', action: quickSave },
 		{ id: 'download', icon: IconChevronDown, hint: 'Download the layout (.json)', action: () => downloadKeymap() }
 	];
 	const hint = (text: string) => assistanceMsg.set(text);

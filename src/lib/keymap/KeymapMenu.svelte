@@ -7,13 +7,30 @@
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// The Config tab of the keyboard layout page's Esc menu (registered by
-	// routes/keyboard_layout/+page.svelte, next to Examples and How to use): the layout file
-	// (new, open a file, download) and the keyboard: its shape (ANSI / ISO, stored in the
-	// layout), numpad shown, labels from the user's own layout (view settings, kept in this
-	// browser). The menu closes when a layout opens.
+	// routes/keyboard_layout/+page.svelte, next to Saved, Examples and How to use): the
+	// profile switch (the saved layouts; picking one opens it, and the open layout's changes
+	// go into the active profile; save the open layout as a new profile), the layout file (new,
+	// open a file, download) and the keyboard: its shape (ANSI / ISO, stored in the layout),
+	// numpad shown, labels from the user's own layout (view settings, kept in this browser).
+	// The menu closes when a layout opens from a file or as new; it stays open on a switch.
 	import { menuOpen } from '../../stores/imge_main';
-	import { keymap, view, layoutMap, status, newKeymap, pickKeymapFile, downloadKeymap } from './store';
+	import { keymap, view, layoutMap, status, savedLayouts, activeProfile, openSavedLayout, saveOpenLayout, newKeymap, pickKeymapFile, downloadKeymap } from './store';
 	import { setMetadata, PHYSICAL, type Physical } from './keymap';
+	import { sortedSaved } from './saved';
+
+	$: profiles = sortedSaved($savedLayouts);
+
+	// the switch: picking a profile opens it; if the user keeps the open layout (asked when
+	// it is in no profile), the switch shows the active one again
+	function switchProfile(event: Event & { currentTarget: HTMLSelectElement }): void {
+		const select = event.currentTarget;
+		if (!select.value || !openSavedLayout(select.value)) select.value = $activeProfile ?? '';
+	}
+
+	function saveAsProfile(): void {
+		const name = prompt('Save the open layout as a profile named:', $keymap.metadata.name);
+		if (name !== null) saveOpenLayout(name);
+	}
 
 	const SHAPES: Record<Physical, string> = {
 		ansi: 'ANSI (US): wide left Shift, \\ above Enter',
@@ -24,6 +41,30 @@
 
 <div class="keymap-menu">
 	<section>
+		<h3>Profile</h3>
+		<div class="row">
+			<select class="choice profile" aria-label="Profile" value={$activeProfile ?? ''} on:change={switchProfile}>
+				{#if !$activeProfile}<option value="">{$keymap.metadata.name} (not saved as a profile)</option>{/if}
+				{#each profiles as profile (profile.id)}
+					<option value={profile.id}>{profile.name} · {profile.keymap.data.bindings.length} bindings</option>
+				{/each}
+			</select>
+			<button class="action" on:click={saveAsProfile}>Save as new profile…</button>
+		</div>
+		<p class="note">
+			{#if $activeProfile}
+				Changes are saved into this profile as you make them; pick another to switch. Rename, download or delete
+				profiles in the <strong>Saved</strong> tab.
+			{:else if profiles.length}
+				The open layout is in no profile: save it as one to keep it, or pick a profile to switch to it.
+			{:else}
+				No profiles yet: save the open layout as one, then make more (new layout, examples, files) and switch
+				between them here.
+			{/if}
+		</p>
+	</section>
+
+	<section>
 		<h3>Layout</h3>
 		<div class="row">
 			<button class="action" on:click={() => close(newKeymap())}>New layout</button>
@@ -31,10 +72,10 @@
 			<button class="action" on:click={() => downloadKeymap()}>Download .json</button>
 		</div>
 		<p class="note">
-			The open layout is kept in this browser between visits, and the <strong>Saved</strong> tab keeps several under
-			names, but only in this browser: <strong>download</strong> a layout to keep a copy elsewhere or to share it. A
-			layout file (.json) can also be <strong>dragged and dropped</strong> anywhere on the page. Open, save and
-			download are in the toolbar at the bottom left too.
+			New, an example or a file opens outside the profiles (the active profile keeps what it holds). Profiles stay
+			in this browser only: <strong>download</strong> a layout to keep a copy elsewhere or to share it. A layout file
+			(.json) can also be <strong>dragged and dropped</strong> anywhere on the page. Open, save and download are in
+			the toolbar at the bottom left too.
 		</p>
 	</section>
 
@@ -107,6 +148,11 @@
 		border: 1px solid color-mix(in srgb, var(--col) 25%, transparent);
 		border-radius: 3px;
 		max-width: 100%;
+	}
+
+	.choice.profile {
+		min-width: 18em;
+		padding: 0.2em 0.3em;
 	}
 
 	.note,
