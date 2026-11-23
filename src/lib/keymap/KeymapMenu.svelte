@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-15
+	//   last update     : 2026-11-23
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -28,12 +28,13 @@
 		<div class="row">
 			<button class="action" on:click={() => close(newKeymap())}>New layout</button>
 			<button class="action" on:click={async () => close(await pickKeymapFile())}>Open a file…</button>
-			<button class="action" on:click={downloadKeymap}>Download .json</button>
+			<button class="action" on:click={() => downloadKeymap()}>Download .json</button>
 		</div>
 		<p class="note">
-			The open layout is kept in this browser between visits, but only there: <strong>download</strong> it to keep a
-			copy or to share it. A layout file (.json) can also be <strong>dragged and dropped</strong> anywhere on the
-			page. Open and download are in the toolbar at the bottom left too.
+			The open layout is kept in this browser between visits, and the <strong>Saved</strong> tab keeps several under
+			names, but only in this browser: <strong>download</strong> a layout to keep a copy elsewhere or to share it. A
+			layout file (.json) can also be <strong>dragged and dropped</strong> anywhere on the page. Open, save and
+			download are in the toolbar at the bottom left too.
 		</p>
 	</section>
 
@@ -63,6 +64,7 @@
 		gap: 1em;
 		text-align: left;
 		min-width: min(36em, 100%);
+		max-width: 40em; /* readable lines, as the graph editor's menu tabs */
 	}
 
 	h3 {

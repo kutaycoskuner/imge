@@ -2,13 +2,13 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-15
+	//   last update     : 2026-11-23
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// The How to use tab of the keyboard layout page's Esc menu (registered by
 	// routes/keyboard_layout/+page.svelte): short instructions by topic (keys, layers,
-	// categories and the list, files: drag and drop, download, kept in the browser; the
+	// categories and the list, files: drag and drop, download, kept and saved in the browser; the
 	// toolbar and the menu), in the look of the graph editor's Keybindings tab. Key caps are
 	// drawn by Kbd. The full description is docs/keyboard-layout.md, "Using it" and "Files"
 	// (keep both in step).
@@ -46,7 +46,9 @@
 			section: 'Files',
 			rows: [
 				{ input: 'Kept in the browser', text: 'The open layout stays here between visits, but only in this browser' },
-				{ input: 'Download', text: 'Saves the layout as a .json file, to keep a copy or to share it (toolbar ↓ or Config)' },
+				{ input: 'Save in this browser', text: 'Keep several layouts under names and switch between them (the toolbar’s disk button or the Saved tab)' },
+				{ input: 'Saved tab', text: 'Your saved layouts: open, save over, rename, download or delete each one' },
+				{ input: 'Download', text: 'Saves the layout as a .json file, to keep a copy outside this browser or to share it (toolbar ↓, Config or Saved)' },
 				{ input: 'Drag and drop', text: 'Drop a layout .json anywhere on the page to open it (a dashed frame shows while dragging)' },
 				{ input: 'Open a file', text: 'Pick a layout .json from your computer (toolbar ↑ or Config)' },
 				{ input: 'New / examples', text: 'Start empty (Config) or from an example (Examples); both replace the open layout' }
