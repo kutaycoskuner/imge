@@ -124,7 +124,7 @@ A file that isn't a keyboard layout is refused with the reason (a graph file is 
 | `src/lib/keymap/KeyboardView.svelte` | Draws the keyboard. |
 | `src/lib/keymap/KeyEditor.svelte`, `CategoryList.svelte`, `BindingList.svelte` | The editor, the categories (colours with the graph editor's `PropColor` / `ColorPicker`), the list. |
 | `src/lib/keymap/KeymapMenu.svelte`, `KeymapSavedMenu.svelte`, `KeymapExamplesMenu.svelte`, `KeymapHelpMenu.svelte` | The Esc menu's tabs: Config, Saved, Examples, How to use (the help text is a data list; keep it in step with this page). |
-| `src/lib/keymap/saved.ts` | Saved layouts: reading the stored list, adding, saving over, renaming, removing (tests: `saved.spec.ts`). |
+| `src/lib/keymap/saved.ts` | Saved layouts: reading the stored list, adding, saving over, renaming, removing (tests: `saved.spec.ts`); built on the rules every saved list shares, `src/lib/saved-list.ts` (also used by the graph editor's browser saves). |
 | `src/lib/icons/icon-gear.svelte`, `icon-floppy.svelte` | The toolbar's menu and save buttons. |
 | `src/routes/keyboard_layout/+page.svelte` | The page: layer chips, keys pressed and held, dropping files. |
 

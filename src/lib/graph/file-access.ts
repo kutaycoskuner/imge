@@ -1,11 +1,17 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-05
+//   last update     : 2026-11-26
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
-// file-access.ts -- opening and saving graphs on the user's computer.
+// file-access.ts -- opening and saving graphs on the user's computer and in the browser.
+//
+// Saved in this browser: graphs kept in localStorage under names (rules in
+// ./browser-graphs.ts), listed in the menu's Saved tab; a graph opened from there is saved
+// back there (Save, Ctrl+S, autosave). All of them can be saved as one folder on the computer
+// (a new folder in a picked one, Chrome and Edge) or downloaded as that folder in a .zip
+// (other browsers).
 //
 // The user points the editor at a folder on their computer; the imge graphs in it and in its
 // subfolders (up to MAX_DEPTH levels; hidden folders and node_modules skipped; only .json
@@ -38,6 +44,20 @@ import {
 	CURRENT_GRAPH_VERSION
 } from './migrations';
 import type { Graph } from './types';
+import {
+	MAX_BROWSER_GRAPHS,
+	readBrowserGraphs,
+	browserGraphsJson,
+	addBrowserGraph,
+	overwriteBrowserGraph,
+	renameBrowserGraph as renameEntry,
+	removeBrowserGraph,
+	browserGraphByName,
+	folderFileNames,
+	exportFolderName,
+	type BrowserGraph
+} from './browser-graphs';
+import { makeZip } from '$lib/zip';
 
 // File System Access API types aren't all in TypeScript's DOM lib yet
 type DirectoryHandle = any;
@@ -65,6 +85,10 @@ const FOLDER_KEY = 'graph-folder';
 const AUTOSAVE_KEY = 'imge.graphEditor.autosave';
 const AUTOSAVE_DELAY_MS = 800; // after the last change, so a drag saves once, not per frame
 const DOWNLOAD_COUNTER_KEY = 'imge.graphEditor.downloadCounter'; // { date, n } of the last download
+const BROWSER_GRAPHS_KEY = 'imge.graphEditor.browserGraphs'; // graphs saved in this browser
+
+/** The graphs saved in this browser (the menu's Saved tab). */
+export const browserGraphs = writable<BrowserGraph[]>([]);
 
 /**
  * Default graph name "imgegraph-YYYYMMDD-NN": today's local date and the first two-digit
@@ -107,6 +131,7 @@ export interface Workspace {
 	skipped: number; // .json files in the folder that aren't imge graphs
 	skippedNames: string[]; // their paths, shown on hover
 	fileName: string | null; // file the open graph came from / is saved to
+	browserId: string | null; // or: the graph saved in this browser it came from / is saved to
 	dirty: boolean; // changes since the last load or save
 	autosave: boolean;
 	status: string; // last result or error, shown in the menu
@@ -124,6 +149,7 @@ export const workspace = writable<Workspace>({
 	skipped: 0,
 	skippedNames: [],
 	fileName: null,
+	browserId: null,
 	dirty: false,
 	autosave: false,
 	status: '',
@@ -135,10 +161,16 @@ const patch = (changes: Partial<Workspace>) => workspace.update((w) => ({ ...w, 
 // -----------------------------------------------------------------------------------------
 // startup, loading, change tracking
 // -----------------------------------------------------------------------------------------
-/** Reads browser support, the autosave setting and the remembered folder's name. */
+/** Reads browser support, the autosave setting, the graphs saved in this browser and the
+ *  remembered folder's name. */
 export async function initWorkspace(): Promise<void> {
 	const supported = 'showDirectoryPicker' in window;
 	patch({ supported, autosave: readAutosaveSetting() });
+	try {
+		browserGraphs.set(readBrowserGraphs(localStorage.getItem(BROWSER_GRAPHS_KEY)));
+	} catch {
+		// storage blocked (private window): no graphs saved in this browser
+	}
 	if (!supported) return;
 	try {
 		const remembered = await idbGet(FOLDER_KEY);
@@ -155,10 +187,14 @@ let cleanGraph: Graph | null = null;
 /**
  * Upgrades parsed file content to the current format and makes it the open graph.
  *
+ * Args:
+ *     fileName: the file in the folder it is saved to, or null.
+ *     browserId: the graph saved in this browser it is saved to, or null (at most one of the two).
+ *
  * Raises:
  *     GraphFormatError: not a graph file, or written by a newer app (see migrations.ts).
  */
-export function loadGraph(raw: unknown, fileName: string | null): void {
+export function loadGraph(raw: unknown, fileName: string | null, browserId: string | null = null): void {
 	const { graph: loaded, fromVersion, applied } = migrateGraph(raw);
 	if (applied.length > 0) {
 		// older format versions are upgraded on load; say so, never silently
@@ -170,7 +206,7 @@ export function loadGraph(raw: unknown, fileName: string | null): void {
 	graph.set(loaded);
 	clearHistory(); // undo stops at the loaded graph
 	selection.set({ nodes: [], link: null });
-	workspace.update((w) => ({ ...w, fileName, dirty: false, loads: w.loads + 1 }));
+	workspace.update((w) => ({ ...w, fileName, browserId, dirty: false, loads: w.loads + 1 }));
 }
 
 /**
@@ -251,7 +287,7 @@ export function trackChanges(): () => void {
 		}
 		patch({ dirty: true });
 		const w = get(workspace);
-		if (w.autosave && w.folder && w.fileName) {
+		if (w.autosave && ((w.folder && w.fileName) || w.browserId)) {
 			clearTimeout(autosaveTimer);
 			autosaveTimer = setTimeout(() => save(), AUTOSAVE_DELAY_MS);
 		}
@@ -430,11 +466,16 @@ export async function openFile(fileName: string): Promise<boolean> {
 }
 
 /**
- * Saves the open graph to its file: written into a writable folder, or downloaded when the
- * folder is read-only (the user puts the file back into the folder).
+ * Saves the open graph where it belongs: back into this browser when it came from there;
+ * otherwise to its file, written into a writable folder, or downloaded when the folder is
+ * read-only (the user puts the file back into the folder).
  */
 export async function save(): Promise<void> {
-	const { folder, fileName } = get(workspace);
+	const { folder, fileName, browserId } = get(workspace);
+	if (browserId) {
+		saveIntoBrowserGraph(browserId);
+		return;
+	}
 	if (!fileName) return;
 	if (!folder) return downloadGraph();
 	try {
@@ -457,7 +498,7 @@ export async function saveAs(rawName: string): Promise<void> {
 	if (folder && (await fileExists(folder, name)) && !confirm(`${name} already exists. Overwrite it?`)) {
 		return;
 	}
-	patch({ fileName: name });
+	patch({ fileName: name, browserId: null }); // from now on it belongs to the file
 	await save();
 	await refreshFiles();
 }
@@ -569,14 +610,12 @@ export function uploadGraph(): Promise<boolean> {
 	});
 }
 
-/** Downloads the open graph as a .json file (also the toolbar's Export). */
-export function downloadGraph(): void {
-	// a graph without a file yet gets the default name, e.g. imgegraph-20261014-01.json
-	const name = get(workspace).fileName ?? `${nextDownloadName()}.json`;
-	const blob = new Blob([JSON.stringify(stampCurrentVersion(get(graph)), null, 2) + '\n'], {
-		type: 'application/json'
-	});
-	const url = URL.createObjectURL(blob);
+/** A graph as the text of its .json file (the current format version). */
+const graphFileText = (g: Graph): string => JSON.stringify(stampCurrentVersion(g), null, 2) + '\n';
+
+/** Lets the browser download `data` as a file named `name`. */
+function downloadBlob(data: BlobPart, name: string, type: string): void {
+	const url = URL.createObjectURL(new Blob([data], { type }));
 	const a = document.createElement('a');
 	a.href = url;
 	a.download = name;
@@ -584,8 +623,193 @@ export function downloadGraph(): void {
 	a.click();
 	document.body.removeChild(a);
 	URL.revokeObjectURL(url);
-	cleanGraph = get(graph);
-	patch({ dirty: false, status: `Downloaded ${name}` });
+}
+
+/** Downloads the open graph as a .json file (also the toolbar's Export). */
+export function downloadGraph(): void {
+	const { fileName, browserId } = get(workspace);
+	const inBrowser = browserId ? get(browserGraphs).find((s) => s.id === browserId) : undefined;
+	// named after its file or its name in the browser; a graph without either gets the
+	// default name, e.g. imgegraph-20261014-01.json
+	const name = fileName ?? (inBrowser ? normalizeFileName(inBrowser.name) : null) ?? `${nextDownloadName()}.json`;
+	downloadBlob(graphFileText(get(graph)), name, 'application/json');
+	if (!browserId) {
+		// a download is how a graph without a writable place is saved; one in the browser
+		// stays "unsaved" there until saved into the browser
+		cleanGraph = get(graph);
+		patch({ dirty: false });
+	}
+	patch({ status: `Downloaded ${name}` });
+}
+
+// -----------------------------------------------------------------------------------------
+// saved in this browser (localStorage)
+// -----------------------------------------------------------------------------------------
+/**
+ * Stores a changed list of graphs saved in this browser; only when the browser accepts it is
+ * the list shown changed.
+ *
+ * Returns:
+ *     True when stored; false when refused (storage full, e.g. by pictures in image nodes, or
+ *     blocked in a private window); the reason is the status.
+ */
+function commitBrowserGraphs(list: BrowserGraph[], done: string | null): boolean {
+	try {
+		localStorage.setItem(BROWSER_GRAPHS_KEY, browserGraphsJson(list));
+	} catch {
+		patch({ status: 'This browser didn’t keep it (storage full or blocked): save it to a folder or download it instead' });
+		return false;
+	}
+	browserGraphs.set(list);
+	if (done !== null) patch({ status: done });
+	return true;
+}
+
+/** The entry with this id, or a status when it is gone (deleted in another tab). */
+function browserEntry(id: string): BrowserGraph | undefined {
+	const entry = get(browserGraphs).find((s) => s.id === id);
+	if (!entry) patch({ status: 'That graph is no longer saved in this browser' });
+	return entry;
+}
+
+/** The name the open graph would be saved under in the browser: its name there, its file's
+ *  name, or the next free default name. */
+export function suggestedBrowserName(list: BrowserGraph[] = get(browserGraphs), w: Workspace = get(workspace)): string {
+	const inBrowser = w.browserId ? list.find((s) => s.id === w.browserId) : undefined;
+	return inBrowser?.name ?? w.fileName?.replace(/\.json$/i, '').split('/').pop() ?? defaultGraphName(list.map((s) => s.name));
+}
+
+/** Writes the open graph into its entry in this browser (Save, Ctrl+S, autosave). */
+function saveIntoBrowserGraph(id: string): void {
+	const entry = browserEntry(id);
+	if (!entry) return;
+	const saved = get(graph);
+	if (commitBrowserGraphs(overwriteBrowserGraph(get(browserGraphs), id, saved), `Saved "${entry.name}" in this browser at ${new Date().toLocaleTimeString()}`)) {
+		cleanGraph = saved;
+		patch({ dirty: get(graph) !== saved });
+	}
+}
+
+/**
+ * Saves the open graph in this browser under a name; from then on Save writes it there. A
+ * name already saved asks to save over that graph (no question when it is the open one).
+ *
+ * Returns:
+ *     True when it was saved.
+ */
+export function saveToBrowser(rawName: string): boolean {
+	const list = get(browserGraphs);
+	const name = rawName.trim() || suggestedBrowserName();
+	const same = browserGraphByName(list, name);
+	const g = get(graph);
+	let id: string;
+	if (same) {
+		if (same.id !== get(workspace).browserId && !confirm(`"${same.name}" is already saved in this browser. Save the open graph over it?`)) return false;
+		if (!commitBrowserGraphs(overwriteBrowserGraph(list, same.id, g), `Saved "${same.name}" in this browser`)) return false;
+		id = same.id;
+	} else {
+		if (list.length >= MAX_BROWSER_GRAPHS) {
+			patch({ status: `${MAX_BROWSER_GRAPHS} graphs are saved in this browser, the most it keeps: delete one first (download it to keep it)` });
+			return false;
+		}
+		const next = addBrowserGraph(list, name, g);
+		if (!commitBrowserGraphs(next, `Saved "${next[0].name}" in this browser; Save now writes it there`)) return false;
+		id = next[0].id;
+	}
+	cleanGraph = g;
+	patch({ fileName: null, browserId: id, dirty: false }); // from now on it belongs to the browser
+	return true;
+}
+
+/** Opens a graph saved in this browser (asks first if the open graph has unsaved changes). */
+export function openBrowserGraph(id: string): boolean {
+	const entry = browserEntry(id);
+	if (!entry) return false;
+	if (get(workspace).dirty && !confirm(`The open graph has unsaved changes. Open "${entry.name}" anyway?`)) return false;
+	loadGraph(entry.graph, null, id);
+	patch({ status: `Opened "${entry.name}" from this browser` });
+	return true;
+}
+
+/** Saves the open graph over a graph in this browser (asks first); it then belongs there. */
+export function saveOverBrowserGraph(id: string): boolean {
+	const entry = browserEntry(id);
+	if (!entry) return false;
+	if (id !== get(workspace).browserId && !confirm(`Save the open graph over "${entry.name}"? What it holds now is replaced.`)) return false;
+	const g = get(graph);
+	if (!commitBrowserGraphs(overwriteBrowserGraph(get(browserGraphs), id, g), `Saved over "${entry.name}" in this browser; Save now writes it there`)) return false;
+	cleanGraph = g;
+	patch({ fileName: null, browserId: id, dirty: false });
+	return true;
+}
+
+/** Renames a graph saved in this browser (asks for the new name). */
+export function renameBrowserGraph(id: string): boolean {
+	const entry = browserEntry(id);
+	const name = entry ? prompt('New name for the graph saved in this browser:', entry.name) : null;
+	if (!entry || name === null || !name.trim() || name.trim() === entry.name) return false;
+	const list = renameEntry(get(browserGraphs), id, name);
+	return commitBrowserGraphs(list, `Renamed to "${list.find((s) => s.id === id)?.name}"`);
+}
+
+/** Deletes a graph saved in this browser (asks first); the open graph stays open, without a
+ *  place to save to if it was this one. */
+export function deleteBrowserGraph(id: string): boolean {
+	const entry = browserEntry(id);
+	if (!entry || !confirm(`Delete "${entry.name}" from this browser? Download it first to keep it.`)) return false;
+	if (!commitBrowserGraphs(removeBrowserGraph(get(browserGraphs), id), `Deleted "${entry.name}" from this browser`)) return false;
+	if (get(workspace).browserId === id) patch({ browserId: null, dirty: true });
+	return true;
+}
+
+/** Downloads a graph saved in this browser as "<its name>.json", without opening it. */
+export function downloadBrowserGraph(id: string): void {
+	const entry = browserEntry(id);
+	if (!entry) return;
+	const name = normalizeFileName(entry.name) ?? 'graph.json';
+	downloadBlob(graphFileText(entry.graph), name, 'application/json');
+	patch({ status: `Downloaded ${name}` });
+}
+
+/**
+ * Saves every graph saved in this browser as one folder on the computer, "imge-graphs-<date>"
+ * with "<name>.json" files: in Chrome and Edge as a new folder inside one the user picks;
+ * elsewhere (no folder writing) downloaded as that folder in a .zip.
+ */
+export async function saveAllBrowserGraphsAsFolder(): Promise<void> {
+	const list = get(browserGraphs);
+	if (list.length === 0) return patch({ status: 'No graphs saved in this browser yet' });
+	const folderName = exportFolderName();
+	const names = folderFileNames(list);
+	if (get(workspace).supported) {
+		let parent: DirectoryHandle;
+		try {
+			parent = await (window as any).showDirectoryPicker({ id: 'imge-export', mode: 'readwrite' });
+		} catch (error) {
+			if ((error as DOMException).name !== 'AbortError') patch({ status: `Could not open the folder: ${(error as Error).message}` });
+			return;
+		}
+		try {
+			let target = folderName;
+			for (let n = 2; await hasEntry(parent, target); n++) target = `${folderName} (${n})`; // never mixes into an older export
+			const folder = await parent.getDirectoryHandle(target, { create: true });
+			for (const [i, entry] of list.entries()) await writeFile(folder, names[i], entry.graph);
+			patch({ status: `Saved ${list.length} ${list.length === 1 ? 'graph' : 'graphs'} into the folder "${parent.name}/${target}"` });
+		} catch (error) {
+			patch({ status: `Could not save the graphs as a folder: ${(error as Error).message}` });
+		}
+		return;
+	}
+	const encoder = new TextEncoder();
+	const zip = makeZip(list.map((entry, i) => ({ path: `${folderName}/${names[i]}`, data: encoder.encode(graphFileText(entry.graph)) })));
+	downloadBlob(zip, `${folderName}.zip`, 'application/zip');
+	patch({ status: `Downloaded ${folderName}.zip with ${list.length} ${list.length === 1 ? 'graph' : 'graphs'} (this browser can't write folders: unzip it)` });
+}
+
+/** Whether a folder already has a file or folder of that name. */
+async function hasEntry(folder: DirectoryHandle, name: string): Promise<boolean> {
+	for await (const key of folder.keys()) if (key.toLowerCase() === name.toLowerCase()) return true;
+	return false;
 }
 
 // -----------------------------------------------------------------------------------------

@@ -1,13 +1,14 @@
 # Saving graphs and the Esc menu
 
-How the graph editor opens and saves graphs on your computer, what it remembers and where, and how each page gets its own Esc menu.
+How the graph editor opens and saves graphs on your computer and in the browser, what it remembers and where, and how each page gets its own Esc menu.
 
-State as of 2026-10-27.
+State as of 2026-11-26.
 
 - [Opening and saving](#opening-and-saving)
     - [Which files are listed](#which-files-are-listed)
     - [With folder access (Chrome, Edge)](#with-folder-access-chrome-edge)
     - [Read-only folder (Firefox, Safari)](#read-only-folder-firefox-safari)
+    - [Saved in this browser](#saved-in-this-browser)
     - [What is stored where](#what-is-stored-where)
 - [The Esc menu](#the-esc-menu)
     - [A menu for each page](#a-menu-for-each-page)
@@ -16,7 +17,7 @@ State as of 2026-10-27.
 
 ## Opening and saving
 
-You point the editor at a folder on your computer; the imge graphs in it and in its subfolders are listed by name and open with a click (the menu then closes). A graph file can also be **dropped on the page** from anywhere on the computer. Graphs are never stored inside the browser.
+You point the editor at a folder on your computer; the imge graphs in it and in its subfolders are listed by name and open with a click (the menu then closes). A graph file can also be **dropped on the page** from anywhere on the computer. Graphs can also be **saved in the browser** itself, without a folder ([Saved in this browser](#saved-in-this-browser)).
 
 Open the menu with **Esc**, or with the toolbar's open button (the arrow pointing up). The editor starts with the base graph (the feature map in `static/data/test-node-graph.json`); your own graphs are opened from the menu.
 
@@ -64,19 +65,43 @@ These browsers let a page **read** a folder you pick, but never write to it or r
 - There's no "remember" and no autosave, since the browser can't write to the folder.
 - **Open a single file…** uploads one graph file, without choosing a folder (dropping it on the page does the same).
 
-The toolbar's export button (the arrow pointing down), the menu's **Download a copy** and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> always download, in every browser. A graph that doesn't have a file yet downloads as `imgegraph-<date>-<NN>.json` (e.g. `imgegraph-20261014-01.json`); the number counts up with each such download and starts again at `01` the next day.
+The toolbar's export button (the arrow pointing down), the menu's **Download a copy** and <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> always download, in every browser. A graph that doesn't have a file yet downloads as `imgegraph-<date>-<NN>.json` (e.g. `imgegraph-20261014-01.json`); the number counts up with each such download and starts again at `01` the next day. A graph saved in the browser downloads under its name there.
+
+### Saved in this browser
+
+Graphs kept in the browser's own storage (`localStorage`), under names, in **every browser** and without choosing a folder. The Esc menu's **Saved** tab (between Config and Examples):
+
+| Part | What it does |
+|---|---|
+| **Save in browser** | Saves the open graph under the typed name; left empty, under the suggestion shown in the field (its name in the browser, its file's name, or the next free `imgegraph-<date>-<NN>`). From then on the graph **belongs to the browser**: **Save** (<kbd>Ctrl</kbd>+<kbd>S</kbd>, also in Config) writes into it there, and autosave does too when it's on. A name already saved (any case) asks to save over that graph (no question when it is the open one). |
+| ☐ **Autosave** | The same setting as in Config: a moment after each change, the open graph is saved where it belongs (its file in the folder, or its place in the browser). |
+| the list | Last saved first: name, node count, when it was saved; the open one is marked (with "unsaved changes" when it has some). Up to 100 graphs. |
+| **open** (or click the name) | Opens it (asks first if the open graph has unsaved changes); the menu closes. |
+| **save over** | Saves the open graph over this one (asks first unless it is the open one); it then belongs there. |
+| **rename** | Asks for a new name (a name another graph has gets a number: `map (2)`). |
+| **download** | Downloads it as `<name>.json`, without opening it. |
+| **delete** | Deletes it from the browser (asks first). If it was the open graph, that stays open, marked unsaved, with no place to save to (Save in browser or Save as gives it one). |
+| **Save all as a folder…** (Chrome, Edge) | Pick a folder on the computer: a new folder `imge-graphs-<date>` is made in it (`imge-graphs-<date> (2)` when that exists, so an older export is never mixed in) with every graph as its own `<name>.json` file, in the current format version. |
+| **Download all as a folder (.zip)** (Firefox, Safari) | These browsers can't write folders, so the same folder comes as `imge-graphs-<date>.zip`; unzip it. |
+
+- **Which place counts:** a graph belongs to one place at a time: its file in the folder, its place in the browser, or none (new, example, dropped file). Save as in Config moves it to a file; Save in browser moves it to the browser. The Config tab's Save line names it, e.g. `map (in this browser)`.
+- **Names on the computer:** characters not allowed in file names become `-`; two graphs whose names would make the same file name (also only by case, as Windows sees them) get a number: `map.json`, `map (2).json`.
+- **Limits:** the browser keeps about 5 MB per site. Pictures in image nodes are stored inside the graph, so they fill it quickly; when the browser refuses to store, the menu says so and nothing is lost (the list stays as it was): save to a folder or download instead.
+- **Stays in this browser:** on this device, in this browser; clearing the site's data removes the graphs. Save all as a folder (or download them) to keep them for good.
+- **Stored as:** the current graph format (stamped like a file); older graphs are upgraded when the list is read, and an entry that isn't a graph (or is from a newer version) is left out while the others still show.
 
 ### What is stored where
 
 | What | Where | Sent anywhere? |
 |---|---|---|
 | Your graphs | The `.json` files in the folder you chose, on your computer. | No. |
+| Graphs saved in this browser | `localStorage` key `imge.graphEditor.browserGraphs`: a list of `{ id, name, savedAt, graph }`. | No. |
 | Access to the folder ("remember") | A folder handle in the browser's IndexedDB storage (`imge` database), only after you answer **Yes**. A cookie can't hold folder access, and browsers never tell a page a folder's real path; the handle is the browser's safe equivalent. | No. |
 | Autosave on/off | `localStorage` key `imge.graphEditor.autosave`. | No. |
 | Last open menu tab | `localStorage` key `imge.menuTab.<page title>`, e.g. `imge.menuTab.Graph editor`. | No. |
 | Last default download number of the day | `localStorage` key `imge.graphEditor.downloadCounter` (the browser can't see your downloads folder, so it counts here). | No. |
 
-Clearing the site's data in the browser removes the remembered folder and the autosave setting; your files stay where they are.
+Clearing the site's data in the browser removes the remembered folder, the autosave setting and the graphs saved in the browser; your files stay where they are.
 
 ## Exporting an image
 
@@ -103,8 +128,9 @@ The toolbar's picture button (bottom left) opens three choices; each downloads t
     - while dragging a new link: cancels the drag
     - while editing a title: cancels the edit
 - While the menu is open, the editor's shortcuts are paused (typing a file name doesn't add or delete nodes).
-- The graph editor's menu has three tabs, switched at the top right of the menu (a segmented switch: the outer corners slightly rounded, the middle square, the open tab faintly tinted cerulean). The menu takes at most 80% of the window's height and scrolls when it is taller (title and switch stay at the top). The tab you used last is opened again, also after a reload; the toolbar's open button and Ctrl+S without a file go straight to Config.
+- The graph editor's menu has four tabs, switched at the top right of the menu (a segmented switch: the outer corners slightly rounded, the middle square, the open tab faintly tinted cerulean). The menu takes at most 80% of the window's height and scrolls when it is taller (title and switch stay at the top). The tab you used last is opened again, also after a reload; the toolbar's open button and Ctrl+S without a file go straight to Config.
     - **Config:** folder, graphs in the folder, save, the graph's direction, links, new graph and download (everything described on this page).
+    - **Saved:** graphs saved in this browser, and saving them all as a folder ([Saved in this browser](#saved-in-this-browser)).
     - **Examples:** one example graph per kind of graph (see [graph-types.md](graph-types.md)), under category headings (**Mind mapping**, **Math**, **Circuits**, **Software architecture**, **Other**; `category` per example and the order in `categories` in `index.json`; each heading left of its examples), as cerulean chips with the name (the kind of graph and the description in the hover text), each with its description under it in at most two lines (the whole text on hover), in columns at least 12em wide (the tab is 80% of the window wide, so all 19 examples fit without scrolling from 1280 × 720 up; headings above their examples and one column in narrow windows). Kinds the editor can't draw yet are **sketches** (a small dashed "sketch" tag): drawn with basic nodes to show what the type is about. A click opens it without a file name (asks first if the open graph has unsaved changes); Save as in Config stores it in your folder under a name of your own. The examples are `static/data/examples/*.json`, listed in `static/data/examples/index.json`; the Feature map (the start graph) is listed first.
     - **Keybindings:** every shortcut as key caps and the mouse actions (the same as [graph-editing.md](graph-editing.md#mouse-and-keys), shorter).
 - The Config tab also has a **Graph** section with the direction (left-to-right / top-to-bottom; Transpose turns the layout, see [graph-editing.md](graph-editing.md#direction-and-transpose)), and a **Links** section: "Show all links as …" and "Show all arrows as …" (display only, not saved in the graph), "Apply shape / arrow to all links" (writes into every link) the direction-chevrons toggle, the port look (filled, hollow, hidden; display only) and image captions (each image's own, show all, hide all; display only); see [graph-editing.md](graph-editing.md#link-shapes) and [Port look](graph-editing.md#port-look).
@@ -145,7 +171,7 @@ Note: buttons are reset globally in `static/styles/settings_overlay.css` (`butto
 
 ## Functions
 
-All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the menu shows.
+All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the menu shows. The list rules of browser saves (names, save over, rename, order, reading the stored list) are in `src/lib/graph/browser-graphs.ts`, on the rules every saved list shares (`src/lib/saved-list.ts`, also used by the keyboard layout's profiles); the Saved tab is `src/lib/components/GraphSavedMenu.svelte`.
 
 | Function | Does |
 |---|---|
@@ -165,6 +191,10 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 | `setAutosave(on)` | Turns autosave on or off and keeps the setting. |
 | `openLocalFile(file)` | Opens a graph file from anywhere (dropped on the page, or picked by `uploadGraph`); with a writable folder open, without a file name. True when it opened. |
 | `uploadGraph()` / `downloadGraph()` | Open by upload / save by download, for browsers without folder access and the toolbar's export. |
+| `browserGraphs` | Store: the graphs saved in this browser (`BrowserGraph`: id, name, savedAt, graph); `workspace.browserId` is the open graph's entry, if it belongs to the browser. |
+| `saveToBrowser(name)` | Saves the open graph in the browser under a name (empty: `suggestedBrowserName()`); it then belongs there. |
+| `openBrowserGraph(id)` / `saveOverBrowserGraph(id)` / `renameBrowserGraph(id)` / `deleteBrowserGraph(id)` / `downloadBrowserGraph(id)` | The Saved tab's actions on one graph. |
+| `saveAllBrowserGraphsAsFolder()` | All of them as a new folder in a picked one (folder access), or as that folder in a `.zip` download (`src/lib/zip.ts`). |
 | `listExamples()` | Reads `data/examples/index.json`: the example graphs (`ExampleGraph`: name, kind, file, description). |
 | `openExample(example)` | Opens an example graph without a file name; asks first if there are unsaved changes. |
 
@@ -173,10 +203,12 @@ All in `src/lib/graph/file-access.ts`; the `workspace` store holds the state the
 - Writing to a folder and remembering it work in Chrome and Edge (desktop) only; Firefox and Safari read the folder and save by download.
 - Only `.json` files directly in the chosen folder are listed; subfolders are not searched.
 - Every `.json` in the folder is read once to check it, so a folder with very many large files lists slowly.
-- Not covered by unit tests (it needs a real browser). Checked in headless Edge: the writable folder with the folder dialog replaced by a folder in the browser's private storage, and the read-only mode with folder access switched off.
+- Folder access is not covered by unit tests (it needs a real browser). Checked in headless Edge: the writable folder with the folder dialog replaced by a folder in the browser's private storage, and the read-only mode with folder access switched off.
+- Saving in the browser is covered (`browser-saving.spec.ts`, `browser-graphs.spec.ts`, `zip.spec.ts`, with the browser's storage, dialogs and download stubbed), except writing the export folder, which needs folder access. The `.zip` was also checked with Python's zip reader.
 
 ## Changes
 
+- 2026-11-26 — graphs saved in this browser: the Saved tab (save in browser, open, save over, rename, download, delete), Save / Ctrl+S / autosave write there for a graph that belongs to the browser; save them all as a folder (a new folder in a picked one, or a .zip download in Firefox and Safari)
 - 2026-11-05 — fix: PNG / JPG of very large graphs failed silently (canvas too big) while SVG worked: now as large as the browser allows, said in the message; the SVG reaches the canvas as a Blob URL; export messages stay 4 s
 - 2026-11-05 — the folder's subfolders are searched too (up to 4 levels; hidden folders and node_modules skipped), listed with their folder, saved back there; a folder that can't be read says so; skipped files named on hover; opening a graph from the list or by upload closes the menu; dropping a graph file on the page opens it (`openLocalFile`)
 - 2026-11-02 — Config tab: Image captions (show all / hide all / each image's own)

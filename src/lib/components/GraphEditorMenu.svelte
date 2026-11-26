@@ -2,12 +2,12 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-05
+	//   last update     : 2026-11-26
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
 	// The Config tab of the graph editor's Esc menu (registered by routes/+page.svelte, next
-	// to the Examples and Keybindings tabs): point it at a folder on the computer (edit
+	// to the Saved, Examples and Keybindings tabs): point it at a folder on the computer (edit
 	// folder, remember it or remove the saved folder), see the imge graphs in it by name and
 	// open one with a click (the menu closes), save / save as, optional autosave, download a copy; the graph's
 	// direction; a Links section with the display-only shape override and "apply to all
@@ -17,6 +17,7 @@
 	// saving downloads the file there. All actions and state live in $lib/graph/file-access.ts.
 	import {
 		workspace,
+		browserGraphs,
 		chooseFolder,
 		chooseFolderReadOnly,
 		rememberFolder,
@@ -87,6 +88,8 @@
 
 	let saveAsName = '';
 	$: w = $workspace;
+	// the open graph's name when it is saved in this browser (Saved tab)
+	$: browserName = $browserGraphs.find((s) => s.id === w.browserId)?.name;
 	$: hasFolder = !!w.folder || w.readOnly;
 	$: pickFolder = w.supported ? chooseFolder : chooseFolderReadOnly;
 
@@ -190,12 +193,11 @@
 			<h3>Save</h3>
 			<div class="row">
 				<span class="value">
-					{w.fileName?.replace(/\.json$/i, '') ?? 'not saved yet'}{#if w.dirty}<span class="dirty">
-							• unsaved changes</span
-						>{/if}
+					{#if w.browserId}{browserName ?? 'graph'}<span class="where"> (in this browser)</span>{:else}{w.fileName?.replace(/\.json$/i, '') ??
+							'not saved yet'}{/if}{#if w.dirty}<span class="dirty"> • unsaved changes</span>{/if}
 				</span>
-				<button class="action" disabled={!w.fileName} on:click={save}>
-					{w.folder ? 'Save' : 'Save (download)'} <Kbd keys="Ctrl+S" />
+				<button class="action" disabled={!w.fileName && !w.browserId} on:click={save}>
+					{w.folder || w.browserId ? 'Save' : 'Save (download)'} <Kbd keys="Ctrl+S" />
 				</button>
 			</div>
 			<form class="row" on:submit|preventDefault={() => saveAs(saveAsName)}>
@@ -214,7 +216,7 @@
 						checked={w.autosave}
 						on:change={(e) => setAutosave(e.currentTarget.checked)}
 					/>
-					<span>Autosave to the open file a moment after each change</span>
+					<span>Autosave to the open file (or into this browser) a moment after each change</span>
 				</label>
 			{/if}
 		</section>
@@ -363,6 +365,11 @@
 
 	.status {
 		opacity: 1;
+	}
+
+	.where {
+		font-weight: normal;
+		opacity: 0.7;
 	}
 
 	.dirty {

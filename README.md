@@ -15,7 +15,7 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.38.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.39.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
@@ -65,7 +65,7 @@ npm run test:unit -- --run
 - [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
 - [Node and link editing](docs/graph-editing.md): mouse and keys, selection, copy / paste, undo / redo, link rules, link shapes, function reference for the graph store
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
-- [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, what is stored where, autosave, adding a menu to a page
+- [Saving graphs and the Esc menu](docs/graph-saving.md): folder access, graphs saved in the browser, save all as a folder, what is stored where, autosave, adding a menu to a page
 - [Properties panel](docs/graph-properties-panel.md): the docked panel for the selection, what it shows, how to add a section (e.g. for a node type)
 - [Text view (experimental)](docs/graph-text-view.md): the graph drawn with box-drawing characters, copy or download as plain text
 - [Touch screens](docs/graph-touch.md): gestures on phones and tablets, the panel drawer, what needs the panel instead of a key
@@ -119,6 +119,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] export data as json (default name imgegraph-<date>-<NN>.json)
 - [x] export the graph as an image from the toolbar's picture button: PNG (2x, transparent), JPG (2x, theme background) or SVG (full vector, transparent); the whole graph, as drawn, without selection or editing aids
 - [x] point the editor at a folder on your computer: its imge graphs (also in subfolders) are listed by name and open with a click, or drop a graph file on the page; Chrome / Edge save into the folder (optional remember folder, autosave), Firefox / Safari read it and save by download
+- [x] save graphs in the browser itself (any browser, no folder needed): the Esc menu's Saved tab lists them to open, save over, rename, download or delete; Save / Ctrl+S / autosave write back there; save them all as a folder on the computer (or as a .zip in Firefox / Safari)
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
 - [x] versioned graph format (now v7: nodes are id, type, typeVersion, position, ports with a kind, and content defined by their type; links have shape, arrow, line and mark), older files upgraded on load; a sample per version in static/data/samples, a sample node per node type version in static/data/node-types
 - [x] example graphs in the Esc menu, grouped by category (mind mapping, math, circuits, software architecture, other) (mind map, flowchart, search tree, lattice, architecture map, release process, UML class diagram), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)

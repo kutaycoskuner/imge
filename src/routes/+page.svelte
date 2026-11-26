@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : unknown (before 2026-10-14), Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-05
+	//   last update     : 2026-11-26
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -47,6 +47,7 @@
 	import GraphEditorMenu from '$lib/components/GraphEditorMenu.svelte';
 	import GraphExamplesMenu from '$lib/components/GraphExamplesMenu.svelte';
 	import GraphKeysMenu from '$lib/components/GraphKeysMenu.svelte';
+	import GraphSavedMenu from '$lib/components/GraphSavedMenu.svelte';
 	import GraphPropertiesPanel from '$lib/components/properties/GraphPropertiesPanel.svelte';
 	import { nodeScale } from '$lib/graph/node-types';
 	import GraphTextView from '$lib/components/GraphTextView.svelte';
@@ -612,15 +613,16 @@
 		else if ($workspace.status) notify($workspace.status);
 	}
 
-	// Ctrl+S: save to the graph's file (written into the folder, or downloaded in a read-only
-	// folder); a graph without a file yet opens the menu, where Save as names it
+	// Ctrl+S: save where the graph belongs (its file in the folder, downloaded in a read-only
+	// folder, or its place in this browser); a graph without either opens the menu, where
+	// Save as (Config) or Save in browser (Saved) names it
 	function saveShortcut(): void {
-		if ($workspace.fileName) {
+		if ($workspace.fileName || $workspace.browserId) {
 			save();
 		} else {
 			menuTab.set('config'); // where Save as and the folder are
 			menuOpen.set(true);
-			notify('Not saved yet: choose a folder or use Save as');
+			notify('Not saved yet: choose a folder or use Save as, or the Saved tab to save it in this browser');
 		}
 	}
 
@@ -721,6 +723,7 @@
 			title: 'Graph editor',
 			tabs: [
 				{ id: 'config', label: 'Config', component: GraphEditorMenu },
+				{ id: 'saved', label: 'Saved', component: GraphSavedMenu },
 				{ id: 'examples', label: 'Examples', component: GraphExamplesMenu },
 				{ id: 'keys', label: 'Keybindings', component: GraphKeysMenu }
 			]
