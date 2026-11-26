@@ -449,8 +449,125 @@ kbd {
 
 .node.text-node:hover .node-scale,
 .node.image-node:hover .node-scale,
+.node.table-node:hover .node-scale,
+.node.graph-node:hover .node-scale,
 .node.selected .node-scale {
     opacity: 1;
+}
+
+/* table node (node type "table", NodeTable.svelte): a box as wide as its table, its name on
+   top, the cells in a grid, without lines unless the table asks for them (.lined, content
+   showLines); each cell's look (size, opacity, bold, italic, underline, alignment, colour)
+   is set inline from its row's and column's styles ($lib/graph/table.ts); the whole table
+   follows the node's scale (font size) */
+.node.table-node {
+    width: max-content;
+    min-width: 6em;
+    padding: 0;
+    text-align: left;
+    border-radius: 4px;
+}
+
+.table-body {
+    padding: 0.5em 0.6em 0.6em;
+}
+
+.table-name {
+    margin-bottom: 0.4em;
+    font-weight: 600;
+    text-align: center;
+}
+
+.table-grid {
+    display: grid;
+}
+
+.table-grid.lined {
+    border-top: 1px solid var(--col-border);
+    border-left: 1px solid var(--col-border);
+}
+
+.table-cell {
+    min-width: 2.5em;
+    min-height: 1.3em;
+    padding: 0.2em 0.5em;
+    white-space: pre;
+    line-height: 1.3;
+    cursor: text;
+}
+
+.table-grid.lined .table-cell {
+    border-right: 1px solid var(--col-border);
+    border-bottom: 1px solid var(--col-border);
+}
+
+.table-input {
+    font: inherit;
+    color: inherit;
+    width: 100%;
+    min-width: 4em;
+    padding: 0;
+    border: none;
+    outline: 1px solid var(--col-selected);
+    background: var(--bg);
+}
+
+/* graph node (node type "graph", NodeGraph.svelte): its name, a badge for its mode
+   (embedded / linked and where), and an svg preview of the graph it holds or links to:
+   nodes as boxes, groups as frames, links as lines; double-click the preview opens it */
+.node.graph-node {
+    width: max-content;
+    padding: 0.5em 0.6em 0.6em;
+    border-radius: 4px;
+}
+
+.graph-head {
+    margin: 0.1em 0 0.35em;
+    font-size: 0.7em;
+    opacity: 0.65;
+}
+
+.graph-preview {
+    display: block;
+    cursor: zoom-in;
+}
+
+.graph-preview-bg {
+    fill: color-mix(in srgb, var(--col) 4%, transparent);
+    stroke: color-mix(in srgb, var(--col) 25%, transparent);
+    stroke-dasharray: 3 2;
+}
+
+.graph-preview-node,
+.graph-preview-text {
+    fill: var(--bg);
+    stroke: color-mix(in srgb, var(--col) 55%, transparent);
+    stroke-width: 1;
+}
+
+.graph-preview-text {
+    stroke-dasharray: 2 2;
+}
+
+.graph-preview-group {
+    fill: none;
+    stroke: var(--col-link);
+    stroke-width: 1;
+}
+
+.graph-preview-link {
+    stroke: var(--col-link);
+    stroke-width: 1;
+}
+
+.graph-preview-note {
+    fill: var(--col);
+    opacity: 0.6;
+    font-size: 11px;
+}
+
+.graph-preview.missing .graph-preview-bg {
+    stroke: #ff3e00;
 }
 
 /* UML class (node type "uml-class"): class name on top, then the attributes and the methods

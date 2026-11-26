@@ -35,7 +35,8 @@
 // -----------------------------------------------------------------------------------------
 
 import { writable, get } from 'svelte/store';
-import { graph, selection, emptyGraph } from './store';
+import { graph, selection, emptyGraph, setNodeContent } from './store';
+import { graphMode, graphRef, embeddedGraph, graphNodeLabel, refPlace, type GraphMode, type GraphRef } from './graph-node';
 import { clearHistory } from './history';
 import {
 	migrateGraph,
@@ -190,11 +191,13 @@ let cleanGraph: Graph | null = null;
  * Args:
  *     fileName: the file in the folder it is saved to, or null.
  *     browserId: the graph saved in this browser it is saved to, or null (at most one of the two).
+ *     keepTrail: true only when a graph node opens (enterGraphNode): any other opening leaves
+ *         the graph nodes opened before, so Back no longer applies.
  *
  * Raises:
  *     GraphFormatError: not a graph file, or written by a newer app (see migrations.ts).
  */
-export function loadGraph(raw: unknown, fileName: string | null, browserId: string | null = null): void {
+export function loadGraph(raw: unknown, fileName: string | null, browserId: string | null = null, keepTrail = false): void {
 	const { graph: loaded, fromVersion, applied } = migrateGraph(raw);
 	if (applied.length > 0) {
 		// older format versions are upgraded on load; say so, never silently
@@ -207,6 +210,7 @@ export function loadGraph(raw: unknown, fileName: string | null, browserId: stri
 	clearHistory(); // undo stops at the loaded graph
 	selection.set({ nodes: [], link: null });
 	workspace.update((w) => ({ ...w, fileName, browserId, dirty: false, loads: w.loads + 1 }));
+	if (!keepTrail) graphTrail.set([]);
 }
 
 /**
@@ -804,6 +808,228 @@ export async function saveAllBrowserGraphsAsFolder(): Promise<void> {
 	const zip = makeZip(list.map((entry, i) => ({ path: `${folderName}/${names[i]}`, data: encoder.encode(graphFileText(entry.graph)) })));
 	downloadBlob(zip, `${folderName}.zip`, 'application/zip');
 	patch({ status: `Downloaded ${folderName}.zip with ${list.length} ${list.length === 1 ? 'graph' : 'graphs'} (this browser can't write folders: unzip it)` });
+}
+
+// -----------------------------------------------------------------------------------------
+// graph nodes (graph-node.ts): resolving external graphs, opening a graph node and going
+// back, switching between embedded (internal) and linked (external)
+// -----------------------------------------------------------------------------------------
+/** Graphs read from the folder for previews, by path: the graph, or null when it can't be read. */
+export const folderGraphCache = writable<Record<string, Graph | null>>({});
+
+/**
+ * Reads a graph file from the open folder (writable or read-only) for a preview or for
+ * embedding a copy; kept in folderGraphCache.
+ *
+ * Returns:
+ *     The graph (current format), or null when there is no folder, the file is gone, or it
+ *     isn't a graph.
+ */
+export async function readFolderGraph(path: string, fresh = false): Promise<Graph | null> {
+	const cached = get(folderGraphCache);
+	if (!fresh && path in cached) return cached[path];
+	const { folder } = get(workspace);
+	let result: Graph | null = null;
+	try {
+		const file = folder ? await (await fileHandle(folder, path)).getFile() : readOnlyFiles.get(path);
+		if (file) result = migrateGraph(JSON.parse(await file.text())).graph;
+	} catch {
+		result = null;
+	}
+	folderGraphCache.update((c) => ({ ...c, [path]: result }));
+	return result;
+}
+
+/** The graph an external reference points to: from this browser's list or the folder; null when not found. */
+export async function resolveGraphRef(ref: GraphRef): Promise<Graph | null> {
+	if (ref.source === 'browser') return get(browserGraphs).find((s) => s.id === ref.id)?.graph ?? null;
+	return readFolderGraph(ref.path);
+}
+
+/** Where the editor came from when it opened a graph node: the graph to go back to, as it was. */
+export interface TrailStep {
+	graph: Graph; // the outer graph, with its unsaved changes
+	clean: Graph | null; // its last saved state, so "unsaved changes" comes back right
+	fileName: string | null;
+	browserId: string | null;
+	nodeId: string; // the graph node that was opened
+	mode: GraphMode;
+	opened: Graph; // the inner graph as it was opened (internal: changed or not on the way back)
+	outerName: string; // shown on the back button
+	innerName: string;
+}
+
+/** The graph nodes opened one inside the other; the last step is where Back goes. */
+export const graphTrail = writable<TrailStep[]>([]);
+
+/** The open graph's name for the back button: its node's name, its file, its place in the browser, or "graph". */
+function openGraphName(): string {
+	const { fileName, browserId } = get(workspace);
+	const trail = get(graphTrail);
+	return (
+		(browserId ? get(browserGraphs).find((s) => s.id === browserId)?.name : null) ??
+		fileName?.replace(/\.json$/i, '').split('/').pop() ??
+		trail[trail.length - 1]?.innerName ??
+		'graph'
+	);
+}
+
+/**
+ * Opens a graph node's graph in the editor (double-click): an internal one to edit what is
+ * embedded, an external one as itself (its place in the browser or its file). The open graph
+ * is kept, with its unsaved changes, and comes back with backFromGraph.
+ *
+ * Returns:
+ *     True when it opened; false when an external target can't be found (the status says so).
+ */
+export async function enterGraphNode(nodeId: string): Promise<boolean> {
+	const outer = get(graph);
+	const node = outer.data.nodes.find((n) => n.id === nodeId);
+	if (!node || node.type !== 'graph') return false;
+	const mode = graphMode(node.content);
+	const innerName = graphNodeLabel(node);
+	const w = get(workspace);
+	const step = (opened: Graph): TrailStep => ({
+		graph: outer,
+		clean: cleanGraph,
+		fileName: w.fileName,
+		browserId: w.browserId,
+		nodeId,
+		mode,
+		opened,
+		outerName: openGraphName(),
+		innerName
+	});
+	if (mode === 'internal') {
+		const s = step(emptyGraph());
+		loadGraph(embeddedGraph(node.content) ?? emptyGraph(), null, null, true);
+		s.opened = get(graph); // as loaded (loading makes its own copy): Back compares with this
+		graphTrail.update((t) => [...t, s]);
+		patch({ status: `Editing "${innerName}" inside "${s.outerName}": Back writes the changes into it` });
+		return true;
+	}
+	const ref = graphRef(node.content);
+	if (!ref) {
+		patch({ status: 'This graph node links to nothing yet: choose a graph in the Properties panel' });
+		return false;
+	}
+	const target = ref.source === 'browser' ? (get(browserGraphs).find((s) => s.id === ref.id)?.graph ?? null) : await readFolderGraph(ref.path, true);
+	if (!target) {
+		patch({ status: `"${ref.name}" wasn't found ${refPlace(ref)}` });
+		return false;
+	}
+	const s = step(target);
+	loadGraph(target, ref.source === 'folder' ? ref.path : null, ref.source === 'browser' ? ref.id : null, true);
+	s.opened = get(graph);
+	graphTrail.update((t) => [...t, s]);
+	patch({ status: `Opened "${ref.name}" from ${s.outerName}; Save writes it ${refPlace(ref)}` });
+	return true;
+}
+
+/**
+ * Goes back to the graph the last graph node was opened from. From an internal graph its
+ * changes are written into the node (the outer graph then has unsaved changes); from an
+ * external one with unsaved changes it asks first (they would be lost: save them there).
+ *
+ * Returns:
+ *     False when the user stayed.
+ */
+export function backFromGraph(): boolean {
+	const trail = get(graphTrail);
+	const step = trail[trail.length - 1];
+	if (!step) return false;
+	const inner = get(graph);
+	if (step.mode === 'external' && get(workspace).dirty && !confirm(`"${step.innerName}" has unsaved changes. Go back to "${step.outerName}" without saving them?`)) return false;
+	let outer = step.graph;
+	// internal: the changes go into the node; external: nothing to write back (the target was
+	// saved where it is, or the user agreed to drop its changes)
+	if (step.mode === 'internal' && inner !== step.opened) outer = setNodeContent(outer, step.nodeId, { graph: stampCurrentVersion(inner) });
+	cleanGraph = step.clean;
+	graph.set(outer);
+	clearHistory();
+	selection.set({ nodes: [step.nodeId], link: null });
+	graphTrail.set(trail.slice(0, -1));
+	workspace.update((w) => ({
+		...w,
+		fileName: step.fileName,
+		browserId: step.browserId,
+		dirty: outer !== step.clean,
+		loads: w.loads + 1,
+		status: step.mode === 'internal' && outer !== step.graph ? `Back in "${step.outerName}": the changes are in "${step.innerName}" (unsaved until you save "${step.outerName}")` : `Back in "${step.outerName}"`
+	}));
+	if (step.mode === 'external') folderGraphCache.set({}); // previews read the target again
+	return true;
+}
+
+/** Points a graph node at a graph (external): picked in the Properties panel. */
+export function linkGraphNode(nodeId: string, ref: GraphRef): void {
+	graph.update((g) => setNodeContent(g, nodeId, { mode: 'external', ref }));
+}
+
+/**
+ * External → internal: copies the linked graph into the node as it is now; later changes to
+ * the original no longer show up (asks first).
+ *
+ * Returns:
+ *     True when it was embedded.
+ */
+export async function embedGraphCopy(nodeId: string): Promise<boolean> {
+	const node = get(graph).data.nodes.find((n) => n.id === nodeId);
+	const ref = node ? graphRef(node.content) : null;
+	if (!node || !ref) return false;
+	const target = await resolveGraphRef(ref);
+	if (!target) {
+		patch({ status: `"${ref.name}" wasn't found ${refPlace(ref)}, so there is nothing to embed` });
+		return false;
+	}
+	if (!confirm(`Embed a copy of "${ref.name}" in this graph? Later changes to the original won't show up here.`)) return false;
+	graph.update((g) => setNodeContent(g, nodeId, { mode: 'internal', graph: stampCurrentVersion(target), ref: null }));
+	patch({ status: `Embedded a copy of "${ref.name}"` });
+	return true;
+}
+
+/**
+ * Internal → external: saves the embedded graph as a graph of its own, in this browser or
+ * as a file in the open folder, and links the node to it.
+ *
+ * Returns:
+ *     True when it was saved and linked.
+ */
+export async function saveEmbeddedGraphSeparately(nodeId: string, where: 'browser' | 'folder', rawName: string): Promise<boolean> {
+	const node = get(graph).data.nodes.find((n) => n.id === nodeId);
+	if (!node) return false;
+	const inner = embeddedGraph(node.content) ?? emptyGraph();
+	const name = rawName.trim() || graphNodeLabel(node);
+	let ref: GraphRef;
+	if (where === 'browser') {
+		const list = get(browserGraphs);
+		if (list.length >= MAX_BROWSER_GRAPHS) {
+			patch({ status: `${MAX_BROWSER_GRAPHS} graphs are saved in this browser, the most it keeps: delete one first` });
+			return false;
+		}
+		const next = addBrowserGraph(list, name, inner);
+		if (!commitBrowserGraphs(next, null)) return false;
+		ref = { source: 'browser', id: next[0].id, name: next[0].name };
+	} else {
+		const { folder } = get(workspace);
+		const fileName = normalizeFileName(name);
+		if (!folder || !fileName) {
+			patch({ status: folder ? 'Type a name first' : 'Choose a writable folder first (Config tab)' });
+			return false;
+		}
+		if ((await fileExists(folder, fileName)) && !confirm(`${fileName} already exists. Overwrite it?`)) return false;
+		try {
+			await writeFile(folder, fileName, inner);
+		} catch (error) {
+			patch({ status: `Could not save ${fileName}: ${(error as Error).message}` });
+			return false;
+		}
+		await refreshFiles();
+		ref = { source: 'folder', path: fileName, name: fileName.replace(/\.json$/i, '') };
+	}
+	graph.update((g) => setNodeContent(g, nodeId, { mode: 'external', ref, graph: null }));
+	patch({ status: `Saved "${ref.name}" ${refPlace(ref)}; the node now links to it` });
+	return true;
 }
 
 /** Whether a folder already has a file or folder of that name. */

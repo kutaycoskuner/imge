@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-02
+	//   last update     : 2026-11-26
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -28,14 +28,20 @@
 	// (type "image") is only its picture at its stored size times its scale, with its ports on
 	// the edges, and its caption under it (beside it in top-to-bottom graphs; outside the node's
 	// box, so the ports stay at the picture's middle) when shown (imageCaption, captionOverride). Both show a scale handle in the bottom-right corner that the page drags.
+	// A table node (type "table") is a box with its table (NodeTable.svelte: name, cells with
+	// their row and column styles, cells edited by double-click); a graph node (type "graph")
+	// a box with its name, its mode and a preview of the graph it embeds or links to
+	// (NodeGraph.svelte; double-click the preview opens it). Both have ports and a scale handle.
 	// Mouse down for select/drag/link is handled by the page through the data-* attributes;
 	// ports carry `data-port-key` ("<node id>:<port id>") so GraphLinks can find and measure them,
 	// and `data-port-kind` (in / out / any) for the link rules.
 	import { graph, editingNodeId, renameNode, setNodeContent, isGroup, frames, captionOverride } from '$lib/graph/store';
 	import type { GraphNode } from '$lib/graph/types';
-	import { nodeName, nodeColor, portSide, umlMembers, umlAbstract, nodeShape, nodeScale, nodeText, imageOf, imageCaption } from '$lib/graph/node-types';
+	import { nodeLabel, nodeName, nodeColor, portSide, umlMembers, umlAbstract, nodeShape, nodeScale, nodeText, imageOf, imageCaption } from '$lib/graph/node-types';
 	import { parseAttribute, parseMethod, drawnTokens } from '$lib/graph/uml';
 	import { parseHexColor, dimColor } from '$lib/graph/color';
+	import NodeTable from './NodeTable.svelte';
+	import NodeGraph from './NodeGraph.svelte';
 
 	export let node: GraphNode;
 	export let selected = false;
@@ -68,6 +74,9 @@
 	$: scale = nodeScale(node);
 	$: image = imageNode ? imageOf(node) : null;
 	$: caption = imageNode ? imageCaption(node, $captionOverride) : '';
+	// table and graph nodes: a box with their own inside (NodeTable, NodeGraph), at their scale
+	$: tableNode = node.type === 'table';
+	$: graphNode = node.type === 'graph';
 
 	let draft = '';
 	$: editing = $editingNodeId === node.id;
@@ -125,6 +134,8 @@
 	class:abstract
 	class:text-node={textNode}
 	class:image-node={imageNode}
+	class:table-node={tableNode}
+	class:graph-node={graphNode}
 	class:shape-circle={circle}
 	data-id={node.id}
 	style="transform: translate({at.x}px, {-at.y}px);{color
@@ -174,6 +185,25 @@
 	{:else if image}
 		<img class="image-body" src={image.src} alt={name} width={image.w} height={image.h} draggable="false" />
 		{#if caption}<div class="image-caption">{caption}</div>{/if}
+		<div class="node-scale" data-node-id={node.id} title="Drag to scale"></div>
+	{:else if tableNode}
+		<div class="table-body" style="font-size: {scale}em;">
+			{#if editing}
+				<input class="node-title-input" bind:value={draft} use:focusSelect on:keydown|stopPropagation={handleKey} on:blur={commit} />
+				<NodeTable {node} name="" />
+			{:else}
+				<NodeTable {node} {name} />
+			{/if}
+		</div>
+		<div class="node-scale" data-node-id={node.id} title="Drag to scale"></div>
+	{:else if graphNode}
+		{#if editing}
+			<input class="node-title-input" bind:value={draft} use:focusSelect on:keydown|stopPropagation={handleKey} on:blur={commit} />
+		{:else}
+			<!-- without a name of its own it shows what it links to -->
+			<div class="node-title" role="presentation" on:dblclick={() => editingNodeId.set(node.id)}>{name || nodeLabel(node)}</div>
+		{/if}
+		<NodeGraph {node} />
 		<div class="node-scale" data-node-id={node.id} title="Drag to scale"></div>
 	{:else}
 	{#if editing}

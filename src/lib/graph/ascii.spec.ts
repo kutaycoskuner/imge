@@ -131,6 +131,61 @@ describe('text and image nodes in the text view', () => {
 	});
 });
 
+describe('table and graph nodes in the text view', () => {
+	it('a table without lines is its name, then its rows in columns separated by spaces', () => {
+		const table: GraphNode = {
+			id: 'n1', type: 'table', typeVersion: 1, position: { x: 0, y: 0 }, ports,
+			content: { name: 'Prices', showName: true, color: null, scale: 1, cells: [['Item', 'Price'], ['Tea', '3']], rowStyles: [], colStyles: [] }
+		};
+		expect(asciiText(graphToAscii(graph([table], []))).split('\n')).toEqual([
+			'┌──────────────┐',
+			'│    Prices    │',
+			'├──────────────┤',
+			'│ Item   Price │',
+			'│ Tea    3     │',
+			'└──────────────┘'
+		]);
+	});
+	it('a table with its lines on has "│" between columns and a line under the first row, styles kept', () => {
+		const table: GraphNode = {
+			id: 'n1', type: 'table', typeVersion: 1, position: { x: 0, y: 0 }, ports,
+			content: {
+				name: 'Prices', showName: true, showLines: true, color: null, scale: 1,
+				cells: [['Item', 'Price'], ['Tea', '3'], ['Coffee', '12']],
+				rowStyles: [{ bold: true }, null, null],
+				colStyles: [null, { align: 'right' }]
+			}
+		};
+		const art = graphToAscii(graph([table], []));
+		expect(asciiText(art).split('\n')).toEqual([
+			'┌────────────────┐',
+			'│     Prices     │',
+			'├────────────────┤',
+			'│ Item   │ Price │',
+			'├────────────────┤',
+			'│ Tea    │     3 │',
+			'│ Coffee │    12 │',
+			'└────────────────┘'
+		]);
+		expect(cellsWith(art, (c) => c.includes('ascii-b')).map((c) => c.ch).join('')).toBe('PricesItemPrice');
+	});
+	it('a graph node is its name with its mode and where it links', () => {
+		const embedded: GraphNode = {
+			id: 'n1', type: 'graph', typeVersion: 1, position: { x: 0, y: 0 }, ports,
+			content: { name: 'Billing', color: null, scale: 1, mode: 'internal', graph: null, ref: null }
+		};
+		const linked: GraphNode = {
+			...embedded, id: 'n2', position: { x: 0, y: -200 },
+			content: { name: '', color: null, scale: 1, mode: 'external', graph: null, ref: { source: 'browser', id: 'a1', name: 'map' } }
+		};
+		const rows = asciiText(graphToAscii(graph([embedded, linked], []))).split('\n');
+		expect(rows.some((r) => r.includes('▣ Billing'))).toBe(true);
+		expect(rows.some((r) => r.includes('(embedded graph)'))).toBe(true);
+		expect(rows.some((r) => r.includes('↗ map'))).toBe(true);
+		expect(rows.some((r) => r.includes('(in this browser)'))).toBe(true);
+	});
+});
+
 describe('image captions in the text view', () => {
 	const image = (showCaption: boolean): GraphNode => ({
 		id: 'n1', type: 'image', typeVersion: 2, position: { x: 0, y: 0 }, ports,

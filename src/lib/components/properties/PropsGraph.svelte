@@ -2,18 +2,29 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-17
+	//   last update     : 2026-11-26
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
-	// Properties panel section shown when nothing is selected: the open graph's file (and
-	// unsaved marker), its direction, and how many nodes and links it has.
+	// Properties panel section shown when nothing is selected: where the open graph is kept
+	// (its file, its place in this browser, or inside a graph node) and the unsaved marker,
+	// its direction, and how many nodes and links it has.
 	import { graph, setDirection, measureNodeSizes } from '$lib/graph/store';
-	import { workspace } from '$lib/graph/file-access';
+	import { workspace, browserGraphs, graphTrail } from '$lib/graph/file-access';
 	import { DIRECTIONS, type Direction } from '$lib/graph/types';
 	import type { PanelContext } from './sections';
 
 	export let ctx: PanelContext;
+
+	// where the open graph is kept: a graph node's embedded graph (inside the outer graph),
+	// its place in this browser, its file, or nowhere yet
+	$: inside = $graphTrail[$graphTrail.length - 1];
+	$: place =
+		inside?.mode === 'internal'
+			? `in "${inside.outerName}" (Back writes it there)`
+			: $workspace.browserId
+				? `${$browserGraphs.find((s) => s.id === $workspace.browserId)?.name ?? 'graph'} (in this browser)`
+				: ($workspace.fileName ?? 'not saved yet');
 
 	// same as the Esc menu: node sizes come from the rendered nodes, so the layout turns
 	// around node centres
@@ -25,9 +36,9 @@
 </script>
 
 <dl class="props">
-	<dt>File</dt>
+	<dt>{inside?.mode === 'internal' ? 'Embedded' : 'File'}</dt>
 	<dd>
-		{$workspace.fileName ?? 'not saved yet'}
+		{place}
 		{#if $workspace.dirty}<span class="prop-dirty" title="unsaved changes">•</span>{/if}
 	</dd>
 

@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-23
+	//   last update     : 2026-11-26
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -33,6 +33,8 @@
 				[['F2'], 'Edit the selected node’s name (or the selected link’s)'],
 				[['Delete', 'Backspace'], 'Remove the selected nodes with their links, or the selected link'],
 				[['F'], 'Link two selected nodes'],
+				[['Tab'], 'Open the selected graph node (its embedded or linked graph)'],
+				[['Shift+Tab'], 'Back out of the graph node (as the Back button at the top)'],
 				[['Ctrl+G'], 'Group: put the selected nodes in a new group (one group selected: add the others to it)'],
 				[['Ctrl+Shift+G'], 'Ungroup: dissolve the selected group, or take the selected nodes out of their group']
 			]

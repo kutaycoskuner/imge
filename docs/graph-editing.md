@@ -42,6 +42,7 @@ State as of 2026-10-23.
 | Toolbar "Add Node" | New node at the screen center. |
 | **Shift+A** | New node centered on the mouse; made inside a group's frame, it joins that group. |
 | Double-click the name, or **F2** | Edit the node's name. Enter or clicking away saves; Esc cancels (without opening the menu); an empty name keeps the old one. On a text node: edit its text in a field over several lines (Enter = new line, **Ctrl+Enter** or clicking away saves). |
+| **Tab** with a graph node selected | Open it: its embedded graph to edit, or the graph it links to (as double-clicking its preview). **Shift+Tab** goes back out (as the Back button at the top). Without a graph node selected, Tab moves the focus as usual. See [graph-table-and-graph-nodes.md](graph-table-and-graph-nodes.md). |
 | **Delete** / **Backspace** | Remove the selected link, or the selected nodes together with all their links. |
 | **Ctrl+C** (Cmd+C) | Copy the selected nodes and the links between them (links to nodes that aren't selected are left out). Kept in memory for this tab, so it can be pasted into another graph opened in the same tab; a reload forgets it. With no node selected, the browser's own copy runs. |
 | **Ctrl+Z** (Cmd+Z) | Undo the last change; see [Undo and redo](#undo-and-redo). |
@@ -326,6 +327,8 @@ Types: `Graph`, `GraphNode`, `Link` come from `src/lib/graph/types.ts`; `Point` 
 - The old "add input/output" hover indicators were removed from the node markup because they were never wired up and sat on top of the ports; their CSS is still in `static/styles/imge.css` for when adding ports gets built.
 
 ## Changes
+
+- 2026-11-26 — Tab opens the selected graph node, Shift+Tab goes back out
 
 - 2026-11-02 — touch screens: gestures for every mouse action ($lib/touch.ts, [graph-touch.md](graph-touch.md)); Undo / Redo also in the toolbar
 - 2026-11-02 — scale handle on text and image nodes (`setNodeScale`); F2 / double-click on a text node edits its text over several lines

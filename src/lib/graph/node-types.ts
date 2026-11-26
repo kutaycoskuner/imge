@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-02
+//   last update     : 2026-11-26
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -20,7 +20,8 @@
 //
 // Generic editor code never reads a node's `content`: it asks the type, e.g. nodeLabel(node).
 //
-// `basic`, `group`, `uml-class`, `text` and `image` are drawn, so they are `ready` (choosable). The others
+// `basic`, `group`, `uml-class`, `text`, `image`, `table` (table.ts) and `graph` (graph-node.ts)
+// are drawn, so they are `ready` (choosable). The others
 // show what is planned and appear greyed out with "(later)"; a type becomes choosable when
 // its drawing and its Properties panel section exist (see docs/graph-properties-panel.md).
 // Change, add or remove planned entries freely -- no file uses them yet.
@@ -30,6 +31,8 @@
 // -----------------------------------------------------------------------------------------
 
 import type { GraphNode, NodeContent, Port, PortSide } from './types';
+import { tableLabel } from './table';
+import { graphNodeLabel } from './graph-node';
 
 export interface NodeType {
 	id: string; // stored in the node's `type`
@@ -135,6 +138,48 @@ export const NODE_TYPES: NodeType[] = [
 		// drawn when showCaption is on, unless the Esc menu shows or hides all captions
 		content: { name: 'Image', src: 'images/parts/resistor.svg', width: 96, height: 32, scale: 1, caption: '', showCaption: true },
 		label: named('Image')
+	},
+	{
+		id: 'table',
+		title: 'Table',
+		description: 'Tabular text in rows and columns, each row and column with its own look (size, opacity, bold, italic, alignment, colour)',
+		ready: true,
+		version: 1,
+		ports: [
+			{ id: 'i1', kind: 'in', type: 'basic', label: 'Input' },
+			{ id: 'o1', kind: 'out', type: 'basic', label: 'Output' }
+		],
+		// cells: rows of text; rowStyles / colStyles: one style (or null) per row / column; a
+		// cell takes its column's style, then its row's on top (table.ts); name: a title above
+		// the table, shown when showName is on; scale: the whole table's size
+		content: {
+			name: 'Table',
+			showName: true,
+			color: null,
+			scale: 1,
+			cells: [
+				['Name', 'Value'],
+				['', '']
+			],
+			rowStyles: [{ bold: true }, null],
+			colStyles: [null, null]
+		},
+		label: tableLabel
+	},
+	{
+		id: 'graph',
+		title: 'Graph',
+		description: 'Another graph shown small inside this one: embedded in it (internal) or linked to a graph in this browser or the folder (external); double-click opens it',
+		ready: true,
+		version: 1,
+		ports: [
+			{ id: 'i1', kind: 'in', type: 'basic', label: 'Input' },
+			{ id: 'o1', kind: 'out', type: 'basic', label: 'Output' }
+		],
+		// mode: internal (graph: the embedded graph, null = still empty) or external (ref:
+		// { source: browser, id, name } or { source: folder, path, name }); scale: the preview's size
+		content: { name: 'Graph', color: null, scale: 1, mode: 'internal', graph: null, ref: null },
+		label: graphNodeLabel
 	},
 	{ id: 'note', title: 'Note', description: 'A block of text without ports (planned)', ready: false },
 	{ id: 'decision', title: 'Decision', description: 'A flowchart branch with yes / no outputs (planned)', ready: false }

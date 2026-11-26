@@ -31,7 +31,7 @@
 	//          link, F2 or double-click renames a link (drag a selected
 	//          manhattan link's middle segment to move its corner), +/- zoom, Home fit graph, Ctrl+S save,
 	//          Ctrl+Shift+S download, Esc cancel a link drag or box selection (otherwise it opens
-	//          the menu)
+	//          the menu), Tab open the selected graph node, Shift+Tab back out of it
 	// It also shows the Properties panel (GraphPropertiesPanel, the selection's details) and
 	// puts GraphEditorMenu into the Esc menu (open/save on the computer) and tracks
 	// unsaved changes for it. Graph operations and link rules live in $lib/graph/store.ts,
@@ -76,7 +76,10 @@
 		downloadGraph,
 		save,
 		newGraph,
-		openLocalFile
+		openLocalFile,
+		graphTrail,
+		backFromGraph,
+		enterGraphNode
 	} from '$lib/graph/file-access';
 	import {
 		graph,
@@ -576,6 +579,16 @@
 		} else if (key === 'f' && !event.shiftKey) {
 			event.preventDefault();
 			linkSelectedNodes();
+		} else if (key === 'tab' && !event.shiftKey && selectedGraphNode()) {
+			// Tab: open the selected graph node (like double-clicking its preview); without one
+			// selected Tab keeps moving the focus as usual
+			event.preventDefault();
+			const id = selectedGraphNode()!;
+			enterGraphNode(id).then(() => notify($workspace.status));
+		} else if (key === 'tab' && event.shiftKey && $graphTrail.length) {
+			// Shift+Tab: back out of the graph node, as the Back button does
+			event.preventDefault();
+			if (backFromGraph()) notify($workspace.status);
 		} else if (key === 'escape' && linkDrag) {
 			event.preventDefault(); // cancel the drag only; without a drag Esc opens the menu
 			linkDrag = null;
@@ -613,10 +626,23 @@
 		else if ($workspace.status) notify($workspace.status);
 	}
 
+	// the one selected node's id when it is a graph node (Tab opens it), else null
+	function selectedGraphNode(): string | null {
+		if ($selection.nodes.length !== 1) return null;
+		const node = $graph.data.nodes.find((n) => n.id === $selection.nodes[0]);
+		return node?.type === 'graph' ? node.id : null;
+	}
+
 	// Ctrl+S: save where the graph belongs (its file in the folder, downloaded in a read-only
 	// folder, or its place in this browser); a graph without either opens the menu, where
 	// Save as (Config) or Save in browser (Saved) names it
 	function saveShortcut(): void {
+		const inside = $graphTrail[$graphTrail.length - 1];
+		if (inside?.mode === 'internal') {
+			// an embedded graph has no place of its own: it is saved with the graph around it
+			notify(`"${inside.innerName}" is embedded: Back puts the changes into "${inside.outerName}", then save that`);
+			return;
+		}
 		if ($workspace.fileName || $workspace.browserId) {
 			save();
 		} else {
@@ -859,6 +885,17 @@
 {#if $viewMode === 'text'}
 	<GraphTextView />
 {/if}
+<!-- inside a graph node (opened by double-clicking its preview): the way back, and where we are -->
+{#if $graphTrail.length}
+	{@const step = $graphTrail[$graphTrail.length - 1]}
+	<div class="graph-trail" role="navigation" aria-label="Graph node">
+		<button type="button" class="graph-back" on:click={() => backFromGraph() && notify($workspace.status)}>← Back to {step.outerName}</button>
+		<span class="graph-where">
+			{$graphTrail.map((s) => s.outerName).join(' › ')} › <strong>{step.innerName}</strong>
+			{step.mode === 'internal' ? '(embedded: Back writes the changes into it)' : '(linked: saved where it is)'}
+		</span>
+	</div>
+{/if}
 <GraphPropertiesPanel />
 <UI_GraphEditor on:requestExport={downloadGraph} on:requestFit={fitGraphInView} />
 <CoordTracker />
@@ -892,6 +929,42 @@
 	}
 
 	/* box selection (Shift+drag on empty space), drawn in screen px above the graph */
+	/* inside a graph node: the way back, at the top in the middle */
+	.graph-trail {
+		position: fixed;
+		top: 2.2em;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 40;
+		display: flex;
+		align-items: center;
+		gap: 0.8em;
+		max-width: calc(100vw - 2em);
+		padding: 0.3em 0.6em;
+		background: var(--bg);
+		border: 1px solid var(--col-border);
+		border-radius: 4px;
+		box-shadow: var(--box-shadow-small);
+		font-size: 0.85em;
+	}
+	/* buttons are reset globally (settings_overlay.css), so this one gets its look here */
+	.graph-back {
+		cursor: pointer;
+		padding: 0.2em 0.7em;
+		border: 1px solid var(--col-border);
+		border-radius: 4px;
+		white-space: nowrap;
+	}
+	.graph-back:hover {
+		border-color: var(--col-selected);
+		color: var(--col-selected);
+	}
+	.graph-where {
+		opacity: 0.75;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 	.select-box {
 		position: fixed;
 		z-index: 20;

@@ -47,6 +47,8 @@ The panel shows the sections whose condition matches the selection, top to botto
 | One UML class | Attributes and methods | The Abstract class checkbox (name in italics; a note when the class has `{abstract}` methods but isn't abstract), then one field per compartment, one member per line in UML notation (`{static}` / `{abstract}` markers included), highlighted while typing, with the lines that don't follow the notation listed under the field; leaving a field saves it (see [graph-uml.md](graph-uml.md)). |
 | One group | Contents | The nodes it holds, by label and id (a click selects one, × takes it out of the group), how to add nodes, and **Ungroup** (removes the group; what it held stays). |
 | One text node | Text | The text (several lines; saved when the field is left, Esc puts it back), colour, scale, alignment, bold (see [graph-text-and-images.md](graph-text-and-images.md)). |
+| One table node | Table | Size (rows × columns), scale, the row or column to edit with Insert above / below (left / right) and Remove, its look (text size, opacity, bold, italic, underline, alignment, colour; each can stay unset), show the name (see [graph-table-and-graph-nodes.md](graph-table-and-graph-nodes.md)). |
+| One graph node | Graph | Mode (embedded / linked), what it holds or the graph it links to (this browser or the folder; found or not), scale, Open, Embed a copy, Save as separate graph (see [graph-table-and-graph-nodes.md](graph-table-and-graph-nodes.md)). |
 | One image node | Image | Name, caption with Show caption, the picture (a library part or **Upload image…**, with its size and what it adds to the file), scale. |
 | One node with ports | Ports and links | Its ports by kind (inputs, outputs, and two-way ports when it has any), by label; links coming in and going out, by the node at the other end (and the link's name); a click selects the link. |
 | Several nodes | Selection | How many nodes and how many links between them; one colour for all of them whose type has a colour (empty with "mixed" when they differ; × resets all); their labels (a click selects only that one); Delete all of them. |
@@ -136,6 +138,8 @@ Sections are data: `PANEL_SECTIONS` in `src/lib/components/properties/sections.t
 - Groups can't be resized yet and don't carry their contents when moved.
 
 ## Changes
+
+- 2026-11-26 — sections for table nodes (Table) and graph nodes (Graph)
 
 - 2026-11-06 — the colour field (`PropColor`) is also used by the keyboard layout page's categories: `required` (no reset, an empty field goes back), `onPickStart` / `onPickEnd` (default: the graph's undo grouping), and its hex field has its own look
 - 2026-11-02 — on screens up to 640 px wide the panel is a drawer from the right edge that starts closed (not remembered); a finger-sized tab on touch screens (see [graph-touch.md](graph-touch.md)); Image section: caption and Show caption

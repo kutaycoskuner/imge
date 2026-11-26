@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-13
+	//   last update     : 2026-11-26
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -156,6 +156,7 @@
 	.ascii :global(.ascii-b) { font-weight: 600; }
 	.ascii :global(.ascii-err) { text-decoration: underline wavy #d9534f; }
 	.ascii :global(.ascii-label) { opacity: 0.8; }
+	.ascii :global(.ascii-faint) { opacity: 0.6; }
 	.ascii :global(.ascii-sel) { color: var(--col-selected) !important; }
 	/* glyphs a font may draw wider than a cell keep exactly one cell */
 	.ascii :global(.ascii-w) { display: inline-block; width: 1ch; overflow: visible; text-align: center; }

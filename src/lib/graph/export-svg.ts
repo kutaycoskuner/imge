@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-02
+//   last update     : 2026-11-26
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -282,7 +282,15 @@ export function drawGraphSvg(o: DrawOptions): { svg: string; width: number; heig
 		const children = Array.from(from.childNodes)
 			.map((c) => (c.nodeType === Node.TEXT_NODE ? esc(c.textContent ?? '') : c.nodeType === Node.ELEMENT_NODE ? copySvg(c as Element, opacity) : ''))
 			.join('');
-		if (name === 'svg') return children; // the layer's own <svg>: its content goes into ours
+		if (name === 'svg') {
+			// an <svg> drawn inside a node (a graph node's preview) has its own coordinates:
+			// its content is moved to where the node shows it; the link layer's own <svg> is
+			// in world coordinates already, so its content goes into ours as it is
+			if (!from.closest('.node')) return children;
+			const at = box(from.getBoundingClientRect());
+			return `<g transform="translate(${num(at.x)} ${num(at.y)})">${children}</g>`;
+		}
+		if (name === 'title') return ''; // hover text, not drawing
 		const list = Array.from(attrs, ([k, v]) => `${k}="${esc(v)}"`).join(' ');
 		return `<${name}${list ? ' ' + list : ''}>${children}</${name}>`;
 	}

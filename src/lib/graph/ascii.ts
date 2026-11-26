@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-02
+//   last update     : 2026-11-26
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -13,7 +13,8 @@
 //   1. Boxes: every node becomes a box of characters sized by its text (basic: its name,
 //      wrapped at NAME_WRAP; UML class: name, attributes, methods with separator lines;
 //      circle shapes get rounded corners; a text node is its lines without a border, an
-//      image node a rounded box with its name in brackets). It is placed at its world position scaled to
+//      image node a rounded box with its name in brackets, a table its name and rows in
+//      padded columns, a graph node its name with ▣ embedded / ↗ linked and where). It is placed at its world position scaled to
 //      character cells (COL_PX / ROW_PX world units per column / row); a box that would
 //      overlap one placed before it moves down until it is free; a link reading forward gets
 //      at least 3 free cells between its boxes (the target moves along).
@@ -41,6 +42,8 @@
 import type { Graph, GraphNode, Link, LinkArrow, LinkLine, LinkMark } from './types';
 import { nodeLabel, nodeName, nodeColor, nodeShape, nodeText, portSide, umlMembers, umlAbstract, groupSize, imageCaption } from './node-types';
 import { groupChildren } from './groups';
+import { tableOf, cellStyle, tableLines } from './table';
+import { graphMode, graphRef, graphNodeLabel, refPlace } from './graph-node';
 import { parseAttribute, parseMethod, drawnTokens, type UmlLine } from './uml';
 
 /** World units per text column and per text row (a default node is ~ 24 columns wide). */
@@ -167,6 +170,37 @@ function nodeBox(node: GraphNode, col: number, row: number, captions: 'show' | '
 			return [...chars(' '.repeat(left)), ...chars(l, cls), ...chars(' '.repeat(pad - left))];
 		});
 		return { ...base, round: false, w, h: rows.length, rows, bare: true };
+	}
+	if (node.type === 'table') {
+		// its name (when shown), then the rows with the columns padded to their widest cell; with
+		// its lines on, "│" between the columns and a line under the first row, else spaces;
+		// each cell in its alignment, bold / italic / underlined as its style says (size,
+		// opacity and colour aren't text)
+		const t = tableOf(node.content);
+		const lined = tableLines(node.content);
+		const widths = Array.from({ length: t.cols }, (_, c) => Math.max(1, ...t.cells.map((r) => length(r[c]))));
+		const cellText = (r: number, c: number): Text => {
+			const s = cellStyle(t, r, c);
+			const cls = [s.bold ? 'ascii-b' : '', s.italic ? 'ascii-i' : '', s.underline ? 'ascii-u' : ''].filter(Boolean).join(' ') || undefined;
+			const text = t.cells[r][c];
+			const pad = widths[c] - length(text);
+			const left = s.align === 'center' ? Math.floor(pad / 2) : s.align === 'right' ? pad : 0;
+			return [...chars(' '.repeat(left)), ...chars(text, cls), ...chars(' '.repeat(pad - left))];
+		};
+		const lines = t.cells.map((_, r) => widths.flatMap((__, c) => [...(c ? chars(lined ? ' │ ' : '   ') : []), ...cellText(r, c)]));
+		const name = node.content.showName !== false && nodeName(node).trim() ? chars(nodeName(node), 'ascii-b') : null;
+		const inner = Math.max(...lines.map((l) => l.length), name?.length ?? 0) + 2;
+		const body = lines.map((l) => leftAligned(l, inner));
+		const rows = [...(name ? [centered(name, inner), 'sep' as const] : []), body[0], ...(body.length > 1 ? [...(lined ? ['sep' as const] : []), ...body.slice(1)] : [])];
+		return { ...base, round: false, w: inner + 2, h: rows.length + 2, rows };
+	}
+	if (node.type === 'graph') {
+		// its name with a mark for its mode (▣ embedded, ↗ linked) and, when linked, where
+		const ref = graphRef(node.content);
+		const internal = graphMode(node.content) === 'internal';
+		const label = [`${internal ? '▣' : '↗'} ${graphNodeLabel(node)}`, internal ? '(embedded graph)' : ref ? `(${refPlace(ref)})` : '(links to nothing)'];
+		const inner = Math.max(...label.map(length)) + 2;
+		return { ...base, round: false, w: inner + 2, h: label.length + 2, rows: label.map((l, i) => centered(chars(l, i ? 'ascii-faint' : undefined), inner)) };
 	}
 	// an image node: a rounded box with its name in brackets (the picture itself isn't text),
 	// its caption on the line under it when it shows one

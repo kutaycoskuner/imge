@@ -26,6 +26,8 @@
       { "key": "KeyG", "mods": ["ctrl"], "action": "Group", "category": "edit" },
       { "key": "KeyG", "mods": ["ctrl", "shift"], "action": "Ungroup", "category": "edit" },
       { "key": "KeyF", "mods": [], "action": "Link two nodes", "category": "links" },
+      { "key": "Tab", "mods": [], "action": "Open graph node", "category": "view" },
+      { "key": "Tab", "mods": ["shift"], "action": "Back out of graph node", "category": "view" },
       { "key": "KeyL", "mods": [], "action": "Next link shape", "category": "links" },
       { "key": "KeyD", "mods": [], "action": "Next arrow", "category": "links" },
       { "key": "KeyR", "mods": [], "action": "Route above / below", "category": "links" },

@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-02
+//   last update     : 2026-11-26
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -26,6 +26,8 @@ import PropsContent from './PropsContent.svelte';
 import PropsUmlMembers from './PropsUmlMembers.svelte';
 import PropsText from './PropsText.svelte';
 import PropsImage from './PropsImage.svelte';
+import PropsTable from './PropsTable.svelte';
+import PropsGraphNode from './PropsGraphNode.svelte';
 import PropsGroupContents from './PropsGroupContents.svelte';
 import PropsNodeLinks from './PropsNodeLinks.svelte';
 import PropsNodes from './PropsNodes.svelte';
@@ -55,6 +57,8 @@ const oneNamedNode = (ctx: PanelContext) => oneNode(ctx) && hasNamedContent(ctx.
 const oneUmlClass = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].type === 'uml-class';
 const oneText = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].type === 'text';
 const oneImage = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].type === 'image';
+const oneTable = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].type === 'table';
+const oneGraphNode = (ctx: PanelContext) => oneNode(ctx) && ctx.nodes[0].type === 'graph';
 const oneGroup = (ctx: PanelContext) => oneNode(ctx) && isGroup(ctx.nodes[0]);
 const someNodes = (ctx: PanelContext) => ctx.nodes.length > 1;
 const aLink = (ctx: PanelContext) => !!ctx.link;
@@ -66,6 +70,8 @@ export const PANEL_SECTIONS: PanelSection[] = [
 	{ id: 'uml-members', title: 'Attributes and methods', component: PropsUmlMembers, show: oneUmlClass },
 	{ id: 'text', title: 'Text', component: PropsText, show: oneText },
 	{ id: 'image', title: 'Image', component: PropsImage, show: oneImage },
+	{ id: 'table', title: 'Table', component: PropsTable, show: oneTable },
+	{ id: 'graph-node', title: 'Graph', component: PropsGraphNode, show: oneGraphNode },
 	{ id: 'group-contents', title: 'Contents', component: PropsGroupContents, show: oneGroup },
 	{ id: 'node-links', title: 'Ports and links', component: PropsNodeLinks, show: oneNodeWithPorts },
 	{ id: 'nodes', title: 'Selection', component: PropsNodes, show: someNodes },
