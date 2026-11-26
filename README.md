@@ -15,7 +15,7 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.40.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.41.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
@@ -69,6 +69,7 @@ npm run test:unit -- --run
 - [Properties panel](docs/graph-properties-panel.md): the docked panel for the selection, what it shows, how to add a section (e.g. for a node type)
 - [Text view (experimental)](docs/graph-text-view.md): the graph drawn with box-drawing characters, copy or download as plain text
 - [Touch screens](docs/graph-touch.md): gestures on phones and tablets, the panel drawer, what needs the panel instead of a key
+- [Augmentations](docs/graph-augmentations.md): logic that makes a graph do something, tested against checks first; Gravity: round dots sized by their links, a live layout that settles without overlaps
 - [Table and graph nodes](docs/graph-table-and-graph-nodes.md): tables with row and column styles; graphs inside graphs, embedded or linked (this browser, the folder), opened with a way back
 - [Text and image nodes](docs/graph-text-and-images.md): text without a box, pictures (parts library, upload), scale, circuit parts next
 - [UML class nodes](docs/graph-uml.md): the three-compartment class node, member notation, static / abstract members, property strings ({readOnly}), highlighting and format check, relations (inheritance, realization, aggregation ...)
@@ -123,6 +124,7 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] save graphs in the browser itself (any browser, no folder needed): the Esc menu's Saved tab lists them to open, save over, rename, download or delete; Save / Ctrl+S / autosave write back there; save them all as a folder on the computer (or as a .zip in Firefox / Safari)
 - [x] table node: rows and columns of text, typed in place (double-click, Tab to the next cell); each row and column with its own look (size, opacity, bold, italic, underline, alignment, colour), rows over columns
 - [x] graph node: another graph shown small inside this one, embedded in it or linked to a graph in the browser or the folder; double-click opens it, Back returns (an embedded one with the changes); embed a copy / save as separate graph
+- [x] augmentations (Augment, top right): logic that runs on a graph after it passes its checks, one at a time; Gravity makes nodes round dots sized by their links that pull together, push apart and settle without overlapping (drag a dot to stir; one undo step; not for graphs with groups yet); Arithmetic reads basic nodes named as numbers, + − × ÷ and = as a calculation and shows each result live (inputs left to right); Gravity test and Arithmetic test examples
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
 - [x] versioned graph format (now v7: nodes are id, type, typeVersion, position, ports with a kind, and content defined by their type; links have shape, arrow, line and mark), older files upgraded on load; a sample per version in static/data/samples, a sample node per node type version in static/data/node-types
 - [x] example graphs in the Esc menu, grouped by category (mind mapping, math, circuits, software architecture, other) (mind map, flowchart, search tree, lattice, architecture map, release process, UML class diagram), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)

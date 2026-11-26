@@ -21,7 +21,10 @@ import {
 	undo,
 	redo,
 	historySize,
-	HISTORY_LIMIT
+	HISTORY_LIMIT,
+	beginSession,
+	endSession,
+	inSession
 } from './history';
 
 const add = () => graph.update((g) => addNode(g, { x: 0, y: 0 }).graph);
@@ -111,5 +114,32 @@ describe('history', () => {
 		selection.set({ nodes: ['n1', 'n2'], link: null });
 		undo();
 		expect(get(selection).nodes).toEqual(['n1']);
+	});
+});
+
+describe('sessions (an augmentation running, e.g. gravity)', () => {
+	it('make every change until the end one undo step, gestures inside included', () => {
+		add();
+		const before = get(graph);
+		const steps = historySize().undo;
+		beginSession();
+		expect(inSession()).toBe(true);
+		graph.update((g) => moveNodes(g, ['n1'], 10, 0)); // the augmentation moving nodes
+		graph.update((g) => moveNodes(g, ['n1'], 10, 0));
+		holdHistory(); // the user drags a node meanwhile
+		graph.update((g) => moveNodes(g, ['n1'], 5, 5));
+		releaseHistory();
+		expect(undo()).toBe(false); // undo waits for the session
+		endSession();
+		expect(historySize().undo).toBe(steps + 1);
+		expect(undo()).toBe(true);
+		expect(get(graph)).toBe(before);
+	});
+
+	it('record nothing when nothing changed', () => {
+		const steps = historySize().undo;
+		beginSession();
+		endSession();
+		expect(historySize().undo).toBe(steps);
 	});
 });

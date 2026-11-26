@@ -48,6 +48,7 @@
 	import GraphExamplesMenu from '$lib/components/GraphExamplesMenu.svelte';
 	import GraphKeysMenu from '$lib/components/GraphKeysMenu.svelte';
 	import GraphSavedMenu from '$lib/components/GraphSavedMenu.svelte';
+	import AugmentMenu from '$lib/components/AugmentMenu.svelte';
 	import GraphPropertiesPanel from '$lib/components/properties/GraphPropertiesPanel.svelte';
 	import { nodeScale } from '$lib/graph/node-types';
 	import GraphTextView from '$lib/components/GraphTextView.svelte';
@@ -120,7 +121,7 @@
 		setNodeScale
 	} from '$lib/graph/store';
 	import type { Link, LinkEnd, PortKind } from '$lib/graph/types';
-	import { trackHistory, holdHistory, releaseHistory, undo, redo } from '$lib/graph/history';
+	import { trackHistory, holdHistory, releaseHistory, undo, redo, inSession } from '$lib/graph/history';
 	import { withDescendants, parentOf, groupAt, setGroupMembership, resizeGroup, UNMEASURED } from '$lib/graph/groups';
 	import { assistanceMsg, menuOpen, menuTab, pageMenu } from '../stores/imge_main';
 
@@ -522,7 +523,8 @@
 			} else if (key === 'z' || key === 'y') {
 				event.preventDefault();
 				const redoing = key === 'y' || event.shiftKey;
-				if (!(redoing ? redo() : undo())) notify(redoing ? 'Nothing to redo' : 'Nothing to undo');
+				if (inSession()) notify('Gravity is running: stop it first (Augment, top right); the whole run is then one undo step');
+				else if (!(redoing ? redo() : undo())) notify(redoing ? 'Nothing to redo' : 'Nothing to undo');
 			} else if (event.shiftKey) {
 				// Ctrl+Shift+other: not ours
 			} else if (key === 'c' && $selection.nodes.length) {
@@ -897,6 +899,7 @@
 	</div>
 {/if}
 <GraphPropertiesPanel />
+<AugmentMenu />
 <UI_GraphEditor on:requestExport={downloadGraph} on:requestFit={fitGraphInView} />
 <CoordTracker />
 <AssistanceMsg />

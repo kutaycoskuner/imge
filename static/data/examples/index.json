@@ -4,7 +4,8 @@
         "Math",
         "Circuits",
         "Software architecture",
-        "Other"
+        "Other",
+        "Augmentations"
     ],
     "examples": [
         {
@@ -149,6 +150,20 @@
             "description": "Coordinates, noise and bands mixed into a marble pattern.",
             "sketch": true,
             "category": "Other"
+        },
+        {
+            "name": "Gravity test",
+            "kind": "knowledge graph",
+            "file": "examples/gravity-test.json",
+            "description": "Three topics with hubs, bridges and two loose nodes, scattered on a grid: turn on Augment > Gravity and watch them sort.",
+            "category": "Augmentations"
+        },
+        {
+            "name": "Arithmetic test",
+            "kind": "calculation",
+            "file": "examples/arithmetic-test.json",
+            "description": "(3 + 4) × (10 − 6) = 28 and 28 ÷ 8 = 3.5 as basic nodes: turn on Augment > Arithmetic to see the results.",
+            "category": "Augmentations"
         }
     ]
 }

@@ -28,6 +28,10 @@
 	// (type "image") is only its picture at its stored size times its scale, with its ports on
 	// the edges, and its caption under it (beside it in top-to-bottom graphs; outside the node's
 	// box, so the ports stay at the picture's middle) when shown (imageCaption, captionOverride). Both show a scale handle in the bottom-right corner that the page drags.
+	// While gravity runs (Augment menu, $lib/graph/gravity-run.ts), every node but groups and
+	// text nodes is a round dot sized by its number of links, its name inside it, its ports
+	// unseen at the dot's centre (links meet there). While arithmetic runs, an operator's or
+	// "="'s result is shown beside it ("= 28", or "⚠ no result" with the reason on hover).
 	// A table node (type "table") is a box with its table (NodeTable.svelte: name, cells with
 	// their row and column styles, cells edited by double-click); a graph node (type "graph")
 	// a box with its name, its mode and a preview of the graph it embeds or links to
@@ -42,6 +46,10 @@
 	import { parseHexColor, dimColor } from '$lib/graph/color';
 	import NodeTable from './NodeTable.svelte';
 	import NodeGraph from './NodeGraph.svelte';
+	import { gravityOn, nodeDegrees } from '$lib/graph/gravity-run';
+	import { dotRadius, takesPart } from '$lib/graph/gravity';
+	import { arithmeticResults } from '$lib/graph/arithmetic-run';
+	import { formatValue } from '$lib/graph/arithmetic';
 
 	export let node: GraphNode;
 	export let selected = false;
@@ -77,6 +85,14 @@
 	// table and graph nodes: a box with their own inside (NodeTable, NodeGraph), at their scale
 	$: tableNode = node.type === 'table';
 	$: graphNode = node.type === 'graph';
+	// gravity running (Augment menu): a dot sized by the node's links, its name beside it
+	$: dot = $gravityOn && takesPart(node);
+	$: radius = dot ? dotRadius($nodeDegrees[node.id] ?? 0) : 0;
+	// its name's size inside the dot: as large as fits the dot's width (a bold character is
+	// about 0.6 of the size wide), between 7 and 16 px; a name that still doesn't fit is cut with …
+	$: dotFont = dot ? Math.max(7, Math.min(16, radius * 0.5, (1.76 * radius) / (0.6 * Math.max(1, nodeLabel(node).length)))) : 0;
+	// arithmetic running (Augment menu): an operator's or "="'s result beside the node
+	$: calc = $arithmeticResults[node.id];
 
 	let draft = '';
 	$: editing = $editingNodeId === node.id;
@@ -130,19 +146,24 @@
 	class:selected
 	class:colored={!!color}
 	class:group
-	class:uml
-	class:abstract
+	class:uml={uml && !dot}
+	class:abstract={abstract && !dot}
 	class:text-node={textNode}
-	class:image-node={imageNode}
-	class:table-node={tableNode}
-	class:graph-node={graphNode}
-	class:shape-circle={circle}
+	class:image-node={imageNode && !dot}
+	class:table-node={tableNode && !dot}
+	class:graph-node={graphNode && !dot}
+	class:shape-circle={circle && !dot}
+	class:dot
 	data-id={node.id}
 	style="transform: translate({at.x}px, {-at.y}px);{color
 		? ` --node-col: ${color}; --node-fill: ${dimColor(color)};`
-		: ''}{frame ? ` width: ${frame.w}px; height: ${frame.h}px;` : ''}"
+		: ''}{frame ? ` width: ${frame.w}px; height: ${frame.h}px;` : ''}{dot ? ` width: ${2 * radius}px; height: ${2 * radius}px;` : ''}"
 >
-	{#if group}
+	{#if dot}
+		<!-- gravity: the dot is the node's box itself (round, sized by its links); its name inside,
+		     sized with the dot, cut with … when it doesn't fit (the whole name on hover) -->
+		<div class="dot-label" style="font-size: {dotFont}px;" title={nodeLabel(node)}>{nodeLabel(node)}</div>
+	{:else if group}
 		<fieldset class="group-frame">
 			<legend class="group-title">
 				{#if editing}
@@ -259,5 +280,12 @@
 	<div class="content">
 		<div class="add-content hover-visible"></div>
 	</div>
+	{/if}
+
+	{#if calc}
+		<!-- arithmetic: the result (or why there is none, the reason on hover) -->
+		<div class="calc-result" class:error={!calc.ok} title={calc.ok ? undefined : calc.error}>
+			{calc.ok ? `= ${formatValue(calc.value)}` : '⚠ no result'}
+		</div>
 	{/if}
 </div>

@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-10-17
+//   last update     : 2026-11-26
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -11,7 +11,9 @@
 // a history step is just the graph object from before the change (no copying). Every change
 // of the `graph` store is recorded once trackHistory() runs; a mouse gesture (drag a node,
 // drag a link, move a corner) changes the graph on every mouse move, so the page wraps it in
-// holdHistory() / releaseHistory() and the whole gesture becomes one step.
+// holdHistory() / releaseHistory() and the whole gesture becomes one step. An augmentation
+// that keeps changing the graph while it runs (gravity) is a session: beginSession() /
+// endSession() make all of it, gestures included, one step.
 // Loading a graph (open, example, new) calls clearHistory(): undo never crosses a load.
 // The history lives in memory only (HISTORY_LIMIT steps) and is not saved with the graph.
 //
@@ -30,6 +32,7 @@ const redoStack: Graph[] = []; // graphs undone, most recent last
 let current: Graph = get(graph); // the graph object the store holds now
 let applying = false; // undo / redo is setting the store: not a new change
 let holdStart: Graph | null = null; // graph when the running gesture began (null: none)
+let sessionStart: Graph | null = null; // graph when a running augmentation began (null: none)
 
 /**
  * Records every change of the `graph` store as one undo step. Call once (onMount).
@@ -44,7 +47,7 @@ export function trackHistory(): () => void {
 		if (g === current) return;
 		const previous = current;
 		current = g;
-		if (applying || holdStart) return; // a gesture is recorded once, when it ends
+		if (applying || holdStart || sessionStart) return; // a gesture / session is recorded once, when it ends
 		record(previous);
 	});
 }
@@ -54,24 +57,45 @@ export function holdHistory(): void {
 	if (!holdStart) holdStart = current;
 }
 
-/** Ends a gesture: records it as one step if it changed the graph. */
+/** Ends a gesture: records it as one step if it changed the graph (inside a session the
+ *  session's one step takes it). */
 export function releaseHistory(): void {
 	if (!holdStart) return;
-	if (current !== holdStart) record(holdStart);
+	if (current !== holdStart && !sessionStart) record(holdStart);
 	holdStart = null;
 }
+
+/**
+ * Starts a session (an augmentation running, e.g. gravity moving the nodes many times a
+ * second): every change until endSession(), the user's own gestures included, becomes one
+ * undo step. Undo and redo wait until it ends.
+ */
+export function beginSession(): void {
+	if (!sessionStart) sessionStart = current;
+}
+
+/** Ends the session: records it as one step if it changed the graph. */
+export function endSession(): void {
+	if (!sessionStart) return;
+	if (current !== sessionStart) record(sessionStart);
+	sessionStart = null;
+}
+
+/** Whether a session is running (undo / redo wait for it). */
+export const inSession = (): boolean => !!sessionStart;
 
 /** Forgets all steps; the graph as it is now is where undo stops. Called by every load. */
 export function clearHistory(): void {
 	undoStack.length = 0;
 	redoStack.length = 0;
 	holdStart = null;
+	sessionStart = null;
 	current = get(graph);
 }
 
 /** Goes one step back. Returns false when there is nothing to undo (or a gesture is running). */
 export function undo(): boolean {
-	if (holdStart || undoStack.length === 0) return false;
+	if (holdStart || sessionStart || undoStack.length === 0) return false;
 	redoStack.push(current);
 	apply(undoStack.pop()!);
 	return true;
@@ -79,7 +103,7 @@ export function undo(): boolean {
 
 /** Goes one undone step forward again. Returns false when there is nothing to redo. */
 export function redo(): boolean {
-	if (holdStart || redoStack.length === 0) return false;
+	if (holdStart || sessionStart || redoStack.length === 0) return false;
 	undoStack.push(current);
 	apply(redoStack.pop()!);
 	return true;
