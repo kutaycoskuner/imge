@@ -167,7 +167,7 @@ export const AUGMENTATIONS: Augmentation[] = [
 		id: 'gravity',
 		title: 'Gravity',
 		description:
-			'Nodes become dots sized by their number of links and move by themselves: links pull, nodes push apart, a pull to the centre holds them together. Drag a dot and the others follow; turning it off keeps the new layout (one undo step).',
+			'Nodes become dots sized by their number of links and move by themselves: links pull, nodes push apart, a pull to the centre holds them together. Drag a dot and the others follow; stopping it either reverts (every node back where it was) or keeps the new layout (one undo step).',
 		checks: GRAVITY_CHECKS
 	},
 	{

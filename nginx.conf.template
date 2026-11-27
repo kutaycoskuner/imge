@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------------------------------
 #   author          : Kutay Coskuner
 #   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-#   last update     : 2026-11-15
+#   last update     : 2026-11-27
 #   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 #                     Check outputs before relying on them.
 # -------------------------------------------------------------------------------------------
@@ -22,8 +22,12 @@
 #
 # The build holds every imge page (SvelteKit prerenders them all), but only the keyboard
 # page and what it loads are served: a whitelist below, everything else is a 404 (the graph
-# editor, matrix and csv pages). / redirects to the keyboard page so the shared address
-# opens it. A new file the keyboard page loads from static/ needs its folder added here.
+# editor, matrix and csv pages). The keyboard page is served at / itself (the site is only
+# that page, so a /keyboard_layout path would say nothing); the old /keyboard_layout address
+# redirects to / with its query, so links shared before still work. SvelteKit hydrates the
+# page from the node ids in its HTML, not from the address, and its asset paths are relative
+# (./_app/...), so the same keyboard_layout.html works at /. A new file the keyboard page
+# loads from static/ needs its folder added here.
 # Files under /_app/immutable/ have a content hash in their name and never change, so
 # browsers may keep them for a year. HTTPS is the tunnel's job: this server only speaks
 # plain HTTP inside Docker's network.
@@ -39,15 +43,17 @@ server {
     # relative, so the redirect keeps the visitor's https address
     absolute_redirect off;
 
+    # the keyboard page (keyboard_layout.html) at the site's root, with the server's analytics tag
     location = / {
-        return 302 /keyboard_layout;
-    }
-
-    # the keyboard page (keyboard_layout.html), with the server's analytics tag
-    location = /keyboard_layout {
         sub_filter '</head>' '${ANALYTICS_TAG}</head>';
         sub_filter_once on;
         try_files /keyboard_layout.html =404;
+    }
+
+    # the old address, from before the page moved to /: permanently there, query kept
+    # ($is_args$args is nginx's own, not filled in from the environment)
+    location = /keyboard_layout {
+        return 301 /$is_args$args;
     }
 
     # the server's settings for the page: the support link (empty url = none)

@@ -4,6 +4,7 @@
         "Math",
         "Circuits",
         "Software architecture",
+        "UI layout",
         "Other",
         "Augmentations"
     ],
@@ -19,7 +20,7 @@
             "name": "Trip planning",
             "kind": "mind map",
             "file": "examples/trip-planning.json",
-            "description": "An idea in the middle, related ideas around it; no arrows, curved links.",
+            "description": "Ankara as an idea in the middle, related ideas around it; no arrows, curved links.",
             "category": "Mind mapping"
         },
         {
@@ -128,6 +129,27 @@
             "file": "examples/weather-station.json",
             "description": "A poster-like overview: title and notes as text nodes, sensors, gateway and server tiers as coloured boxes in groups, named links between tiers.",
             "category": "Software architecture"
+        },
+        {
+            "name": "Login screen",
+            "kind": "UI layout (phone wireframe)",
+            "file": "examples/ui-login-screen.json",
+            "description": "A phone screen as a group: heading and hints as text, fields and the button as nodes, notes beside it; a dashed link to the error state.",
+            "category": "UI layout"
+        },
+        {
+            "name": "Dashboard layout",
+            "kind": "UI layout (desktop wireframe)",
+            "file": "examples/ui-dashboard.json",
+            "description": "Header, sidebar and main area as groups; metric cards as coloured nodes, recent orders as a table.",
+            "category": "UI layout"
+        },
+        {
+            "name": "Ankara guide (screen flow)",
+            "kind": "UI layout (screen flow)",
+            "file": "examples/ui-ankara-guide.json",
+            "description": "Four app screens side by side (home, place details, map, saved); links name what the user taps to get to the next one.",
+            "category": "UI layout"
         },
         {
             "name": "Find the largest number",

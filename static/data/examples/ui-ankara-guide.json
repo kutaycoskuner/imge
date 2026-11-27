@@ -1,0 +1,647 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 7,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 120
+                },
+                "ports": [],
+                "content": {
+                    "text": "Ankara guide: screen flow",
+                    "color": null,
+                    "scale": 1.8,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 70
+                },
+                "ports": [],
+                "content": {
+                    "text": "Each screen is a group; the links say what the user taps to get to the next screen",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 64,
+                    "y": -64
+                },
+                "ports": [],
+                "content": {
+                    "text": "Ankara guide",
+                    "color": null,
+                    "scale": 1.4,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -120
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Search places…",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -205
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Anıtkabir",
+                    "color": "#6e56cf",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -280
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Ankara Castle",
+                    "color": "#6e56cf",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -355
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Museum of Anatolian Civilizations",
+                    "color": "#6e56cf",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n8",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 64,
+                    "y": -480
+                },
+                "ports": [],
+                "content": {
+                    "text": "Home · Map · Saved",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n9",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "ports": [],
+                "content": {
+                    "name": "Home",
+                    "color": null,
+                    "children": [
+                        "n3",
+                        "n4",
+                        "n5",
+                        "n6",
+                        "n7",
+                        "n8"
+                    ],
+                    "shape": "square",
+                    "width": 340,
+                    "height": 560
+                }
+            },
+            {
+                "id": "n10",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 544,
+                    "y": -64
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Anıtkabir",
+                    "color": "#6e56cf",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n11",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 544,
+                    "y": -150
+                },
+                "ports": [],
+                "content": {
+                    "text": "Atatürk's mausoleum, Çankaya\nOpen 09:00–17:00 · free entry\nChanging of the guard on the hour",
+                    "color": null,
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n12",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 544,
+                    "y": -270
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Show on map",
+                    "color": "#0090ff",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n13",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 544,
+                    "y": -345
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Save",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n14",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 544,
+                    "y": -480
+                },
+                "ports": [],
+                "content": {
+                    "text": "‹ Back",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n15",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": 480,
+                    "y": 0
+                },
+                "ports": [],
+                "content": {
+                    "name": "Place details",
+                    "color": null,
+                    "children": [
+                        "n10",
+                        "n11",
+                        "n12",
+                        "n13",
+                        "n14"
+                    ],
+                    "shape": "square",
+                    "width": 340,
+                    "height": 560
+                }
+            },
+            {
+                "id": "n16",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 1024,
+                    "y": -64
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Map: Tandoğan, Çankaya",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n17",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 1024,
+                    "y": -150
+                },
+                "ports": [],
+                "content": {
+                    "text": "You are at Kızılay\nAnkaray line to Tandoğan, 3 stops\nthen 10 minutes on foot",
+                    "color": null,
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n18",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 1024,
+                    "y": -270
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Start route",
+                    "color": "#0090ff",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n19",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 1024,
+                    "y": -480
+                },
+                "ports": [],
+                "content": {
+                    "text": "‹ Back",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n20",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": 960,
+                    "y": 0
+                },
+                "ports": [],
+                "content": {
+                    "name": "Map",
+                    "color": null,
+                    "children": [
+                        "n16",
+                        "n17",
+                        "n18",
+                        "n19"
+                    ],
+                    "shape": "square",
+                    "width": 340,
+                    "height": 560
+                }
+            },
+            {
+                "id": "n21",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 1504,
+                    "y": -64
+                },
+                "ports": [],
+                "content": {
+                    "text": "Saved",
+                    "color": null,
+                    "scale": 1.4,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n22",
+                "type": "table",
+                "typeVersion": 1,
+                "position": {
+                    "x": 1504,
+                    "y": -120
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Saved places",
+                    "showName": false,
+                    "color": null,
+                    "scale": 1,
+                    "cells": [
+                        [
+                            "Place",
+                            "District"
+                        ],
+                        [
+                            "Anıtkabir",
+                            "Çankaya"
+                        ],
+                        [
+                            "Ankara Castle",
+                            "Altındağ"
+                        ],
+                        [
+                            "Atakule",
+                            "Çankaya"
+                        ],
+                        [
+                            "Kuğulu Park",
+                            "Çankaya"
+                        ]
+                    ],
+                    "rowStyles": [
+                        {
+                            "bold": true
+                        },
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "colStyles": [
+                        null,
+                        null
+                    ]
+                }
+            },
+            {
+                "id": "n23",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 1504,
+                    "y": -480
+                },
+                "ports": [],
+                "content": {
+                    "text": "Home · Map · Saved",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n24",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": 1440,
+                    "y": 0
+                },
+                "ports": [],
+                "content": {
+                    "name": "Saved",
+                    "color": null,
+                    "children": [
+                        "n21",
+                        "n22",
+                        "n23"
+                    ],
+                    "shape": "square",
+                    "width": 340,
+                    "height": 560
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "name": "tap",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n10",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l2",
+                "type": "basic",
+                "name": "tap",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n12",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n16",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l3",
+                "type": "basic",
+                "name": "tap",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "dashed",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n13",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n22",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

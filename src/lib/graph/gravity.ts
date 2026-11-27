@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-26
+//   last update     : 2026-11-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -209,6 +209,26 @@ export function withBodies(g: Graph, bodies: Body[]): Graph {
 		if (!p || (p.x === n.position.x && p.y === n.position.y)) return n;
 		changed = true;
 		return { ...n, position: p };
+	});
+	return changed ? { ...g, data: { ...g.data, nodes } } : g;
+}
+
+/** Every node's position (a snapshot taken when gravity starts, so it can be reverted). */
+export function positionsOf(g: Graph): Record<string, Point> {
+	return Object.fromEntries(g.data.nodes.map((n) => [n.id, { ...n.position }]));
+}
+
+/**
+ * The graph with the nodes put back where a snapshot has them (Revert): nodes added since keep
+ * their place, removed ones stay removed. The same graph when every node is already there.
+ */
+export function withPositions(g: Graph, snapshot: Record<string, Point>): Graph {
+	let changed = false;
+	const nodes = g.data.nodes.map((n) => {
+		const p = snapshot[n.id];
+		if (!p || (p.x === n.position.x && p.y === n.position.y)) return n;
+		changed = true;
+		return { ...n, position: { ...p } };
 	});
 	return changed ? { ...g, data: { ...g.data, nodes } } : g;
 }

@@ -1,0 +1,305 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 7,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 120
+                },
+                "ports": [],
+                "content": {
+                    "text": "Login screen",
+                    "color": null,
+                    "scale": 1.8,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 70
+                },
+                "ports": [],
+                "content": {
+                    "text": "A phone wireframe: the frame is a group, fields and buttons are nodes, headings are text",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 64,
+                    "y": -64
+                },
+                "ports": [],
+                "content": {
+                    "text": "Sign in",
+                    "color": null,
+                    "scale": 1.5,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 64,
+                    "y": -110
+                },
+                "ports": [],
+                "content": {
+                    "text": "Welcome back",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -150
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "E-mail",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -225
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Password  ••••••",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -310
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Sign in",
+                    "color": "#0090ff",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n8",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 64,
+                    "y": -395
+                },
+                "ports": [],
+                "content": {
+                    "text": "Forgot password?",
+                    "color": "#0090ff",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n9",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 64,
+                    "y": -430
+                },
+                "ports": [],
+                "content": {
+                    "text": "No account? Sign up",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n10",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "ports": [],
+                "content": {
+                    "name": "Phone 360 × 640",
+                    "color": null,
+                    "children": [
+                        "n3",
+                        "n4",
+                        "n5",
+                        "n6",
+                        "n7",
+                        "n8",
+                        "n9"
+                    ],
+                    "shape": "square",
+                    "width": 320,
+                    "height": 520
+                }
+            },
+            {
+                "id": "n11",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 400,
+                    "y": -64
+                },
+                "ports": [],
+                "content": {
+                    "text": "Notes",
+                    "color": null,
+                    "scale": 1,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n12",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 400,
+                    "y": -100
+                },
+                "ports": [],
+                "content": {
+                    "text": "Margins on both sides, fields full width\nFields 20 apart\nOne primary button (blue)\nSecondary actions as plain text",
+                    "color": null,
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n13",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 420,
+                    "y": -300
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Wrong password: shake the field, show a red hint",
+                    "color": "#e5484d",
+                    "shape": "square"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "name": "on error",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "dashed",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n7",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n13",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

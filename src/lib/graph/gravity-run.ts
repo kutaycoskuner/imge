@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-26
+//   last update     : 2026-11-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -15,16 +15,18 @@
 //     `nodeDegrees`), links as straight lines (the display override; the user's own override
 //     comes back when it stops)
 //   - the whole run, the user's own changes included, is one undo step (history.ts session)
-// Stopping keeps the new layout. Opening another graph stops it (AugmentMenu).
+// Stopping either reverts (every node back where it was when gravity started; gravity isn't
+// destructive) or keeps the new layout. Opening another graph stops it (AugmentMenu).
 // Details: docs/graph-augmentations.md
 // -----------------------------------------------------------------------------------------
 
 import { writable, derived, get } from 'svelte/store';
 import { graph, linkShapeOverride } from './store';
-import { beginSession, endSession } from './history';
+import { beginSession, endSession, sessionBase } from './history';
 import { augmentation, runChecks, allPass, type CheckResult } from './augmentations';
-import { degrees, dotRadius, takesPart, step, cool, withBodies, linkPairs, cornerOf, type Body } from './gravity';
+import { degrees, dotRadius, takesPart, step, cool, withBodies, linkPairs, cornerOf, positionsOf, withPositions, type Body } from './gravity';
 import type { LinkShape } from './types';
+import type { Point } from '$lib/camera';
 
 /** Whether gravity is running (nodes drawn as dots and moving). */
 export const gravityOn = writable(false);
@@ -37,6 +39,7 @@ let frame = 0;
 let bodies: Body[] = [];
 let alpha = 0;
 let savedOverride: LinkShape | null = null;
+let before: Record<string, Point> = {}; // every node's position when gravity started (Revert)
 
 /** Wakes the motion up again (after a drag, a new node ...), never below its current heat. */
 const reheat = (to: number) => (alpha = Math.max(alpha, to));
@@ -51,6 +54,7 @@ export function startGravity(): CheckResult[] {
 	const results = runChecks(augmentation('gravity')!, get(graph));
 	if (!allPass(results) || get(gravityOn)) return results;
 	beginSession();
+	before = positionsOf(get(graph));
 	savedOverride = get(linkShapeOverride);
 	linkShapeOverride.set('line');
 	bodies = [];
@@ -61,14 +65,29 @@ export function startGravity(): CheckResult[] {
 	return results;
 }
 
-/** Stops gravity: the layout stays as it is (one undo step), the normal look comes back. */
-export function stopGravity(): void {
+/**
+ * Stops gravity; the normal look comes back.
+ *
+ * Args:
+ *     how: 'keep' leaves the new layout (one undo step); 'revert' puts every node back where it
+ *         was when gravity started (nodes added meanwhile keep their place). Without other
+ *         changes during the run, reverting hands the graph back exactly as it was: no undo
+ *         step, and no unsaved changes if it had none.
+ */
+export function stopGravity(how: 'keep' | 'revert' = 'keep'): void {
 	if (!get(gravityOn)) return;
 	cancelAnimationFrame(frame);
 	frame = 0;
 	gravityOn.set(false);
 	gravityMoving.set(false);
 	linkShapeOverride.set(savedOverride);
+	if (how === 'revert') {
+		const reverted = withPositions(get(graph), before);
+		const base = sessionBase();
+		// nothing else changed: the very graph from before, so nothing counts as changed
+		graph.set(base && JSON.stringify(base) === JSON.stringify(reverted) ? base : reverted);
+	}
+	before = {};
 	endSession();
 }
 

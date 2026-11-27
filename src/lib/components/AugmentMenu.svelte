@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-26
+	//   last update     : 2026-11-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -10,7 +10,8 @@
 	// of the top bar, set a little apart from the theme toggle, that opens a dropdown:
 	// choose an augmentation (logic that makes the graph do something: Gravity, Arithmetic),
 	// read what it does, see the open graph tested against its checks (each with what it
-	// found), and start it once every check passes; while it runs, its state and Stop. One runs
+	// found), and start it once every check passes; while it runs, its state and Stop (gravity:
+	// Revert and stop, or Keep layout and stop). One runs
 	// at a time: starting one stops the other. Opening another graph stops it. Augmentations as
 	// data: $lib/graph/augmentations.ts; runners: $lib/graph/gravity-run.ts,
 	// arithmetic-run.ts. Details: docs/graph-augmentations.md
@@ -91,9 +92,21 @@
 			</ul>
 
 			<div class="row actions">
-				<button type="button" class="action" class:stop={running} disabled={!running && !ready} on:click={toggleRun}>
-					{running ? `Stop ${aug.title.toLowerCase()}` : `Start ${aug.title.toLowerCase()}`}
-				</button>
+				{#if running && chosen === 'gravity'}
+					<!-- gravity moves the nodes: stopping says whether to keep that or put them back -->
+					<button type="button" class="action stop" title="Every node back where it was before gravity started" on:click={() => stopGravity('revert')}>
+						Revert and stop
+					</button>
+					<button type="button" class="action" title="Stop and keep the new layout (Ctrl+Z after that puts the old one back)" on:click={() => stopGravity('keep')}>
+						Keep layout and stop
+					</button>
+				{:else}
+					<button type="button" class="action" class:stop={running} disabled={!running && !ready} on:click={toggleRun}>
+						{running ? `Stop ${aug.title.toLowerCase()}` : `Start ${aug.title.toLowerCase()}`}
+					</button>
+				{/if}
+			</div>
+			<div class="row">
 				<span class="state">
 					{#if running && chosen === 'gravity'}
 						{$gravityMoving ? 'moving…' : 'settled; drag a dot to stir it'}
@@ -107,7 +120,10 @@
 				</span>
 			</div>
 			{#if running && chosen === 'gravity'}
-				<p class="description">Stopping keeps the new layout; Ctrl+Z after that puts the old one back (the whole run is one step).</p>
+				<p class="description">
+					<strong>Revert</strong> puts every node back where it was before gravity started; <strong>Keep layout</strong> leaves the new
+					one (Ctrl+Z after that still puts the old one back: the whole run is one step).
+				</p>
 			{/if}
 		</div>
 	{/if}
@@ -198,6 +214,12 @@
 		display: flex;
 		align-items: center;
 		gap: 0.6em;
+	}
+
+	/* Revert and stop / Keep layout and stop side by side, wrapping on a narrow panel */
+	.actions {
+		flex-wrap: wrap;
+		margin-bottom: 0.4em;
 	}
 
 	.label {

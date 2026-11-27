@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------------------
 //   author          : Kutay Coskuner
 //   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-//   last update     : 2026-11-26
+//   last update     : 2026-11-27
 //   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 //                     Check outputs before relying on them.
 // -----------------------------------------------------------------------------------------
@@ -83,6 +83,10 @@ export function endSession(): void {
 
 /** Whether a session is running (undo / redo wait for it). */
 export const inSession = (): boolean => !!sessionStart;
+
+/** The graph as it was when the running session began (null when none runs): an augmentation
+ *  that reverts its work hands this exact object back, so nothing counts as changed. */
+export const sessionBase = (): Graph | null => sessionStart;
 
 /** Forgets all steps; the graph as it is now is where undo stops. Called by every load. */
 export function clearHistory(): void {

@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-11-02
+	//   last update     : 2026-11-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -354,13 +354,19 @@
 		background: color-mix(in srgb, var(--col-selected) 15%, transparent);
 	}
 
+	/* a row of buttons: when they don't fit side by side they go onto another line, so no
+	   button gets squeezed */
 	.properties-panel :global(.prop-actions) {
 		display: flex;
+		flex-wrap: wrap;
 		justify-content: flex-end;
+		gap: 0.3em;
 		margin-top: 0.6em;
 	}
 
+	/* a button's label stays on one line (squeezed buttons broke words: "Le / av / e") */
 	.properties-panel :global(.prop-button) {
+		white-space: nowrap;
 		padding: 0.25em 0.7em;
 		border: 1px solid color-mix(in srgb, var(--col) 20%, transparent);
 		border-radius: 3px;

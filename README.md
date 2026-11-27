@@ -15,7 +15,7 @@
 <p align="center">
     <img alt="SvelteKit 2" src="https://img.shields.io/badge/SvelteKit-2-orange?logo=svelte&logoColor=white" />
     <img alt="Svelte 5" src="https://img.shields.io/badge/Svelte-5-orange?logo=svelte&logoColor=white" />
-    <img alt="Version" src="https://img.shields.io/badge/Version-0.41.0-blue" />
+    <img alt="Version" src="https://img.shields.io/badge/Version-0.42.0-blue" />
     <img alt="Project Start" src="https://img.shields.io/badge/project_start-21_Aug_2024-green" />
     <img alt="Last Update" src="https://img.shields.io/github/last-commit/kutaycoskuner/imge" />
 </p>
@@ -61,7 +61,7 @@ npm run test:unit -- --run
 
 - [Matrix calculator](docs/matrix-calculator.md): addition and multiplication with the size rule, each entry of the result written out, description boxes beside the calculation
 - [Keyboard layout](docs/keyboard-layout.md): the keyboard layout page, layers, the keyboards, the keymap file format
-- [Keyboard site](docs/keyboard-site.md): the keyboard page alone on a self-hosted server, without personal links (`SITE=keyboard` build, Docker image, homelab deploy)
+- [Keyboard site](docs/keyboard-site.md): the keyboard page alone on a self-hosted server, without personal links (`SITE=keyboard` build, Docker image, homelab deploy; the page is the site's root `/`)
 - [Graph editor canvas](docs/graph-editor-canvas.md): current feature set, camera, coordinate system, zoom, dot grid
 - [Node and link editing](docs/graph-editing.md): mouse and keys, selection, copy / paste, undo / redo, link rules, link shapes, function reference for the graph store
 - [Graph file format](docs/graph-format.md): JSON structure, format versions, adapters that upgrade older files
@@ -124,11 +124,11 @@ The live site counts visits with a self-hosted analytics script (archrium); loca
 - [x] save graphs in the browser itself (any browser, no folder needed): the Esc menu's Saved tab lists them to open, save over, rename, download or delete; Save / Ctrl+S / autosave write back there; save them all as a folder on the computer (or as a .zip in Firefox / Safari)
 - [x] table node: rows and columns of text, typed in place (double-click, Tab to the next cell); each row and column with its own look (size, opacity, bold, italic, underline, alignment, colour), rows over columns
 - [x] graph node: another graph shown small inside this one, embedded in it or linked to a graph in the browser or the folder; double-click opens it, Back returns (an embedded one with the changes); embed a copy / save as separate graph
-- [x] augmentations (Augment, top right): logic that runs on a graph after it passes its checks, one at a time; Gravity makes nodes round dots sized by their links that pull together, push apart and settle without overlapping (drag a dot to stir; one undo step; not for graphs with groups yet); Arithmetic reads basic nodes named as numbers, + − × ÷ and = as a calculation and shows each result live (inputs left to right); Gravity test and Arithmetic test examples
+- [x] augmentations (Augment, top right): logic that runs on a graph after it passes its checks, one at a time; Gravity makes nodes round dots sized by their links that pull together, push apart and settle without overlapping (drag a dot to stir; stop with Revert, every node back where it was, or Keep layout, one undo step; not for graphs with groups yet); Arithmetic reads basic nodes named as numbers, + − × ÷ and = as a calculation and shows each result live (inputs left to right); Gravity test and Arithmetic test examples
 - [x] Esc menu per page; the graph editor's has tabs Config / Examples / Keybindings (switch at the top right)
 - [x] versioned graph format (now v7: nodes are id, type, typeVersion, position, ports with a kind, and content defined by their type; links have shape, arrow, line and mark), older files upgraded on load; a sample per version in static/data/samples, a sample node per node type version in static/data/node-types
-- [x] example graphs in the Esc menu, grouped by category (mind mapping, math, circuits, software architecture, other) (mind map, flowchart, search tree, lattice, architecture map, release process, UML class diagram), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)
-- [x] keyboard layout page: what each key does with and without modifiers (Shift, Ctrl, Alt and their combinations), on an ANSI or ISO keyboard coloured by category, and in a list with search; click or press a key to bind it, hold modifiers to see their layer; labels from your own keyboard layout (Chrome, Edge); JSON open / drop / download, examples (FPS game, the graph editor's shortcuts); profiles: several layouts saved in the browser under names, switched in the Esc menu, the active one saving every change (save over, rename, download, delete); toolbar at the bottom left (menu, open, save, download) and the Esc menu in tabs: Config, Saved, Examples, How to use
+- [x] example graphs in the Esc menu, grouped by category (mind mapping, math, circuits, software architecture, UI layout, other) (mind map, flowchart, search tree, lattice, architecture map, release process, UML class diagram, UI wireframes and a screen flow), one per kind of graph in [docs/graph-types.md](docs/graph-types.md)
+- [x] keyboard layout page: what each key does with and without modifiers (Shift, Ctrl, Alt and their combinations), on an ANSI or ISO keyboard coloured by category, and in a list with search; click or press a key to bind it, hold modifiers to see their layer; labels from your own keyboard layout (Chrome, Edge); JSON open / drop / download, examples (the graph editor's shortcuts, opened on a first visit; FPS game); profiles: several layouts saved in the browser under names, switched in the Esc menu, the active one saving every change (save over, rename, download, delete); toolbar at the bottom left (menu, open, save, download) and the Esc menu in tabs: Config, Saved, Examples, How to use
 - [ ] vertical / horizontal frameworks
 - [ ] node content editing
 - [ ] add / remove ports

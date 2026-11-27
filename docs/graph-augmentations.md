@@ -20,7 +20,7 @@ At the right end of the top bar, left of the theme toggle and set a little apart
 1. **Augmentation**: the list to choose from (Gravity, Arithmetic).
 2. What it does, in a few lines.
 3. **Checks on the open graph**: each check with ✓ or ✗ and what it found, tested live while the dropdown is open (fix something in the graph and the check updates).
-4. **Start …** (only when every check passes; otherwise "fix the failed checks to start") / **Stop …**, and its state.
+4. **Start …** (only when every check passes; otherwise "fix the failed checks to start") / **Stop …** (for gravity: **Revert and stop** / **Keep layout and stop**), and its state.
 
 While one runs the button reads its name, e.g. **● gravity** (for gravity the dot beats while the nodes move and rests once they have settled). **One runs at a time:** starting one stops the other (the menu says so before). Opening another graph (a file, an example, a graph node, New graph) stops it.
 
@@ -49,9 +49,15 @@ While it runs:
     - a weak pull towards the middle holds the whole together, so well-linked dots gather in the middle and loose ones drift to the edge
     - **no two dots overlap**: after every step a collision pass keeps at least 8 units between any two dots' edges
 - **Drag a dot** and it stays under the mouse while the others wake up and follow; the same when nodes or links are added or removed.
-- **Undo:** the whole run, your own drags and edits during it included, is one undo step. While it runs, Ctrl+Z says to stop it first; after **Stop**, one Ctrl+Z puts the layout from before back.
+- **Undo:** the whole run, your own drags and edits during it included, is one undo step. While it runs, Ctrl+Z says to stop it first; after **Keep layout and stop**, one Ctrl+Z puts the layout from before back.
 
-**Stop** keeps the new layout: the nodes are boxes again, at the dots' places (each node's top-left corner where its dot's was). The positions are saved with the graph like any move; the dot look is not.
+Gravity is not destructive: stopping it asks what to do with the new layout.
+
+- **Revert and stop** puts every node back where it was when gravity started (a snapshot taken at the start). Nodes added during the run keep their place; other changes made during the run (links added or removed, renames) stay.
+    - if nothing else changed, the graph is handed back exactly as it was: no undo step, and no unsaved changes if it had none
+    - otherwise the run is still one undo step
+- **Keep layout and stop** keeps the new layout: the nodes are boxes again, at the dots' places (each node's top-left corner where its dot's was). The positions are saved with the graph like any move; the dot look is not.
+- Opening another graph, or starting Arithmetic, stops gravity and keeps the layout.
 
 How it works (`gravity.ts`, in the spirit of d3-force): each moving node is a body at its dot's centre; every frame the forces above change its velocity, scaled by a "heat" (alpha) that cools down each step, so the layout comes to rest; then the collision pass. A dragged dot is pinned (it doesn't move, the others react to it).
 
@@ -112,6 +118,7 @@ Esc menu → **Examples** → under **Augmentations**, **Gravity test**: three t
 
 ## Changes
 
+- 2026-11-27 — Gravity isn't destructive: **Revert and stop** puts every node back where it was when gravity started; **Keep layout and stop** keeps the new layout (one undo step)
 - 2026-11-26 — Gravity: names inside the dots, sized to fit, cut with … only when too long (whole on hover)
 
 - 2026-11-26 — Arithmetic: basic nodes read by name as numbers, operators (+ − × ÷) and =; inputs left to right; results above the nodes, live; its checks; Arithmetic test example; one augmentation at a time

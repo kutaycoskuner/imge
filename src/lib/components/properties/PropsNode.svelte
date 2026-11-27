@@ -2,7 +2,7 @@
 	// -----------------------------------------------------------------------------------------
 	//   author          : Kutay Coskuner
 	//   ai-contributors : Claude Opus 5.5 (claude-opus-5-5)
-	//   last update     : 2026-10-21
+	//   last update     : 2026-11-27
 	//   disclaimer      : Provided as is, without warranty of any kind; use at your own risk.
 	//                     Check outputs before relying on them.
 	// -----------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@
 	{#if parent}
 		<dt>Group</dt>
 		<dd class="in-group">
-			<button class="prop-row" title="Select the group" on:click={() => selection.set({ nodes: [parent.id], link: null })}>
+			<button class="prop-row group-name" title="Select the group: {nodeLabel(parent)}" on:click={() => selection.set({ nodes: [parent.id], link: null })}>
 				<span>{nodeLabel(parent)}</span>
 			</button>
 			<button class="prop-button" title="Take it out of the group [Ctrl+drag]" on:click={leaveGroup}>Leave</button>
@@ -99,9 +99,25 @@
 </div>
 
 <style>
+	/* the group's name takes the room left and ends in … when long (whole name on hover);
+	   Leave keeps its own width, so its word never breaks */
 	.in-group {
 		display: flex;
 		align-items: center;
 		gap: 0.4em;
+		min-width: 0;
+	}
+	.group-name {
+		flex: 1;
+		min-width: 0;
+	}
+	.group-name span {
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.in-group :global(.prop-button) {
+		flex: none;
 	}
 </style>

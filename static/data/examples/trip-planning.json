@@ -29,7 +29,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Trip to Lisbon",
+                    "name": "Trip to Ankara",
                     "color": null,
                     "shape": "circle"
                 }
@@ -197,7 +197,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Flights ~200 €",
+                    "name": "Flights ~150 €",
                     "color": null,
                     "shape": "square"
                 }
@@ -225,7 +225,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Daily ~60 €",
+                    "name": "Daily ~45 €",
                     "color": null,
                     "shape": "square"
                 }
@@ -253,7 +253,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Metro pass",
+                    "name": "Ankarakart",
                     "color": null,
                     "shape": "square"
                 }
@@ -281,7 +281,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Tram 28",
+                    "name": "Ankaray to Kızılay",
                     "color": null,
                     "shape": "square"
                 }
@@ -309,7 +309,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Flat in Alfama",
+                    "name": "Hotel in Kızılay",
                     "color": null,
                     "shape": "square"
                 }
@@ -337,7 +337,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Pastéis de nata",
+                    "name": "Ankara tava",
                     "color": null,
                     "shape": "square"
                 }
@@ -365,7 +365,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Seafood",
+                    "name": "Simit & çay",
                     "color": null,
                     "shape": "square"
                 }
@@ -393,7 +393,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Belém tower",
+                    "name": "Anıtkabir",
                     "color": null,
                     "shape": "square"
                 }
@@ -421,7 +421,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Fado night",
+                    "name": "Ankara Castle",
                     "color": null,
                     "shape": "square"
                 }
@@ -449,7 +449,7 @@
                     }
                 ],
                 "content": {
-                    "name": "Sintra day trip",
+                    "name": "Museum of Anatolian Civilizations",
                     "color": null,
                     "shape": "square"
                 }
@@ -595,7 +595,7 @@
             {
                 "id": "l9",
                 "type": "basic",
-                "name": "scenic",
+                "name": "metro",
                 "shape": "spline",
                 "arrow": "none",
                 "line": "solid",

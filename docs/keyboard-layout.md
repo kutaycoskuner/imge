@@ -72,10 +72,10 @@ The **Esc menu** (**Esc** or the gear), in four tabs like the graph editor's men
     - **Download .json** — the open layout as `<name>.json`.
     - **Keyboard** — shape (ANSI / ISO), numpad, key labels.
 - **Saved** — the profiles (layouts saved in this browser), see [Saved layouts (profiles)](#saved-layouts-profiles); the profile switch itself is at the top of **Config**.
-- **Examples** — *FPS game (typical)* (movement, combat, weapons, interaction, chat, with Shift, Ctrl+Alt and Ctrl+Shift layers) and *imge graph editor* (this site's graph editor shortcuts). Files: `static/data/keymaps/`, listed in `static/data/keymaps/index.json`.
+- **Examples** — *imge graph editor* (this site's graph editor shortcuts; the one a first visit opens) and *FPS game (typical)* (movement, combat, weapons, interaction, chat, with Shift, Ctrl+Alt and Ctrl+Shift layers). Files: `static/data/keymaps/`, listed in `static/data/keymaps/index.json`.
 - **How to use** — short instructions: selecting and binding keys, layers, categories and the list, files (kept and saved in the browser, download, drag and drop, open), the toolbar and the menu.
 
-The open layout is **kept in this browser** (`localStorage`, key `imge.keyboardLayout.keymap`) after every change, so a reload or a later visit continues where you were; the first visit opens the first example. Files are the way to keep layouts for good and to share them. View settings (numpad, labels) are kept too (`imge.keyboardLayout.view`).
+The open layout is **kept in this browser** (`localStorage`, key `imge.keyboardLayout.keymap`) after every change, so a reload or a later visit continues where you were; the first visit opens the first example (imge graph editor). Files are the way to keep layouts for good and to share them. View settings (numpad, labels) are kept too (`imge.keyboardLayout.view`).
 
 ### Saved layouts (profiles)
 
@@ -142,6 +142,7 @@ The page also runs alone, without the rest of imge or personal links, on a self-
 
 ## Changes
 
+- 2026-11-27 — the first visit opens the imge graph editor example (listed first) instead of the FPS game
 - 2026-11-23 — saved layouts work as profiles: a profile switch at the top of the Esc menu (Config), the active profile takes every change by itself, switching never asks or loses anything, new / example / file open outside the profiles
 - 2026-11-23 — saved layouts ("loadouts"): several named layouts kept in this browser, a Saved tab (open, save over, rename, download, delete) and a save button in the toolbar
 - 2026-11-15 — toolbar at the bottom left as in the graph editor (menu, open, download, with hover hints); the Esc menu in tabs: Config, Examples, How to use (instructions, incl. drag and drop and download)

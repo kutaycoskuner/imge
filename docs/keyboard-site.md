@@ -17,7 +17,8 @@ The [keyboard layout page](keyboard-layout.md) on its own, without the owner's n
     - the analytics tag: the stack's environment variable `ANALYTICS_TAG`, which nginx inserts before `</head>` of the page when the container starts ([nginx.conf.template](../nginx.conf.template)); empty = no analytics
     - the support link: the stack's `SUPPORT_URL` and `SUPPORT_LABEL`; nginx answers them as `/site-config.json`, the page reads it (`loadSupportLink` in [src/lib/site.ts](../src/lib/site.ts)) and shows the icon; empty URL = no icon; only an `https://` address is taken
     - keep it that way: don't write the address into this repo, its commit messages, issues or the workflow (its logs are public)
-- **only the keyboard page is served**: SvelteKit still prerenders every page, so nginx serves a whitelist (the keyboard page, `/_app/`, `styles/`, `icons/`, `favicons/`, `favicon.png`, `data/keymaps/`) and answers 404 to everything else; `/` redirects to `/keyboard_layout`
+- **only the keyboard page is served**: SvelteKit still prerenders every page, so nginx serves a whitelist (the keyboard page, `/_app/`, `styles/`, `icons/`, `favicons/`, `favicon.png`, `data/keymaps/`) and answers 404 to everything else
+    - the keyboard page is the site's root: `/` serves it (a `/keyboard_layout` path says nothing on a site that is only that page); the old `/keyboard_layout` address redirects there for good (301, query kept), so links shared before still work
     - a new file the keyboard page loads from `static/` needs its folder added to that whitelist
 - **what is still yours**: the image name (`ghcr.io/kutaycoskuner/imge-keyboard`) and this repo; visitors of the site don't see them, and nothing on the site points to them
 
@@ -35,7 +36,7 @@ push to main → .github/workflows/docker.yml: build (SITE=keyboard) → ghcr.io
 | [src/lib/components/IconButtons.svelte](../src/lib/components/IconButtons.svelte), [icon-cup-heart.svelte](../src/lib/icons/icon-cup-heart.svelte) | the bottom-left bar: the support link's cup icon on the keyboard site |
 | [vite.config.ts](../vite.config.ts) | turns the `SITE` environment variable into `__SITE__` |
 | [Dockerfile](../Dockerfile) | `pnpm build` with `SITE=keyboard`, then nginx with the build; `ANALYTICS_TAG`, `SUPPORT_URL`, `SUPPORT_LABEL` empty by default |
-| [nginx.conf.template](../nginx.conf.template) | the whitelist, `/` → `/keyboard_layout`, the analytics tag from `ANALYTICS_TAG`, `/site-config.json` from `SUPPORT_URL` / `SUPPORT_LABEL`, long cache for `/_app/immutable/` |
+| [nginx.conf.template](../nginx.conf.template) | the whitelist, the keyboard page at `/` (old `/keyboard_layout` → `/`), the analytics tag from `ANALYTICS_TAG`, `/site-config.json` from `SUPPORT_URL` / `SUPPORT_LABEL`, long cache for `/_app/immutable/` |
 | [.dockerignore](../.dockerignore) | keeps `node_modules`, builds, `.env`, local folders out of the image |
 | [.github/workflows/docker.yml](../.github/workflows/docker.yml) | on push to `main`: builds the image for arm64 and amd64, pushes it, calls the webhook |
 
@@ -48,13 +49,13 @@ In PowerShell, in the imge folder.
     $env:SITE = 'keyboard'; pnpm build; Remove-Item Env:SITE
     pnpm preview
     ```
-    → http://localhost:4173/keyboard_layout shows no navigation and no GitHub / projects links; `pnpm preview` doesn't use nginx, so the other pages still open here
+    → http://localhost:4173/keyboard_layout shows no navigation (here at its full-imge address; on the server it is at `/`) and no GitHub / projects links; `pnpm preview` doesn't use nginx, so the other pages still open here
 2. the image as on the server (Docker Desktop running): builds it, then serves it on port 8080 with a test tag
     ```powershell
     docker build -t imge-keyboard .
     docker run --rm -p 8080:80 -e 'ANALYTICS_TAG=<!-- analytics test -->' -e 'SUPPORT_URL=https://example.org' -e 'SUPPORT_LABEL=Support test' imge-keyboard
     ```
-    → http://localhost:8080 jumps to `/keyboard_layout`, whose page source shows `<!-- analytics test -->` just before `</head>`; the bottom-left bar has a cup icon, hover: "Support test"; http://localhost:8080/site-config.json shows both values; http://localhost:8080/graph_editor is a 404; Ctrl+C stops it
+    → http://localhost:8080 shows the keyboard page, whose page source shows `<!-- analytics test -->` just before `</head>`; the bottom-left bar has a cup icon, hover: "Support test"; http://localhost:8080/site-config.json shows both values; http://localhost:8080/keyboard_layout jumps to `/`; http://localhost:8080/graph_editor is a 404; Ctrl+C stops it
 
 ## Set up on the server
 
@@ -91,7 +92,7 @@ Once, in the server's **private** configuration (for the homelab: homelab-privat
     ```
     ```powershell
     tofu '-chdir=../homelab-private/tofu/cloudflare' apply
-    curl.exe -s -o NUL -w "%{http_code}" https://<keyboard-domain>/keyboard_layout
+    curl.exe -s -o NUL -w "%{http_code}" https://<keyboard-domain>/
     ```
     → `200`
 4. **the CI secret**: add `kutaycoskuner/imge` to the fine-grained token's repositories (GitHub → Settings → Developer settings → Fine-grained tokens → the tofu token → Repository access), then the secret `PORTAINER_WEBHOOK` for this repo in `tofu/github`
@@ -101,13 +102,14 @@ Once, in the server's **private** configuration (for the homelab: homelab-privat
 5. **test**: push a change to `main`; the workflow's last step is green, and on the server
     ```bash
     docker inspect imge-keyboard --format '{{.Created}}'
-    curl -s http://localhost:8092/keyboard_layout | grep -c "data-website-id"
+    curl -s http://localhost:8092/ | grep -c "data-website-id"
     ```
     → a time just after the workflow run (UTC); `1` (the analytics tag is in the page)
 6. **analytics**: in Umami, add the keyboard domain to a website (a new one keeps its numbers apart) and put that website's ID in `ANALYTICS_TAG`
 
 ## Changes
 
+- 2026-11-27 — the keyboard page at the site's root (`/`) instead of `/keyboard_layout`; the old address redirects to it (301)
 - 2026-11-15 — support link (e.g. Ko-fi): cup icon in the bottom-left bar, its address and label from the server's `SUPPORT_URL` / `SUPPORT_LABEL` (site-config.json), never in this repo
 - 2026-11-07 — no address or analytics of the keyboard site in this repo: the server sets `ANALYTICS_TAG` (nginx template)
 - 2026-11-07 — first version: `SITE=keyboard` build (no navigation, no personal links), Docker image with nginx whitelist, CI to ghcr.io with the Portainer webhook, server setup steps

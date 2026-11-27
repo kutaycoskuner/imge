@@ -29,6 +29,7 @@ Every type has an example graph: open it from the Esc menu's **Examples** tab; t
 | [Process planning](#process-planning) | partly | time axis / lanes, durations |
 | [Blackboard note taking](#blackboard-note-taking) | not yet | free text and drawing |
 | [Set visualization / function projection](#set-visualization--function-projection) | not yet | regions (Venn), sets as containers |
+| [UI layout (wireframe, screen flow)](#ui-layout-wireframe-screen-flow) | possible | free node sizes, widget shapes (input, button, image placeholder) |
 
 ## The types
 
@@ -40,7 +41,7 @@ Ideas as nodes, relations as links; no strict direction.
 - **Works today:** nodes and names, links in any direction, arrows `none` or `both` for undirected relations, link names for the kind of relation, cycles.
 - **Works today:** node colours (border and dim fill), set in the Properties panel.
 - **Missing:** notes or text inside nodes, a radial layout around a central idea.
-- **Example:** Trip planning (`trip-planning.json`); the Feature map (the start graph) is a relation map
+- **Example:** Trip planning (`trip-planning.json`, a trip to Ankara); the Feature map (the start graph) is a relation map
 
 ### Flowchart / algorithm
 
@@ -167,6 +168,19 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 - **Missing:** overlapping regions (Venn), sets as containers holding element nodes; a function projection could be partly drawn today (elements as nodes, arrows between them), but without the sets around them.
 - **Example (sketch):** Function f: A → B (`set-function.json`): two sets as groups, f drawn as named links
 
+### UI layout (wireframe, screen flow)
+
+Laying out a user interface before building it: a screen as a frame, its parts (headings, fields, buttons, lists, cards) placed inside, notes beside it; several screens side by side, linked by what the user taps or clicks to get from one to the next.
+
+- **Status:** possible
+- **Works today:**
+    - a screen or an area of it (header, sidebar, main) as a group with a size of its own; the frame grows to hold what is put in it
+    - fields and buttons as basic nodes, the primary one coloured; headings, hints and plain-text actions as text nodes (sizes, bold, colours)
+    - lists and data grids as table nodes, without lines
+    - navigation as named links ("tap", "click", dashed for an error or a secondary path)
+- **Missing:** free node sizes (basic nodes are all one width), widget shapes (input, button, toggle, image placeholder), snapping parts to a frame's columns.
+- **Examples:** Login screen (`ui-login-screen.json`), Dashboard layout (`ui-dashboard.json`), Ankara guide (screen flow) (`ui-ankara-guide.json`)
+
 ## Building blocks that unlock several types
 
 | Feature | Unlocks |
@@ -185,6 +199,7 @@ Sets and their relations (Venn / Euler diagrams), and functions as arrows from e
 
 ## Changes
 
+- 2026-11-27 — UI layout (wireframes, screen flows) as a type of its own, with three examples (Login screen, Dashboard layout, Ankara guide); Trip planning is a trip to Ankara
 - 2026-11-02 — circuits started: symbols as image nodes, example LED circuit (symbols); architecture overviews with text nodes (example Weather station)
 - 2026-10-27 — examples use the link looks where their kind of diagram has a convention: sequence replies dashed with open arrows, rework loops dashed, asynchronous work dashed, control / status signals dashed, a meter probe and example links dotted
 - 2026-10-27 — link line styles and end marks (graph format v7) and UML relations; UML static / abstract members and abstract classes; the UML row's missing list updated
