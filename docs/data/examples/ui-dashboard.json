@@ -1,0 +1,553 @@
+{
+    "metadata": {
+        "format": "imge-graph",
+        "version": 7,
+        "direction": "left-to-right"
+    },
+    "data": {
+        "nodes": [
+            {
+                "id": "n1",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 120
+                },
+                "ports": [],
+                "content": {
+                    "text": "Dashboard layout",
+                    "color": null,
+                    "scale": 1.8,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n2",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 0,
+                    "y": 70
+                },
+                "ports": [],
+                "content": {
+                    "text": "A desktop wireframe: header, sidebar and main area as groups; cards as nodes, a list as a table",
+                    "color": "#8b8d98",
+                    "scale": 1,
+                    "bold": false,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n3",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 64,
+                    "y": -80
+                },
+                "ports": [],
+                "content": {
+                    "text": "Analytics",
+                    "color": null,
+                    "scale": 1.3,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n4",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 620,
+                    "y": -64
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Search…",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n5",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 870,
+                    "y": -64
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Profile",
+                    "color": null,
+                    "shape": "circle"
+                }
+            },
+            {
+                "id": "n6",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "ports": [],
+                "content": {
+                    "name": "Header",
+                    "color": null,
+                    "children": [
+                        "n3",
+                        "n4",
+                        "n5"
+                    ],
+                    "shape": "square",
+                    "width": 1100,
+                    "height": 190
+                }
+            },
+            {
+                "id": "n7",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -284
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Overview",
+                    "color": "#0090ff",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n8",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -359
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Reports",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n9",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -434
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Customers",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n10",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 64,
+                    "y": -509
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Settings",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n11",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": 0,
+                    "y": -220
+                },
+                "ports": [],
+                "content": {
+                    "name": "Sidebar",
+                    "color": null,
+                    "children": [
+                        "n7",
+                        "n8",
+                        "n9",
+                        "n10"
+                    ],
+                    "shape": "square",
+                    "width": 320,
+                    "height": 480
+                }
+            },
+            {
+                "id": "n12",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 404,
+                    "y": -284
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Revenue  12.4k ↑ 8%",
+                    "color": "#30a46c",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n13",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 634,
+                    "y": -284
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Orders  318",
+                    "color": "#6e56cf",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n14",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 864,
+                    "y": -284
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Visitors  4.1k",
+                    "color": "#f76b15",
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n15",
+                "type": "text",
+                "typeVersion": 1,
+                "position": {
+                    "x": 404,
+                    "y": -380
+                },
+                "ports": [],
+                "content": {
+                    "text": "Recent orders",
+                    "color": null,
+                    "scale": 1,
+                    "bold": true,
+                    "align": "left"
+                }
+            },
+            {
+                "id": "n16",
+                "type": "table",
+                "typeVersion": 1,
+                "position": {
+                    "x": 404,
+                    "y": -410
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Recent orders",
+                    "showName": false,
+                    "color": null,
+                    "scale": 1,
+                    "cells": [
+                        [
+                            "#",
+                            "Customer",
+                            "Total",
+                            "Status"
+                        ],
+                        [
+                            "1042",
+                            "Ayşe K.",
+                            "84 €",
+                            "paid"
+                        ],
+                        [
+                            "1041",
+                            "Mehmet D.",
+                            "126 €",
+                            "shipped"
+                        ],
+                        [
+                            "1040",
+                            "Elif S.",
+                            "39 €",
+                            "paid"
+                        ],
+                        [
+                            "1039",
+                            "Can Y.",
+                            "212 €",
+                            "refunded"
+                        ]
+                    ],
+                    "rowStyles": [
+                        {
+                            "bold": true
+                        },
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "colStyles": [
+                        null,
+                        null,
+                        null,
+                        null
+                    ]
+                }
+            },
+            {
+                "id": "n17",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 864,
+                    "y": -410
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Weekly sales (chart)",
+                    "color": null,
+                    "shape": "square"
+                }
+            },
+            {
+                "id": "n18",
+                "type": "group",
+                "typeVersion": 3,
+                "position": {
+                    "x": 340,
+                    "y": -220
+                },
+                "ports": [],
+                "content": {
+                    "name": "Main",
+                    "color": null,
+                    "children": [
+                        "n12",
+                        "n13",
+                        "n14",
+                        "n15",
+                        "n16",
+                        "n17"
+                    ],
+                    "shape": "square",
+                    "width": 760,
+                    "height": 480
+                }
+            },
+            {
+                "id": "n19",
+                "type": "basic",
+                "typeVersion": 2,
+                "position": {
+                    "x": 1180,
+                    "y": -64
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Menu: account, sign out",
+                    "color": null,
+                    "shape": "square"
+                }
+            }
+        ],
+        "links": [
+            {
+                "id": "l1",
+                "type": "basic",
+                "name": "click",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "dashed",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n5",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n19",
+                    "port": "i1"
+                }
+            }
+        ]
+    }
+}

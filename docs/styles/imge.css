@@ -449,8 +449,219 @@ kbd {
 
 .node.text-node:hover .node-scale,
 .node.image-node:hover .node-scale,
+.node.table-node:hover .node-scale,
+.node.graph-node:hover .node-scale,
 .node.selected .node-scale {
     opacity: 1;
+}
+
+/* table node (node type "table", NodeTable.svelte): a box as wide as its table, its name on
+   top, the cells in a grid, without lines unless the table asks for them (.lined, content
+   showLines); each cell's look (size, opacity, bold, italic, underline, alignment, colour)
+   is set inline from its row's and column's styles ($lib/graph/table.ts); the whole table
+   follows the node's scale (font size) */
+.node.table-node {
+    width: max-content;
+    min-width: 6em;
+    padding: 0;
+    text-align: left;
+    border-radius: 4px;
+}
+
+.table-body {
+    padding: 0.5em 0.6em 0.6em;
+}
+
+.table-name {
+    margin-bottom: 0.4em;
+    font-weight: 600;
+    text-align: center;
+}
+
+.table-grid {
+    display: grid;
+}
+
+.table-grid.lined {
+    border-top: 1px solid var(--col-border);
+    border-left: 1px solid var(--col-border);
+}
+
+.table-cell {
+    min-width: 2.5em;
+    min-height: 1.3em;
+    padding: 0.2em 0.5em;
+    white-space: pre;
+    line-height: 1.3;
+    cursor: text;
+}
+
+.table-grid.lined .table-cell {
+    border-right: 1px solid var(--col-border);
+    border-bottom: 1px solid var(--col-border);
+}
+
+.table-input {
+    font: inherit;
+    color: inherit;
+    width: 100%;
+    min-width: 4em;
+    padding: 0;
+    border: none;
+    outline: 1px solid var(--col-selected);
+    background: var(--bg);
+}
+
+/* gravity running (Augment menu, $lib/graph/gravity-run.ts): a node is a round dot, its size
+   set inline from its number of links, in its colour (or the text colour, softened); its
+   name inside it, centred, its size set inline with the dot's, cut with … when too long;
+   its ports unseen at the dot's centre, so links meet there (they are measured there by
+   GraphLinks) */
+.node.dot {
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--col) 45%, transparent);
+    background: color-mix(in srgb, var(--col) 22%, var(--bg));
+    box-shadow: none;
+}
+
+.node.dot.colored {
+    border-color: var(--node-col);
+    background: color-mix(in srgb, var(--node-col) 70%, var(--bg));
+}
+
+.node.dot.selected {
+    border-color: var(--col-selected);
+    box-shadow: 0 0 0 2px var(--col-selected);
+}
+
+.dot-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 88%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.1;
+    font-weight: 600;
+    text-align: center;
+    color: var(--col);
+}
+
+.node.dot .inputs,
+.node.dot .outputs,
+.world.top-to-bottom .node.dot .inputs,
+.world.top-to-bottom .node.dot .outputs {
+    inset: 0;
+    width: auto;
+    height: auto;
+}
+
+.node.dot .port {
+    position: absolute;
+    left: calc(50% - 5px);
+    top: calc(50% - 5px);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.node.dot .node-scale,
+.node.dot .content {
+    display: none;
+}
+
+/* arithmetic running (Augment menu, $lib/graph/arithmetic-run.ts): an operator's or "="'s
+   result above the node, where no link runs (beside it in top-to-bottom graphs, where links
+   run up and down); an error in red, its reason on hover */
+.calc-result {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 6px);
+    transform: translateX(-50%);
+    padding: 0.1em 0.5em;
+    font-size: 0.85em;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #30a46c;
+    background: var(--bg);
+    border: 1px solid color-mix(in srgb, #30a46c 50%, transparent);
+    border-radius: 4px;
+    pointer-events: auto;
+}
+
+.calc-result.error {
+    color: #e5484d;
+    border-color: color-mix(in srgb, #e5484d 50%, transparent);
+    cursor: help;
+}
+
+.world.top-to-bottom .calc-result {
+    left: calc(100% + 10px);
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* graph node (node type "graph", NodeGraph.svelte): its name, a badge for its mode
+   (embedded / linked and where), and an svg preview of the graph it holds or links to:
+   nodes as boxes, groups as frames, links as lines; double-click the preview opens it */
+.node.graph-node {
+    width: max-content;
+    padding: 0.5em 0.6em 0.6em;
+    border-radius: 4px;
+}
+
+.graph-head {
+    margin: 0.1em 0 0.35em;
+    font-size: 0.7em;
+    opacity: 0.65;
+}
+
+.graph-preview {
+    display: block;
+    cursor: zoom-in;
+}
+
+.graph-preview-bg {
+    fill: color-mix(in srgb, var(--col) 4%, transparent);
+    stroke: color-mix(in srgb, var(--col) 25%, transparent);
+    stroke-dasharray: 3 2;
+}
+
+.graph-preview-node,
+.graph-preview-text {
+    fill: var(--bg);
+    stroke: color-mix(in srgb, var(--col) 55%, transparent);
+    stroke-width: 1;
+}
+
+.graph-preview-text {
+    stroke-dasharray: 2 2;
+}
+
+.graph-preview-group {
+    fill: none;
+    stroke: var(--col-link);
+    stroke-width: 1;
+}
+
+.graph-preview-link {
+    stroke: var(--col-link);
+    stroke-width: 1;
+}
+
+.graph-preview-note {
+    fill: var(--col);
+    opacity: 0.6;
+    font-size: 11px;
+}
+
+.graph-preview.missing .graph-preview-bg {
+    stroke: #ff3e00;
 }
 
 /* UML class (node type "uml-class"): class name on top, then the attributes and the methods

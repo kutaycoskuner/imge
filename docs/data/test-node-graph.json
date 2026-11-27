@@ -1255,7 +1255,9 @@
                         "n42",
                         "n46",
                         "n54",
-                        "n55"
+                        "n55",
+                        "n58",
+                        "n59"
                     ],
                     "shape": "square"
                 }
@@ -1575,6 +1577,236 @@
                     "scale": 1,
                     "bold": false,
                     "align": "left"
+                }
+            },
+            {
+                "id": "n58",
+                "type": "table",
+                "typeVersion": 1,
+                "position": {
+                    "x": -320,
+                    "y": -960
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Node types at a glance",
+                    "showName": true,
+                    "color": null,
+                    "scale": 1,
+                    "cells": [
+                        [
+                            "Type",
+                            "Box",
+                            "Ports"
+                        ],
+                        [
+                            "Basic",
+                            "yes",
+                            "in, out"
+                        ],
+                        [
+                            "Text",
+                            "no",
+                            "none"
+                        ],
+                        [
+                            "Table",
+                            "yes",
+                            "in, out"
+                        ]
+                    ],
+                    "rowStyles": [
+                        {
+                            "bold": true
+                        },
+                        null,
+                        null,
+                        null
+                    ],
+                    "colStyles": [
+                        null,
+                        {
+                            "align": "center"
+                        },
+                        {
+                            "italic": true,
+                            "opacity": 0.8
+                        }
+                    ]
+                }
+            },
+            {
+                "id": "n59",
+                "type": "graph",
+                "typeVersion": 1,
+                "position": {
+                    "x": -320,
+                    "y": -1160
+                },
+                "ports": [
+                    {
+                        "id": "i1",
+                        "kind": "in",
+                        "type": "basic",
+                        "label": "Input"
+                    },
+                    {
+                        "id": "o1",
+                        "kind": "out",
+                        "type": "basic",
+                        "label": "Output"
+                    }
+                ],
+                "content": {
+                    "name": "Graph (embedded)",
+                    "color": null,
+                    "scale": 1,
+                    "mode": "internal",
+                    "graph": {
+                        "metadata": {
+                            "format": "imge-graph",
+                            "version": 7,
+                            "direction": "left-to-right"
+                        },
+                        "data": {
+                            "nodes": [
+                                {
+                                    "id": "n1",
+                                    "type": "basic",
+                                    "typeVersion": 2,
+                                    "position": {
+                                        "x": 0,
+                                        "y": 0
+                                    },
+                                    "ports": [
+                                        {
+                                            "id": "i1",
+                                            "kind": "in",
+                                            "type": "basic",
+                                            "label": "Input"
+                                        },
+                                        {
+                                            "id": "o1",
+                                            "kind": "out",
+                                            "type": "basic",
+                                            "label": "Output"
+                                        }
+                                    ],
+                                    "content": {
+                                        "name": "Open file",
+                                        "color": null,
+                                        "shape": "square"
+                                    }
+                                },
+                                {
+                                    "id": "n2",
+                                    "type": "basic",
+                                    "typeVersion": 2,
+                                    "position": {
+                                        "x": 300,
+                                        "y": 0
+                                    },
+                                    "ports": [
+                                        {
+                                            "id": "i1",
+                                            "kind": "in",
+                                            "type": "basic",
+                                            "label": "Input"
+                                        },
+                                        {
+                                            "id": "o1",
+                                            "kind": "out",
+                                            "type": "basic",
+                                            "label": "Output"
+                                        }
+                                    ],
+                                    "content": {
+                                        "name": "Upgrade format",
+                                        "color": null,
+                                        "shape": "square"
+                                    }
+                                },
+                                {
+                                    "id": "n3",
+                                    "type": "basic",
+                                    "typeVersion": 2,
+                                    "position": {
+                                        "x": 600,
+                                        "y": 0
+                                    },
+                                    "ports": [
+                                        {
+                                            "id": "i1",
+                                            "kind": "in",
+                                            "type": "basic",
+                                            "label": "Input"
+                                        },
+                                        {
+                                            "id": "o1",
+                                            "kind": "out",
+                                            "type": "basic",
+                                            "label": "Output"
+                                        }
+                                    ],
+                                    "content": {
+                                        "name": "Draw",
+                                        "color": null,
+                                        "shape": "square"
+                                    }
+                                }
+                            ],
+                            "links": [
+                                {
+                                    "id": "l1",
+                                    "type": "basic",
+                                    "shape": "spline",
+                                    "arrow": "forward",
+                                    "line": "solid",
+                                    "mark": "arrow",
+                                    "route": "above",
+                                    "source": {
+                                        "node": "n1",
+                                        "port": "o1"
+                                    },
+                                    "target": {
+                                        "node": "n2",
+                                        "port": "i1"
+                                    }
+                                },
+                                {
+                                    "id": "l2",
+                                    "type": "basic",
+                                    "shape": "spline",
+                                    "arrow": "forward",
+                                    "line": "solid",
+                                    "mark": "arrow",
+                                    "route": "above",
+                                    "source": {
+                                        "node": "n2",
+                                        "port": "o1"
+                                    },
+                                    "target": {
+                                        "node": "n3",
+                                        "port": "i1"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "ref": null
                 }
             }
         ],
@@ -2548,6 +2780,40 @@
                 },
                 "target": {
                     "node": "n55",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l58",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n58",
+                    "port": "i1"
+                }
+            },
+            {
+                "id": "l59",
+                "type": "basic",
+                "shape": "spline",
+                "arrow": "forward",
+                "line": "solid",
+                "mark": "arrow",
+                "route": "above",
+                "source": {
+                    "node": "n40",
+                    "port": "o1"
+                },
+                "target": {
+                    "node": "n59",
                     "port": "i1"
                 }
             }
